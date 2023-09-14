@@ -17,10 +17,8 @@ public class StudentVo {
 
     private String name;
 
-    @ResultField(prefix = "st")
-    private LocalDateTime stCreateTime;
+    //private LocalDateTime stCreateTime;
 
-
-    @ResultField(property = "createTime")
+    @ResultField(target = Student.class, property = "createTime")
     private LocalDateTime st2CreateTime;
 }

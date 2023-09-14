@@ -13,6 +13,7 @@ import org.mybatis.mp.test.entity.Achievement;
 import org.mybatis.mp.test.entity.Student;
 import org.mybatis.mp.test.mapper.AchievementMapper;
 import org.mybatis.mp.test.mapper.StudentMapper;
+import org.mybatis.mp.test.vo.StudentAchievementVo;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -71,7 +72,8 @@ public class DataInitializer {
 
         System.out.println(achievement);
         System.out.println(achievementMapper.getById(1));
-        System.out.println(achievementMapper.list());
+        List<StudentAchievementVo> list2=achievementMapper.list();
+        System.out.println(list2);
 
         session.close();
     }

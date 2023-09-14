@@ -13,22 +13,20 @@ public class ResultTableFieldInfo {
      */
     private final java.lang.reflect.Field reflectField;
 
-    private final FieldInfo fieldInfo;
-
     private final ResultMapping resultMapping;
 
-    public ResultTableFieldInfo(java.lang.reflect.Field field, FieldInfo fieldInfo, MybatisConfiguration mybatisConfiguration) {
+    public ResultTableFieldInfo(java.lang.reflect.Field field, FieldInfo fieldInfo, String columnPrefix, MybatisConfiguration mybatisConfiguration) {
         this.reflectField = field;
-        this.fieldInfo = fieldInfo;
-        resultMapping = mybatisConfiguration.buildResultMapping(field, fieldInfo.getColumnName(), fieldInfo.getFieldAnnotation().jdbcType(), fieldInfo.getFieldAnnotation().typeHandler());
+        this.resultMapping = mybatisConfiguration.buildResultMapping(field, columnPrefix + fieldInfo.getColumnName(), fieldInfo.getFieldAnnotation().jdbcType(), fieldInfo.getFieldAnnotation().typeHandler());
+    }
+
+    public ResultTableFieldInfo(java.lang.reflect.Field field, ResultMapping resultMapping) {
+        this.reflectField = field;
+        this.resultMapping = resultMapping;
     }
 
     public Field getReflectField() {
         return reflectField;
-    }
-
-    public FieldInfo getFieldInfo() {
-        return fieldInfo;
     }
 
     public ResultMapping getResultMapping() {

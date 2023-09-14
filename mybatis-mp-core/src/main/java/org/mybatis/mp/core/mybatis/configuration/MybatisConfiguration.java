@@ -12,6 +12,7 @@ import org.mybatis.mp.core.mybatis.mapper.MapperTables;
 import org.mybatis.mp.core.mybatis.provider.TableSQLProvider;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 
 public class MybatisConfiguration extends Configuration {
@@ -65,6 +66,32 @@ public class MybatisConfiguration extends Configuration {
                 .javaType(property.getType())
                 .jdbcType(jdbcType)
                 .typeHandler(this.buildTypeHandler(property, typeHandlerClass))
+                .build();
+    }
+
+    /**
+     * 注册 ResultMap
+     *
+     * @param nestedResultMapId
+     * @param property
+     * @param resultMappings
+     * @return
+     */
+    public void registerNestedResultMap(String nestedResultMapId, Field property, List<ResultMapping> resultMappings) {
+        ResultMap resultMap = new ResultMap.Builder(this, nestedResultMapId, property.getType(), resultMappings, false).build();
+        addResultMap(resultMap);
+    }
+
+    /**
+     * 构建内嵌 ResultMapping
+     *
+     * @param nestedResultMapId
+     * @param property
+     * @return
+     */
+    public ResultMapping buildNestedResultMapping(String nestedResultMapId, Field property) {
+        return new ResultMapping.Builder(this, property.getName())
+                .nestedResultMapId(nestedResultMapId)
                 .build();
     }
 

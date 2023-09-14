@@ -2,22 +2,22 @@ package org.mybatis.mp.test.vo;
 
 import lombok.Data;
 import lombok.ToString;
-import org.mybatis.mp.db.annotations.ResultField;
+
 import org.mybatis.mp.db.annotations.ResultTable;
+import org.mybatis.mp.db.annotations.NestedResultTable;
 import org.mybatis.mp.test.entity.Achievement;
 import org.mybatis.mp.test.entity.Student;
-
-import java.math.BigDecimal;
 
 @Data
 @ToString(callSuper = true)
 @ResultTable(Student.class)
+@ResultTable(value = Achievement.class, prefix = "student")
 public class StudentAchievementVo extends StudentVo {
 
-    @ResultField(target = Achievement.class)
-    private Integer student_id;
 
-    @ResultField(target = Achievement.class)
-    private BigDecimal score;
+    private Integer studentId;
+
+    @NestedResultTable(target =  Achievement.class,columnPrefix = "xx_")
+    private Achievement achievement;
 
 }

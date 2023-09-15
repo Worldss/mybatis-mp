@@ -43,7 +43,7 @@ public class DataInitializer {
         SqlSession session = sqlSessionFactory.openSession(true);
         StudentMapper studentMapper = session.getMapper(StudentMapper.class);
         AchievementMapper achievementMapper = session.getMapper(AchievementMapper.class);
-/*
+
         Student student = new Student();
         //student.setId(11);
         student.setName("哈哈");
@@ -66,7 +66,7 @@ public class DataInitializer {
         System.out.println(studentMapper.getById2(1));
 
         System.out.println(studentMapper.list());
-*/
+
         Achievement achievement = new Achievement();
         achievement.setScore(new BigDecimal("99.99"));
         achievement.setStudent_id(1);

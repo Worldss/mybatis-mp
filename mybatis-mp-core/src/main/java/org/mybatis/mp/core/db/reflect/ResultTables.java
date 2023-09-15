@@ -2,12 +2,12 @@ package org.mybatis.mp.core.db.reflect;
 
 import org.apache.ibatis.mapping.ResultMapping;
 import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
+import org.mybatis.mp.core.util.FieldUtils;
 import org.mybatis.mp.core.util.NamingUtil;
 import org.mybatis.mp.core.util.StringPool;
 import org.mybatis.mp.db.annotations.*;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -43,23 +43,6 @@ public class ResultTables {
         return build(clazz, resultTables, mybatisConfiguration);
     }
 
-    private static boolean isResultMappingField(Field f) {
-        if (Modifier.isStatic(f.getModifiers())) {
-            return false;
-        }
-        if (Modifier.isTransient(f.getModifiers())) {
-            return false;
-        }
-        if (Modifier.isFinal(f.getModifiers())) {
-            return false;
-        }
-        if (f.isAnnotationPresent(ResultFieldIgnore.class)) {
-            return false;
-        }
-
-        return true;
-    }
-
     private static ResultTableInfo build(Class clazz, ResultTable[] resultTables, MybatisConfiguration mybatisConfiguration) {
         Map<Class, TableInfo> tableInfoMap = new HashMap<>(resultTables.length);
 
@@ -70,43 +53,30 @@ public class ResultTables {
                 throw new RuntimeException(tableClass.getName() + " It's not a Table class");
             }
             tableInfoMap.put(resultTable.value(), tableInfo);
-
         }
 
-        List<ResultTable> sortResultTableList = Arrays.stream(resultTables).sorted(new Comparator<ResultTable>() {
-            @Override
-            public int compare(ResultTable o1, ResultTable o2) {
-                return Integer.valueOf(o2.prefix().length()).compareTo(o1.prefix().length());
+        List<ResultTable> sortResultTableList = Arrays.stream(resultTables).sorted((o1, o2) -> {
+            return Integer.valueOf(o2.prefix().length()).compareTo(o1.prefix().length());
+        }).collect(Collectors.toList());
+
+        List<java.lang.reflect.Field> resultMappingFields = FieldUtils.getResultMappingFields(clazz);
+
+        List<ResultTableFieldInfo> fieldInfos = resultMappingFields.stream().map(f -> {
+            if (f.isAnnotationPresent(ResultField.class)) {
+                ResultField resultField = f.getAnnotation(ResultField.class);
+                return createFieldInfo(clazz, resultField, f, mybatisConfiguration);
+            } else if (f.isAnnotationPresent(NestedResultTable.class)) {
+                NestedResultTable nestedResultTable = f.getAnnotation(NestedResultTable.class);
+                return createNestedFieldInfo(clazz, nestedResultTable, f, mybatisConfiguration);
+            } else {
+                return createFieldInfo(clazz, f, tableInfoMap, sortResultTableList, mybatisConfiguration);
             }
         }).collect(Collectors.toList());
 
-        Class parseClass = clazz;
-        List<ResultTableFieldInfo> fieldInfos = new ArrayList<>(parseClass.getFields().length);
-        while (true) {
-            if (parseClass == null) {
-                break;
-            }
-            java.lang.reflect.Field[] fields = parseClass.getDeclaredFields();
-            for (java.lang.reflect.Field f : fields) {
-                if (!isResultMappingField(f)) {
-                    continue;
-                }
-                if (f.isAnnotationPresent(ResultField.class)) {
-                    ResultField resultField = f.getAnnotation(ResultField.class);
-                    fieldInfos.add(getResultTableFieldInfo(clazz, resultField, f, mybatisConfiguration));
-                } else if (f.isAnnotationPresent(NestedResultTable.class)) {
-                    NestedResultTable nestedResultTable = f.getAnnotation(NestedResultTable.class);
-                    fieldInfos.add(getResultTableFieldInfo(clazz, nestedResultTable, f, mybatisConfiguration));
-                } else {
-                    fieldInfos.add(getResultTableFieldInfo(clazz, f, tableInfoMap, sortResultTableList, mybatisConfiguration));
-                }
-            }
-            parseClass = parseClass.getSuperclass();
-        }
         return new ResultTableInfo(clazz, fieldInfos);
     }
 
-    private static ResultTableFieldInfo getResultTableFieldInfo(Class clazz, NestedResultTable nestedResultTable, Field field, MybatisConfiguration mybatisConfiguration) {
+    private static ResultTableFieldInfo createNestedFieldInfo(Class clazz, NestedResultTable nestedResultTable, Field field, MybatisConfiguration mybatisConfiguration) {
         TableInfo tableInfo = TableInfos.get(nestedResultTable.target(), mybatisConfiguration);
         if (tableInfo == null) {
             throw new RuntimeException(nestedResultTable.target() + " It's not a Table class");
@@ -114,17 +84,11 @@ public class ResultTables {
         // 内嵌ID
         String nestedResultMapId = nestedResultTable.target().getName() + "." + field.getName();
 
-        Class parseClass = field.getType();
-        List<ResultMapping> nestedMappings = new ArrayList<>(parseClass.getFields().length);
-        while (true) {
-            if (parseClass == null) {
-                break;
-            }
-            java.lang.reflect.Field[] fields = parseClass.getDeclaredFields();
-            for (java.lang.reflect.Field f : fields) {
-                if (!isResultMappingField(f)) {
-                    continue;
-                }
+        //查看是否已注册了内嵌ResultMap
+        if (!mybatisConfiguration.hasResultMap(nestedResultMapId)) {
+            //创建并注册内嵌ResultMap
+            List<java.lang.reflect.Field> resultMappingFields = FieldUtils.getResultMappingFields(field.getType());
+            List<ResultMapping> nestedMappings = resultMappingFields.stream().map(f -> {
                 NestedResultField nestedResultField = f.getAnnotation(NestedResultField.class);
                 String name = f.getName();
                 if (nestedResultField != null) {
@@ -137,18 +101,17 @@ public class ResultTables {
                 if (fieldInfo.getReflectField().getType() != f.getType()) {
                     throw new RuntimeException(String.format("The type of attribute:%s.%s.%s must be %s", clazz.getName(), field.getName(), f.getName(), fieldInfo.getReflectField().getType()));
                 }
-                ResultMapping resultMapping = mybatisConfiguration.buildResultMapping(f, nestedResultTable.columnPrefix() + fieldInfo.getColumnName(), fieldInfo.getFieldAnnotation().jdbcType(), fieldInfo.getFieldAnnotation().typeHandler());
-                nestedMappings.add(resultMapping);
-            }
-            parseClass = parseClass.getSuperclass();
+                return mybatisConfiguration.buildResultMapping(f, nestedResultTable.columnPrefix() + fieldInfo.getColumnName(), fieldInfo.getFieldAnnotation().jdbcType(), fieldInfo.getFieldAnnotation().typeHandler());
+            }).collect(Collectors.toList());
+            mybatisConfiguration.registerNestedResultMap(nestedResultMapId, field, nestedMappings);
         }
 
-        mybatisConfiguration.registerNestedResultMap(nestedResultMapId, field, nestedMappings);
         ResultMapping resultMapping = mybatisConfiguration.buildNestedResultMapping(nestedResultMapId, field);
         return new ResultTableFieldInfo(field, resultMapping);
     }
 
-    private static ResultTableFieldInfo getResultTableFieldInfo(Class clazz, ResultField resultField, Field field, MybatisConfiguration mybatisConfiguration) {
+
+    private static ResultTableFieldInfo createFieldInfo(Class clazz, ResultField resultField, Field field, MybatisConfiguration mybatisConfiguration) {
         TableInfo tableInfo = TableInfos.get(resultField.target(), mybatisConfiguration);
         if (tableInfo == null) {
             throw new RuntimeException(resultField.target().getName() + " It's not a Table class");
@@ -169,7 +132,7 @@ public class ResultTables {
         return new ResultTableFieldInfo(field, fieldInfo, resultField.columnPrefix(), mybatisConfiguration);
     }
 
-    private static ResultTableFieldInfo getResultTableFieldInfo(Class clazz, Field field, Map<Class, TableInfo> tableInfoMap, List<ResultTable> sortResultTableList, MybatisConfiguration mybatisConfiguration) {
+    private static ResultTableFieldInfo createFieldInfo(Class clazz, Field field, Map<Class, TableInfo> tableInfoMap, List<ResultTable> sortResultTableList, MybatisConfiguration mybatisConfiguration) {
         FieldInfo matchFieldInfo = null;
         ResultTable matchResultTable = null;
         for (ResultTable resultTable : sortResultTableList) {
@@ -188,7 +151,6 @@ public class ResultTables {
             } else {
                 continue;
             }
-
 
             if (fieldInfo != null) {
                 if (matchFieldInfo != null) {

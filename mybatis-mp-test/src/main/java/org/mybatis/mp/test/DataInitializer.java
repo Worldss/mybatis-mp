@@ -10,7 +10,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
-import org.mybatis.mp.core.mybatis.query.Query;
+import org.mybatis.mp.core.query.Query;
 import org.mybatis.mp.test.commons.DataSourceFactory;
 import org.mybatis.mp.test.entity.Achievement;
 import org.mybatis.mp.test.entity.Student;

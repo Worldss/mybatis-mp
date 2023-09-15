@@ -8,7 +8,7 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.mybatis.mp.core.mybatis.provider.SQLCmdProvider;
 import org.mybatis.mp.core.mybatis.provider.SQLCmdQueryContext;
 import org.mybatis.mp.core.mybatis.provider.TableSQLProvider;
-import org.mybatis.mp.core.mybatis.query.Query;
+import org.mybatis.mp.core.query.Query;
 
 import java.io.Serializable;
 import java.util.List;

@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class LambdaUtil {
 
     @FunctionalInterface
-    interface Getter<T> extends Serializable {
+    public interface Getter<T> extends Serializable {
         Object get(T source);
     }
 

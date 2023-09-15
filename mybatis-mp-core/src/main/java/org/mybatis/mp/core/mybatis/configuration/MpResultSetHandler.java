@@ -109,7 +109,7 @@ public class MpResultSetHandler extends DefaultResultSetHandler {
         }
 
         MappedStatement.Builder msBuilder = new MappedStatement.Builder(ms.getConfiguration(), id, ms.getSqlSource(), ms.getSqlCommandType())
-                .resultMaps(Collections.unmodifiableList(Collections.singletonList(resultMap)))
+                .resultMaps(Collections.singletonList(resultMap))
                 .parameterMap(ms.getParameterMap())
                 .useCache(false);
 

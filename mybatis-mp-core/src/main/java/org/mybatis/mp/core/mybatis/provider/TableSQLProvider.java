@@ -11,6 +11,7 @@ import org.mybatis.mp.db.IdAutoType;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
@@ -92,7 +93,7 @@ public class TableSQLProvider {
 
     public static String deleteById(Serializable id, ProviderContext context) {
         TableInfo tableInfo = TableInfos.get(MapperTables.get(context.getMapperType()));
-        if (tableInfo.getIdInfo() == null) {
+        if (Objects.isNull(tableInfo.getIdInfo())) {
             throw new RuntimeException("ID not found");
         }
         return getDeleteByIdSql(tableInfo);

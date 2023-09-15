@@ -16,14 +16,16 @@ import org.mybatis.mp.core.mybatis.provider.TableSQLProvider;
 import org.mybatis.mp.db.annotations.Id;
 
 import java.util.Collections;
+import java.util.Objects;
 
 public class TableIdGeneratorWrapper {
     public static void addEntityKeyGenerator(MappedStatement ms, Class tableClass) {
         if (!ms.getId().endsWith("." + TableSQLProvider.SAVE_NAME)) {
             return;
         }
+
         TableInfo tableInfo = TableInfos.get(tableClass, (MybatisConfiguration) ms.getConfiguration());
-        if (tableInfo.getIdInfo() != null) {
+        if (Objects.nonNull(tableInfo.getIdInfo())) {
             KeyGenerator keyGenerator = null;
             Id id = tableInfo.getIdInfo().getIdAnnotation();
             switch (id.value()) {
@@ -64,13 +66,10 @@ public class TableIdGeneratorWrapper {
                     throw new RuntimeException("Not supported");
                 }
             }
-
-            if (keyGenerator != null) {
-                MetaObject msMetaObject = ms.getConfiguration().newMetaObject(ms);
-                msMetaObject.setValue("keyGenerator", keyGenerator);
-                msMetaObject.setValue("keyProperties", new String[]{tableInfo.getIdInfo().getReflectField().getName()});
-                msMetaObject.setValue("keyColumns", new String[]{tableInfo.getIdInfo().getColumnName()});
-            }
+            MetaObject msMetaObject = ms.getConfiguration().newMetaObject(ms);
+            msMetaObject.setValue("keyGenerator", keyGenerator);
+            msMetaObject.setValue("keyProperties", new String[]{tableInfo.getIdInfo().getReflectField().getName()});
+            msMetaObject.setValue("keyColumns", new String[]{tableInfo.getIdInfo().getColumnName()});
         }
     }
 }

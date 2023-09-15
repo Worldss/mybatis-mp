@@ -24,7 +24,6 @@ public class SQLCmdParamHandler implements ParameterHandler {
         Object[] params=queryContext.getSQLCmdParams();
         int length=params.length;
         for(int i=0;i<length;i++){
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.xxxxxxxxxxxxxxx"+params[i]);
             preparedStatement.setObject(i+1,params[i]);
         }
     }

@@ -7,6 +7,7 @@ import org.mybatis.mp.core.util.NamingUtil;
 import org.mybatis.mp.db.annotations.Table;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ public final class TableInfos {
         }
 
         Table table = (Table) tableClass.getAnnotation(Table.class);
-        if (table == null) {
+        if (Objects.isNull(table)) {
             return null;
         }
 
@@ -79,7 +80,7 @@ public final class TableInfos {
      */
     public static TableInfo get(Class tableClass, MybatisConfiguration mybatisConfiguration) {
         TableInfo entityReflect = get(tableClass);
-        if (entityReflect == null) {
+        if (Objects.isNull(entityReflect)) {
             return load(tableClass, mybatisConfiguration);
         }
         return entityReflect;

@@ -10,6 +10,7 @@ import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ResultMapWrapper {
@@ -20,12 +21,12 @@ public class ResultMapWrapper {
         }
         List<ResultMap> resultMaps = ms.getResultMaps().stream().map(item -> {
             TableInfo tableInfo = TableInfos.get(item.getType(), (MybatisConfiguration) ms.getConfiguration());
-            if (tableInfo != null) {
+            if (Objects.nonNull(tableInfo)) {
                 return new ResultMap.Builder(ms.getConfiguration(), item.getId(), item.getType(), tableInfo.getResultMappings(), true).build();
             }
 
             ResultTableInfo resultTableInfo = ResultTables.get(item.getType(), (MybatisConfiguration) ms.getConfiguration());
-            if (resultTableInfo != null) {
+            if (Objects.nonNull(resultTableInfo)) {
                 return new ResultMap.Builder(ms.getConfiguration(), item.getId(), item.getType(), resultTableInfo.getResultMappings(), true).build();
             }
 

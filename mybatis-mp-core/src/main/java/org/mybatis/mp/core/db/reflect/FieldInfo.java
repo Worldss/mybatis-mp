@@ -9,6 +9,8 @@ import org.mybatis.mp.db.DbType;
 import org.mybatis.mp.db.annotations.Field;
 import org.mybatis.mp.db.annotations.Id;
 
+import java.util.Objects;
+
 public class FieldInfo {
 
     /**
@@ -31,7 +33,7 @@ public class FieldInfo {
         this.reflectField = field;
 
         Field fieldAnnotation = field.getAnnotation(Field.class);
-        if (fieldAnnotation == null) {
+        if (Objects.isNull(fieldAnnotation)) {
             fieldAnnotation = Default.defaultFieldAnnotation();
         }
         this.fieldAnnotation = fieldAnnotation;
@@ -46,7 +48,8 @@ public class FieldInfo {
         this.columnName = columnName;
 
         this.idAnnotation = getIdAnnotation(mybatisConfiguration, field);
-        this.id = this.idAnnotation != null;
+
+        this.id = Objects.nonNull(this.idAnnotation);
 
         this.resultMapping = mybatisConfiguration.buildResultMapping(field, columnName, fieldAnnotation.jdbcType(), fieldAnnotation.typeHandler());
 
@@ -68,7 +71,7 @@ public class FieldInfo {
         }
         Id id = null;
         for (Id item : idAnnotations) {
-            if (id == null && item.dbType() == DbType.DEFAULT) {
+            if (Objects.isNull(id) && item.dbType() == DbType.DEFAULT) {
                 id = item;
             }
             if (item.dbType().name().equals(mybatisConfiguration.getDatabaseId())) {
@@ -76,7 +79,7 @@ public class FieldInfo {
                 break;
             }
         }
-        if (id == null) {
+        if (Objects.isNull(id)) {
             id = idAnnotations[0];
         }
         return id;

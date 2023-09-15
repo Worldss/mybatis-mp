@@ -5,7 +5,10 @@ import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import org.mybatis.mp.core.util.FieldUtils;
 import org.mybatis.mp.core.util.NamingUtil;
 import org.mybatis.mp.core.util.StringPool;
-import org.mybatis.mp.db.annotations.*;
+import org.mybatis.mp.db.annotations.NestedResultField;
+import org.mybatis.mp.db.annotations.NestedResultTable;
+import org.mybatis.mp.db.annotations.ResultField;
+import org.mybatis.mp.db.annotations.ResultTable;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -36,7 +39,7 @@ public class ResultTables {
 
     public static ResultTableInfo load(Class clazz, MybatisConfiguration mybatisConfiguration) {
         ResultTable[] resultTables = (ResultTable[]) clazz.getAnnotationsByType(ResultTable.class);
-        if (resultTables == null || resultTables.length < 1) {
+        if (Objects.isNull(resultTables) || resultTables.length < 1) {
             return null;
         }
         checkResultTableSetting(resultTables);
@@ -49,7 +52,7 @@ public class ResultTables {
         for (ResultTable resultTable : resultTables) {
             Class tableClass = resultTable.value();
             TableInfo tableInfo = TableInfos.get(tableClass, mybatisConfiguration);
-            if (tableInfo == null) {
+            if (Objects.isNull(tableInfo)) {
                 throw new RuntimeException(tableClass.getName() + " It's not a Table class");
             }
             tableInfoMap.put(resultTable.value(), tableInfo);
@@ -78,7 +81,7 @@ public class ResultTables {
 
     private static ResultTableFieldInfo createNestedFieldInfo(Class clazz, NestedResultTable nestedResultTable, Field field, MybatisConfiguration mybatisConfiguration) {
         TableInfo tableInfo = TableInfos.get(nestedResultTable.target(), mybatisConfiguration);
-        if (tableInfo == null) {
+        if (Objects.isNull(tableInfo)) {
             throw new RuntimeException(nestedResultTable.target() + " It's not a Table class");
         }
         // 内嵌ID
@@ -91,11 +94,11 @@ public class ResultTables {
             List<ResultMapping> nestedMappings = resultMappingFields.stream().map(f -> {
                 NestedResultField nestedResultField = f.getAnnotation(NestedResultField.class);
                 String name = f.getName();
-                if (nestedResultField != null) {
+                if (Objects.nonNull(nestedResultField)) {
                     name = nestedResultField.property();
                 }
                 FieldInfo fieldInfo = tableInfo.getFieldInfo(name);
-                if (fieldInfo == null) {
+                if (Objects.isNull(fieldInfo)) {
                     throw new RuntimeException(String.format("Unable to match attribute: %s.%s.%s  in table:%s", clazz.getName(), field.getName(), f.getName(), nestedResultTable.target().getName()));
                 }
                 if (fieldInfo.getReflectField().getType() != f.getType()) {
@@ -112,24 +115,33 @@ public class ResultTables {
 
 
     private static ResultTableFieldInfo createFieldInfo(Class clazz, ResultField resultField, Field field, MybatisConfiguration mybatisConfiguration) {
-        TableInfo tableInfo = TableInfos.get(resultField.target(), mybatisConfiguration);
-        if (tableInfo == null) {
-            throw new RuntimeException(resultField.target().getName() + " It's not a Table class");
-        }
+        FieldInfo fieldInfo = null;
+        if (resultField.target() == Void.class) {
+            if (StringPool.EMPTY.equals(resultField.column())) {
+                throw new RuntimeException(String.format("You need config @ResultField.column for attribute %s.%s  ", clazz.getName(), field.getName()));
+            }
+        } else {
+            //已设置目标
+            TableInfo tableInfo = TableInfos.get(resultField.target(), mybatisConfiguration);
+            if (Objects.isNull(tableInfo)) {
+                throw new RuntimeException(resultField.target().getName() + " It's not a Table class");
+            }
 
-        String property = resultField.property();
-        if (StringPool.EMPTY.equals(property)) {
-            property = field.getName();
-        }
-        FieldInfo fieldInfo = tableInfo.getFieldInfo(property);
-        if (fieldInfo == null) {
-            throw new RuntimeException(String.format("Unable to match attribute: %s.%s  in table:%s", clazz.getName(), field.getName(), resultField.target().getName()));
-        }
+            String property = resultField.property();
+            if (StringPool.EMPTY.equals(property)) {
+                property = field.getName();
+            }
 
-        if (fieldInfo.getReflectField().getType() != field.getType()) {
-            throw new RuntimeException(String.format("This type:%s of the attribute:%s must be %s", clazz.getName(), resultField.property(), fieldInfo.getReflectField().getType()));
+            fieldInfo = tableInfo.getFieldInfo(property);
+            if (Objects.isNull(fieldInfo) && StringPool.EMPTY.equals(resultField.column())) {
+                throw new RuntimeException(String.format("Unable to match attribute: %s.%s in table:%s", clazz.getName(), field.getName(), resultField.target().getName()));
+            }
+
+            if (Objects.nonNull(fieldInfo) && fieldInfo.getReflectField().getType() != field.getType()) {
+                throw new RuntimeException(String.format("This type:%s of the attribute:%s must be %s", clazz.getName(), resultField.property(), fieldInfo.getReflectField().getType()));
+            }
         }
-        return new ResultTableFieldInfo(field, fieldInfo, resultField.columnPrefix(), mybatisConfiguration);
+        return new ResultTableFieldInfo(field, fieldInfo, resultField, mybatisConfiguration);
     }
 
     private static ResultTableFieldInfo createFieldInfo(Class clazz, Field field, Map<Class, TableInfo> tableInfoMap, List<ResultTable> sortResultTableList, MybatisConfiguration mybatisConfiguration) {
@@ -152,19 +164,19 @@ public class ResultTables {
                 continue;
             }
 
-            if (fieldInfo != null) {
-                if (matchFieldInfo != null) {
-                    throw new RuntimeException(String.format("Unable to accurately match attributes :%s in %s", field.getName(), clazz.getName()));
+            if (Objects.nonNull(fieldInfo)) {
+                if (Objects.nonNull(matchFieldInfo)) {
+                    throw new RuntimeException(String.format("The attributes %s of the %s find multiple mapping relationship", field.getName(), clazz.getName()));
                 }
                 matchFieldInfo = fieldInfo;
                 matchResultTable = resultTable;
             }
         }
 
-        if (matchFieldInfo != null) {
-            return new ResultTableFieldInfo(field, matchFieldInfo, matchResultTable.columnPrefix(), mybatisConfiguration);
+        if (Objects.isNull(matchFieldInfo)) {
+            throw new RuntimeException(String.format("Unable to match attributes %s of the %s", field.getName(), clazz.getName()));
         }
-        throw new RuntimeException(String.format("Unable to match attributes :%s in %s", field.getName(), clazz.getName()));
+        return new ResultTableFieldInfo(field, matchFieldInfo, matchResultTable.columnPrefix(), mybatisConfiguration);
     }
 
     /**

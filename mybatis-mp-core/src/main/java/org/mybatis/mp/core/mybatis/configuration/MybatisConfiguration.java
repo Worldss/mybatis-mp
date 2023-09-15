@@ -25,6 +25,7 @@ import org.mybatis.mp.core.mybatis.provider.TableSQLProvider;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 
 public class MybatisConfiguration extends Configuration {
@@ -136,13 +137,13 @@ public class MybatisConfiguration extends Configuration {
     public TypeHandler buildTypeHandler(Field property, Class<? extends TypeHandler<?>> typeHandlerClass) {
         if (typeHandlerClass == UnknownTypeHandler.class) {
             TypeHandler typeHandler = this.getTypeHandlerRegistry().getTypeHandler(property.getType());
-            if (typeHandler != null) {
-                return null;
+            if (Objects.nonNull(typeHandler)) {
+                return typeHandler;
             }
         }
 
         TypeHandler typeHandler = this.getTypeHandlerRegistry().getMappingTypeHandler(typeHandlerClass);
-        if (typeHandler != null) {
+        if (Objects.nonNull(typeHandler)) {
             return typeHandler;
         }
 

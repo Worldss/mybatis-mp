@@ -3,6 +3,8 @@ package org.mybatis.mp.core.mybatis.provider;
 import db.sql.core.SQLMode;
 import org.mybatis.mp.core.mybatis.query.Query;
 
+import java.util.Objects;
+
 public class SQLCmdQueryContext<R> {
 
     private final Query<R> query;
@@ -17,10 +19,10 @@ public class SQLCmdQueryContext<R> {
         return query;
     }
 
-    private String sql;
+    private volatile String sql;
 
     public String sql(String databaseId) {
-        if (sql != null) {
+        if (Objects.nonNull(sql)) {
             return sql;
         }
         mybatisSqlBuilderContext = new MybatisSqlBuilderContext(databaseId, SQLMode.PREPARED);

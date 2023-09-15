@@ -1,10 +1,14 @@
 package org.mybatis.mp.core.mybatis.mapper;
 
+
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.mybatis.mp.core.mybatis.provider.SQLCmdProvider;
+import org.mybatis.mp.core.mybatis.provider.SQLCmdQueryContext;
 import org.mybatis.mp.core.mybatis.provider.TableSQLProvider;
+import org.mybatis.mp.core.mybatis.query.Query;
 
 import java.io.Serializable;
 import java.util.List;
@@ -51,4 +55,11 @@ public interface Mapper<T> {
     @SelectProvider(type = TableSQLProvider.class, method = "all")
     List<T> all();
 
+
+    default <R> List<R> selectWithCmdQuery(Query<R> query) {
+        return this.selectWithCmdQuery(new SQLCmdQueryContext<R>(query));
+    }
+
+    @SelectProvider(type = SQLCmdProvider.class, method = "selectWithCmdQuery")
+    <R> List<R> selectWithCmdQuery(SQLCmdQueryContext<R> queryContext);
 }

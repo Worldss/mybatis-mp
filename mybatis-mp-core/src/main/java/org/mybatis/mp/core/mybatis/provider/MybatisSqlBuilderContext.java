@@ -19,20 +19,12 @@ public class MybatisSqlBuilderContext extends SqlBuilderContext {
         super(databaseId, sqlMode);
     }
 
-    private int paramIndex = 0;
-
-    private Map<Integer, String> paramNameCache = new HashMap<>();
-
     private final List<Object> paramList=new ArrayList<>();
 
     @Override
     public String addParam(Object value) {
-
         paramList.add(value);
-
-        return paramNameCache.computeIfAbsent(++paramIndex, (key) -> {
-            return "?";
-        });
+        return "?";
     }
 
     public List<Object> getParamList() {

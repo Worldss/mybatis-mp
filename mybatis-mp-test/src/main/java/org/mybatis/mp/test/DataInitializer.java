@@ -1,5 +1,7 @@
 package org.mybatis.mp.test;
 
+import db.sql.core.cmd.Table;
+
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -8,6 +10,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
+import org.mybatis.mp.core.mybatis.query.Query;
 import org.mybatis.mp.test.commons.DataSourceFactory;
 import org.mybatis.mp.test.entity.Achievement;
 import org.mybatis.mp.test.entity.Student;
@@ -40,7 +43,7 @@ public class DataInitializer {
         SqlSession session = sqlSessionFactory.openSession(true);
         StudentMapper studentMapper = session.getMapper(StudentMapper.class);
         AchievementMapper achievementMapper = session.getMapper(AchievementMapper.class);
-
+/*
         Student student = new Student();
         //student.setId(11);
         student.setName("哈哈");
@@ -63,7 +66,7 @@ public class DataInitializer {
         System.out.println(studentMapper.getById2(1));
 
         System.out.println(studentMapper.list());
-
+*/
         Achievement achievement = new Achievement();
         achievement.setScore(new BigDecimal("99.99"));
         achievement.setStudent_id(1);
@@ -72,8 +75,26 @@ public class DataInitializer {
 
         System.out.println(achievement);
         System.out.println(achievementMapper.getById(1));
-        List<StudentAchievementVo> list2=achievementMapper.list();
+        List<StudentAchievementVo> list2 = achievementMapper.list();
         System.out.println(list2);
+
+        List<Achievement> list3 = achievementMapper.selectWithCmdQuery(new Query<Achievement>() {{
+            Table table = $.table("achievement");
+            select($.all(table));
+            from(table);
+            where($.eq($.field(table, "id"), $.value("1")));
+        }});
+
+        System.out.println("<><><><><><><>>"+list3);
+
+        List<Achievement> list4 = achievementMapper.selectWithCmdQuery(new Query<Achievement>() {{
+            Table table = $.table("achievement");
+            select($.all(table));
+            from(table);
+            where($.eq($.field(table, "id"), $.value("2")));
+        }});
+
+        System.out.println("<><><><><><><>>"+list4);
 
         session.close();
     }

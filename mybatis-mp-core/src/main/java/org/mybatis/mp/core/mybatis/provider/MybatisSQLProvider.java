@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
-public class TableSQLProvider {
+public class MybatisSQLProvider {
 
     public static final String SAVE_NAME = "save";
     public static final String UPDATE_NAME = "update";
@@ -23,7 +23,7 @@ public class TableSQLProvider {
     public static final String DELETE_BY_ID_NAME = "deleteById";
     private static final Map<String, String> SQL_CACHE_MAP = new ConcurrentHashMap<>();
 
-    private TableSQLProvider() {
+    private MybatisSQLProvider() {
 
     }
 
@@ -102,5 +102,9 @@ public class TableSQLProvider {
     public static String all(ProviderContext context) {
         TableInfo tableInfo = TableInfos.get(MapperTables.get(context.getMapperType()));
         return getTableDefaultSelect(tableInfo).toString();
+    }
+
+    public static String cmdQuery(SQLCmdQueryContext queryContext, ProviderContext providerContext) {
+        return queryContext.sql(providerContext.getDatabaseId());
     }
 }

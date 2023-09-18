@@ -96,6 +96,15 @@ public class DataInitializer {
 
         System.out.println("<><><><><><><>>"+list4);
 
+        Achievement getOne = achievementMapper.getOneWithCmdQuery(new Query<Achievement>() {{
+            Table table = $.table("achievement");
+            select($.all(table));
+            from(table);
+            where($.eq($.field(table, "id"), $.value("2")));
+        }});
+
+        System.out.println("<><><><><><><>>"+getOne);
+
         session.close();
     }
 

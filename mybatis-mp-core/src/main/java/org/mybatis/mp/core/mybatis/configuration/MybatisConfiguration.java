@@ -5,22 +5,18 @@ import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
-import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
-import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.mybatis.mp.core.db.reflect.ResultTables;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
-import org.mybatis.mp.core.mybatis.provider.SQLCmdProvider;
 import org.mybatis.mp.core.mybatis.provider.SQLCmdQueryContext;
-import org.mybatis.mp.core.mybatis.provider.TableSQLProvider;
+import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -66,9 +62,8 @@ public class MybatisConfiguration extends Configuration {
         if (ms.getSqlSource() instanceof ProviderSqlSource) {
             MetaObject metaObject = newMetaObject(ms.getSqlSource());
             Class providerType = (Class) metaObject.getValue("providerType");
-            if (providerType == TableSQLProvider.class) {
+            if (providerType == MybatisSQLProvider.class) {
                 TableIdGeneratorWrapper.addEntityKeyGenerator(ms, getEntityClass(ms));
-            } else if (providerType == SQLCmdProvider.class) {
                 if (ms.getParameterMap().getType().isAssignableFrom(SQLCmdQueryContext.class)) {
                     ParameterMapping parameterMapping = new ParameterMapping.Builder(ms.getConfiguration(), "SQLCmdParams", Object.class)
                             .mode(ParameterMode.IN).build();

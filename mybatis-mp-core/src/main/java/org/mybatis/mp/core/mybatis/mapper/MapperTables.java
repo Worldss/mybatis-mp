@@ -12,7 +12,7 @@ public class MapperTables {
     private MapperTables() {
     }
 
-    private final static Map<String, Class> cacheMap = new HashMap<>();
+    private final static Map<String, Class> CACHE = new HashMap<>();
 
     public final static boolean add(Class mapper) {
         Type[] genericInterfaces = mapper.getGenericInterfaces();
@@ -23,7 +23,7 @@ public class MapperTables {
                 if (actualTypeArgument instanceof Class) {
                     Class entity = (Class) actualTypeArgument;
                     if (entity.isAnnotationPresent(Table.class)) {
-                        cacheMap.put(mapper.getName(), entity);
+                        CACHE.put(mapper.getName(), entity);
                         isEntity = true;
                         break;
                     }
@@ -34,7 +34,7 @@ public class MapperTables {
     }
 
     public final static Class get(String mapper) {
-        return cacheMap.get(mapper);
+        return CACHE.get(mapper);
     }
 
     public final static Class get(Class mapper) {

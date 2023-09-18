@@ -12,7 +12,7 @@ import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.reflection.MetaObject;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
-import org.mybatis.mp.core.mybatis.provider.TableSQLProvider;
+import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import org.mybatis.mp.db.annotations.Id;
 
 import java.util.Collections;
@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public class TableIdGeneratorWrapper {
     public static void addEntityKeyGenerator(MappedStatement ms, Class tableClass) {
-        if (!ms.getId().endsWith("." + TableSQLProvider.SAVE_NAME)) {
+        if (!ms.getId().endsWith("." + MybatisSQLProvider.SAVE_NAME)) {
             return;
         }
 

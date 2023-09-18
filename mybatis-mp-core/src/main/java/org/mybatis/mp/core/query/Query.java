@@ -31,6 +31,13 @@ public class Query<R> extends db.sql.core.cmd.execution.Query<Query, MybatisCmdF
         return super.select($.field(table, getter));
     }
 
+    public Select select(Getter getter) {
+        if (this.from == null) {
+            throw new RuntimeException("Please call the from method first");
+        }
+        return super.select($.field(this.from.getTable(), getter));
+    }
+
     public Table from(Class tableClass) {
         return from(tableClass, null);
     }

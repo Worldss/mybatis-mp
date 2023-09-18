@@ -7,6 +7,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 此处的mapper 均为真实类
+ */
 public class MapperTables {
 
     private MapperTables() {
@@ -38,6 +41,6 @@ public class MapperTables {
     }
 
     public final static Class get(Class mapper) {
-        return  get(mapper.getName());
+        return get(mapper.getName());
     }
 }

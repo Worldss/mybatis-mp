@@ -11,7 +11,7 @@ import org.mybatis.mp.core.util.LambdaUtil.Getter;
 
 import java.util.Objects;
 
-public class Query<R> extends db.sql.core.cmd.execution.Query<Query, MybatisCmdFactory> {
+public abstract class Query<R> extends db.sql.core.cmd.execution.Query<Query, MybatisCmdFactory> {
 
     public Query() {
         super(new MybatisCmdFactory());

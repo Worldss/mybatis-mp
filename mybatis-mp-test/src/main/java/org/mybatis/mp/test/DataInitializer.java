@@ -105,6 +105,8 @@ public class DataInitializer {
 
         System.out.println("<><><><><><><>>"+getOne);
 
+
+
         session.close();
     }
 

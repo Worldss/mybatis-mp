@@ -8,8 +8,10 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.mybatis.mp.core.mybatis.provider.SQLCmdQueryContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import org.mybatis.mp.core.query.Query;
+import org.mybatis.mp.core.util.GenericUtil;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -18,7 +20,6 @@ import java.util.List;
  * @param <T>
  */
 public interface Mapper<T> {
-
     /**
      * @param entity
      * @return

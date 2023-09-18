@@ -65,7 +65,7 @@ public interface Mapper<T> {
      * @return
      * @see org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
-    @SelectProvider(type = MybatisSQLProvider.class, method = "selectWithCmdQuery")
+    @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
     <R> List<R> selectWithCmdQuery(SQLCmdQueryContext<R> queryContext);
 
     default <R> R getOneWithCmdQuery(Query<R> query) {
@@ -78,6 +78,6 @@ public interface Mapper<T> {
      * @return
      * @see org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
-    @SelectProvider(type = MybatisSQLProvider.class, method = "getOneWithCmdQuery")
+    @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
     <R> R getOneWithCmdQuery(SQLCmdQueryContext<R> queryContext);
 }

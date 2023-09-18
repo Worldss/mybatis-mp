@@ -64,7 +64,7 @@ public class MybatisConfiguration extends Configuration {
             Class providerType = (Class) metaObject.getValue("providerType");
             if (providerType == MybatisSQLProvider.class) {
                 TableIdGeneratorWrapper.addEntityKeyGenerator(ms, getEntityClass(ms));
-                if (ms.getParameterMap().getType().isAssignableFrom(SQLCmdQueryContext.class)) {
+                if (ms.getParameterMap().getType() != null && ms.getParameterMap().getType().isAssignableFrom(SQLCmdQueryContext.class)) {
                     ParameterMapping parameterMapping = new ParameterMapping.Builder(ms.getConfiguration(), "SQLCmdParams", Object.class)
                             .mode(ParameterMode.IN).build();
                     newMetaObject(ms.getParameterMap()).setValue("parameterMappings", Collections.singletonList(parameterMapping));

@@ -100,7 +100,7 @@ public class DataInitializer {
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
-            where($.eq($.field(table, "id"), $.value("2")));
+            where($.eq($.field(table, "id"), $.value("1")));
         }});
 
         System.out.println("<><><><><><><>>"+getOne);

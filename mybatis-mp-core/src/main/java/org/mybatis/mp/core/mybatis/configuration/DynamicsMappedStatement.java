@@ -5,7 +5,6 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 
 import java.util.Collections;
-import java.util.Objects;
 
 public class DynamicsMappedStatement {
 
@@ -19,13 +18,17 @@ public class DynamicsMappedStatement {
         if (ms.getConfiguration().hasResultMap(resultMapId)) {
             resultMap = ms.getConfiguration().getResultMap(resultMapId);
         } else {
-            resultMap = new ResultMap.Builder(ms.getConfiguration(), resultMapId, returnTypeClass, Collections.emptyList(), true).build();
+            resultMap = new ResultMap.Builder(ms.getConfiguration(), resultMapId, returnTypeClass, Collections.emptyList(), false).build();
             ms.getConfiguration().addResultMap(resultMap);
         }
         MappedStatement.Builder msBuilder = new MappedStatement.Builder(ms.getConfiguration(), id, ms.getSqlSource(), ms.getSqlCommandType())
+                .resource(ms.getResource())
                 .resultMaps(Collections.singletonList(resultMap))
                 .parameterMap(ms.getParameterMap())
                 .keyGenerator(NoKeyGenerator.INSTANCE)
+                .fetchSize(ms.getFetchSize())
+                .statementType(ms.getStatementType())
+                .timeout(ms.getTimeout())
                 .useCache(ms.isUseCache())
                 .cache(ms.getCache());
         MappedStatement newMappedStatement = msBuilder.build();

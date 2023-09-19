@@ -27,7 +27,7 @@ public class ResultMapWrapper {
                 if (ms.getConfiguration().hasResultMap(resultMapId)) {
                     resultMap = ms.getConfiguration().getResultMap(resultMapId);
                 } else {
-                    resultMap = new ResultMap.Builder(ms.getConfiguration(), resultMapId, item.getType(), tableInfo.getResultMappings(), true).build();
+                    resultMap = new ResultMap.Builder(ms.getConfiguration(), resultMapId, item.getType(), tableInfo.getResultMappings(), false).build();
                     ms.getConfiguration().addResultMap(resultMap);
                 }
                 return resultMap;
@@ -38,7 +38,7 @@ public class ResultMapWrapper {
                 if (ms.getConfiguration().hasResultMap(resultMapId)) {
                     resultMap = ms.getConfiguration().getResultMap(resultMapId);
                 } else {
-                    resultMap = new ResultMap.Builder(ms.getConfiguration(), item.getType().getName(), item.getType(), resultTableInfo.getResultMappings(), true).build();
+                    resultMap = new ResultMap.Builder(ms.getConfiguration(), item.getType().getName(), item.getType(), resultTableInfo.getResultMappings(), false).build();
                     ms.getConfiguration().addResultMap(resultMap);
                 }
                 return resultMap;

@@ -14,9 +14,10 @@ public class DynamicsMappedStatement {
         if (ms.getConfiguration().hasStatement(id)) {
             return ms.getConfiguration().getMappedStatement(id);
         }
-
-        ResultMap resultMap = ms.getConfiguration().getResultMap(returnTypeClass.getName());
-        if (Objects.isNull(resultMap)) {
+        ResultMap resultMap;
+        if (ms.getConfiguration().hasResultMap(returnTypeClass.getName())) {
+            resultMap = ms.getConfiguration().getResultMap(returnTypeClass.getName());
+        } else {
             resultMap = new ResultMap.Builder(ms.getConfiguration(), returnTypeClass.getName(), returnTypeClass, Collections.emptyList(), true).build();
             ms.getConfiguration().addResultMap(resultMap);
         }

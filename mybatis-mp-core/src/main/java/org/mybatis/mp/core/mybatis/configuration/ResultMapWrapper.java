@@ -21,12 +21,27 @@ public class ResultMapWrapper {
         }
         List<ResultMap> resultMaps = ms.getResultMaps().stream().map(item -> {
             TableInfo tableInfo = TableInfos.get(item.getType(), (MybatisConfiguration) ms.getConfiguration());
+            String resultMapId = item.getType().getName();
             if (Objects.nonNull(tableInfo)) {
-                return new ResultMap.Builder(ms.getConfiguration(), item.getType().getName(), item.getType(), tableInfo.getResultMappings(), true).build();
+                ResultMap resultMap;
+                if (ms.getConfiguration().hasResultMap(resultMapId)) {
+                    resultMap = ms.getConfiguration().getResultMap(resultMapId);
+                } else {
+                    resultMap = new ResultMap.Builder(ms.getConfiguration(), resultMapId, item.getType(), tableInfo.getResultMappings(), true).build();
+                    ms.getConfiguration().addResultMap(resultMap);
+                }
+                return resultMap;
             }
             ResultTableInfo resultTableInfo = ResultTables.get(item.getType(), (MybatisConfiguration) ms.getConfiguration());
             if (Objects.nonNull(resultTableInfo)) {
-                return new ResultMap.Builder(ms.getConfiguration(), item.getType().getName(), item.getType(), resultTableInfo.getResultMappings(), true).build();
+                ResultMap resultMap;
+                if (ms.getConfiguration().hasResultMap(resultMapId)) {
+                    resultMap = ms.getConfiguration().getResultMap(resultMapId);
+                } else {
+                    resultMap = new ResultMap.Builder(ms.getConfiguration(), item.getType().getName(), item.getType(), resultTableInfo.getResultMappings(), true).build();
+                    ms.getConfiguration().addResultMap(resultMap);
+                }
+                return resultMap;
             }
             return item;
         }).collect(Collectors.toList());

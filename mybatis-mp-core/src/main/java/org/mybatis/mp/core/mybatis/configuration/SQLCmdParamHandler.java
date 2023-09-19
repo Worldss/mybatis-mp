@@ -10,8 +10,8 @@ public class SQLCmdParamHandler implements ParameterHandler {
 
     private final SQLCmdQueryContext queryContext;
 
-    public SQLCmdParamHandler(SQLCmdQueryContext queryContext){
-        this.queryContext=queryContext;
+    public SQLCmdParamHandler(SQLCmdQueryContext queryContext) {
+        this.queryContext = queryContext;
     }
 
     @Override
@@ -21,10 +21,10 @@ public class SQLCmdParamHandler implements ParameterHandler {
 
     @Override
     public void setParameters(PreparedStatement preparedStatement) throws SQLException {
-        Object[] params=queryContext.getSQLCmdParams();
-        int length=params.length;
-        for(int i=0;i<length;i++){
-            preparedStatement.setObject(i+1,params[i]);
+        Object[] params = queryContext.getSQLCmdParams();
+        int length = params.length;
+        for (int i = 0; i < length; i++) {
+            preparedStatement.setObject(i + 1, params[i]);
         }
     }
 }

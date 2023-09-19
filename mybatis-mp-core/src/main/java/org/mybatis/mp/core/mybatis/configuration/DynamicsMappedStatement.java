@@ -15,10 +15,11 @@ public class DynamicsMappedStatement {
             return ms.getConfiguration().getMappedStatement(id);
         }
         ResultMap resultMap;
-        if (ms.getConfiguration().hasResultMap(returnTypeClass.getName())) {
-            resultMap = ms.getConfiguration().getResultMap(returnTypeClass.getName());
+        String resultMapId = returnTypeClass.getName();
+        if (ms.getConfiguration().hasResultMap(resultMapId)) {
+            resultMap = ms.getConfiguration().getResultMap(resultMapId);
         } else {
-            resultMap = new ResultMap.Builder(ms.getConfiguration(), returnTypeClass.getName(), returnTypeClass, Collections.emptyList(), true).build();
+            resultMap = new ResultMap.Builder(ms.getConfiguration(), resultMapId, returnTypeClass, Collections.emptyList(), true).build();
             ms.getConfiguration().addResultMap(resultMap);
         }
         MappedStatement.Builder msBuilder = new MappedStatement.Builder(ms.getConfiguration(), id, ms.getSqlSource(), ms.getSqlCommandType())

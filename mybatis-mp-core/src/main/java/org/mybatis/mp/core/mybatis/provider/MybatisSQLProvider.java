@@ -1,5 +1,7 @@
 package org.mybatis.mp.core.mybatis.provider;
 
+import db.sql.core.cmd.Dataset;
+import db.sql.core.cmd.Table;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.util.MapUtil;
@@ -7,6 +9,7 @@ import org.mybatis.mp.core.db.reflect.FieldInfo;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
+import org.mybatis.mp.core.query.Query;
 import org.mybatis.mp.db.IdAutoType;
 
 import java.io.Serializable;
@@ -104,7 +107,24 @@ public class MybatisSQLProvider {
         return getTableDefaultSelect(tableInfo).toString();
     }
 
-    public static String cmdQuery(SQLCmdQueryContext queryContext, ProviderContext providerContext) {
+    public static StringBuilder cmdQuery(SQLCmdQueryContext queryContext, ProviderContext providerContext) {
+        Query query = queryContext.getQuery();
+        if (Objects.isNull(query.getFrom())) {
+            Class tableClass = MapperTables.get(providerContext.getMapperType());
+            if (Objects.nonNull(tableClass)) {
+                query.from(tableClass);
+            }
+        }
+
+        if (Objects.nonNull(query.getFrom()) && (Objects.isNull(query.getSelect()) || query.getSelect().getCmdList().isEmpty())) {
+            Dataset dataset = query.getFrom().getTable();
+            if (dataset instanceof Table) {
+                Table table = (Table) dataset;
+                if (Objects.nonNull(table.getMappingClass())) {
+                    query.select(table);
+                }
+            }
+        }
         return queryContext.sql(providerContext.getDatabaseId());
     }
 }

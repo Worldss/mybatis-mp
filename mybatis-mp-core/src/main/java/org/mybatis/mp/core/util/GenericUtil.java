@@ -1,7 +1,5 @@
 package org.mybatis.mp.core.util;
 
-import org.mybatis.mp.core.query.Query;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -59,10 +57,5 @@ public class GenericUtil {
             }
         }
         return classList;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(get(new Query<ArrayList>() {{
-        }}.getClass()));
     }
 }

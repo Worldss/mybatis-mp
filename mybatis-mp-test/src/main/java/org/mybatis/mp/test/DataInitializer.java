@@ -78,7 +78,7 @@ public class DataInitializer {
         List<StudentAchievementVo> list2 = achievementMapper.list();
         System.out.println(list2);
 
-        List<Achievement> list3 = achievementMapper.selectWithCmdQuery(new Query<Achievement>() {{
+        List<Achievement> list3 = achievementMapper.selectWithCmdQuery(new Query(Achievement.class) {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
@@ -87,16 +87,17 @@ public class DataInitializer {
 
         System.out.println("<><><><><><><>>"+list3);
 
-        List<Achievement> list4 = achievementMapper.selectWithCmdQuery(new Query<Achievement>() {{
+        List<Achievement> list4 = achievementMapper.selectWithCmdQuery(new Query(Achievement.class) {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
             where($.eq($.field(table, "id"), $.value("2")));
+            limit(10);
         }});
 
         System.out.println("<><><><><><><>>"+list4);
 
-        Achievement getOne = achievementMapper.getOneWithCmdQuery(new Query<Achievement>() {{
+        Achievement getOne = achievementMapper.getOneWithCmdQuery(new Query(Achievement.class) {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);

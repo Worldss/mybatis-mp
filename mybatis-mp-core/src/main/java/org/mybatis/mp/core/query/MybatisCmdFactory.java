@@ -1,7 +1,8 @@
 package org.mybatis.mp.core.query;
 
 import db.sql.core.cmd.*;
-import db.sql.core.cmd.condition.*;
+import db.sql.core.cmd.condition.Eq;
+import db.sql.core.cmd.condition.Gt;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.util.LambdaUtil;
@@ -10,7 +11,9 @@ import org.mybatis.mp.core.util.LambdaUtil.Getter;
 public class MybatisCmdFactory extends CmdFactory {
 
     public Table table(Class tableClass) {
-        return new Table(TableInfos.get(tableClass).getBasic().getSchemaAndTableName());
+        Table table = new Table(TableInfos.get(tableClass).getBasic().getSchemaAndTableName());
+        table.setMappingClass(tableClass);
+        return table;
     }
 
     public DatasetField field(Dataset table, Getter getter) {

@@ -8,18 +8,19 @@ import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.mybatis.mp.core.db.reflect.ResultTables;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
-import org.mybatis.mp.core.mybatis.provider.SQLCmdQueryContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
+import org.mybatis.mp.core.mybatis.provider.SQLCmdQueryContext;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,11 +51,8 @@ public class MybatisConfiguration extends Configuration {
 
     @Override
     public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds, ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
-        if (!mappedStatement.getResultMaps().isEmpty() && mappedStatement.getResultMaps().get(0).getType() == Object.class) {
-            ResultSetHandler resultSetHandler = new MpResultSetHandler(executor, mappedStatement, parameterHandler, resultHandler, boundSql, rowBounds);
-            return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
-        }
-        return super.newResultSetHandler(executor, mappedStatement, rowBounds, parameterHandler, resultHandler, boundSql);
+        ResultSetHandler resultSetHandler = new MpResultSetHandler(executor, mappedStatement, parameterHandler, resultHandler, boundSql, rowBounds);
+        return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
     }
 
     @Override
@@ -64,11 +62,6 @@ public class MybatisConfiguration extends Configuration {
             Class providerType = (Class) metaObject.getValue("providerType");
             if (providerType == MybatisSQLProvider.class) {
                 TableIdGeneratorWrapper.addEntityKeyGenerator(ms, getEntityClass(ms));
-                if (ms.getParameterMap().getType() != null && ms.getParameterMap().getType().isAssignableFrom(SQLCmdQueryContext.class)) {
-                    ParameterMapping parameterMapping = new ParameterMapping.Builder(ms.getConfiguration(), "SQLCmdParams", Object.class)
-                            .mode(ParameterMode.IN).build();
-                    newMetaObject(ms.getParameterMap()).setValue("parameterMappings", Collections.singletonList(parameterMapping));
-                }
             }
         }
         ResultMapWrapper.replaceResultMap(ms);
@@ -78,7 +71,7 @@ public class MybatisConfiguration extends Configuration {
 
     @Override
     public <T> void addMapper(Class<T> type) {
-        if (MapperTables.add(type)) {
+        if (!MapperTables.add(type)) {
             //提前缓存
             ResultTables.load(type, this);
         }
@@ -147,6 +140,10 @@ public class MybatisConfiguration extends Configuration {
         return typeHandler;
     }
 
+    @Override
+    public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
+        return new MybatisExecutor(super.newExecutor(transaction, executorType));
+    }
 
     public boolean isColumnUnderline() {
         return columnUnderline;

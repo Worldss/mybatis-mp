@@ -1,9 +1,8 @@
 package org.mybatis.mp.core.mybatis.mapper;
 
+import org.mybatis.mp.core.util.GenericUtil;
 import org.mybatis.mp.db.annotations.Table;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,22 +17,11 @@ public class MapperTables {
     private final static Map<String, Class> CACHE = new HashMap<>();
 
     public final static boolean add(Class mapper) {
-        Type[] genericInterfaces = mapper.getGenericInterfaces();
-        boolean isEntity = false;
-        for (Type genericInterface : genericInterfaces) {
-            if (genericInterface instanceof ParameterizedType) {
-                Type actualTypeArgument = ((ParameterizedType) genericInterface).getActualTypeArguments()[0];
-                if (actualTypeArgument instanceof Class) {
-                    Class entity = (Class) actualTypeArgument;
-                    if (entity.isAnnotationPresent(Table.class)) {
-                        CACHE.put(mapper.getName(), entity);
-                        isEntity = true;
-                        break;
-                    }
-                }
-            }
-        }
-        return isEntity;
+        return GenericUtil.getGenericInterfaceClass(mapper).stream().filter(item -> {
+            boolean isTableClass = item.isAnnotationPresent(Table.class);
+            CACHE.put(mapper.getName(), item);
+            return isTableClass;
+        }).findFirst().isPresent();
     }
 
     public final static Class get(String mapper) {

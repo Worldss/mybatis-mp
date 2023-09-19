@@ -1,30 +1,33 @@
 package org.mybatis.mp.core.query;
 
-import db.sql.core.SqlBuilderContext;
-import db.sql.core.cmd.Cmd;
 import db.sql.core.cmd.Select;
 import db.sql.core.cmd.Table;
-import db.sql.core.cmd.TableField;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.util.LambdaUtil.Getter;
 
-import java.util.Objects;
+public class Query<R> extends db.sql.core.cmd.execution.Query<Query, MybatisCmdFactory> {
 
-public abstract class Query<R> extends db.sql.core.cmd.execution.Query<Query, MybatisCmdFactory> {
+    public static final MybatisCmdFactory INSTANCE = new MybatisCmdFactory();
 
-    public Query() {
-        super(new MybatisCmdFactory());
+    private final Class<R> returnType;
+
+    public Query(Class<R> returnType) {
+        super(INSTANCE);
+        this.returnType = returnType;
     }
 
-    public Select select(Table table) {
+    public Query select(Table table) {
         TableInfo tableInfo = TableInfos.get(table.getMappingClass());
-        tableInfo.getFieldInfos().forEach(item -> {
-            if (item.getFieldAnnotation().select()) {
-                this.select.select($.field(table, item.getColumnName()));
-            }
-        });
-        return this.select;
+
+        this.select(tableInfo.getFieldList());
+
+//        tableInfo.getFieldInfos().forEach(item -> {
+//            if (item.getFieldAnnotation().select()) {
+//                this.select($.field(table, item.getColumnName()));
+//            }
+//        });
+        return this;
     }
 
     public Select select(Table table, Getter getter) {
@@ -39,34 +42,19 @@ public abstract class Query<R> extends db.sql.core.cmd.execution.Query<Query, My
     }
 
     public Table from(Class tableClass) {
-        return from(tableClass, null);
+        return this.from(tableClass, null);
     }
 
     public Table from(Class tableClass, String columnPrefix) {
-        Table table = $.table(tableClass).setPrefix(columnPrefix);
-        table.setMappingClass(tableClass);
-        super.from(table);
-        return table;
+        //Table table = $.table(tableClass).setPrefix(columnPrefix);
+        //table.setMappingClass(tableClass);
+        TableInfo tableInfo = TableInfos.get(tableClass);
+
+        super.from(tableInfo.getBasic().getTable());
+        return tableInfo.getBasic().getTable();
     }
 
-    @Override
-    public StringBuilder sql(SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (this.select.getCmdList().isEmpty()) {
-            if (Objects.nonNull(this.from) && this.from.getTable() instanceof Table) {
-                Table table = (Table) this.from.getTable();
-                if (Objects.nonNull(table.getMappingClass())) {
-                    this.select(table);
-                }
-            }
-        } else if (Objects.isNull(this.from)) {
-            for (Cmd cmd : this.getCmdList()) {
-                if (cmd instanceof TableField) {
-                    TableField tableField = (TableField) cmd;
-                    this.from(tableField.getTable());
-                    break;
-                }
-            }
-        }
-        return super.sql(context, sqlBuilder);
+    public Class<R> getReturnType() {
+        return returnType;
     }
 }

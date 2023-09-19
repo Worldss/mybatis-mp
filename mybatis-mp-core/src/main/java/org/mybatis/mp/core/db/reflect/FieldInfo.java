@@ -28,6 +28,8 @@ public class FieldInfo {
     private final ResultMapping resultMapping;
     private final GetFieldInvoker readFieldInvoker;
 
+    private final db.sql.core.cmd.Field field;
+
     public FieldInfo(TableBasic tableBasic, java.lang.reflect.Field field, MybatisConfiguration mybatisConfiguration) {
         this.tableBasic = tableBasic;
         this.reflectField = field;
@@ -54,6 +56,8 @@ public class FieldInfo {
         this.resultMapping = mybatisConfiguration.buildResultMapping(field, columnName, fieldAnnotation.jdbcType(), fieldAnnotation.typeHandler());
 
         this.readFieldInvoker = new GetFieldInvoker(field);
+
+        this.field = tableBasic.getTable().$(this.columnName);
     }
 
     public Object getValue(Object object) {
@@ -117,4 +121,7 @@ public class FieldInfo {
         return readFieldInvoker;
     }
 
+    public db.sql.core.cmd.Field getField() {
+        return field;
+    }
 }

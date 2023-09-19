@@ -15,22 +15,26 @@ public class SQLCmdQueryContext<R> {
         this.query = query;
     }
 
-    public Query<R> getQuery() {
+    private volatile StringBuilder sql;
+    private volatile Object[] params;
+
+    public Query getQuery() {
         return query;
     }
 
-    private volatile String sql;
-
-    public String sql(String databaseId) {
+    public StringBuilder sql(String databaseId) {
         if (Objects.nonNull(sql)) {
             return sql;
         }
         mybatisSqlBuilderContext = new MybatisSqlBuilderContext(databaseId, SQLMode.PREPARED);
-        sql = query.sql(mybatisSqlBuilderContext, new StringBuilder()).toString();
+        sql = query.sql(mybatisSqlBuilderContext, new StringBuilder());
         return sql;
     }
 
     public Object[] getSQLCmdParams() {
-        return mybatisSqlBuilderContext.getParams();
+        if (params == null) {
+            params = mybatisSqlBuilderContext.getParams();
+        }
+        return params;
     }
 }

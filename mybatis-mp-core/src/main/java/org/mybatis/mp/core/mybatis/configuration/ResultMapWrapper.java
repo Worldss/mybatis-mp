@@ -22,14 +22,12 @@ public class ResultMapWrapper {
         List<ResultMap> resultMaps = ms.getResultMaps().stream().map(item -> {
             TableInfo tableInfo = TableInfos.get(item.getType(), (MybatisConfiguration) ms.getConfiguration());
             if (Objects.nonNull(tableInfo)) {
-                return new ResultMap.Builder(ms.getConfiguration(), item.getId(), item.getType(), tableInfo.getResultMappings(), true).build();
+                return new ResultMap.Builder(ms.getConfiguration(), item.getType().getName(), item.getType(), tableInfo.getResultMappings(), true).build();
             }
-
             ResultTableInfo resultTableInfo = ResultTables.get(item.getType(), (MybatisConfiguration) ms.getConfiguration());
             if (Objects.nonNull(resultTableInfo)) {
-                return new ResultMap.Builder(ms.getConfiguration(), item.getId(), item.getType(), resultTableInfo.getResultMappings(), true).build();
+                return new ResultMap.Builder(ms.getConfiguration(), item.getType().getName(), item.getType(), resultTableInfo.getResultMappings(), true).build();
             }
-
             return item;
         }).collect(Collectors.toList());
 

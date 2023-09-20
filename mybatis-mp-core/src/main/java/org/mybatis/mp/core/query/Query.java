@@ -19,14 +19,7 @@ public class Query<R> extends db.sql.core.cmd.execution.Query<Query, MybatisCmdF
 
     public Query select(Table table) {
         TableInfo tableInfo = TableInfos.get(table.getMappingClass());
-
-        this.select(tableInfo.getFieldList());
-
-//        tableInfo.getFieldInfos().forEach(item -> {
-//            if (item.getFieldAnnotation().select()) {
-//                this.select($.field(table, item.getColumnName()));
-//            }
-//        });
+        this.select(tableInfo.getTableFileds());
         return this;
     }
 

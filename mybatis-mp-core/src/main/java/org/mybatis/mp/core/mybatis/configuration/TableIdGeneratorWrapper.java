@@ -46,7 +46,7 @@ public class TableIdGeneratorWrapper {
                     ResultMap selectKeyResultMap = new ResultMap.Builder(ms.getConfiguration(), selectKeyId, tableInfo.getIdInfo().getReflectField().getType(),
                             Collections.emptyList()).build();
                     MappedStatement selectKeyMappedStatement = new MappedStatement.Builder(ms.getConfiguration(), selectKeyId, sqlSource, SqlCommandType.SELECT)
-                            .keyProperty(tableInfo.getIdInfo().getReflectField().getName())
+                            .keyProperty("id")
                             .resultMaps(Collections.singletonList(selectKeyResultMap))
                             .keyGenerator(NoKeyGenerator.INSTANCE)
                             .useCache(false)
@@ -68,7 +68,7 @@ public class TableIdGeneratorWrapper {
             }
             MetaObject msMetaObject = ms.getConfiguration().newMetaObject(ms);
             msMetaObject.setValue("keyGenerator", keyGenerator);
-            msMetaObject.setValue("keyProperties", new String[]{tableInfo.getIdInfo().getReflectField().getName()});
+            msMetaObject.setValue("keyProperties", new String[]{"id"});
             msMetaObject.setValue("keyColumns", new String[]{tableInfo.getIdInfo().getColumnName()});
         }
     }

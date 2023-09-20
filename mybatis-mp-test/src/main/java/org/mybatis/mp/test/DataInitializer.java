@@ -20,6 +20,7 @@ import org.mybatis.mp.test.vo.StudentAchievementVo;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -48,63 +49,64 @@ public class DataInitializer {
         //student.setId(11);
         student.setName("哈哈");
         student.setExcellent(true);
+        student.setCreateTime(LocalDateTime.now());
         studentMapper.save(student);
         System.out.println(student);
 
 
-        student.setId(null);
-        student.setName("哈哈2");
-        studentMapper.save(student);
-        System.out.println(student);
-
-
-        student = studentMapper.getById(1);
-        System.out.println(student);
-        List<Student> list = studentMapper.all();
-        System.out.println(list);
-
-        System.out.println(studentMapper.getById2(1));
-
-        System.out.println(studentMapper.list());
-
-        Achievement achievement = new Achievement();
-        achievement.setScore(new BigDecimal("99.99"));
-        achievement.setStudent_id(1);
-        achievement.setCreateTime(new Date());
-        achievementMapper.save(achievement);
-
-        System.out.println(achievement);
-        System.out.println(achievementMapper.getById(1));
-        List<StudentAchievementVo> list2 = achievementMapper.list();
-        System.out.println(list2);
-
-        List<Achievement> list3 = achievementMapper.selectWithCmdQuery(new Query(Achievement.class) {{
-            Table table = $.table("achievement");
-            select($.all(table));
-            from(table);
-            where($.eq($.field(table, "id"), $.value("1")));
-        }});
-
-        System.out.println("<><><><><><><>>"+list3);
-
-        List<Achievement> list4 = achievementMapper.selectWithCmdQuery(new Query(Achievement.class) {{
-            Table table = $.table("achievement");
-            select($.all(table));
-            from(table);
-            where($.eq($.field(table, "id"), $.value("2")));
-            limit(10);
-        }});
-
-        System.out.println("<><><><><><><>>"+list4);
-
-        Achievement getOne = achievementMapper.getOneWithCmdQuery(new Query(Achievement.class) {{
-            Table table = $.table("achievement");
-            select($.all(table));
-            from(table);
-            where($.eq($.field(table, "id"), $.value("1")));
-        }});
-
-        System.out.println("<><><><><><><>>"+getOne);
+//        student.setId(null);
+//        student.setName("哈哈2");
+//        studentMapper.save(student);
+//        System.out.println(student);
+//
+//
+//        student = studentMapper.getById(1);
+//        System.out.println(student);
+//        List<Student> list = studentMapper.all();
+//        System.out.println(list);
+//
+//        System.out.println(studentMapper.getById2(1));
+//
+//        System.out.println(studentMapper.list());
+//
+//        Achievement achievement = new Achievement();
+//        achievement.setScore(new BigDecimal("99.99"));
+//        achievement.setStudent_id(1);
+//        achievement.setCreateTime(new Date());
+//        achievementMapper.save(achievement);
+//
+//        System.out.println(achievement);
+//        System.out.println(achievementMapper.getById(1));
+//        List<StudentAchievementVo> list2 = achievementMapper.list();
+//        System.out.println(list2);
+//
+//        List<Achievement> list3 = achievementMapper.selectWithCmdQuery(new Query(Achievement.class) {{
+//            Table table = $.table("achievement");
+//            select($.all(table));
+//            from(table);
+//            where($.eq($.field(table, "id"), $.value("1")));
+//        }});
+//
+//        System.out.println("<><><><><><><>>"+list3);
+//
+//        List<Achievement> list4 = achievementMapper.selectWithCmdQuery(new Query(Achievement.class) {{
+//            Table table = $.table("achievement");
+//            select($.all(table));
+//            from(table);
+//            where($.eq($.field(table, "id"), $.value("2")));
+//            limit(10);
+//        }});
+//
+//        System.out.println("<><><><><><><>>"+list4);
+//
+//        Achievement getOne = achievementMapper.getOneWithCmdQuery(new Query(Achievement.class) {{
+//            Table table = $.table("achievement");
+//            select($.all(table));
+//            from(table);
+//            where($.eq($.field(table, "id"), $.value("1")));
+//        }});
+//
+//        System.out.println("<><><><><><><>>"+getOne);
 
 
 

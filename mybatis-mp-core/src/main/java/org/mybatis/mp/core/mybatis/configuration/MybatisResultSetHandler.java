@@ -9,7 +9,6 @@ import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
-import org.mybatis.mp.core.sql.executor.Query;
 
 import java.util.Objects;
 
@@ -22,7 +21,7 @@ public class MybatisResultSetHandler extends DefaultResultSetHandler {
         } else if (ms.getResultMaps().get(0).getType() != Object.class) {
             return ms;
         }
-        SQLCmdQueryContext<Query> queryContext = (SQLCmdQueryContext) boundSql.getParameterObject();
+        SQLCmdQueryContext<?> queryContext = (SQLCmdQueryContext) boundSql.getParameterObject();
         if (Objects.isNull(queryContext.getExecution().getReturnType())) {
             return ms;
         }

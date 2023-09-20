@@ -1,8 +1,8 @@
 package org.mybatis.mp.core.db.reflect;
 
-import db.sql.core.cmd.TableField;
 import org.apache.ibatis.mapping.ResultMapping;
 import org.apache.ibatis.reflection.invoker.GetFieldInvoker;
+import org.apache.ibatis.reflection.invoker.SetFieldInvoker;
 import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import org.mybatis.mp.core.util.NamingUtil;
 import org.mybatis.mp.core.util.StringPool;
@@ -28,6 +28,7 @@ public class FieldInfo {
     private final boolean id;
     private final ResultMapping resultMapping;
     private final GetFieldInvoker readFieldInvoker;
+    private final SetFieldInvoker writeFieldInvoker;
 
     private final db.sql.core.cmd.TableField tableField;
 
@@ -57,6 +58,7 @@ public class FieldInfo {
         this.resultMapping = mybatisConfiguration.buildResultMapping(field, columnName, fieldAnnotation.jdbcType(), fieldAnnotation.typeHandler());
 
         this.readFieldInvoker = new GetFieldInvoker(field);
+        this.writeFieldInvoker = new SetFieldInvoker(field);
 
         this.tableField = tableBasic.getTable().$(this.columnName);
     }
@@ -120,6 +122,10 @@ public class FieldInfo {
 
     public GetFieldInvoker getReadFieldInvoker() {
         return readFieldInvoker;
+    }
+
+    public SetFieldInvoker getWriteFieldInvoker() {
+        return writeFieldInvoker;
     }
 
     public db.sql.core.cmd.TableField getTableField() {

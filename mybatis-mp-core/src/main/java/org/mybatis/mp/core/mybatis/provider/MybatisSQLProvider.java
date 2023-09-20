@@ -9,9 +9,9 @@ import org.mybatis.mp.core.db.reflect.FieldInfo;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
+import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 import org.mybatis.mp.core.sql.executor.Query;
-import org.mybatis.mp.db.IdAutoType;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -31,24 +31,8 @@ public class MybatisSQLProvider {
 
     }
 
-    public static String save(Object entity, ProviderContext context) {
-        TableInfo tableInfo = TableInfos.get(entity.getClass());
-        String sql = new SQL() {{
-            INSERT_INTO(tableInfo.getBasic().getSchemaAndTableName());
-            Predicate<FieldInfo> filter = (item) -> {
-                if (item.getValue(entity) != null) {
-                    return true;
-                }
-                if (item.isId()) {
-                    return item.getIdAnnotation().value() != IdAutoType.AUTO && item.getIdAnnotation().executeBefore();
-                }
-                return false;
-            };
-            tableInfo.getFieldInfos().stream().filter(filter).forEach(item -> {
-                VALUES(item.getColumnName(), "#{" + item.getReflectField().getName() + "}");
-            });
-        }}.toString();
-
+    public static StringBuilder save(EntityInsertContext insertContext, ProviderContext providerContext) {
+        StringBuilder sql = insertContext.sql(providerContext.getDatabaseId());
         System.out.println(sql);
         return sql;
     }
@@ -108,8 +92,8 @@ public class MybatisSQLProvider {
         return getTableDefaultSelect(tableInfo).toString();
     }
 
-    public static StringBuilder cmdQuery(SQLCmdQueryContext queryContext, ProviderContext providerContext) {
-        Query query = queryContext.getQuery();
+    public static StringBuilder cmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
+        Query query = queryContext.getExecution();
         if (Objects.isNull(query.getFrom())) {
             Class tableClass = MapperTables.get(providerContext.getMapperType());
             if (Objects.nonNull(tableClass)) {

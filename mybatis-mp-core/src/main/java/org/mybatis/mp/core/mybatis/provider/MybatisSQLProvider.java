@@ -10,6 +10,7 @@ import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
+import org.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 import org.mybatis.mp.core.sql.executor.Query;
 
@@ -37,8 +38,10 @@ public class MybatisSQLProvider {
         return sql;
     }
 
-    public static String update(Object entity, ProviderContext context) {
-        return "";
+    public static StringBuilder update(EntityUpdateContext updateContext, ProviderContext providerContext) {
+        StringBuilder sql = updateContext.sql(providerContext.getDatabaseId());
+        System.out.println(sql);
+        return sql;
     }
 
     private static SQL getTableDefaultSelect(TableInfo tableInfo) {

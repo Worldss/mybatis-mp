@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
+import org.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import org.mybatis.mp.core.sql.executor.Query;
@@ -27,18 +28,23 @@ public interface Mapper<T> {
     /**
      * @param insertContext
      * @return
-     * @see MybatisSQLProvider#cmdSave(EntityInsertContext, ProviderContext)
+     * @see MybatisSQLProvider#save(EntityInsertContext, ProviderContext)
      */
     @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
     int save(EntityInsertContext insertContext);
 
+
+    default int update(T entity) {
+        return this.update(new EntityUpdateContext(entity));
+    }
+
     /**
-     * @param update
+     * @param updateContext
      * @return
-     * @see MybatisSQLProvider#update(Object, ProviderContext)
+     * @see MybatisSQLProvider#update(EntityUpdateContext, ProviderContext)
      */
     @UpdateProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.UPDATE_NAME)
-    int update(T update);
+    int update(EntityUpdateContext updateContext);
 
     /**
      * @param id

@@ -1,11 +1,11 @@
 package org.mybatis.mp.core.mybatis.mapper.context;
 
 import db.sql.core.SqlBuilderContext;
+import db.sql.core.cmd.CmdFactory;
 import db.sql.core.cmd.Value;
 import db.sql.core.cmd.execution.Insert;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
-import org.mybatis.mp.core.sql.executor.MybatisCmdFactory;
 import org.mybatis.mp.db.IdAutoType;
 
 import java.util.Objects;
@@ -38,7 +38,7 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<Insert> {
 
     private static Insert createCmd(Object t) {
         TableInfo tableInfo = TableInfos.get(t.getClass());
-        Insert<Insert, MybatisCmdFactory> insert = new Insert(MybatisCmdFactory.INSTANCE) {{
+        Insert<Insert, CmdFactory> insert = new Insert() {{
             insert(tableInfo.getBasic().getTable());
             tableInfo.getFieldInfos().stream().forEach(item -> {
                 boolean isNeedInsert = false;
@@ -52,7 +52,6 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<Insert> {
                     fields(item.getTableField());
                     values(new Placeholder(item.getReflectField().getName()));
                 }
-
             });
         }};
         return insert;

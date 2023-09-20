@@ -14,8 +14,8 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.mybatis.mp.core.db.reflect.ResultTables;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
+import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
-import org.mybatis.mp.core.mybatis.provider.SQLCmdQueryContext;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -40,15 +40,15 @@ public class MybatisConfiguration extends Configuration {
 
     @Override
     public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
-        if (parameterObject instanceof SQLCmdQueryContext) {
-            return (ParameterHandler) interceptorChain.pluginAll(new SQLCmdQueryParameterHandler((SQLCmdQueryContext) parameterObject));
+        if (parameterObject instanceof SQLCmdContext) {
+            return (ParameterHandler) interceptorChain.pluginAll(new SQLCmdParameterHandler((SQLCmdContext) parameterObject));
         }
         return super.newParameterHandler(mappedStatement, parameterObject, boundSql);
     }
 
     @Override
     public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds, ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
-        ResultSetHandler resultSetHandler = new MpResultSetHandler(executor, mappedStatement, parameterHandler, resultHandler, boundSql, rowBounds);
+        ResultSetHandler resultSetHandler = new MybatisResultSetHandler(executor, mappedStatement, parameterHandler, resultHandler, boundSql, rowBounds);
         return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
     }
 

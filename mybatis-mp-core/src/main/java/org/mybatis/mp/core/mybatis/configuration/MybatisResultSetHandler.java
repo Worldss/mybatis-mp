@@ -8,11 +8,12 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
-import org.mybatis.mp.core.mybatis.provider.SQLCmdQueryContext;
+import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
+import org.mybatis.mp.core.sql.executor.Query;
 
 import java.util.Objects;
 
-public class MpResultSetHandler extends DefaultResultSetHandler {
+public class MybatisResultSetHandler extends DefaultResultSetHandler {
     private static MappedStatement create(MappedStatement ms, BoundSql boundSql) {
         if (ms.getSqlCommandType() != SqlCommandType.SELECT) {
             return ms;
@@ -21,15 +22,14 @@ public class MpResultSetHandler extends DefaultResultSetHandler {
         } else if (ms.getResultMaps().get(0).getType() != Object.class) {
             return ms;
         }
-        SQLCmdQueryContext queryContext = (SQLCmdQueryContext) boundSql.getParameterObject();
-        if (Objects.isNull(queryContext.getQuery().getReturnType())) {
+        SQLCmdQueryContext<Query> queryContext = (SQLCmdQueryContext) boundSql.getParameterObject();
+        if (Objects.isNull(queryContext.getExecution().getReturnType())) {
             return ms;
         }
-        return DynamicsMappedStatement.create(queryContext.getQuery().getReturnType(), ms);
-
+        return DynamicsMappedStatement.create(queryContext.getExecution().getReturnType(), ms);
     }
 
-    public MpResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler, ResultHandler<?> resultHandler, BoundSql boundSql, RowBounds rowBounds) {
+    public MybatisResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler, ResultHandler<?> resultHandler, BoundSql boundSql, RowBounds rowBounds) {
         super(executor, create(mappedStatement, boundSql), parameterHandler, resultHandler, boundSql, rowBounds);
     }
 }

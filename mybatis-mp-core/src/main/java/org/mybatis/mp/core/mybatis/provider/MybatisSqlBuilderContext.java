@@ -4,22 +4,17 @@ import db.sql.core.DatabaseId;
 import db.sql.core.SQLMode;
 import db.sql.core.SqlBuilderContext;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MybatisSqlBuilderContext extends SqlBuilderContext {
-
-    public MybatisSqlBuilderContext(DatabaseId databaseId, SQLMode sqlMode) {
-        super(databaseId, sqlMode);
-    }
 
     public MybatisSqlBuilderContext(String databaseId, SQLMode sqlMode) {
         super(databaseId, sqlMode);
     }
 
-    private final List<Object> paramList=new ArrayList<>();
+    private final List<Object> paramList = new ArrayList<>();
+
+    private volatile Object[] params;
 
     @Override
     public String addParam(Object value) {
@@ -27,11 +22,10 @@ public class MybatisSqlBuilderContext extends SqlBuilderContext {
         return "?";
     }
 
-    public List<Object> getParamList() {
-        return paramList;
-    }
-
     public Object[] getParams() {
-        return paramList.stream().toArray();
+        if (Objects.isNull(params)) {
+            params = paramList.stream().toArray();
+        }
+        return params;
     }
 }

@@ -51,7 +51,12 @@ public class DataInitializer {
         student.setExcellent(true);
         student.setCreateTime(LocalDateTime.now());
         studentMapper.save(student);
-        System.out.println(student);
+
+        student.setName("嘿嘿");
+        studentMapper.update(student);
+
+
+        System.out.println(studentMapper.getById(1));
 
 
 //        student.setId(null);

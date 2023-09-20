@@ -62,7 +62,13 @@ public interface Mapper<T> {
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.DELETE_BY_ID_NAME)
     T deleteById(Serializable id);
 
-    @SelectProvider(type = MybatisSQLProvider.class, method = "all")
+    /**
+     * 全部
+     *
+     * @return
+     * @see MybatisSQLProvider#all(ProviderContext)
+     */
+    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.ALL_NAME)
     List<T> all();
 
 

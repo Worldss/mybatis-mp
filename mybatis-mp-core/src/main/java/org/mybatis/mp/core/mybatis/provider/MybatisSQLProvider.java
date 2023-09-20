@@ -26,6 +26,8 @@ public class MybatisSQLProvider {
     public static final String UPDATE_NAME = "update";
     public static final String GET_BY_ID_NAME = "getById";
     public static final String DELETE_BY_ID_NAME = "deleteById";
+    public static final String ALL_NAME = "all";
+
     private static final Map<String, String> SQL_CACHE_MAP = new ConcurrentHashMap<>();
 
     private MybatisSQLProvider() {

@@ -1,4 +1,4 @@
-package org.mybatis.mp.core.query;
+package org.mybatis.mp.core.sql.executor;
 
 import db.sql.core.cmd.Select;
 import db.sql.core.cmd.Table;

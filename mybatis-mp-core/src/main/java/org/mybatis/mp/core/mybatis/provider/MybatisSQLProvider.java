@@ -9,7 +9,7 @@ import org.mybatis.mp.core.db.reflect.FieldInfo;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
-import org.mybatis.mp.core.query.Query;
+import org.mybatis.mp.core.sql.executor.Query;
 import org.mybatis.mp.db.IdAutoType;
 
 import java.io.Serializable;

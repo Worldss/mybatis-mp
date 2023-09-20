@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import org.mybatis.mp.core.mybatis.provider.SQLCmdQueryContext;
-import org.mybatis.mp.core.query.Query;
+import org.mybatis.mp.core.sql.executor.Query;
 
 import java.io.Serializable;
 import java.util.List;

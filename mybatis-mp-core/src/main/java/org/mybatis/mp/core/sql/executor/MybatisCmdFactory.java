@@ -1,4 +1,4 @@
-package org.mybatis.mp.core.query;
+package org.mybatis.mp.core.sql.executor;
 
 import db.sql.core.cmd.*;
 import db.sql.core.cmd.condition.Eq;

@@ -1,7 +1,7 @@
 package org.mybatis.mp.core.mybatis.provider;
 
 import db.sql.core.SQLMode;
-import org.mybatis.mp.core.query.Query;
+import org.mybatis.mp.core.sql.executor.Query;
 
 import java.util.Objects;
 

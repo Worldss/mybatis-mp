@@ -39,10 +39,7 @@ public class Query<R> extends db.sql.core.cmd.execution.Query<Query, MybatisCmdF
     }
 
     public Table from(Class tableClass, String columnPrefix) {
-        //Table table = $.table(tableClass).setPrefix(columnPrefix);
-        //table.setMappingClass(tableClass);
         TableInfo tableInfo = TableInfos.get(tableClass);
-
         super.from(tableInfo.getBasic().getTable());
         return tableInfo.getBasic().getTable();
     }

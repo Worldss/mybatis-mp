@@ -44,7 +44,7 @@ public class MybatisConfiguration extends Configuration {
     @Override
     public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
         if (parameterObject instanceof SQLCmdQueryContext) {
-            return (ParameterHandler) interceptorChain.pluginAll(new SQLCmdParamHandler((SQLCmdQueryContext) parameterObject));
+            return (ParameterHandler) interceptorChain.pluginAll(new SQLCmdQueryParameterHandler((SQLCmdQueryContext) parameterObject));
         }
         return super.newParameterHandler(mappedStatement, parameterObject, boundSql);
     }

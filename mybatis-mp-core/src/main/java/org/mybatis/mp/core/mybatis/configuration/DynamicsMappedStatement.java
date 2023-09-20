@@ -28,6 +28,7 @@ public class DynamicsMappedStatement {
                 .keyGenerator(NoKeyGenerator.INSTANCE)
                 .fetchSize(ms.getFetchSize())
                 .statementType(ms.getStatementType())
+                .lang(ms.getLang())
                 .timeout(ms.getTimeout())
                 .useCache(ms.isUseCache())
                 .cache(ms.getCache());

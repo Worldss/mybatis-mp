@@ -6,11 +6,11 @@ import org.mybatis.mp.core.mybatis.provider.SQLCmdQueryContext;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class SQLCmdParamHandler implements ParameterHandler {
+public class SQLCmdQueryParameterHandler implements ParameterHandler {
 
     private final SQLCmdQueryContext queryContext;
 
-    public SQLCmdParamHandler(SQLCmdQueryContext queryContext) {
+    public SQLCmdQueryParameterHandler(SQLCmdQueryContext queryContext) {
         this.queryContext = queryContext;
     }
 

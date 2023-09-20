@@ -17,6 +17,7 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.mybatis.mp.core.db.reflect.ResultTables;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
+import org.mybatis.mp.core.mybatis.mapper.context.PlaceholderContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 
@@ -43,8 +44,8 @@ public class MybatisConfiguration extends Configuration {
 
     @Override
     public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
-        if (mappedStatement.getSqlCommandType() != SqlCommandType.INSERT && parameterObject instanceof SQLCmdContext) {
-            return (ParameterHandler) interceptorChain.pluginAll(new SQLCmdParameterHandler((SQLCmdContext) parameterObject));
+        if (parameterObject instanceof SQLCmdContext && !(parameterObject instanceof PlaceholderContext)) {
+            return (ParameterHandler) interceptorChain.pluginAll(new SQLCmdParameterHandler(this, (SQLCmdContext) parameterObject));
         }
         return super.newParameterHandler(mappedStatement, parameterObject, boundSql);
     }
@@ -136,7 +137,6 @@ public class MybatisConfiguration extends Configuration {
         }
 
         typeHandler = this.getTypeHandlerRegistry().getInstance(property.getType(), typeHandlerClass);
-        this.getTypeHandlerRegistry().register(typeHandler);
         return typeHandler;
     }
 

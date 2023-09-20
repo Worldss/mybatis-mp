@@ -11,10 +11,17 @@ public abstract class BaseSQLCmdContext<E extends Execution> implements SQLCmdCo
 
     private final E execution;
 
+    private final boolean usePlaceholder;
+
     private MybatisSqlBuilderContext sqlBuilderContext;
 
     public BaseSQLCmdContext(E execution) {
+        this(execution, false);
+    }
+
+    public BaseSQLCmdContext(E execution, boolean usePlaceholder) {
         this.execution = execution;
+        this.usePlaceholder = usePlaceholder;
     }
 
     @Override
@@ -38,4 +45,5 @@ public abstract class BaseSQLCmdContext<E extends Execution> implements SQLCmdCo
     public Object[] getSQLCmdParams() {
         return sqlBuilderContext.getParams();
     }
+
 }

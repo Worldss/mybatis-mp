@@ -7,4 +7,5 @@ public class SQLCmdInsertContext<T extends InsertExecution> extends BaseSQLCmdCo
     public SQLCmdInsertContext(T t) {
         super(t);
     }
+
 }

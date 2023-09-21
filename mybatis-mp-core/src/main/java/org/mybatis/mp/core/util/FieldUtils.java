@@ -1,6 +1,6 @@
 package org.mybatis.mp.core.util;
 
-import org.mybatis.mp.db.annotations.IgnoreMapping;
+import org.mybatis.mp.db.annotations.Ignore;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -21,7 +21,7 @@ public final class FieldUtils {
             return false;
         }
 
-        if (field.isAnnotationPresent(IgnoreMapping.class)) {
+        if (field.isAnnotationPresent(Ignore.class)) {
             return false;
         }
         return true;

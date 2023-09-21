@@ -15,6 +15,6 @@ public @interface NestedResultField {
      *
      * @return
      */
-    String property() default "";
+    String property();
 
 }

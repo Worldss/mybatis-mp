@@ -1,10 +1,12 @@
 package org.mybatis.mp.core.mybatis.mapper;
 
 
+import db.sql.core.cmd.Limit;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.apache.ibatis.session.RowBounds;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
@@ -13,6 +15,7 @@ import org.mybatis.mp.core.sql.executor.Query;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 数据库 Mapper
@@ -71,22 +74,21 @@ public interface Mapper<T> {
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.ALL_NAME)
     List<T> all();
 
-
     default <R> List<R> selectWithCmdQuery(Query query) {
         return this.selectWithCmdQuery(new SQLCmdQueryContext(query));
     }
 
-    /**
-     * @param queryContext
-     * @param <R>
-     * @return
-     * @see org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
-     */
-    @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
-    <R> List<R> selectWithCmdQuery(SQLCmdQueryContext<R> queryContext);
-
-    default <R> R getOneWithCmdQuery(Query query) {
-        return (R) this.getOneWithCmdQuery(new SQLCmdQueryContext(query));
+    default <R> List<R> selectWithCmdQuery(SQLCmdQueryContext<R> queryContext) {
+        RowBounds rowBounds;
+        Limit limit = queryContext.getExecution().getLimit();
+        if (Objects.nonNull(limit)) {
+            rowBounds = new RowBounds(limit.getOffset(), limit.getLimit());
+            //queryContext.getExecution().getCmdList().remove(limit);
+            //queryContext.getExecution().limit(null);
+        } else {
+            rowBounds = new RowBounds();
+        }
+        return this.selectWithCmdQuery(queryContext, rowBounds);
     }
 
     /**
@@ -96,5 +98,18 @@ public interface Mapper<T> {
      * @see org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
-    <R> R getOneWithCmdQuery(SQLCmdQueryContext<R> queryContext);
+    <R> List<R> selectWithCmdQuery(SQLCmdQueryContext<R> queryContext, RowBounds rowBounds);
+
+    default <R> R getOneWithCmdQuery(Query query) {
+        return (R) this.getOneWithCmdQuery(new SQLCmdQueryContext(query), new RowBounds(0, 1));
+    }
+
+    /**
+     * @param queryContext
+     * @param <R>
+     * @return
+     * @see org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
+     */
+    @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
+    <R> R getOneWithCmdQuery(SQLCmdQueryContext<R> queryContext, RowBounds rowBounds);
 }

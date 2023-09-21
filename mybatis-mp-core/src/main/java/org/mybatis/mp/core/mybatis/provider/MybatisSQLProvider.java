@@ -115,6 +115,8 @@ public class MybatisSQLProvider {
                 }
             }
         }
-        return queryContext.sql(providerContext.getDatabaseId());
+        StringBuilder sql= queryContext.sql(providerContext.getDatabaseId());
+        System.out.println(">>>>>>>>"+sql);
+        return sql;
     }
 }

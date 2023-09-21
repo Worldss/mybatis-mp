@@ -26,11 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class LambdaUtil {
 
-    @FunctionalInterface
-    public interface Getter<T> extends Serializable {
-        Object get(T source);
-    }
-
     private LambdaUtil() {
 
     }

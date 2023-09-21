@@ -26,7 +26,7 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<Insert> implemen
                 Object value = item.getValue(t);
                 if (Objects.nonNull(value)) {
                     isNeedInsert = true;
-                } else if (item.isId() && (item.getIdAnnotation().value() == IdAutoType.AUTO || item.getIdAnnotation().executeBefore())) {
+                } else if (item.isId() && (item.getIdAnnotation().value() != IdAutoType.AUTO && item.getIdAnnotation().executeBefore())) {
                     isNeedInsert = true;
                 }
                 if (isNeedInsert) {

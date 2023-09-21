@@ -2,7 +2,7 @@ package org.mybatis.mp.core.mybatis.configuration;
 
 
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
-import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.executor.*;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.mapping.*;
@@ -142,7 +142,20 @@ public class MybatisConfiguration extends Configuration {
 
     @Override
     public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
-        return new MybatisExecutor(super.newExecutor(transaction, executorType));
+        executorType = executorType == null ? this.defaultExecutorType : executorType;
+        Executor executor;
+        if (ExecutorType.BATCH == executorType) {
+            executor = new BatchExecutor(this, transaction);
+        } else if (ExecutorType.REUSE == executorType) {
+            executor = new ReuseExecutor(this, transaction);
+        } else {
+            executor = new SimpleExecutor(this, transaction);
+        }
+        executor = new MybatisExecutor(executor);
+        if (this.cacheEnabled) {
+            executor = new CachingExecutor(executor);
+        }
+        return (Executor) this.interceptorChain.pluginAll(executor);
     }
 
     public boolean isColumnUnderline() {

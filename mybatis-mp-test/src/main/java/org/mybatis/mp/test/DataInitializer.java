@@ -109,8 +109,7 @@ public class DataInitializer {
 
 
 
-        List<StudentAchievementVo> list2 = achievementMapper.list();
-        System.out.println(list2);
+
 
         List<Achievement> list3 = achievementMapper.selectWithCmdQuery(new Query<Achievement>(Achievement.class) {{
 

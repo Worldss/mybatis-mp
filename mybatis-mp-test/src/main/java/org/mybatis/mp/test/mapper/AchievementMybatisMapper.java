@@ -10,7 +10,6 @@ import java.util.List;
 public interface AchievementMybatisMapper extends MybatisMapper<Achievement> {
 
 
-    @Select("select t.*,t2.student_id,t2.score,t2.score xx_score,t2.id xx_id,123 haha  from Achievement t2 left join  student  t  on t.id=t2.student_id")
-    List<StudentAchievementVo> list( );
+
 
 }

@@ -24,9 +24,14 @@ import java.util.Objects;
  */
 public interface MybatisMapper<T> {
 
-    default int save(T entity) {
-        return this.save(new EntityInsertContext(entity));
-    }
+    /**
+     * @param id
+     * @return
+     * @see MybatisSQLProvider#getById(Serializable, ProviderContext)
+     */
+    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.GET_BY_ID_NAME)
+    T getById(Serializable id);
+
 
     /**
      * @param insertContext
@@ -41,21 +46,6 @@ public interface MybatisMapper<T> {
         return this.update(new EntityUpdateContext(entity));
     }
 
-    /**
-     * @param updateContext
-     * @return
-     * @see MybatisSQLProvider#update(EntityUpdateContext, ProviderContext)
-     */
-    @UpdateProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.UPDATE_NAME)
-    int update(EntityUpdateContext updateContext);
-
-    /**
-     * @param id
-     * @return
-     * @see MybatisSQLProvider#getById(Serializable, ProviderContext)
-     */
-    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.GET_BY_ID_NAME)
-    T getById(Serializable id);
 
     /**
      * @param id
@@ -64,6 +54,18 @@ public interface MybatisMapper<T> {
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.DELETE_BY_ID_NAME)
     T deleteById(Serializable id);
+
+    default int save(T entity) {
+        return this.save(new EntityInsertContext(entity));
+    }
+
+    /**
+     * @param updateContext
+     * @return
+     * @see MybatisSQLProvider#update(EntityUpdateContext, ProviderContext)
+     */
+    @UpdateProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.UPDATE_NAME)
+    int update(EntityUpdateContext updateContext);
 
     /**
      * 全部
@@ -75,8 +77,25 @@ public interface MybatisMapper<T> {
     List<T> all();
 
 
-    List<T> list(Query query);
+    /**
+     * 返回当前实体类查询
+     *
+     * @param query
+     * @return
+     */
+    default List<T> list(Query query) {
+        return this.list(new SQLCmdQueryContext(query));
+    }
 
+
+    /**
+     * 返回当前实体类查询
+     *
+     * @param queryContext
+     * @return
+     */
+    @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
+    List<T> list(SQLCmdQueryContext queryContext);
 
 
     default <R> List<R> selectWithCmdQuery(Query query) {
@@ -84,16 +103,16 @@ public interface MybatisMapper<T> {
     }
 
     default <R> List<R> selectWithCmdQuery(SQLCmdQueryContext<R> queryContext) {
-        RowBounds rowBounds;
-        Limit limit = queryContext.getExecution().getLimit();
-        if (Objects.nonNull(limit)) {
-            rowBounds = new RowBounds(limit.getOffset(), limit.getLimit());
-            //queryContext.getExecution().getCmdList().remove(limit);
-            //queryContext.getExecution().limit(null);
-            //rowBounds = new RowBounds();
-        } else {
-            rowBounds = new RowBounds();
-        }
+        RowBounds rowBounds=new RowBounds();
+//        Limit limit = queryContext.getExecution().getLimit();
+//        if (Objects.nonNull(limit)) {
+//            rowBounds = new RowBounds(limit.getOffset(), limit.getLimit());
+//            //queryContext.getExecution().getCmdList().remove(limit);
+//            //queryContext.getExecution().limit(null);
+//            //rowBounds = new RowBounds();
+//        } else {
+//            rowBounds = new RowBounds();
+//        }
         return this.selectWithCmdQuery(queryContext, rowBounds);
     }
 

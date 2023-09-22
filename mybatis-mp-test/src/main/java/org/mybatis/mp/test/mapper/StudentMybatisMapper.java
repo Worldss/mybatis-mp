@@ -13,6 +13,4 @@ public interface StudentMybatisMapper extends MybatisMapper<Student> {
     StudentVo getById2(Integer id);
 
 
-    @Select("select * from student")
-    List<StudentVo> list( );
 }

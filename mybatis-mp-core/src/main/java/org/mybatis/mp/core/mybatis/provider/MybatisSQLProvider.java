@@ -115,8 +115,9 @@ public class MybatisSQLProvider {
     public static StringBuilder countCmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
         fill(queryContext, providerContext);
         StringBuilder sql = queryContext.sql(providerContext.getDatabaseId());
-        sql = sql.insert(sql.indexOf("SELECT") + 7, "count(");
-        sql = sql.insert(sql.indexOf("FROM") - 1, ")");
+        //sql = sql.insert(sql.indexOf("SELECT") + 7, "count(");
+        //sql = sql.insert(sql.indexOf("FROM") - 1, ")");
+        sql.replace(sql.indexOf("SELECT") + 7, sql.indexOf("FROM") - 1, "count(*)");
         return sql;
     }
 

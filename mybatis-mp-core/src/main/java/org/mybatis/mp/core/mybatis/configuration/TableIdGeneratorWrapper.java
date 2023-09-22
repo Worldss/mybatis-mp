@@ -1,6 +1,7 @@
 package org.mybatis.mp.core.mybatis.configuration;
 
 import org.apache.ibatis.builder.StaticSqlSource;
+import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
@@ -12,6 +13,8 @@ import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.reflection.MetaObject;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
+import org.mybatis.mp.core.mybatis.mapper.MapperTables;
+import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import org.mybatis.mp.db.annotations.Id;
 
@@ -19,11 +22,20 @@ import java.util.Collections;
 import java.util.Objects;
 
 public class TableIdGeneratorWrapper {
-    public static void addEntityKeyGenerator(MappedStatement ms, Class tableClass) {
-        if (!ms.getId().endsWith("." + MybatisSQLProvider.SAVE_NAME)) {
+
+    private static String getMapperName(MappedStatement ms) {
+        return ms.getId().substring(0, ms.getId().lastIndexOf("."));
+    }
+
+    private static Class getEntityClass(MappedStatement ms) {
+        return MapperTables.get(getMapperName(ms));
+    }
+
+    public static void addEntityKeyGenerator(MappedStatement ms) {
+        if (ms.getSqlCommandType() != SqlCommandType.INSERT || !(ms.getSqlSource() instanceof ProviderSqlSource) || ms.getParameterMap().getType() != EntityInsertContext.class) {
             return;
         }
-
+        Class tableClass = getEntityClass(ms);
         TableInfo tableInfo = TableInfos.get(tableClass, (MybatisConfiguration) ms.getConfiguration());
         if (Objects.nonNull(tableInfo.getIdInfo())) {
             KeyGenerator keyGenerator = null;

@@ -17,6 +17,7 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.mybatis.mp.core.db.reflect.ResultTables;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
+import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 
@@ -57,13 +58,7 @@ public class MybatisConfiguration extends Configuration {
 
     @Override
     public void addMappedStatement(MappedStatement ms) {
-        if (ms.getSqlSource() instanceof ProviderSqlSource) {
-            MetaObject metaObject = newMetaObject(ms.getSqlSource());
-            Class providerType = (Class) metaObject.getValue("providerType");
-            if (providerType == MybatisSQLProvider.class) {
-                TableIdGeneratorWrapper.addEntityKeyGenerator(ms, getEntityClass(ms));
-            }
-        }
+        TableIdGeneratorWrapper.addEntityKeyGenerator(ms);
         ResultMapWrapper.replaceResultMap(ms);
         super.addMappedStatement(ms);
     }
@@ -76,15 +71,6 @@ public class MybatisConfiguration extends Configuration {
             ResultTables.load(type, this);
         }
         super.addMapper(type);
-    }
-
-
-    private String getMapperName(MappedStatement ms) {
-        return ms.getId().substring(0, ms.getId().lastIndexOf("."));
-    }
-
-    private Class getEntityClass(MappedStatement ms) {
-        return MapperTables.get(getMapperName(ms));
     }
 
     public ResultMapping buildResultMapping(Field property, String columnName, JdbcType jdbcType, Class<? extends TypeHandler<?>> typeHandlerClass) {

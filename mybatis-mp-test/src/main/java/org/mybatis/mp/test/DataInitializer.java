@@ -122,6 +122,8 @@ public class DataInitializer {
 
         System.out.println("<><><><><><list3><>>"+list3);
 
+        achievementMapper.deleteById(1);
+
 //        List<Achievement> list4 = achievementMapper.selectWithCmdQuery(new Query(Achievement.class) {{
 //            Table table = $.table("achievement");
 //            select($.all(table));

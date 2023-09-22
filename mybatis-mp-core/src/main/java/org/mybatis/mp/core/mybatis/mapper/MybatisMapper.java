@@ -39,7 +39,7 @@ public interface MybatisMapper<T> {
      * @return
      */
 
-    default T get(Query query) {
+    default T get(Query<T> query) {
         if (query.getLimit() == null) {
             query.limit(1);
         }
@@ -68,7 +68,7 @@ public interface MybatisMapper<T> {
      * @param query
      * @return
      */
-    default List<T> list(Query query) {
+    default List<T> list(Query<T> query) {
         return this.$list(new SQLCmdQueryContext(query));
     }
 
@@ -82,12 +82,12 @@ public interface MybatisMapper<T> {
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.ALL_NAME)
     List<T> all();
 
-    default <R> R findOne(Query query) {
-        return (R) this.$findOne(new SQLCmdQueryContext(query), new RowBounds(0, 1));
+    default <R> R findOne(Query<R> query) {
+        return this.$findOne(new SQLCmdQueryContext<R>(query), new RowBounds(0, 1));
     }
 
-    default <R> List<R> find(Query query) {
-        return this.$find(new SQLCmdQueryContext(query));
+    default <R> List<R> find(Query<R> query) {
+        return this.$find(new SQLCmdQueryContext<R>(query));
     }
 
     /**
@@ -146,7 +146,7 @@ public interface MybatisMapper<T> {
      * @see MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
-    T $get(SQLCmdQueryContext queryContext);
+    T $get(SQLCmdQueryContext<T> queryContext);
 
 
     /**
@@ -155,7 +155,7 @@ public interface MybatisMapper<T> {
      * @see MybatisSQLProvider#save(EntityInsertContext, ProviderContext)
      */
     @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
-    int $save(EntityInsertContext insertContext);
+    int $save(EntityInsertContext<T> insertContext);
 
 
     /**
@@ -164,7 +164,7 @@ public interface MybatisMapper<T> {
      * @see MybatisSQLProvider#update(EntityUpdateContext, ProviderContext)
      */
     @UpdateProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.UPDATE_NAME)
-    int $update(EntityUpdateContext updateContext);
+    int $update(EntityUpdateContext<T> updateContext);
 
 
     /**
@@ -174,7 +174,7 @@ public interface MybatisMapper<T> {
      * @return
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
-    List<T> $list(SQLCmdQueryContext queryContext);
+    List<T> $list(SQLCmdQueryContext<T> queryContext);
 
     /**
      * 统计条数

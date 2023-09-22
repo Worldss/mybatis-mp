@@ -70,7 +70,7 @@ public class MybatisSQLProvider {
         return getByIdSql(tableInfo);
     }
 
-    public static String deleteById(Serializable id, ProviderContext context) {
+    public static String delete(Serializable id, ProviderContext context) {
         TableInfo tableInfo = TableInfos.get(MapperTables.get(context.getMapperType()));
         if (Objects.isNull(tableInfo.getIdInfo())) {
             throw new RuntimeException("ID not found");

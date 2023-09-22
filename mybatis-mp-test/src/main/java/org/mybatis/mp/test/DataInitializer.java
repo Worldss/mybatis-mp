@@ -15,12 +15,10 @@ import org.mybatis.mp.test.commons.DataSourceFactory;
 import org.mybatis.mp.test.entity.Achievement;
 import org.mybatis.mp.test.mapper.AchievementMybatisMapper;
 import org.mybatis.mp.test.mapper.StudentMybatisMapper;
-import org.mybatis.mp.test.vo.StudentAchievementVo;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 public class DataInitializer {
 
@@ -76,7 +74,7 @@ public class DataInitializer {
 //
 //        System.out.println(studentMapper.list());
 
-        Achievement getOne111 = achievementMapper.getOneWithCmdQuery(new Query(Achievement.class) {{
+        Achievement getOne111 = achievementMapper.findOne(new Query(Achievement.class) {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
@@ -99,7 +97,7 @@ public class DataInitializer {
             }
         }
 
-        Achievement getOne222 = achievementMapper.getOneWithCmdQuery(new Query(Achievement.class) {{
+        Achievement getOne222 = achievementMapper.findOne(new Query(Achievement.class) {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
@@ -117,12 +115,12 @@ public class DataInitializer {
             select($.all(table));
             from(table);
             where($.eq($.field(table, Achievement::getStudent_id), $.value("1")));
-            limit(1);
+            //limit(1);
         }},pager);
 
         System.out.println("<><><><><><pager><>>"+pager);
 
-        achievementMapper.deleteById(1);
+        achievementMapper.delete(1);
 
 //        List<Achievement> list4 = achievementMapper.selectWithCmdQuery(new Query(Achievement.class) {{
 //            Table table = $.table("achievement");

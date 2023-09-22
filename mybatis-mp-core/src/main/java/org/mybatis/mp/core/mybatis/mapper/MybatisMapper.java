@@ -100,6 +100,13 @@ public interface MybatisMapper<T> {
         return this.$count(new SQLCmdQueryContext(query));
     }
 
+    /**
+     * 分页查询，返回类型是当前实体类
+     *
+     * @param query
+     * @param pager
+     * @return
+     */
     default Pager<T> paging(Query<T> query, Pager<T> pager) {
         SQLCmdQueryContext<T> queryContext = new SQLCmdQueryContext<>(query);
         if (pager.isExecuteCount()) {
@@ -111,6 +118,14 @@ public interface MybatisMapper<T> {
         return pager;
     }
 
+    /**
+     * 分页查找 返回非当前实体类
+     *
+     * @param query
+     * @param pager
+     * @param <R>
+     * @return
+     */
     default <R> Pager<R> pagingFind(Query<R> query, Pager<R> pager) {
         SQLCmdQueryContext<R> queryContext = new SQLCmdQueryContext<>(query);
         if (pager.isExecuteCount()) {

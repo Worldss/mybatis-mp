@@ -1,7 +1,6 @@
 package org.mybatis.mp.test;
 
 import db.sql.core.cmd.Table;
-
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -13,14 +12,12 @@ import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import org.mybatis.mp.core.sql.executor.Query;
 import org.mybatis.mp.test.commons.DataSourceFactory;
 import org.mybatis.mp.test.entity.Achievement;
-import org.mybatis.mp.test.entity.Student;
-import org.mybatis.mp.test.mapper.AchievementMapper;
-import org.mybatis.mp.test.mapper.StudentMapper;
+import org.mybatis.mp.test.mapper.AchievementMybatisMapper;
+import org.mybatis.mp.test.mapper.StudentMybatisMapper;
 import org.mybatis.mp.test.vo.StudentAchievementVo;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -35,17 +32,19 @@ public class DataInitializer {
         Configuration configuration = new MybatisConfiguration(environment);
         configuration.setCacheEnabled(false);
         //configuration.setLogImpl(org.apache.ibatis.logging.stdout.StdOutImpl.class);
-        configuration.addMapper(StudentMapper.class);
-        configuration.addMapper(AchievementMapper.class);
+        configuration.addMapper(StudentMybatisMapper.class);
+        configuration.addMapper(AchievementMybatisMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+
+
     }
 
     public static void main(String[] args) {
 
         init();
         SqlSession session = sqlSessionFactory.openSession(true);
-        StudentMapper studentMapper = session.getMapper(StudentMapper.class);
-        AchievementMapper achievementMapper = session.getMapper(AchievementMapper.class);
+        StudentMybatisMapper studentMapper = session.getMapper(StudentMybatisMapper.class);
+        AchievementMybatisMapper achievementMapper = session.getMapper(AchievementMybatisMapper.class);
 
 //        Student student = new Student();
 //        //student.setId(11);
@@ -91,9 +90,22 @@ public class DataInitializer {
             achievement.setStudent_id(1);
             achievement.setCreateTime(new Date());
             achievementMapper.save(achievement);
+            if (i == 0) {
+                Achievement updateAchievement=new Achievement();
+                updateAchievement.setId(achievement.getId());
+                updateAchievement.setScore(new BigDecimal("10"));
+                achievementMapper.update(updateAchievement);
+            }
         }
 
+        Achievement getOne222 = achievementMapper.getOneWithCmdQuery(new Query(Achievement.class) {{
+            Table table = $.table("achievement");
+            select($.all(table));
+            from(table);
+            where($.eq($.field(table, "id"), $.value("1")));
+        }});
 
+        System.out.println("<><><><><><>getOne222<>>" + getOne222);
 
 
 

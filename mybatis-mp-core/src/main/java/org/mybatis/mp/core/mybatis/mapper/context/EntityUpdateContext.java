@@ -5,10 +5,12 @@ import db.sql.core.cmd.CmdFactory;
 import db.sql.core.cmd.execution.Update;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
+import org.mybatis.mp.core.mybatis.configuration.MybatisParameter;
+import org.mybatis.mp.db.annotations.Field;
 
 import java.util.Objects;
 
-public class EntityUpdateContext<T> extends SQLCmdUpdateContext<Update> implements PlaceholderContext {
+public class EntityUpdateContext<T> extends SQLCmdUpdateContext<Update> {
 
     private final T value;
 
@@ -29,16 +31,14 @@ public class EntityUpdateContext<T> extends SQLCmdUpdateContext<Update> implemen
                     }
                     where($.eq(item.getTableField(), $.value(value)));
                 } else if (Objects.nonNull(value)) {
-                    updateSet(item.getTableField(), new MybatisPlaceholder(PARAM_PLACEHOLDER_NAME + "." + item.getReflectField().getName(), item.getFieldAnnotation().jdbcType(), item.getFieldAnnotation().typeHandler()));
+                    Field field = item.getFieldAnnotation();
+                    MybatisParameter mybatisParameter = new MybatisParameter(value, field.typeHandler(), field.jdbcType());
+                    updateSet(item.getTableField(), $.value(mybatisParameter));
                 }
             });
         }};
         return update;
     }
 
-    @Override
-    public T getValue() {
-        return value;
-    }
 
 }

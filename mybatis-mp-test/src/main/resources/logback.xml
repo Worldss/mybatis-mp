@@ -22,11 +22,11 @@
         </encoder>
     </appender>
 
-    <root level="warn">
+    <root level="TRACE">
         <appender-ref ref="CONSOLE" />
     </root>
 
-    <logger name="org.mybatis" level="debug"/>
-    <logger name="org.apache" level="debug"/>
+    <logger name="org.mybatis" level="TRACE"/>
+    <logger name="org.apache" level="trace"/>
 
 </configuration>

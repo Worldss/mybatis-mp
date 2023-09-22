@@ -17,6 +17,7 @@ public class Query<R extends Object> extends db.sql.core.cmd.execution.Query<Que
         this.returnType = returnType;
     }
 
+
     public Query select(Table table) {
         TableInfo tableInfo = TableInfos.get(table.getMappingClass());
         this.select(tableInfo.getTableFileds());

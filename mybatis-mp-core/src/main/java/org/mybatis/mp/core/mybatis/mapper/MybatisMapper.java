@@ -22,7 +22,7 @@ import java.util.Objects;
  *
  * @param <T>
  */
-public interface Mapper<T> {
+public interface MybatisMapper<T> {
 
     default int save(T entity) {
         return this.save(new EntityInsertContext(entity));
@@ -74,6 +74,11 @@ public interface Mapper<T> {
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.ALL_NAME)
     List<T> all();
 
+
+    List<T> list(Query query);
+
+
+
     default <R> List<R> selectWithCmdQuery(Query query) {
         return this.selectWithCmdQuery(new SQLCmdQueryContext(query));
     }
@@ -85,6 +90,7 @@ public interface Mapper<T> {
             rowBounds = new RowBounds(limit.getOffset(), limit.getLimit());
             //queryContext.getExecution().getCmdList().remove(limit);
             //queryContext.getExecution().limit(null);
+            //rowBounds = new RowBounds();
         } else {
             rowBounds = new RowBounds();
         }

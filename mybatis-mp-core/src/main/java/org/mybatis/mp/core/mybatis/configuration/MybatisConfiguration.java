@@ -17,7 +17,6 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.mybatis.mp.core.db.reflect.ResultTables;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
-import org.mybatis.mp.core.mybatis.mapper.context.PlaceholderContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 
@@ -44,8 +43,8 @@ public class MybatisConfiguration extends Configuration {
 
     @Override
     public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
-        if (parameterObject instanceof SQLCmdContext && !(parameterObject instanceof PlaceholderContext)) {
-            return (ParameterHandler) interceptorChain.pluginAll(new SQLCmdParameterHandler(this, (SQLCmdContext) parameterObject));
+        if (parameterObject instanceof SQLCmdContext) {
+            return (ParameterHandler) interceptorChain.pluginAll(new PreparedParameterHandler(this, (SQLCmdContext) parameterObject));
         }
         return super.newParameterHandler(mappedStatement, parameterObject, boundSql);
     }
@@ -93,7 +92,7 @@ public class MybatisConfiguration extends Configuration {
                 .column(columnName)
                 .javaType(property.getType())
                 .jdbcType(jdbcType)
-                .typeHandler(this.buildTypeHandler(property, typeHandlerClass))
+                .typeHandler(this.buildTypeHandler(property.getType(), typeHandlerClass))
                 .build();
     }
 
@@ -123,9 +122,9 @@ public class MybatisConfiguration extends Configuration {
                 .build();
     }
 
-    public TypeHandler buildTypeHandler(Field property, Class<? extends TypeHandler<?>> typeHandlerClass) {
+    public TypeHandler buildTypeHandler(Class type, Class<? extends TypeHandler<?>> typeHandlerClass) {
         if (typeHandlerClass == UnknownTypeHandler.class) {
-            TypeHandler typeHandler = this.getTypeHandlerRegistry().getTypeHandler(property.getType());
+            TypeHandler typeHandler = this.getTypeHandlerRegistry().getTypeHandler(type);
             if (Objects.nonNull(typeHandler)) {
                 return typeHandler;
             }
@@ -136,7 +135,7 @@ public class MybatisConfiguration extends Configuration {
             return typeHandler;
         }
 
-        typeHandler = this.getTypeHandlerRegistry().getInstance(property.getType(), typeHandlerClass);
+        typeHandler = this.getTypeHandlerRegistry().getInstance(type, typeHandlerClass);
         return typeHandler;
     }
 

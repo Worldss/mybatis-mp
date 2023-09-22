@@ -1,11 +1,14 @@
 package org.mybatis.mp.core.mybatis.mapper;
 
 
+import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.session.RowBounds;
+import org.mybatis.mp.core.db.reflect.TableInfo;
+import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
 import org.mybatis.mp.core.mybatis.mapper.context.Pager;
@@ -15,6 +18,7 @@ import org.mybatis.mp.core.sql.executor.Query;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -54,13 +58,26 @@ public interface MybatisMapper<T> {
         return this.$update(new EntityUpdateContext(entity));
     }
 
+    default int delete(T entity) {
+        if (Objects.isNull(entity)) {
+            return 0;
+        }
+        TableInfo tableInfo = TableInfos.get(entity.getClass());
+        try {
+            Serializable id = (Serializable) tableInfo.getIdInfo().getReadFieldInvoker().invoke(entity, null);
+            return this.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * @param id
      * @return
-     * @see MybatisSQLProvider#delete(Serializable, ProviderContext)
+     * @see MybatisSQLProvider#deleteById(Serializable, ProviderContext)
      */
-    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.DELETE_BY_ID_NAME)
-    T delete(Serializable id);
+    @DeleteProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.DELETE_BY_ID_NAME)
+    int deleteById(Serializable id);
 
     /**
      * 返回当前实体类查询
@@ -108,13 +125,12 @@ public interface MybatisMapper<T> {
      * @return
      */
     default Pager<T> paging(Query<T> query, Pager<T> pager) {
-        SQLCmdQueryContext<T> queryContext = new SQLCmdQueryContext<>(query);
         if (pager.isExecuteCount()) {
-            Integer count = this.$count(queryContext);
+            Integer count = this.$count(new SQLCmdQueryContext(query));
             pager.setTotal(Optional.of(count).orElse(0));
         }
         query.limit(pager.getOffset(), pager.getSize());
-        pager.setResults(this.$list(queryContext));
+        pager.setResults(this.$list(new SQLCmdQueryContext(query)));
         return pager;
     }
 
@@ -127,13 +143,12 @@ public interface MybatisMapper<T> {
      * @return
      */
     default <R> Pager<R> pagingFind(Query<R> query, Pager<R> pager) {
-        SQLCmdQueryContext<R> queryContext = new SQLCmdQueryContext<>(query);
         if (pager.isExecuteCount()) {
-            Integer count = this.$count(queryContext);
+            Integer count = this.$count(new SQLCmdQueryContext<>(query));
             pager.setTotal(Optional.of(count).orElse(0));
         }
         query.limit(pager.getOffset(), pager.getSize());
-        pager.setResults(this.$find(queryContext));
+        pager.setResults(this.$find(new SQLCmdQueryContext<>(query)));
         return pager;
     }
 

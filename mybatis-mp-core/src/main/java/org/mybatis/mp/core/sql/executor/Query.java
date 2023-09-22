@@ -6,7 +6,7 @@ import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.util.Getter;
 
-public class Query<R extends Object> extends db.sql.core.cmd.execution.Query<Query, MybatisCmdFactory> {
+public class Query<R> extends db.sql.core.cmd.execution.Query<Query, MybatisCmdFactory> {
 
     public static final MybatisCmdFactory INSTANCE = new MybatisCmdFactory();
 

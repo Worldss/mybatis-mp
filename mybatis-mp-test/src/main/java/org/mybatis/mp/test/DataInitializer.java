@@ -74,7 +74,7 @@ public class DataInitializer {
 //
 //        System.out.println(studentMapper.list());
 
-        Achievement getOne111 = achievementMapper.findOne(new Query(Achievement.class) {{
+        Achievement getOne111 = achievementMapper.get(new Query(Achievement.class) {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
@@ -97,7 +97,7 @@ public class DataInitializer {
             }
         }
 
-        Achievement getOne222 = achievementMapper.findOne(new Query(Achievement.class) {{
+        Achievement getOne222 = achievementMapper.get(new Query(Achievement.class) {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
@@ -120,7 +120,7 @@ public class DataInitializer {
 
         System.out.println("<><><><><><pager><>>"+pager);
 
-        achievementMapper.delete(1);
+        achievementMapper.deleteById(1);
 
 //        List<Achievement> list4 = achievementMapper.selectWithCmdQuery(new Query(Achievement.class) {{
 //            Table table = $.table("achievement");

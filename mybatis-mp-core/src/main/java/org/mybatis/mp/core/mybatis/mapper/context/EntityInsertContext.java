@@ -37,9 +37,7 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<Insert> {
                     if (item.getIdAnnotation().value() != IdAutoType.AUTO && item.getIdAnnotation().executeBefore()) {
                         isNeedInsert = true;
                         if (item.getIdAnnotation().executeBefore()) {
-                            Supplier supplier = () -> {
-                                return item.getValue(t);
-                            };
+                            Supplier supplier = () -> item.getValue(t);
                             value = supplier;
                         }
                     }

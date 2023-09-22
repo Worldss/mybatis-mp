@@ -35,15 +35,11 @@ public class MybatisSQLProvider {
     }
 
     public static StringBuilder save(EntityInsertContext insertContext, ProviderContext providerContext) {
-        StringBuilder sql = insertContext.sql(providerContext.getDatabaseId());
-        System.out.println(sql);
-        return sql;
+        return insertContext.sql(providerContext.getDatabaseId());
     }
 
     public static StringBuilder update(EntityUpdateContext updateContext, ProviderContext providerContext) {
-        StringBuilder sql = updateContext.sql(providerContext.getDatabaseId());
-        System.out.println(sql);
-        return sql;
+        return updateContext.sql(providerContext.getDatabaseId());
     }
 
     private static SQL getTableDefaultSelect(TableInfo tableInfo) {

@@ -16,8 +16,6 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<Insert> {
 
     private final T value;
 
-    private SetFieldInvoker idSetFieldInvoker;
-
     public EntityInsertContext(T t) {
         super(createCmd(t));
         this.value = t;

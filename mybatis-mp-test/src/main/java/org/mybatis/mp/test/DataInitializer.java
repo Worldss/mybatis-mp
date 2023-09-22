@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
+import org.mybatis.mp.core.mybatis.mapper.context.Pager;
 import org.mybatis.mp.core.sql.executor.Query;
 import org.mybatis.mp.test.commons.DataSourceFactory;
 import org.mybatis.mp.test.entity.Achievement;
@@ -108,19 +109,18 @@ public class DataInitializer {
         System.out.println("<><><><><><>getOne222<>>" + getOne222);
 
 
-
-
-
-        List<Achievement> list3 = achievementMapper.selectWithCmdQuery(new Query<Achievement>(Achievement.class) {{
+        Pager<Achievement> pager=new Pager<>();
+        pager.setSize(3);
+        pager = achievementMapper.paging(new Query<Achievement>(Achievement.class) {{
 
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
             where($.eq($.field(table, Achievement::getStudent_id), $.value("1")));
             limit(1);
-        }});
+        }},pager);
 
-        System.out.println("<><><><><><list3><>>"+list3);
+        System.out.println("<><><><><><pager><>>"+pager);
 
         achievementMapper.deleteById(1);
 

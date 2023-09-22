@@ -69,7 +69,7 @@ public class MybatisSQLProvider {
         }
         return getByIdSql(tableInfo);
     }
-    
+
     public static String deleteById(Serializable id, ProviderContext context) {
         TableInfo tableInfo = TableInfos.get(MapperTables.get(context.getMapperType()));
         if (Objects.isNull(tableInfo.getIdInfo())) {
@@ -92,7 +92,7 @@ public class MybatisSQLProvider {
         return getTableDefaultSelect(tableInfo).toString();
     }
 
-    public static StringBuilder cmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
+    private static void fill(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
         Query query = queryContext.getExecution();
         if (Objects.isNull(query.getFrom())) {
             Class tableClass = MapperTables.get(providerContext.getMapperType());
@@ -110,6 +110,18 @@ public class MybatisSQLProvider {
                 }
             }
         }
+    }
+
+    public static StringBuilder countCmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
+        fill(queryContext, providerContext);
+        StringBuilder sql = queryContext.sql(providerContext.getDatabaseId());
+        sql = sql.insert(sql.indexOf("SELECT") + 7, "count(");
+        sql = sql.insert(sql.indexOf("FROM") - 1, ")");
+        return sql;
+    }
+
+    public static StringBuilder cmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
+        fill(queryContext, providerContext);
         return queryContext.sql(providerContext.getDatabaseId());
     }
 }

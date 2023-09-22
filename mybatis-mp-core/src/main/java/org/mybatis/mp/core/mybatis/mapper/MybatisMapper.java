@@ -9,6 +9,7 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
+import org.mybatis.mp.core.mybatis.mapper.context.Pager;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import org.mybatis.mp.core.sql.executor.Query;
@@ -16,6 +17,7 @@ import org.mybatis.mp.core.sql.executor.Query;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 数据库 Mapper
@@ -87,6 +89,26 @@ public interface MybatisMapper<T> {
         return this.list(new SQLCmdQueryContext(query));
     }
 
+    /**
+     * 返回当前实体类查询
+     *
+     * @param query
+     * @return
+     */
+    default Integer count(Query query) {
+        return this.count(new SQLCmdQueryContext(query));
+    }
+
+    default Pager<T> paging(Query query, Pager pager) {
+        if (pager.isExecuteCount()) {
+            Integer count = this.count(query);
+            pager.setTotal(Optional.of(count).orElse(0));
+        }
+        query.limit(pager.getOffset(), pager.getSize());
+        pager.setResults(this.list(query));
+        return pager;
+    }
+
 
     /**
      * 返回当前实体类查询
@@ -97,13 +119,23 @@ public interface MybatisMapper<T> {
     @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
     List<T> list(SQLCmdQueryContext queryContext);
 
+    /**
+     * 统计条数
+     *
+     * @param queryContext
+     * @return
+     * @see org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider#countCmdQuery(SQLCmdQueryContext, ProviderContext)
+     */
+    @SelectProvider(type = MybatisSQLProvider.class, method = "countCmdQuery")
+    Integer count(SQLCmdQueryContext queryContext);
+
 
     default <R> List<R> selectWithCmdQuery(Query query) {
         return this.selectWithCmdQuery(new SQLCmdQueryContext(query));
     }
 
     default <R> List<R> selectWithCmdQuery(SQLCmdQueryContext<R> queryContext) {
-        RowBounds rowBounds=new RowBounds();
+        RowBounds rowBounds = new RowBounds();
 //        Limit limit = queryContext.getExecution().getLimit();
 //        if (Objects.nonNull(limit)) {
 //            rowBounds = new RowBounds(limit.getOffset(), limit.getLimit());

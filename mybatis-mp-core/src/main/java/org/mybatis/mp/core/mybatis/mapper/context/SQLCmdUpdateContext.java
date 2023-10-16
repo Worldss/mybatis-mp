@@ -1,11 +1,11 @@
 package org.mybatis.mp.core.mybatis.mapper.context;
 
 
-import db.sql.core.cmd.execution.Update;
+import db.sql.core.api.cmd.executor.Update;
 
-public class SQLCmdUpdateContext<T extends Update> extends BaseSQLCmdContext<Update> {
+public class SQLCmdUpdateContext extends BaseSQLCmdContext<Update> {
 
-    public SQLCmdUpdateContext(T update) {
+    public SQLCmdUpdateContext(Update update) {
         super(update);
     }
 }

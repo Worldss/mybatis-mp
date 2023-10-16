@@ -1,6 +1,7 @@
 package org.mybatis.mp.test;
 
-import db.sql.core.cmd.Table;
+
+import db.sql.core.api.cmd.Table;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -10,7 +11,8 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import org.mybatis.mp.core.mybatis.mapper.context.Pager;
-import org.mybatis.mp.core.sql.executor.Query;
+import org.mybatis.mp.core.sql.executor.LambdaQuery;
+import org.mybatis.mp.core.util.LambdaUtil;
 import org.mybatis.mp.test.commons.DataSourceFactory;
 import org.mybatis.mp.test.entity.Achievement;
 import org.mybatis.mp.test.mapper.AchievementMybatisMapper;
@@ -74,11 +76,11 @@ public class DataInitializer {
 //
 //        System.out.println(studentMapper.list());
 
-        Achievement getOne111 = achievementMapper.get(new Query(Achievement.class) {{
+        Achievement getOne111 = achievementMapper.get(new LambdaQuery(Achievement.class) {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
-            where($.eq($.field(table, "id"), $.value("1")));
+            eq($.field(table, "id"), $.value("1"));
         }});
 
         System.out.println("<><><><><><>getOne11<>>"+getOne111);
@@ -97,11 +99,11 @@ public class DataInitializer {
             }
         }
 
-        Achievement getOne222 = achievementMapper.get(new Query(Achievement.class) {{
+        Achievement getOne222 = achievementMapper.get(new LambdaQuery(Achievement.class) {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
-            where($.eq($.field(table, "id"), $.value("1")));
+            eq($.field(table, "id"), $.value("1"));
         }});
 
         System.out.println("<><><><><><>getOne222<>>" + getOne222);
@@ -109,20 +111,21 @@ public class DataInitializer {
 
         Pager<Achievement> pager=new Pager<>();
         pager.setSize(3);
-        pager = achievementMapper.paging(new Query<Achievement>(Achievement.class) {{
-
+        pager = achievementMapper.paging(new LambdaQuery<Achievement>(Achievement.class) {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
-            where($.eq($.field(table, Achievement::getStudent_id), $.value("1")));
+            eq($.field(table, Achievement::getStudent_id), $.value("1"));
             //limit(1);
         }},pager);
 
         System.out.println("<><><><><><pager><>>"+pager);
 
+        System.out.println(LambdaUtil.getName(Achievement::getId));
+
         achievementMapper.deleteById(1);
 
-//        List<Achievement> list4 = achievementMapper.selectWithCmdQuery(new Query(Achievement.class) {{
+//        List<Achievement> list4 = achievementMapper.selectWithCmdQuery(new LambdaQuery(Achievement.class) {{
 //            Table table = $.table("achievement");
 //            select($.all(table));
 //            from(table);
@@ -132,7 +135,7 @@ public class DataInitializer {
 //
 //        System.out.println("<><><>list4<><><><>>"+list4);
 //
-//        Achievement getOne = achievementMapper.getOneWithCmdQuery(new Query(Achievement.class) {{
+//        Achievement getOne = achievementMapper.getOneWithCmdQuery(new LambdaQuery(Achievement.class) {{
 //            Table table = $.table("achievement");
 //            select($.all(table));
 //            from(table);
@@ -141,7 +144,7 @@ public class DataInitializer {
 //
 //        System.out.println("<><><><><><>getOne<>>"+getOne);
 //
-//        Achievement getOne2 = achievementMapper.getOneWithCmdQuery(new Query(Achievement.class) {{
+//        Achievement getOne2 = achievementMapper.getOneWithCmdQuery(new LambdaQuery(Achievement.class) {{
 //            Table table = $.table("achievement");
 //            select($.all(table));
 //            from(table);

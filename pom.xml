@@ -19,7 +19,7 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
         <mybatis.version>3.5.13</mybatis.version>
-        <sql-cmd.version>1.0.0</sql-cmd.version>
+        <db-sql.version>1.0.0</db-sql.version>
         <lombok.version>1.18.28</lombok.version>
         <spring.version>5.3.25</spring.version>
     </properties>
@@ -32,9 +32,9 @@
         </dependency>
 
         <dependency>
-            <groupId>db.sql</groupId>
-            <artifactId>sql-cmd-core</artifactId>
-            <version>${sql-cmd.version}</version>
+            <groupId>db-sql</groupId>
+            <artifactId>db-sql-core</artifactId>
+            <version>${db-sql.version}</version>
         </dependency>
 
         <dependency>

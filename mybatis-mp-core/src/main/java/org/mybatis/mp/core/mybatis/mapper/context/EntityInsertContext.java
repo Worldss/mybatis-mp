@@ -1,18 +1,21 @@
 package org.mybatis.mp.core.mybatis.mapper.context;
 
-import db.sql.core.cmd.CmdFactory;
-import db.sql.core.cmd.execution.Insert;
-import org.apache.ibatis.reflection.invoker.SetFieldInvoker;
+import db.sql.core.api.cmd.Table;
+import db.sql.core.api.cmd.Value;
+import db.sql.core.api.cmd.executor.AbstractInsert;
+import db.sql.core.api.cmd.executor.Insert;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import org.mybatis.mp.db.IdAutoType;
 import org.mybatis.mp.db.annotations.Field;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class EntityInsertContext<T> extends SQLCmdInsertContext<Insert> {
+public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> {
 
     private final T value;
 
@@ -23,8 +26,10 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<Insert> {
 
     private static Insert createCmd(Object t) {
         TableInfo tableInfo = TableInfos.get(t.getClass());
-        Insert<Insert, CmdFactory> insert = new Insert() {{
-            insert(tableInfo.getBasic().getTable());
+        Insert insert = new Insert() {{
+            Table table = $.table(tableInfo.getBasic().getSchemaAndTableName());
+            insert(table);
+            List<Object> values = new ArrayList<>();
             tableInfo.getFieldInfos().stream().forEach(item -> {
                 boolean isNeedInsert = false;
                 Object value = item.getValue(t);
@@ -42,12 +47,13 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<Insert> {
                 }
 
                 if (isNeedInsert) {
-                    fields(item.getTableField());
+                    field($.field(table, item.getColumnName()));
                     Field field = item.getFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, field.typeHandler(), field.jdbcType());
-                    values($.value(mybatisParameter));
+                    values.add($.value(mybatisParameter));
                 }
             });
+            values(values);
         }};
         return insert;
     }

@@ -1,6 +1,5 @@
 package org.mybatis.mp.core.db.reflect;
 
-import db.sql.core.cmd.Table;
 import org.mybatis.mp.core.util.StringPool;
 
 public class TableBasic {
@@ -22,8 +21,6 @@ public class TableBasic {
 
     private final String schemaAndTableName;
 
-    private final Table table;
-
     public TableBasic(Class type, String tableName) {
         this(type, "", tableName);
     }
@@ -37,9 +34,6 @@ public class TableBasic {
         } else {
             this.schemaAndTableName = schema + "." + tableName;
         }
-
-        this.table = new Table(this.schemaAndTableName);
-        this.table.setMappingClass(type);
     }
 
     public Class getType() {
@@ -56,9 +50,5 @@ public class TableBasic {
 
     public String getSchemaAndTableName() {
         return schemaAndTableName;
-    }
-
-    public Table getTable() {
-        return table;
     }
 }

@@ -1,7 +1,8 @@
 package org.mybatis.mp.core.mybatis.provider;
 
-import db.sql.core.cmd.Dataset;
-import db.sql.core.cmd.Table;
+
+import db.sql.core.api.cmd.Dataset;
+import db.sql.core.api.cmd.Table;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.util.MapUtil;
@@ -12,7 +13,7 @@ import org.mybatis.mp.core.mybatis.mapper.MapperTables;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
-import org.mybatis.mp.core.sql.executor.Query;
+import org.mybatis.mp.core.sql.executor.LambdaQuery;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -93,20 +94,20 @@ public class MybatisSQLProvider {
     }
 
     private static void fill(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
-        Query query = queryContext.getExecution();
-        if (Objects.isNull(query.getFrom())) {
+        LambdaQuery lambdaQuery = queryContext.getExecution();
+        if (Objects.isNull(lambdaQuery.getFrom())) {
             Class tableClass = MapperTables.get(providerContext.getMapperType());
             if (Objects.nonNull(tableClass)) {
-                query.from(tableClass);
+                lambdaQuery.from(tableClass);
             }
         }
 
-        if (Objects.nonNull(query.getFrom()) && (Objects.isNull(query.getSelect()) || query.getSelect().getCmdList().isEmpty())) {
-            Dataset dataset = query.getFrom().getTable();
-            if (dataset instanceof Table) {
-                Table table = (Table) dataset;
-                if (Objects.nonNull(table.getMappingClass())) {
-                    query.select(table);
+        if (Objects.nonNull(lambdaQuery.getFrom()) && (Objects.isNull(lambdaQuery.getSelect()) || lambdaQuery.getSelect().getSelectFiled().isEmpty())) {
+            Dataset[] datasets = lambdaQuery.getFrom().getTable();
+            for (Dataset dataset : datasets) {
+                if (dataset instanceof Table) {
+                    Table table = (Table) dataset;
+                    lambdaQuery.select(table);
                 }
             }
         }

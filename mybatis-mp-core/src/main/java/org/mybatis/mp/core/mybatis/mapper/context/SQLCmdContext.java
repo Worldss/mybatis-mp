@@ -1,8 +1,9 @@
 package org.mybatis.mp.core.mybatis.mapper.context;
 
-import db.sql.core.cmd.execution.Execution;
 
-public interface SQLCmdContext<E extends Execution> {
+import db.sql.core.api.cmd.executor.Executor;
+
+public interface SQLCmdContext<E extends Executor> {
 
     E getExecution();
 

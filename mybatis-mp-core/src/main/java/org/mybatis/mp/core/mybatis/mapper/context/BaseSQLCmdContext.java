@@ -1,13 +1,14 @@
 package org.mybatis.mp.core.mybatis.mapper.context;
 
 
-import db.sql.core.SQLMode;
-import db.sql.core.cmd.execution.Execution;
+
+import db.sql.api.SQLMode;
+import db.sql.core.api.cmd.executor.Executor;
 import org.mybatis.mp.core.mybatis.provider.MybatisSqlBuilderContext;
 
 import java.util.Objects;
 
-public abstract class BaseSQLCmdContext<E extends Execution> implements SQLCmdContext<E> {
+public abstract class BaseSQLCmdContext<E extends Executor> implements SQLCmdContext<E> {
 
     private final E execution;
 

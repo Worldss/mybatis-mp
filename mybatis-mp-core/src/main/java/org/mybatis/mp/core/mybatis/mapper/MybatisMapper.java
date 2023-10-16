@@ -14,7 +14,7 @@ import org.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
 import org.mybatis.mp.core.mybatis.mapper.context.Pager;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
-import org.mybatis.mp.core.sql.executor.Query;
+import org.mybatis.mp.core.sql.executor.LambdaQuery;
 
 import java.io.Serializable;
 import java.util.List;
@@ -39,15 +39,15 @@ public interface MybatisMapper<T> {
     /**
      * 动态查询 返回单个当前实体
      *
-     * @param query
+     * @param lambdaQuery
      * @return
      */
 
-    default T get(Query<T> query) {
-        if (query.getLimit() == null) {
-            query.limit(1);
-        }
-        return this.$get(new SQLCmdQueryContext<>(query));
+    default T get(LambdaQuery<T> lambdaQuery) {
+//        if (lambdaQuery.getLimit() == null) {
+//            lambdaQuery.limit(1);
+//        }
+        return this.$get(new SQLCmdQueryContext<>(lambdaQuery));
     }
 
     default int save(T entity) {
@@ -82,11 +82,11 @@ public interface MybatisMapper<T> {
     /**
      * 返回当前实体类查询
      *
-     * @param query
+     * @param lambdaQuery
      * @return
      */
-    default List<T> list(Query<T> query) {
-        return this.$list(new SQLCmdQueryContext(query));
+    default List<T> list(LambdaQuery<T> lambdaQuery) {
+        return this.$list(new SQLCmdQueryContext(lambdaQuery));
     }
 
 
@@ -99,56 +99,56 @@ public interface MybatisMapper<T> {
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.ALL_NAME)
     List<T> all();
 
-    default <R> R findOne(Query<R> query) {
-        return this.$findOne(new SQLCmdQueryContext<R>(query), new RowBounds(0, 1));
+    default <R> R findOne(LambdaQuery<R> lambdaQuery) {
+        return this.$findOne(new SQLCmdQueryContext<R>(lambdaQuery), new RowBounds(0, 1));
     }
 
-    default <R> List<R> find(Query<R> query) {
-        return this.$find(new SQLCmdQueryContext<R>(query));
+    default <R> List<R> find(LambdaQuery<R> lambdaQuery) {
+        return this.$find(new SQLCmdQueryContext<R>(lambdaQuery));
     }
 
     /**
      * 返回当前实体类查询
      *
-     * @param query
+     * @param lambdaQuery
      * @return
      */
-    default Integer count(Query query) {
-        return this.$count(new SQLCmdQueryContext(query));
+    default Integer count(LambdaQuery lambdaQuery) {
+        return this.$count(new SQLCmdQueryContext(lambdaQuery));
     }
 
     /**
      * 分页查询，返回类型是当前实体类
      *
-     * @param query
+     * @param lambdaQuery
      * @param pager
      * @return
      */
-    default Pager<T> paging(Query<T> query, Pager<T> pager) {
+    default Pager<T> paging(LambdaQuery<T> lambdaQuery, Pager<T> pager) {
         if (pager.isExecuteCount()) {
-            Integer count = this.$count(new SQLCmdQueryContext(query));
+            Integer count = this.$count(new SQLCmdQueryContext(lambdaQuery));
             pager.setTotal(Optional.of(count).orElse(0));
         }
-        query.limit(pager.getOffset(), pager.getSize());
-        pager.setResults(this.$list(new SQLCmdQueryContext(query)));
+        lambdaQuery.limit(pager.getOffset(), pager.getSize());
+        pager.setResults(this.$list(new SQLCmdQueryContext(lambdaQuery)));
         return pager;
     }
 
     /**
      * 分页查找 返回非当前实体类
      *
-     * @param query
+     * @param lambdaQuery
      * @param pager
      * @param <R>
      * @return
      */
-    default <R> Pager<R> pagingFind(Query<R> query, Pager<R> pager) {
+    default <R> Pager<R> pagingFind(LambdaQuery<R> lambdaQuery, Pager<R> pager) {
         if (pager.isExecuteCount()) {
-            Integer count = this.$count(new SQLCmdQueryContext<>(query));
+            Integer count = this.$count(new SQLCmdQueryContext<>(lambdaQuery));
             pager.setTotal(Optional.of(count).orElse(0));
         }
-        query.limit(pager.getOffset(), pager.getSize());
-        pager.setResults(this.$find(new SQLCmdQueryContext<>(query)));
+        lambdaQuery.limit(pager.getOffset(), pager.getSize());
+        pager.setResults(this.$find(new SQLCmdQueryContext<>(lambdaQuery)));
         return pager;
     }
 

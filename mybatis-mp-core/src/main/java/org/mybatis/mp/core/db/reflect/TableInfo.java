@@ -1,7 +1,5 @@
 package org.mybatis.mp.core.db.reflect;
 
-import db.sql.core.cmd.Field;
-import db.sql.core.cmd.TableField;
 import org.apache.ibatis.mapping.ResultMapping;
 
 import java.util.HashMap;
@@ -33,9 +31,6 @@ public class TableInfo {
 
     private final Map<String, FieldInfo> fieldInfoMap = new HashMap<>();
 
-
-    private final List<TableField> tableFields;
-
     public TableInfo(TableBasic basic, List<FieldInfo> fieldInfos) {
         this.basic = basic;
         this.fieldInfos = fieldInfos;
@@ -43,11 +38,6 @@ public class TableInfo {
         this.resultMappings = fieldInfos.stream().map(fieldInfo -> {
             fieldInfoMap.put(fieldInfo.getReflectField().getName(), fieldInfo);
             return fieldInfo.getResultMapping();
-        }).collect(Collectors.toList());
-
-
-        tableFields = fieldInfos.stream().map(fieldInfo -> {
-            return fieldInfo.getTableField();
         }).collect(Collectors.toList());
     }
 
@@ -81,7 +71,4 @@ public class TableInfo {
         return resultMappings;
     }
 
-    public List<TableField> getTableFileds() {
-        return tableFields;
-    }
 }

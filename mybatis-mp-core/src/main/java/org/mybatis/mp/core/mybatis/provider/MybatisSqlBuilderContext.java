@@ -1,8 +1,10 @@
 package org.mybatis.mp.core.mybatis.provider;
 
-import db.sql.core.DatabaseId;
-import db.sql.core.SQLMode;
-import db.sql.core.SqlBuilderContext;
+
+
+import db.sql.api.SQLMode;
+import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.DatabaseId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ public class MybatisSqlBuilderContext extends SqlBuilderContext {
     }
 
     public MybatisSqlBuilderContext(String databaseId, SQLMode sqlMode) {
-        super(databaseId, sqlMode);
+        this(DatabaseId.getByName(databaseId), sqlMode);
     }
 
     private final List<Object> paramList = new ArrayList<>();
@@ -23,10 +25,6 @@ public class MybatisSqlBuilderContext extends SqlBuilderContext {
     public String addParam(Object value) {
         paramList.add(value);
         return "?";
-    }
-
-    public List<Object> getParamList() {
-        return paramList;
     }
 
     public Object[] getParams() {

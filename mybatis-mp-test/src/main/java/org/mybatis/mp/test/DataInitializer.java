@@ -11,8 +11,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import org.mybatis.mp.core.mybatis.mapper.context.Pager;
-import org.mybatis.mp.core.sql.executor.LambdaQuery;
-import org.mybatis.mp.core.util.LambdaUtil;
+import org.mybatis.mp.core.sql.executor.Query;
 import org.mybatis.mp.test.commons.DataSourceFactory;
 import org.mybatis.mp.test.entity.Achievement;
 import org.mybatis.mp.test.mapper.AchievementMybatisMapper;
@@ -21,6 +20,9 @@ import org.mybatis.mp.test.mapper.StudentMybatisMapper;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import static javax.management.Query.eq;
+import static org.springframework.core.annotation.MergedAnnotations.from;
 
 public class DataInitializer {
 
@@ -76,11 +78,10 @@ public class DataInitializer {
 //
 //        System.out.println(studentMapper.list());
 
-        Achievement getOne111 = achievementMapper.get(new LambdaQuery(Achievement.class) {{
-            Table table = $.table("achievement");
-            select($.all(table));
-            from(table);
-            eq($.field(table, "id"), $.value("1"));
+        Achievement getOne111 = achievementMapper.get(new Query(Achievement.class) {{
+            select(Achievement::getId);
+            from(Achievement.class);
+            eq(Achievement::getId, 1);
         }});
 
         System.out.println("<><><><><><>getOne11<>>"+getOne111);
@@ -99,7 +100,7 @@ public class DataInitializer {
             }
         }
 
-        Achievement getOne222 = achievementMapper.get(new LambdaQuery(Achievement.class) {{
+        Achievement getOne222 = achievementMapper.get(new Query(Achievement.class) {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
@@ -111,17 +112,16 @@ public class DataInitializer {
 
         Pager<Achievement> pager=new Pager<>();
         pager.setSize(3);
-        pager = achievementMapper.paging(new LambdaQuery<Achievement>(Achievement.class) {{
-            Table table = $.table("achievement");
+        pager = achievementMapper.paging(new Query(Achievement.class) {{
+            Table table = lambdaCmdFactory.table(Achievement.class,1);
             select($.all(table));
             from(table);
-            eq($.field(table, Achievement::getStudent_id), $.value("1"));
+            //eq($.field(table, Achievement::getStudent_id), $.value("1"));
+            eq(Achievement::getStudent_id,$.value(1));
             //limit(1);
         }},pager);
 
         System.out.println("<><><><><><pager><>>"+pager);
-
-        System.out.println(LambdaUtil.getName(Achievement::getId));
 
         achievementMapper.deleteById(1);
 

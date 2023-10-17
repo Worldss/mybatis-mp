@@ -1,10 +1,10 @@
 package org.mybatis.mp.core.mybatis.mapper.context;
 
-import org.mybatis.mp.core.sql.executor.LambdaQuery;
+import org.mybatis.mp.core.sql.executor.Query;
 
-public class SQLCmdQueryContext<R> extends BaseSQLCmdContext<LambdaQuery<R>> {
+public class SQLCmdQueryContext<R> extends BaseSQLCmdContext<Query> {
 
-    public SQLCmdQueryContext(LambdaQuery<R> execution) {
+    public SQLCmdQueryContext(Query execution) {
         super(execution);
     }
 }

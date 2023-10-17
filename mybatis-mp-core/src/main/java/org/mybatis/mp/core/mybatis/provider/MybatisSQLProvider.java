@@ -13,7 +13,7 @@ import org.mybatis.mp.core.mybatis.mapper.MapperTables;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
-import org.mybatis.mp.core.sql.executor.LambdaQuery;
+import org.mybatis.mp.core.sql.executor.Query;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -94,20 +94,20 @@ public class MybatisSQLProvider {
     }
 
     private static void fill(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
-        LambdaQuery lambdaQuery = queryContext.getExecution();
-        if (Objects.isNull(lambdaQuery.getFrom())) {
+        Query query = queryContext.getExecution();
+        if (Objects.isNull(query.getFrom())) {
             Class tableClass = MapperTables.get(providerContext.getMapperType());
             if (Objects.nonNull(tableClass)) {
-                lambdaQuery.from(tableClass);
+                query.from(tableClass);
             }
         }
 
-        if (Objects.nonNull(lambdaQuery.getFrom()) && (Objects.isNull(lambdaQuery.getSelect()) || lambdaQuery.getSelect().getSelectFiled().isEmpty())) {
-            Dataset[] datasets = lambdaQuery.getFrom().getTable();
+        if (Objects.nonNull(query.getFrom()) && (Objects.isNull(query.getSelect()) || query.getSelect().getSelectFiled().isEmpty())) {
+            Dataset[] datasets = query.getFrom().getTable();
             for (Dataset dataset : datasets) {
                 if (dataset instanceof Table) {
                     Table table = (Table) dataset;
-                    lambdaQuery.select(table);
+                    query.select(table);
                 }
             }
         }

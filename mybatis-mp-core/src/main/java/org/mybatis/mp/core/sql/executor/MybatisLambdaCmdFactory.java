@@ -32,7 +32,7 @@ public class MybatisLambdaCmdFactory extends LambdaCmdFactory {
     }
 
     protected TableField field(Class clazz, String filedName, int storey) {
-        return MapUtil.computeIfAbsent(tableFieldCache, String.format("%s.%s", clazz.getName() , filedName), key -> {
+        return MapUtil.computeIfAbsent(tableFieldCache, String.format("%s.%s.%s", clazz.getName(), filedName, storey), key -> {
             Table table = table(clazz, storey);
             TableInfo tableInfo = TableInfos.get(clazz);
             return new TableField(table, tableInfo.getFieldInfo(filedName).getColumnName());

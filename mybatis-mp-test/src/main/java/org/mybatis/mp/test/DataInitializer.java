@@ -14,12 +14,15 @@ import org.mybatis.mp.core.mybatis.mapper.context.Pager;
 import org.mybatis.mp.core.sql.executor.Query;
 import org.mybatis.mp.test.commons.DataSourceFactory;
 import org.mybatis.mp.test.entity.Achievement;
+import org.mybatis.mp.test.entity.Student;
 import org.mybatis.mp.test.mapper.AchievementMybatisMapper;
 import org.mybatis.mp.test.mapper.StudentMybatisMapper;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 import static javax.management.Query.eq;
 import static org.springframework.core.annotation.MergedAnnotations.from;
@@ -49,34 +52,32 @@ public class DataInitializer {
         StudentMybatisMapper studentMapper = session.getMapper(StudentMybatisMapper.class);
         AchievementMybatisMapper achievementMapper = session.getMapper(AchievementMybatisMapper.class);
 
-//        Student student = new Student();
-//        //student.setId(11);
-//        student.setName("哈哈");
-//        student.setExcellent(true);
-//        student.setCreateTime(LocalDateTime.now());
-//        studentMapper.save(student);
-//
-//        student.setName("嘿嘿");
-//        studentMapper.update(student);
-//
-//
-//        System.out.println(studentMapper.getById(1));
-//
-//
-//        student.setId(null);
-//        student.setName("哈哈2");
-//        studentMapper.save(student);
-//        System.out.println(student);
-//
-//
-//        student = studentMapper.getById(1);
-//        System.out.println(student);
-//        List<Student> list = studentMapper.all();
-//        System.out.println(list);
-//
-//        System.out.println(studentMapper.getById2(1));
-//
-//        System.out.println(studentMapper.list());
+        Student student = new Student();
+        //student.setId(11);
+        student.setName("哈哈");
+        student.setExcellent(true);
+        student.setCreateTime(LocalDateTime.now());
+        studentMapper.save(student);
+
+        student.setName("嘿嘿");
+        studentMapper.update(student);
+
+
+        System.out.println(studentMapper.getById(1));
+
+
+        student.setId(null);
+        student.setName("哈哈2");
+        studentMapper.save(student);
+        System.out.println(student);
+
+
+        student = studentMapper.getById(1);
+        System.out.println(student);
+        List<Student> list = studentMapper.all();
+        System.out.println(list);
+
+        System.out.println(studentMapper.getById2(1));
 
         Achievement getOne111 = achievementMapper.get(new Query(Achievement.class) {{
             select(Achievement::getId);
@@ -125,38 +126,50 @@ public class DataInitializer {
 
         achievementMapper.deleteById(1);
 
-//        List<Achievement> list4 = achievementMapper.selectWithCmdQuery(new LambdaQuery(Achievement.class) {{
-//            Table table = $.table("achievement");
-//            select($.all(table));
-//            from(table);
-//            where($.eq($.field(table, "id"), $.value("1112")));
-//            limit(10);
-//        }});
-//
-//        System.out.println("<><><>list4<><><><>>"+list4);
-//
-//        Achievement getOne = achievementMapper.getOneWithCmdQuery(new LambdaQuery(Achievement.class) {{
-//            Table table = $.table("achievement");
-//            select($.all(table));
-//            from(table);
-//            where($.eq($.field(table, "id"), $.value("1")));
-//        }});
-//
-//        System.out.println("<><><><><><>getOne<>>"+getOne);
-//
-//        Achievement getOne2 = achievementMapper.getOneWithCmdQuery(new LambdaQuery(Achievement.class) {{
-//            Table table = $.table("achievement");
-//            select($.all(table));
-//            from(table);
-//            where($.eq($.field(table, "id"), $.value("11133111")));
-//        }});
-//
-//        System.out.println("<><><><><>getOne2<><>>"+getOne2);
-//
-//
-//        Achievement getOne3= achievementMapper.getById(1111);
-//        System.out.println("<><><><><>getOne3<><>>"+getOne3);
-        //session.close();
+        List<Achievement> list4 = achievementMapper.list(new Query(Achievement.class) {{
+            Table table = $.table("achievement");
+            select($.all(table));
+            from(table);
+            eq($.field(table, "id"), $.value("1112"));
+            limit(10);
+        }});
+
+        System.out.println("<><><>list4<><><><>>"+list4);
+
+        Achievement getOne = achievementMapper.get(new Query(Achievement.class) {{
+            Table table = $.table("achievement");
+            select($.all(table));
+            from(table);
+            eq($.field(table, "id"), $.value("1"));
+        }});
+
+        System.out.println("<><><><><><>getOne<>>"+getOne);
+
+        Achievement getOne2 = achievementMapper.get(new Query(Achievement.class) {{
+            Table table = $.table("achievement");
+            select($.all(table));
+            from(table);
+            eq($.field(table, "id"), $.value("11133111"));
+        }});
+
+        System.out.println("<><><><><>getOne2<><>>"+getOne2);
+
+
+        Achievement getOne3= achievementMapper.getById(1111);
+        System.out.println("<><><><><>getOne3<><>>"+getOne3);
+
+
+        List<Achievement> joinResultList = achievementMapper.list(new Query(Achievement.class) {{
+            select(Achievement.class,table->table.as("a"));
+            from(Achievement.class);
+            eq(Achievement::getId, 11133111);
+        }});
+
+        System.out.println("<><><><><>joinResultList<><>>"+joinResultList);
+
+
+
+        session.close();
     }
 
 }

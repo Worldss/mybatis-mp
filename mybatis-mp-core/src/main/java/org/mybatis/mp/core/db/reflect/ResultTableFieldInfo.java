@@ -37,10 +37,8 @@ public class ResultTableFieldInfo {
                 typeHandler = fieldInfo.getFieldAnnotation().typeHandler();
             }
         }
-        String columnName = resultField.column();
-        if (StringPool.EMPTY.equals(columnName)) {
-            columnName = resultField.columnPrefix() + fieldInfo.getColumnName();
-        }
+        String columnName = resultField.columnPrefix() + fieldInfo.getColumnName();
+
         this.resultMapping = mybatisConfiguration.buildResultMapping(field, columnName, jdbcType, typeHandler);
     }
 

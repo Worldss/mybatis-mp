@@ -3,8 +3,10 @@ package org.mybatis.mp.core.mybatis.configuration;
 
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.executor.*;
+import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
+import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
@@ -21,8 +23,7 @@ import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
 import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 
-import java.io.BufferedInputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
@@ -40,13 +41,28 @@ public class MybatisConfiguration extends Configuration {
      */
     private boolean tableUnderline = true;
 
+    public MybatisConfiguration() {
+        super();
+    }
+
     public MybatisConfiguration(Environment environment) {
         super(environment);
     }
 
+    public void printBanner() {
+        try (BufferedReader reader = new BufferedReader(Resources.getResourceAsReader("mybatis-mp.banner"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
-        if (parameterObject instanceof SQLCmdContext) {
+        if (parameterObject instanceof SQLCmdContext && !mappedStatement.getId().endsWith(SelectKeyGenerator.SELECT_KEY_SUFFIX)) {
             return (ParameterHandler) interceptorChain.pluginAll(new PreparedParameterHandler(this, (SQLCmdContext) parameterObject));
         }
         return super.newParameterHandler(mappedStatement, parameterObject, boundSql);

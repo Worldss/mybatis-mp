@@ -6,9 +6,9 @@
     <parent>
         <groupId>org.mybatis-mp</groupId>
         <artifactId>mybatis-mp</artifactId>
-        <version>1.0</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>mybatis-mp-annotation</artifactId>
-
+    <version>${mybatis-mp.version}</version>
 </project>

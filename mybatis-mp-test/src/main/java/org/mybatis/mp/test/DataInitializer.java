@@ -1,7 +1,6 @@
 package org.mybatis.mp.test;
 
 
-import db.sql.api.JoinMode;
 import db.sql.core.api.cmd.Table;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -164,7 +163,11 @@ public class DataInitializer {
                 .select(Achievement::getId, column -> column.max())
                 .from(Achievement.class, table -> table.as("a"))
                 .join(Achievement.class, Student.class)
-                .eq(Achievement::getId, 11133111));
+                .eq(Achievement::getId, 123).andNested(conditionChain -> conditionChain.eq(Achievement::getId, 123).or().eq(Achievement::getId, 124))
+                .groupBy(Achievement::getId)
+                .having(having -> having.and($ -> $.field(Achievement::getId, 1).count().gt(1)))
+                .orderBy(Achievement::getId)
+        );
 
         System.out.println("<><><><><>joinResultList<><>>" + joinResultList);
 

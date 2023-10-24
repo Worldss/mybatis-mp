@@ -7,8 +7,8 @@ import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import org.mybatis.mp.core.util.NamingUtil;
 import org.mybatis.mp.core.util.StringPool;
 import org.mybatis.mp.db.DbType;
-import org.mybatis.mp.db.annotations.Field;
-import org.mybatis.mp.db.annotations.Id;
+import org.mybatis.mp.db.annotations.TableField;
+import org.mybatis.mp.db.annotations.TableId;
 
 import java.util.Objects;
 
@@ -17,30 +17,30 @@ public class FieldInfo {
     /**
      * 对应 table的基础信息
      */
-    private final TableBasic tableBasic;
+    private final TableBasicInfo tableBasicInfo;
     /**
      * 反射的属性字段
      */
     private final java.lang.reflect.Field reflectField;
     private final String columnName;
-    private final Field fieldAnnotation;
-    private final Id idAnnotation;
+    private final TableField tableFieldAnnotation;
+    private final TableId idAnnotation;
     private final boolean id;
     private final ResultMapping resultMapping;
     private final GetFieldInvoker readFieldInvoker;
     private final SetFieldInvoker writeFieldInvoker;
 
-    public FieldInfo(TableBasic tableBasic, java.lang.reflect.Field field, MybatisConfiguration mybatisConfiguration) {
-        this.tableBasic = tableBasic;
+    public FieldInfo(TableBasicInfo tableBasicInfo, java.lang.reflect.Field field, MybatisConfiguration mybatisConfiguration) {
+        this.tableBasicInfo = tableBasicInfo;
         this.reflectField = field;
 
-        Field fieldAnnotation = field.getAnnotation(Field.class);
-        if (Objects.isNull(fieldAnnotation)) {
-            fieldAnnotation = Default.defaultFieldAnnotation();
+        TableField tableFieldAnnotation = field.getAnnotation(TableField.class);
+        if (Objects.isNull(tableFieldAnnotation)) {
+            tableFieldAnnotation = Default.defaultTableFieldAnnotation();
         }
-        this.fieldAnnotation = fieldAnnotation;
+        this.tableFieldAnnotation = tableFieldAnnotation;
 
-        String columnName = fieldAnnotation.value();
+        String columnName = tableFieldAnnotation.value();
         if (StringPool.EMPTY.equals(columnName)) {
             columnName = field.getName();
             if (mybatisConfiguration.isColumnUnderline()) {
@@ -53,7 +53,7 @@ public class FieldInfo {
 
         this.id = Objects.nonNull(this.idAnnotation);
 
-        this.resultMapping = mybatisConfiguration.buildResultMapping(field, columnName, fieldAnnotation.jdbcType(), fieldAnnotation.typeHandler());
+        this.resultMapping = mybatisConfiguration.buildResultMapping(field, columnName, tableFieldAnnotation.jdbcType(), tableFieldAnnotation.typeHandler());
 
         this.readFieldInvoker = new GetFieldInvoker(field);
         this.writeFieldInvoker = new SetFieldInvoker(field);
@@ -67,29 +67,29 @@ public class FieldInfo {
         }
     }
 
-    private final Id getIdAnnotation(MybatisConfiguration mybatisConfiguration, java.lang.reflect.Field field) {
-        Id[] idAnnotations = field.getAnnotationsByType(Id.class);
-        if (idAnnotations.length < 1) {
+    private final TableId getIdAnnotation(MybatisConfiguration mybatisConfiguration, java.lang.reflect.Field field) {
+        TableId[] tableIdAnnotations = field.getAnnotationsByType(TableId.class);
+        if (tableIdAnnotations.length < 1) {
             return null;
         }
-        Id id = null;
-        for (Id item : idAnnotations) {
-            if (Objects.isNull(id) && item.dbType() == DbType.DEFAULT) {
-                id = item;
+        TableId tableId = null;
+        for (TableId item : tableIdAnnotations) {
+            if (Objects.isNull(tableId) && item.dbType() == DbType.DEFAULT) {
+                tableId = item;
             }
             if (item.dbType().name().equals(mybatisConfiguration.getDatabaseId())) {
-                id = item;
+                tableId = item;
                 break;
             }
         }
-        if (Objects.isNull(id)) {
-            id = idAnnotations[0];
+        if (Objects.isNull(tableId)) {
+            tableId = tableIdAnnotations[0];
         }
-        return id;
+        return tableId;
     }
 
-    public TableBasic getTableBasic() {
-        return tableBasic;
+    public TableBasicInfo getTableBasic() {
+        return tableBasicInfo;
     }
 
     public java.lang.reflect.Field getReflectField() {
@@ -100,11 +100,11 @@ public class FieldInfo {
         return columnName;
     }
 
-    public Field getFieldAnnotation() {
-        return fieldAnnotation;
+    public TableField getFieldAnnotation() {
+        return tableFieldAnnotation;
     }
 
-    public Id getIdAnnotation() {
+    public TableId getIdAnnotation() {
         return idAnnotation;
     }
 

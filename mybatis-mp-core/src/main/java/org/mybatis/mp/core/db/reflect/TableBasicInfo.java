@@ -2,12 +2,12 @@ package org.mybatis.mp.core.db.reflect;
 
 import org.mybatis.mp.core.util.StringPool;
 
-public class TableBasic {
+public class TableBasicInfo {
 
     /**
      * 对应的实体类
      */
-    private final Class type;
+    private final Class entityClass;
 
     /**
      * 数据库 schema
@@ -21,12 +21,12 @@ public class TableBasic {
 
     private final String schemaAndTableName;
 
-    public TableBasic(Class type, String tableName) {
-        this(type, "", tableName);
+    public TableBasicInfo(Class entityClass, String tableName) {
+        this(entityClass, "", tableName);
     }
 
-    public TableBasic(Class type, String schema, String tableName) {
-        this.type = type;
+    public TableBasicInfo(Class entityClass, String schema, String tableName) {
+        this.entityClass = entityClass;
         this.tableName = tableName;
         this.schema = schema;
         if (schema == null || StringPool.EMPTY.equals(schema)) {
@@ -36,8 +36,8 @@ public class TableBasic {
         }
     }
 
-    public Class getType() {
-        return type;
+    public Class getEntityClass() {
+        return entityClass;
     }
 
     public String getSchema() {

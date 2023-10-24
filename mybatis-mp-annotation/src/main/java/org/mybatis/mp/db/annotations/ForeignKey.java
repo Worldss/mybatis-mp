@@ -11,4 +11,5 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 public @interface ForeignKey {
 
+    Class value();
 }

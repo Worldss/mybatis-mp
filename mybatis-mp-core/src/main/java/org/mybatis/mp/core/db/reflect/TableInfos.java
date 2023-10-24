@@ -2,8 +2,8 @@ package org.mybatis.mp.core.db.reflect;
 
 import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import org.mybatis.mp.core.util.FieldUtils;
-import org.mybatis.mp.core.util.StringPool;
 import org.mybatis.mp.core.util.NamingUtil;
+import org.mybatis.mp.core.util.StringPool;
 import org.mybatis.mp.db.annotations.Table;
 
 import java.util.Map;
@@ -22,7 +22,7 @@ public final class TableInfos {
 
     }
 
-    private static TableBasic buildTableBasic(Class tableClass, Table table, MybatisConfiguration mybatisConfiguration) {
+    private static TableBasicInfo buildTableBasic(Class tableClass, Table table, MybatisConfiguration mybatisConfiguration) {
         String tableName = table.value();
         if (StringPool.EMPTY.equals(tableName)) {
             //未设置表名
@@ -31,12 +31,12 @@ public final class TableInfos {
                 tableName = NamingUtil.camelToUnderline(tableName);
             }
         }
-        return new TableBasic(tableClass, table.schema(), tableName);
+        return new TableBasicInfo(tableClass, table.schema(), tableName);
     }
 
-    private static TableInfo buildTableInfo(TableBasic tableBasic, MybatisConfiguration mybatisConfiguration) {
-        return new TableInfo(tableBasic, FieldUtils.getResultMappingFields(tableBasic.getType()).stream().map((f) -> {
-            return new FieldInfo(tableBasic, f, mybatisConfiguration);
+    private static TableInfo buildTableInfo(TableBasicInfo tableBasicInfo, MybatisConfiguration mybatisConfiguration) {
+        return new TableInfo(tableBasicInfo, FieldUtils.getResultMappingFields(tableBasicInfo.getEntityClass()).stream().map((f) -> {
+            return new FieldInfo(tableBasicInfo, f, mybatisConfiguration);
         }).collect(Collectors.toList()));
     }
 
@@ -55,8 +55,8 @@ public final class TableInfos {
             return null;
         }
 
-        TableBasic tableBasic = buildTableBasic(tableClass, table, mybatisConfiguration);
-        tableInfo = buildTableInfo(tableBasic, mybatisConfiguration);
+        TableBasicInfo tableBasicInfo = buildTableBasic(tableClass, table, mybatisConfiguration);
+        tableInfo = buildTableInfo(tableBasicInfo, mybatisConfiguration);
         TABLE_INFO_MAP.put(tableClass, tableInfo);
         return tableInfo;
     }

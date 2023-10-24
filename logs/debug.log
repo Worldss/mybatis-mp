@@ -1,4 +1,4 @@
-2023-09-21 16:20:09.531 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.id = ?
+2023-09-21 16:20:09.531 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.tableId = ?
 2023-09-21 16:20:09.641 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==> Parameters: 1(String)
 2023-09-21 16:20:09.743 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - <==      Total: 0
 2023-09-21 16:20:09.782 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.save - ==>  Preparing: INSERT INTO achievement (student_id , score , create_time) VALUES (? , ? , ?)
@@ -61,26 +61,26 @@
 2023-09-21 16:20:09.968 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.save - ==>  Preparing: INSERT INTO achievement (student_id , score , create_time) VALUES (? , ? , ?)
 2023-09-21 16:20:09.969 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.save - ==> Parameters: 1(Integer), 199.99(BigDecimal), 2023-09-21 16:20:09.966(Timestamp)
 2023-09-21 16:20:09.970 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.save - <==    Updates: 1
-2023-09-21 16:20:09.973 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.list - ==>  Preparing: select t.*,t2.student_id,t2.score,t2.score xx_score,t2.id xx_id,123 haha from student t left join Achievement t2 on t.id=t2.student_id
+2023-09-21 16:20:09.973 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.list - ==>  Preparing: select t.*,t2.student_id,t2.score,t2.score xx_score,t2.tableId xx_id,123 haha from student t left join Achievement t2 on t.tableId=t2.student_id
 2023-09-21 16:20:09.979 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.list - ==> Parameters:
 2023-09-21 16:20:09.981 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.list - <==      Total: 0
 2023-09-21 16:20:10.005 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.student_id = 1
 2023-09-21 16:20:10.006 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - ==> Parameters:
-2023-09-21 16:20:10.018 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.id = ?
+2023-09-21 16:20:10.018 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.tableId = ?
 2023-09-21 16:20:10.019 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - ==> Parameters: 1112(String)
 2023-09-21 16:20:10.021 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - <==      Total: 0
-2023-09-21 16:20:10.022 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.id = ?
+2023-09-21 16:20:10.022 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.tableId = ?
 2023-09-21 16:20:10.024 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==> Parameters: 1(String)
 2023-09-21 16:20:10.026 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - <==      Total: 1
-2023-09-21 16:20:10.028 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.id = ?
+2023-09-21 16:20:10.028 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.tableId = ?
 2023-09-21 16:20:10.028 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==> Parameters: 11133111(String)
 2023-09-21 16:20:10.029 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - <==      Total: 0
-2023-09-21 16:20:10.052 [main] DEBUG o.mybatis.mp.test.mapper.AchievementMapper.getById - ==>  Preparing: SELECT id, student_id, score, create_time FROM achievement WHERE (id=?)
+2023-09-21 16:20:10.052 [main] DEBUG o.mybatis.mp.test.mapper.AchievementMapper.getById - ==>  Preparing: SELECT tableId, student_id, score, create_time FROM achievement WHERE (tableId=?)
 2023-09-21 16:20:10.053 [main] DEBUG o.mybatis.mp.test.mapper.AchievementMapper.getById - ==> Parameters: 1111(Integer)
 2023-09-21 16:20:10.055 [main] DEBUG o.mybatis.mp.test.mapper.AchievementMapper.getById - <==      Total: 0
 2023-09-21 16:43:50.498 [main] DEBUG org.apache.ibatis.logging.LogFactory - Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
 2023-09-21 16:43:51.088 [main] DEBUG org.apache.ibatis.transaction.jdbc.JdbcTransaction - Opening JDBC Connection
-2023-09-21 16:43:51.112 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.id = ?
+2023-09-21 16:43:51.112 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.tableId = ?
 2023-09-21 16:43:51.246 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==> Parameters: 1(String)
 2023-09-21 16:43:51.369 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - <==      Total: 0
 2023-09-21 16:43:51.408 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.save - ==>  Preparing: INSERT INTO achievement (student_id , score , create_time) VALUES (? , ? , ?)
@@ -143,21 +143,21 @@
 2023-09-21 16:43:51.612 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.save - ==>  Preparing: INSERT INTO achievement (student_id , score , create_time) VALUES (? , ? , ?)
 2023-09-21 16:43:51.613 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.save - ==> Parameters: 1(Integer), 199.99(BigDecimal), 2023-09-21 16:43:51.611(Timestamp)
 2023-09-21 16:43:51.616 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.save - <==    Updates: 1
-2023-09-21 16:43:51.618 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.list - ==>  Preparing: select t.*,t2.student_id,t2.score,t2.score xx_score,t2.id xx_id,123 haha from student t left join Achievement t2 on t.id=t2.student_id
+2023-09-21 16:43:51.618 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.list - ==>  Preparing: select t.*,t2.student_id,t2.score,t2.score xx_score,t2.tableId xx_id,123 haha from student t left join Achievement t2 on t.tableId=t2.student_id
 2023-09-21 16:43:51.624 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.list - ==> Parameters:
 2023-09-21 16:43:51.626 [main] DEBUG org.mybatis.mp.test.mapper.AchievementMybatisMapper.list - <==      Total: 0
 2023-09-21 16:43:51.653 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.student_id = 1
 2023-09-21 16:43:51.655 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - ==> Parameters:
-2023-09-21 16:43:51.668 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.id = ?
+2023-09-21 16:43:51.668 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.tableId = ?
 2023-09-21 16:43:51.669 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - ==> Parameters: 1112(String)
 2023-09-21 16:43:51.670 [main] DEBUG o.m.m.t.m.AchievementMapper.selectWithCmdQuery - <==      Total: 0
-2023-09-21 16:43:51.672 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.id = ?
+2023-09-21 16:43:51.672 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.tableId = ?
 2023-09-21 16:43:51.673 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==> Parameters: 1(String)
 2023-09-21 16:43:51.675 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - <==      Total: 1
-2023-09-21 16:43:51.679 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.id = ?
+2023-09-21 16:43:51.679 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==>  Preparing: SELECT t. * FROM achievement t WHERE t.tableId = ?
 2023-09-21 16:43:51.680 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - ==> Parameters: 11133111(String)
 2023-09-21 16:43:51.681 [main] DEBUG o.m.m.t.m.AchievementMapper.getOneWithCmdQuery - <==      Total: 0
-2023-09-21 16:43:51.710 [main] DEBUG o.mybatis.mp.test.mapper.AchievementMapper.getById - ==>  Preparing: SELECT id, student_id, score, create_time FROM achievement WHERE (id=?)
+2023-09-21 16:43:51.710 [main] DEBUG o.mybatis.mp.test.mapper.AchievementMapper.getById - ==>  Preparing: SELECT tableId, student_id, score, create_time FROM achievement WHERE (tableId=?)
 2023-09-21 16:43:51.711 [main] DEBUG o.mybatis.mp.test.mapper.AchievementMapper.getById - ==> Parameters: 1111(Integer)
 2023-09-21 16:43:51.714 [main] DEBUG o.mybatis.mp.test.mapper.AchievementMapper.getById - <==      Total: 0
 2023-09-21 16:43:51.715 [main] DEBUG org.apache.ibatis.transaction.jdbc.JdbcTransaction - Closing JDBC Connection [conn1: url=jdbc:h2:mem:db0 user=SA]

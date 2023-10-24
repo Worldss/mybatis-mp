@@ -16,6 +16,7 @@ import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 import org.mybatis.mp.core.sql.executor.Query;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +49,7 @@ public class MybatisSQLProvider {
             Predicate<FieldInfo> filter = (item) -> {
                 return item.getFieldAnnotation() == null || item.getFieldAnnotation().select();
             };
-            FROM(tableInfo.getBasic().getSchemaAndTableName());
+            FROM(tableInfo.getBasicInfo().getSchemaAndTableName());
             tableInfo.getFieldInfos().stream().filter(filter).forEach(item -> {
                 SELECT(item.getColumnName());
             });
@@ -57,7 +58,7 @@ public class MybatisSQLProvider {
 
 
     private static String getByIdSql(TableInfo tableInfo) {
-        return MapUtil.computeIfAbsent(SQL_CACHE_MAP, tableInfo.getBasic().getType() + ".getById", (key) -> {
+        return MapUtil.computeIfAbsent(SQL_CACHE_MAP, tableInfo.getBasicInfo().getEntityClass() + ".getById", (key) -> {
             return getTableDefaultSelect(tableInfo).WHERE(tableInfo.getIdInfo().getColumnName() + "=#{value}").toString();
         });
     }
@@ -80,9 +81,9 @@ public class MybatisSQLProvider {
     }
 
     private static String getDeleteByIdSql(TableInfo tableInfo) {
-        return MapUtil.computeIfAbsent(SQL_CACHE_MAP, tableInfo.getBasic().getType() + ".deleteById", (key) -> {
+        return MapUtil.computeIfAbsent(SQL_CACHE_MAP, tableInfo.getBasicInfo().getEntityClass() + ".deleteById", (key) -> {
             return new SQL() {{
-                DELETE_FROM(tableInfo.getBasic().getSchemaAndTableName());
+                DELETE_FROM(tableInfo.getBasicInfo().getSchemaAndTableName());
                 WHERE(tableInfo.getIdInfo().getColumnName() + "=#{value}");
             }}.toString();
         });
@@ -103,7 +104,7 @@ public class MybatisSQLProvider {
         }
 
         if (Objects.nonNull(query.getFrom()) && (Objects.isNull(query.getSelect()) || query.getSelect().getSelectFiled().isEmpty())) {
-            Dataset[] datasets = query.getFrom().getTable();
+            List<Dataset> datasets = query.getFrom().getTables();
             for (Dataset dataset : datasets) {
                 if (dataset instanceof Table) {
                     Table table = (Table) dataset;

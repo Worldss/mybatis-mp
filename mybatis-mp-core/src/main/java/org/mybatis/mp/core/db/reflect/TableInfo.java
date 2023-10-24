@@ -1,6 +1,7 @@
 package org.mybatis.mp.core.db.reflect;
 
 import org.apache.ibatis.mapping.ResultMapping;
+import org.mybatis.mp.db.annotations.ForeignKey;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +13,7 @@ public class TableInfo {
     /**
      * 基础信息
      */
-    private final TableBasic basic;
+    private final TableBasicInfo basicInfo;
 
     /**
      * 所有 字段
@@ -29,14 +30,21 @@ public class TableInfo {
      */
     private final List<ResultMapping> resultMappings;
 
+    private final Map<Class, ForeignInfo> foreignInfoMap = new HashMap<>();
+
     private final Map<String, FieldInfo> fieldInfoMap = new HashMap<>();
 
-    public TableInfo(TableBasic basic, List<FieldInfo> fieldInfos) {
-        this.basic = basic;
+    public TableInfo(TableBasicInfo basicInfo, List<FieldInfo> fieldInfos) {
+        this.basicInfo = basicInfo;
         this.fieldInfos = fieldInfos;
         this.idInfo = fieldInfos.stream().filter(item -> item.isId()).findFirst().get();
         this.resultMappings = fieldInfos.stream().map(fieldInfo -> {
             fieldInfoMap.put(fieldInfo.getReflectField().getName(), fieldInfo);
+
+            if (fieldInfo.getReflectField().isAnnotationPresent(ForeignKey.class)) {
+                ForeignKey foreignKey = fieldInfo.getReflectField().getAnnotation(ForeignKey.class);
+                foreignInfoMap.put(foreignKey.value(), new ForeignInfo(foreignKey.value(), fieldInfo));
+            }
             return fieldInfo.getResultMapping();
         }).collect(Collectors.toList());
     }
@@ -51,12 +59,23 @@ public class TableInfo {
         return fieldInfoMap.get(property);
     }
 
+
+    /**
+     * 根据连接的表的类获取外键匹配信息
+     *
+     * @param entityClass
+     * @return
+     */
+    public final ForeignInfo getForeignInfo(Class entityClass) {
+        return this.foreignInfoMap.get(entityClass);
+    }
+
     /**
      * @return
      */
 
-    public TableBasic getBasic() {
-        return basic;
+    public TableBasicInfo getBasicInfo() {
+        return basicInfo;
     }
 
     public List<FieldInfo> getFieldInfos() {

@@ -13,8 +13,8 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-@Repeatable(Id.List.class)
-public @interface Id {
+@Repeatable(TableId.List.class)
+public @interface TableId {
 
     /**
      * 自增类型
@@ -56,6 +56,6 @@ public @interface Id {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
     public @interface List {
-        Id[] value();
+        TableId[] value();
     }
 }

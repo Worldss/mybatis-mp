@@ -1,14 +1,13 @@
 package org.mybatis.mp.core.mybatis.mapper.context;
 
 import db.sql.core.api.cmd.Table;
-import db.sql.core.api.cmd.Value;
 import db.sql.core.api.cmd.executor.AbstractInsert;
 import db.sql.core.api.cmd.executor.Insert;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import org.mybatis.mp.db.IdAutoType;
-import org.mybatis.mp.db.annotations.Field;
+import org.mybatis.mp.db.annotations.TableField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
     private static Insert createCmd(Object t) {
         TableInfo tableInfo = TableInfos.get(t.getClass());
         Insert insert = new Insert() {{
-            Table table = $.table(tableInfo.getBasic().getSchemaAndTableName());
+            Table table = $.table(tableInfo.getBasicInfo().getSchemaAndTableName());
             insert(table);
             List<Object> values = new ArrayList<>();
             tableInfo.getFieldInfos().stream().forEach(item -> {
@@ -48,8 +47,8 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
 
                 if (isNeedInsert) {
                     field($.field(table, item.getColumnName()));
-                    Field field = item.getFieldAnnotation();
-                    MybatisParameter mybatisParameter = new MybatisParameter(value, field.typeHandler(), field.jdbcType());
+                    TableField tableField = item.getFieldAnnotation();
+                    MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());
                     values.add($.value(mybatisParameter));
                 }
             });

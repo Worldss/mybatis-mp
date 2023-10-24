@@ -15,8 +15,7 @@ import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
-import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
-import org.mybatis.mp.db.annotations.Id;
+import org.mybatis.mp.db.annotations.TableId;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -35,12 +34,13 @@ public class TableIdGeneratorWrapper {
         if (ms.getSqlCommandType() != SqlCommandType.INSERT || !(ms.getSqlSource() instanceof ProviderSqlSource) || ms.getParameterMap().getType() != EntityInsertContext.class) {
             return;
         }
+        String selectKeyId = ms.getId() + SelectKeyGenerator.SELECT_KEY_SUFFIX;
         Class tableClass = getEntityClass(ms);
         TableInfo tableInfo = TableInfos.get(tableClass, (MybatisConfiguration) ms.getConfiguration());
         if (Objects.nonNull(tableInfo.getIdInfo())) {
             KeyGenerator keyGenerator = null;
-            Id id = tableInfo.getIdInfo().getIdAnnotation();
-            switch (id.value()) {
+            TableId tableId = tableInfo.getIdInfo().getIdAnnotation();
+            switch (tableId.value()) {
                 //数据库默认自增
                 case AUTO: {
                     keyGenerator = Jdbc3KeyGenerator.INSTANCE;
@@ -53,8 +53,8 @@ public class TableIdGeneratorWrapper {
                 }
                 //序列
                 case SQL: {
-                    String selectKeyId = ms.getId() + SelectKeyGenerator.SELECT_KEY_SUFFIX;
-                    SqlSource sqlSource = new StaticSqlSource(ms.getConfiguration(), id.sql());
+
+                    SqlSource sqlSource = new StaticSqlSource(ms.getConfiguration(), tableId.sql());
                     ResultMap selectKeyResultMap = new ResultMap.Builder(ms.getConfiguration(), selectKeyId, tableInfo.getIdInfo().getReflectField().getType(),
                             Collections.emptyList()).build();
                     MappedStatement selectKeyMappedStatement = new MappedStatement.Builder(ms.getConfiguration(), selectKeyId, sqlSource, SqlCommandType.SELECT)
@@ -63,12 +63,12 @@ public class TableIdGeneratorWrapper {
                             .keyGenerator(NoKeyGenerator.INSTANCE)
                             .useCache(false)
                             .build();
-                    keyGenerator = new SelectKeyGenerator(selectKeyMappedStatement, id.executeBefore());
+                    keyGenerator = new SelectKeyGenerator(selectKeyMappedStatement, tableId.executeBefore());
                     break;
                 }
                 case GENERATOR: {
                     try {
-                        keyGenerator = id.generator().newInstance();
+                        keyGenerator = tableId.generator().newInstance();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -82,6 +82,8 @@ public class TableIdGeneratorWrapper {
             msMetaObject.setValue("keyGenerator", keyGenerator);
             msMetaObject.setValue("keyProperties", new String[]{"id"});
             msMetaObject.setValue("keyColumns", new String[]{tableInfo.getIdInfo().getColumnName()});
+
+            ms.getConfiguration().addKeyGenerator(selectKeyId, keyGenerator);
         }
     }
 }

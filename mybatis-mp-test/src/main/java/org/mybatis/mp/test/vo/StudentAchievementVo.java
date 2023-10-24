@@ -21,7 +21,7 @@ public class StudentAchievementVo extends StudentVo {
     @NestedResultTable(target =  Achievement.class,columnPrefix = "xx_")
     private Achievement achievement;
 
-    @ResultField(column = "haha")
-    private Integer xxx;
+    @ResultField(columnPrefix = "xx_")
+    private Integer score;
 
 }

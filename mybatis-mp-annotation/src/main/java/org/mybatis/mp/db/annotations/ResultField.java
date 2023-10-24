@@ -38,13 +38,6 @@ public @interface ResultField {
     String columnPrefix() default "";
 
     /**
-     * 列名
-     *
-     * @return
-     */
-    String column() default "";
-
-    /**
      * 配置 列的 jdbcType
      *
      * @return

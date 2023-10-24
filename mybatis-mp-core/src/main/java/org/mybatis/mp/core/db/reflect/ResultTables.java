@@ -115,31 +115,20 @@ public class ResultTables {
 
 
     private static ResultTableFieldInfo createFieldInfo(Class clazz, ResultField resultField, Field field, MybatisConfiguration mybatisConfiguration) {
-        FieldInfo fieldInfo = null;
-        if (resultField.target() == Void.class) {
-            if (StringPool.EMPTY.equals(resultField.column())) {
-                throw new RuntimeException(String.format("You need config @ResultField.column for attribute %s.%s  ", clazz.getName(), field.getName()));
-            }
-        } else {
-            //已设置目标
-            TableInfo tableInfo = TableInfos.get(resultField.target(), mybatisConfiguration);
-            if (Objects.isNull(tableInfo)) {
-                throw new RuntimeException(resultField.target().getName() + " It's not a Table class");
-            }
+        //已设置目标
+        TableInfo tableInfo = TableInfos.get(resultField.target(), mybatisConfiguration);
+        if (Objects.isNull(tableInfo)) {
+            throw new RuntimeException(resultField.target().getName() + " It's not a Table class");
+        }
 
-            String property = resultField.property();
-            if (StringPool.EMPTY.equals(property)) {
-                property = field.getName();
-            }
+        String property = resultField.property();
+        if (StringPool.EMPTY.equals(property)) {
+            property = field.getName();
+        }
 
-            fieldInfo = tableInfo.getFieldInfo(property);
-            if (Objects.isNull(fieldInfo) && StringPool.EMPTY.equals(resultField.column())) {
-                throw new RuntimeException(String.format("Unable to match attribute: %s.%s in table:%s", clazz.getName(), field.getName(), resultField.target().getName()));
-            }
-
-            if (Objects.nonNull(fieldInfo) && fieldInfo.getReflectField().getType() != field.getType()) {
-                throw new RuntimeException(String.format("This type:%s of the attribute:%s must be %s", clazz.getName(), resultField.property(), fieldInfo.getReflectField().getType()));
-            }
+        FieldInfo fieldInfo = tableInfo.getFieldInfo(property);
+        if (Objects.isNull(fieldInfo)) {
+            throw new RuntimeException(String.format("Unable to match attribute: %s.%s in table:%s", clazz.getName(), field.getName(), resultField.target().getName()));
         }
         return new ResultTableFieldInfo(field, fieldInfo, resultField, mybatisConfiguration);
     }

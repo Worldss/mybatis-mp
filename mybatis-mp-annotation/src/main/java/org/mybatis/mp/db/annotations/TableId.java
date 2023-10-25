@@ -55,7 +55,7 @@ public @interface TableId {
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface List {
+    @interface List {
         TableId[] value();
     }
 }

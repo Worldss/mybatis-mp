@@ -68,6 +68,9 @@ public final class TableInfos {
      * @return
      */
     public static TableInfo get(Class tableClass) {
+        if(tableClass==null){
+            return null;
+        }
         return TABLE_INFO_MAP.get(tableClass);
     }
 

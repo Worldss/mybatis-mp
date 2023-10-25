@@ -1,14 +1,12 @@
 package org.mybatis.mp.core.mybatis.configuration;
 
 
-import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.executor.*;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.*;
-import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.ResultHandler;
@@ -19,11 +17,10 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.mybatis.mp.core.db.reflect.ResultTables;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
-import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
-import org.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +40,7 @@ public class MybatisConfiguration extends Configuration {
 
     public MybatisConfiguration() {
         super();
+
     }
 
     public MybatisConfiguration(Environment environment) {

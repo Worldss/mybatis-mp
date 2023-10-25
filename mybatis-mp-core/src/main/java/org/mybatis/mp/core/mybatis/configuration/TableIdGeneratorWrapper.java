@@ -35,8 +35,12 @@ public class TableIdGeneratorWrapper {
             return;
         }
         String selectKeyId = ms.getId() + SelectKeyGenerator.SELECT_KEY_SUFFIX;
-        Class tableClass = getEntityClass(ms);
-        TableInfo tableInfo = TableInfos.get(tableClass, (MybatisConfiguration) ms.getConfiguration());
+        Class entityClass = getEntityClass(ms);
+        if (entityClass == null) {
+            //可能是动态的 所以无法获取entityClass
+            return;
+        }
+        TableInfo tableInfo = TableInfos.get(entityClass, (MybatisConfiguration) ms.getConfiguration());
         if (Objects.nonNull(tableInfo.getIdInfo())) {
             KeyGenerator keyGenerator = null;
             TableId tableId = tableInfo.getIdInfo().getIdAnnotation();

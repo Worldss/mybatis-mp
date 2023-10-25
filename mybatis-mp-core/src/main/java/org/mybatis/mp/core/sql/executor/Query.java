@@ -9,17 +9,20 @@ import org.mybatis.mp.core.db.reflect.TableInfos;
 
 import java.util.function.Consumer;
 
-public class Query extends db.sql.core.api.cmd.executor.AbstractQuery<Query, MybatisCmdFactory>{
+public class Query extends db.sql.core.api.cmd.executor.AbstractQuery<Query, MybatisCmdFactory> {
 
-    private final Class returnType;
+    private Class returnType;
 
-    public Query(Class returnType) {
+    public Query() {
         super(new MybatisCmdFactory());
-        this.returnType = returnType;
     }
 
     public Class getReturnType() {
         return returnType;
+    }
+
+    public void setReturnType(Class returnType) {
+        this.returnType = returnType;
     }
 
     @Override

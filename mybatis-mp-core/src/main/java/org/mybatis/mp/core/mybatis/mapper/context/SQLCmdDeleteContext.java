@@ -1,7 +1,7 @@
 package org.mybatis.mp.core.mybatis.mapper.context;
 
 
-import db.sql.core.api.cmd.executor.Delete;
+import org.mybatis.mp.core.sql.executor.Delete;
 
 public class SQLCmdDeleteContext extends BaseSQLCmdContext {
 

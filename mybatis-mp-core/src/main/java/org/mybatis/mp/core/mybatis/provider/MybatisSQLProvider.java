@@ -12,6 +12,7 @@ import org.mybatis.mp.core.db.reflect.TableInfos;
 import org.mybatis.mp.core.mybatis.mapper.MapperTables;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import org.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
+import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdDeleteContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 import org.mybatis.mp.core.sql.executor.Query;
 
@@ -26,6 +27,7 @@ public class MybatisSQLProvider {
 
     public static final String SAVE_NAME = "save";
     public static final String UPDATE_NAME = "update";
+    public static final String DELETE_NAME = "delete";
     public static final String GET_BY_ID_NAME = "getById";
     public static final String DELETE_BY_ID_NAME = "deleteById";
     public static final String ALL_NAME = "all";
@@ -42,6 +44,10 @@ public class MybatisSQLProvider {
 
     public static StringBuilder update(EntityUpdateContext updateContext, ProviderContext providerContext) {
         return updateContext.sql(providerContext.getDatabaseId());
+    }
+
+    public static StringBuilder delete(SQLCmdDeleteContext deleteContext, ProviderContext providerContext) {
+        return deleteContext.sql(providerContext.getDatabaseId());
     }
 
     private static SQL getTableDefaultSelect(TableInfo tableInfo) {
@@ -101,6 +107,9 @@ public class MybatisSQLProvider {
             if (Objects.nonNull(tableClass)) {
                 query.from(tableClass);
             }
+            if (query.getSelect() == null || query.getSelect().getSelectFiled().isEmpty()) {
+                query.select(tableClass);
+            }
         }
 
         if (Objects.nonNull(query.getFrom()) && (Objects.isNull(query.getSelect()) || query.getSelect().getSelectFiled().isEmpty())) {
@@ -108,9 +117,12 @@ public class MybatisSQLProvider {
             for (Dataset dataset : datasets) {
                 if (dataset instanceof Table) {
                     Table table = (Table) dataset;
-                    query.select(table);
+                    query.select(query.$().all(table));
                 }
             }
+        }
+        if (query.getReturnType() == null) {
+            query.setReturnType(MapperTables.get(providerContext.getMapperType()));
         }
     }
 

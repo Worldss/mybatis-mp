@@ -17,6 +17,7 @@ import org.mybatis.mp.test.entity.Achievement;
 import org.mybatis.mp.test.entity.Student;
 import org.mybatis.mp.test.mapper.AchievementMybatisMapper;
 import org.mybatis.mp.test.mapper.StudentMybatisMapper;
+import org.mybatis.mp.test.vo.StudentVo;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -78,7 +79,7 @@ public class DataInitializer {
 
         System.out.println(studentMapper.getById2(1));
 
-        Achievement getOne111 = achievementMapper.get(new Query(Achievement.class) {{
+        Achievement getOne111 = achievementMapper.get(new Query() {{
             select(Achievement::getId);
             from(Achievement.class);
             eq(Achievement::getId, 1);
@@ -100,7 +101,7 @@ public class DataInitializer {
             }
         }
 
-        Achievement getOne222 = achievementMapper.get(new Query(Achievement.class) {{
+        Achievement getOne222 = achievementMapper.get(new Query() {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
@@ -112,7 +113,7 @@ public class DataInitializer {
 
         Pager<Achievement> pager = new Pager<>();
         pager.setSize(3);
-        pager = achievementMapper.paging(new Query(Achievement.class) {{
+        pager = achievementMapper.paging(new Query() {{
             Table table = $.table(Achievement.class, 1);
             select($.all(table));
             from(table);
@@ -125,7 +126,7 @@ public class DataInitializer {
 
         achievementMapper.deleteById(1);
 
-        List<Achievement> list4 = achievementMapper.list(new Query(Achievement.class) {{
+        List<Achievement> list4 = achievementMapper.list(new Query() {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
@@ -135,7 +136,7 @@ public class DataInitializer {
 
         System.out.println("<><><>list4<><><><>>" + list4);
 
-        Achievement getOne = achievementMapper.get(new Query(Achievement.class) {{
+        Achievement getOne = achievementMapper.get(new Query() {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
@@ -144,7 +145,7 @@ public class DataInitializer {
 
         System.out.println("<><><><><><>getOne<>>" + getOne);
 
-        Achievement getOne2 = achievementMapper.get(new Query(Achievement.class) {{
+        Achievement getOne2 = achievementMapper.get(new Query() {{
             Table table = $.table("achievement");
             select($.all(table));
             from(table);
@@ -158,7 +159,7 @@ public class DataInitializer {
         System.out.println("<><><><><>getOne3<><>>" + getOne3);
 
 
-        List<Achievement> joinResultList = achievementMapper.list(new Query(Achievement.class)
+        List<Achievement> joinResultList = achievementMapper.list(new Query()
                 //.select(Achievement.class)
                 .select(Achievement::getId, column -> column.max())
                 .from(Achievement.class, table -> table.as("a"))
@@ -168,6 +169,8 @@ public class DataInitializer {
                 .having(having -> having.and($ -> $.field(Achievement::getId, 1).count().gt(1)))
                 .orderBy(Achievement::getId)
         );
+
+        List<StudentVo> joinResultList2 = achievementMapper.list(new Query());
 
         System.out.println("<><><><><>joinResultList<><>>" + joinResultList);
 

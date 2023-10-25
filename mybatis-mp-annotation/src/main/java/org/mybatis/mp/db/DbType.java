@@ -7,6 +7,6 @@ public enum DbType {
      */
     DEFAULT,
 
-    MYSQL;
+    MYSQL
 
 }

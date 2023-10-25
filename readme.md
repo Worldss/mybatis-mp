@@ -28,10 +28,13 @@
 </dependency>  
 ```
 
-> 添加此依赖，无需再添加mybatis依赖
-> 包含 mybatis-spring-boot-starter 所有功能
-> 配置参数，参考 https://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/zh/index.html
-> 新增配置项：（其他配置和mybatis-spring-boot-starter 一直）
+> 1.添加此依赖，无需再添加mybatis依赖
+> 
+> 2.包含 mybatis-spring-boot-starter 所有功能
+> 
+> 3.配置参数，参考 https://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/zh/index.html
+>
+> 4.新增配置项：（其他配置和mybatis-spring-boot-starter 一致）
 ```azure
 mybatis:
     configuration:
@@ -47,19 +50,23 @@ public class Student {
 }
 ```
 ### 2. @TableId
+```java
 @Table
 public class Student {
 @TableId(value = IdAutoType.SQL, sql = "SELECT LAST_INSERT_ID()")
 private Integer id;
 }
+```
 > @TableId 支持不同数据库自增或序列 以及 自定义SQL，默认是数据库自增
 ### 3. @TableField 数据库字段注解
+```java
 @Table
 public class Student {
      
     @TableField(typeHandler = LocalDateTimeTypeHandler.class)
     private LocalDateTime createTime;
 }
+```
 > @TableField 可以设置列名、typeHandler、jdbcType、是否查询、是否更新 等
 ### 4. @Ignore 可忽略字段
 ### 5. @ForeignKey 外键，配置后 JOIN时无需要再加 ON条件（自动添加）

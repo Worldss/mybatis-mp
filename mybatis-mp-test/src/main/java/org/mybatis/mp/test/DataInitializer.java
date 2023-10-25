@@ -190,7 +190,11 @@ public class DataInitializer {
                 .orderBy(Achievement::getId)
         );
 
-        List<StudentAchievementVo> joinResultList2 = achievementMapper.list(new Query().setReturnType(StudentAchievementVo.class));
+        List<StudentAchievementVo> joinResultList2 = achievementMapper.list(new Query()
+                .select(Student.class, Achievement.class)
+                .from(Student.class)
+                .join(Student.class, Achievement.class)
+                .setReturnType(StudentAchievementVo.class));
         System.out.println("<><><><><>joinResultList<><>>" + joinResultList2);
 
         session.close();

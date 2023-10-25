@@ -14,17 +14,36 @@ import org.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdDeleteContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 import org.mybatis.mp.core.sql.executor.Query;
+import org.mybatis.mp.core.util.FieldUtils;
+import org.mybatis.mp.db.annotations.NestedResultTable;
 import org.mybatis.mp.db.annotations.ResultTable;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 public class MybatisSQLProvider {
+
+    private static class EntityPrefix{
+
+        private final Class entity;
+
+        private final String columnPrefix;
+
+        public EntityPrefix(Class entity,String columnPrefix){
+            this.entity=entity;
+            this.columnPrefix=columnPrefix;
+        }
+
+        public Class getEntity() {
+            return entity;
+        }
+
+        public String getColumnPrefix() {
+            return columnPrefix;
+        }
+    }
 
     public static final String SAVE_NAME = "save";
     public static final String UPDATE_NAME = "update";
@@ -35,7 +54,7 @@ public class MybatisSQLProvider {
 
     private static final Map<String, String> SQL_CACHE_MAP = new ConcurrentHashMap<>();
 
-    private static final Map<Class, ResultTable[]> RESULT_TABLE_MAP = new HashMap<>();
+    private static final Map<Class, List<EntityPrefix>> RESULT_TABLE_MAP = new HashMap<>();
 
     private MybatisSQLProvider() {
 
@@ -124,17 +143,34 @@ public class MybatisSQLProvider {
         if (query.getReturnType() == null) {
             query.setReturnType(MapperTables.get(providerContext.getMapperType()));
         } else {
-            ResultTable[] resultTables = RESULT_TABLE_MAP.computeIfAbsent(query.getReturnType(), key -> {
-                ResultTable[] data = (ResultTable[]) query.getReturnType().getAnnotationsByType(ResultTable.class);
-                return data == null ? new ResultTable[]{} : data;
-            });
 
-            if (resultTables != null) {
-                for (ResultTable item : resultTables) {
-                    if (item.columnPrefix() == null || item.columnPrefix().trim().isEmpty()) {
+            List<EntityPrefix> entityPrefix = RESULT_TABLE_MAP.computeIfAbsent(query.getReturnType(), key -> {
+                List<EntityPrefix> list=new ArrayList<>();
+                ResultTable[] resultTables = (ResultTable[]) query.getReturnType().getAnnotationsByType(ResultTable.class);
+                if(resultTables==null||resultTables.length<1){
+                    return list;
+                }
+                for(ResultTable resultTable:resultTables){
+                    if(resultTable.columnPrefix()==null||resultTable.columnPrefix().isEmpty()){
                         continue;
                     }
-                    queryContext.getExecution().$().cacheTable(item.value(), 1).setPrefix(item.columnPrefix());
+                    list.add(new EntityPrefix(resultTable.value(),resultTable.columnPrefix()));
+                }
+                FieldUtils.getResultMappingFields(query.getReturnType()).stream().forEach(item->{
+                    if(item.isAnnotationPresent(NestedResultTable.class)){
+                        NestedResultTable nestedResultTable=item.getAnnotation(NestedResultTable.class);
+                        list.add(new EntityPrefix(nestedResultTable.target(),nestedResultTable.columnPrefix()));
+                    }
+                });
+                return list;
+            });
+
+            if (entityPrefix != null) {
+                for (EntityPrefix item : entityPrefix) {
+                    if (item.getColumnPrefix() == null || item.getColumnPrefix().trim().isEmpty()) {
+                        continue;
+                    }
+                    queryContext.getExecution().$().cacheTable(item.getEntity(), 1).setPrefix(item.getColumnPrefix());
                 }
             }
         }

@@ -11,15 +11,9 @@ import org.mybatis.mp.test.entity.Student;
 @Data
 @ToString(callSuper = true)
 @ResultTable(Student.class)
-@ResultTable(value = Achievement.class, prefix = "achievement",columnPrefix = "xx_")
-public class StudentAchievementVo extends StudentVo {
-
-    private Integer achievementId;
+public class StudentAchievementVo  extends Student {
 
     @NestedResultTable(target =  Achievement.class,columnPrefix = "xx_")
     private Achievement achievement;
-
-    @ResultField(target = Achievement.class, columnPrefix = "xx_")
-    private Integer score;
 
 }

@@ -121,7 +121,7 @@ public class StudentAchievementVo extends StudentVo {
 > @NestedResultField 用于解决内嵌类字段规则特殊的字段名称
 > 
 > 返回可以平级 或者 1级 2级 两层映射
-### 1.mybatis Mapper要去
+### 1.mybatis Mapper 实现
 > 需要继承 MybatisMapper
 ```java
 public interface StudentMapper extends MybatisMapper<Student> {

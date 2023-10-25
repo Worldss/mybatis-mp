@@ -1,13 +1,18 @@
 package org.mybatis.mp.core.sql.executor;
 
+import db.sql.api.Cmd;
+import db.sql.api.Getter;
 import db.sql.api.JoinMode;
 import db.sql.core.api.cmd.On;
+import db.sql.core.api.cmd.TableField;
 import org.mybatis.mp.core.db.reflect.FieldInfo;
 import org.mybatis.mp.core.db.reflect.ForeignInfo;
 import org.mybatis.mp.core.db.reflect.TableInfo;
 import org.mybatis.mp.core.db.reflect.TableInfos;
+import org.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Query extends db.sql.core.api.cmd.executor.AbstractQuery<Query, MybatisCmdFactory> {
 
@@ -21,8 +26,29 @@ public class Query extends db.sql.core.api.cmd.executor.AbstractQuery<Query, Myb
         return returnType;
     }
 
-    public void setReturnType(Class returnType) {
+    public Query setReturnType(Class returnType) {
         this.returnType = returnType;
+        return this;
+    }
+
+    @Override
+    public Query select(Class entity, int storey) {
+        TableInfo tableInfo = TableInfos.load(entity, MybatisConfiguration.INSTANCE);
+        if (tableInfo == null) {
+            return super.select(entity, storey);
+        } else {
+            tableInfo.getFieldInfos().stream().forEach(item -> {
+                if (item.getFieldAnnotation().select()) {
+                    this.select($.field(entity, item.getReflectField().getName(), storey));
+                }
+            });
+        }
+        return this;
+    }
+
+    @Override
+    public <T> Query select(Getter<T> column, Function<TableField, Cmd> f) {
+        return super.select(column, f);
     }
 
     @Override

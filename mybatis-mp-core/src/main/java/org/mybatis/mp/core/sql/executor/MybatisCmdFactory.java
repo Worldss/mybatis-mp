@@ -15,10 +15,14 @@ public class MybatisCmdFactory extends CmdFactory {
         return this.table(entity, 1);
     }
 
+    public Table cacheTable(Class entity, int storey) {
+        return this.tableCache.get(String.format("%s.%s", entity.getName(), storey));
+    }
+
     @Override
-    public Table table(Class clazz, int storey) {
-        return MapUtil.computeIfAbsent(this.tableCache, clazz.getName(), key -> {
-            TableInfo tableInfo = TableInfos.get(clazz);
+    public Table table(Class entity, int storey) {
+        return MapUtil.computeIfAbsent(this.tableCache, String.format("%s.%s", entity.getName(), storey), key -> {
+            TableInfo tableInfo = TableInfos.get(entity);
             tableNums++;
             Table table = new Table(tableInfo.getBasicInfo().getSchemaAndTableName());
             table.as(tableAs(storey, tableNums));

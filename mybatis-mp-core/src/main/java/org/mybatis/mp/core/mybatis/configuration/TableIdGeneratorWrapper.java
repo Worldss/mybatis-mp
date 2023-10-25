@@ -60,7 +60,7 @@ public class TableIdGeneratorWrapper {
 
                     SqlSource sqlSource = new StaticSqlSource(ms.getConfiguration(), tableId.sql());
                     ResultMap selectKeyResultMap = new ResultMap.Builder(ms.getConfiguration(), selectKeyId, tableInfo.getIdInfo().getReflectField().getType(),
-                            Collections.emptyList()).build();
+                            Collections.emptyList(), false).build();
                     MappedStatement selectKeyMappedStatement = new MappedStatement.Builder(ms.getConfiguration(), selectKeyId, sqlSource, SqlCommandType.SELECT)
                             .keyProperty("id")
                             .resultMaps(Collections.singletonList(selectKeyResultMap))

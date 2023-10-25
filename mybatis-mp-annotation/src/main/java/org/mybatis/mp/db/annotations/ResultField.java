@@ -20,7 +20,7 @@ public @interface ResultField {
      *
      * @return
      */
-    Class target() default Void.class;
+    Class target();
 
     /**
      * 对应target属性

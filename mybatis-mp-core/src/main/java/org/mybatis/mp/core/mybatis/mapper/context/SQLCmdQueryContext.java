@@ -7,4 +7,9 @@ public class SQLCmdQueryContext<R> extends BaseSQLCmdContext<Query> {
     public SQLCmdQueryContext(Query execution) {
         super(execution);
     }
+
+    @Override
+    public StringBuilder sql(String databaseId) {
+        return super.sql(databaseId);
+    }
 }

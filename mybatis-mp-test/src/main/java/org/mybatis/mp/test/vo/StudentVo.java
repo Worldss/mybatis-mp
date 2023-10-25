@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 @ToString(callSuper = true)
-@ResultTable(Student.class)
+@ResultTable(value = Student.class, columnPrefix = "$")
 public class StudentVo {
 
     private Integer id;

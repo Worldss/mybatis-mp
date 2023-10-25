@@ -2,7 +2,6 @@ package org.mybatis.mp.core.mybatis.provider;
 
 
 import db.sql.core.api.cmd.Dataset;
-import db.sql.core.api.cmd.Table;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.util.MapUtil;
@@ -15,8 +14,10 @@ import org.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdDeleteContext;
 import org.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 import org.mybatis.mp.core.sql.executor.Query;
+import org.mybatis.mp.db.annotations.ResultTable;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,6 +34,8 @@ public class MybatisSQLProvider {
     public static final String ALL_NAME = "all";
 
     private static final Map<String, String> SQL_CACHE_MAP = new ConcurrentHashMap<>();
+
+    private static final Map<Class, ResultTable[]> RESULT_TABLE_MAP = new HashMap<>();
 
     private MybatisSQLProvider() {
 
@@ -115,14 +118,25 @@ public class MybatisSQLProvider {
         if (Objects.nonNull(query.getFrom()) && (Objects.isNull(query.getSelect()) || query.getSelect().getSelectFiled().isEmpty())) {
             List<Dataset> datasets = query.getFrom().getTables();
             for (Dataset dataset : datasets) {
-                if (dataset instanceof Table) {
-                    Table table = (Table) dataset;
-                    query.select(query.$().all(table));
-                }
+                query.select(query.$().all(dataset));
             }
         }
         if (query.getReturnType() == null) {
             query.setReturnType(MapperTables.get(providerContext.getMapperType()));
+        } else {
+            ResultTable[] resultTables = RESULT_TABLE_MAP.computeIfAbsent(query.getReturnType(), key -> {
+                ResultTable[] data = (ResultTable[]) query.getReturnType().getAnnotationsByType(ResultTable.class);
+                return data == null ? new ResultTable[]{} : data;
+            });
+
+            if (resultTables != null) {
+                for (ResultTable item : resultTables) {
+                    if (item.columnPrefix() == null || item.columnPrefix().trim().isEmpty()) {
+                        continue;
+                    }
+                    queryContext.getExecution().$().cacheTable(item.value(), 1).setPrefix(item.columnPrefix());
+                }
+            }
         }
     }
 

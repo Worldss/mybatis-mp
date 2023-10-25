@@ -38,6 +38,8 @@ public class MybatisConfiguration extends Configuration {
      */
     private boolean tableUnderline = true;
 
+    public static MybatisConfiguration INSTANCE;
+
     public MybatisConfiguration() {
         super();
 
@@ -45,6 +47,7 @@ public class MybatisConfiguration extends Configuration {
 
     public MybatisConfiguration(Environment environment) {
         super(environment);
+        INSTANCE = this;
     }
 
     public void printBanner() {
@@ -78,7 +81,6 @@ public class MybatisConfiguration extends Configuration {
         ResultMapWrapper.replaceResultMap(ms);
         super.addMappedStatement(ms);
     }
-
 
     @Override
     public <T> void addMapper(Class<T> type) {

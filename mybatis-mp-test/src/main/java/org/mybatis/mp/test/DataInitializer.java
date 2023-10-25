@@ -16,8 +16,8 @@ import org.mybatis.mp.test.commons.DataSourceFactory;
 import org.mybatis.mp.test.entity.Achievement;
 import org.mybatis.mp.test.entity.Student;
 import org.mybatis.mp.test.mapper.AchievementMybatisMapper;
-import org.mybatis.mp.test.mapper.StudentMybatisMapper;
-import org.mybatis.mp.test.vo.StudentVo;
+import org.mybatis.mp.test.mapper.StudentMapper;
+import org.mybatis.mp.test.vo.StudentAchievementVo;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -36,7 +36,7 @@ public class DataInitializer {
         Configuration configuration = new MybatisConfiguration(environment);
         configuration.setCacheEnabled(false);
         //configuration.setLogImpl(org.apache.ibatis.logging.stdout.StdOutImpl.class);
-        configuration.addMapper(StudentMybatisMapper.class);
+        configuration.addMapper(StudentMapper.class);
         configuration.addMapper(AchievementMybatisMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
 
@@ -47,7 +47,7 @@ public class DataInitializer {
 
         init();
         SqlSession session = sqlSessionFactory.openSession(true);
-        StudentMybatisMapper studentMapper = session.getMapper(StudentMybatisMapper.class);
+        StudentMapper studentMapper = session.getMapper(StudentMapper.class);
         AchievementMybatisMapper achievementMapper = session.getMapper(AchievementMybatisMapper.class);
 
         Student student = new Student();
@@ -77,20 +77,24 @@ public class DataInitializer {
         List<Student> list = studentMapper.all();
         System.out.println(list);
 
-        System.out.println(studentMapper.getById2(1));
 
-        Achievement getOne111 = achievementMapper.get(new Query() {{
-            select(Achievement::getId);
-            from(Achievement.class);
-            eq(Achievement::getId, 1);
-        }});
+        Student stu = studentMapper.getById(1);
+        Student stu2 = studentMapper.get(new Query().from(Student.class).eq(Student::getId, 1));
+        Student stu3 = studentMapper.get(new Query().select(Student::getName, Student::getCreateTime).from(Student.class).eq(Student::getId, 1));
+
+
+        Achievement getOne111 = achievementMapper.get(new Query().
+                select(Achievement::getId).
+                from(Achievement.class).
+                eq(Achievement::getId, 1)
+        );
 
         System.out.println("<><><><><><>getOne11<>>" + getOne111);
 
         for (int i = 0; i < 20; i++) {
             Achievement achievement = new Achievement();
             achievement.setScore(new BigDecimal(i + "9.99"));
-            achievement.setStudent_id(1);
+            achievement.setStudentId(1);
             achievement.setCreateTime(new Date());
             achievementMapper.save(achievement);
             if (i == 0) {
@@ -118,7 +122,7 @@ public class DataInitializer {
             select($.all(table));
             from(table);
             //eq($.field(table, Achievement::getStudent_id), $.value("1"));
-            eq(Achievement::getStudent_id, $.value(1));
+            eq(Achievement::getStudentId, $.value(1));
             //limit(1);
         }}, pager);
 
@@ -158,6 +162,22 @@ public class DataInitializer {
         Achievement getOne3 = achievementMapper.getById(1111);
         System.out.println("<><><><><>getOne3<><>>" + getOne3);
 
+        List<Achievement> achievementList = achievementMapper.list(new Query()
+                .select(Achievement.class)
+                .select(Student::getName)
+                .from(Achievement.class)
+                .join(Achievement.class, Student.class)
+                .eq(Achievement::getId, 1)
+        );
+
+        List<Achievement> achievementList2 = achievementMapper.list(new Query()
+                .select(Achievement.class)
+                .select(Student::getName)
+                .from(Achievement.class)
+                .join(Achievement.class, Student.class, on -> on.eq(Achievement::getStudentId, Student::getId))
+                .eq(Achievement::getId, 1)
+        );
+
 
         List<Achievement> joinResultList = achievementMapper.list(new Query()
                 //.select(Achievement.class)
@@ -170,10 +190,8 @@ public class DataInitializer {
                 .orderBy(Achievement::getId)
         );
 
-        List<StudentVo> joinResultList2 = achievementMapper.list(new Query());
-
-        System.out.println("<><><><><>joinResultList<><>>" + joinResultList);
-
+        List<StudentAchievementVo> joinResultList2 = achievementMapper.list(new Query().setReturnType(StudentAchievementVo.class));
+        System.out.println("<><><><><>joinResultList<><>>" + joinResultList2);
 
         session.close();
     }

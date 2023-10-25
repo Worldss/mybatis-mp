@@ -26,7 +26,7 @@ public interface BaseMapper<T> {
      * @return
      */
 
-    default T get(Query query) {
+    default <R> R get(Query query) {
         return this.$get(new SQLCmdQueryContext<>(query), new RowBounds(0, 1));
     }
 

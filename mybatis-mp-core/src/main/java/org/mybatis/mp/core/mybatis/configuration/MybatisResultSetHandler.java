@@ -25,7 +25,7 @@ public class MybatisResultSetHandler extends DefaultResultSetHandler {
         if (Objects.isNull(queryContext.getExecution().getReturnType())) {
             return ms;
         }
-        return DynamicsMappedStatement.create(queryContext.getExecution().getReturnType(), ms);
+        return DynamicsMappedStatement.create(queryContext.getExecution().getReturnType(), ms, queryContext.getExecution());
     }
 
     public MybatisResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler, ResultHandler<?> resultHandler, BoundSql boundSql, RowBounds rowBounds) {

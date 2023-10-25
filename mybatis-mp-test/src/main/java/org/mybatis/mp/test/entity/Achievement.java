@@ -3,8 +3,8 @@ package org.mybatis.mp.test.entity;
 import lombok.Data;
 import org.mybatis.mp.db.IdAutoType;
 import org.mybatis.mp.db.annotations.ForeignKey;
-import org.mybatis.mp.db.annotations.TableId;
 import org.mybatis.mp.db.annotations.Table;
+import org.mybatis.mp.db.annotations.TableId;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,7 +17,7 @@ public class Achievement {
     private Integer id;
 
     @ForeignKey(Student.class)
-    private Integer student_id;
+    private Integer studentId;
 
     private BigDecimal score;
 

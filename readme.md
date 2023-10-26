@@ -135,17 +135,20 @@ public interface StudentMapper extends MybatisMapper<Student> {
     
 }
 ```
+
 ### 2.Mapper方法
-    #### 2.1 getById(Serializable id) 根据ID查询实体
-    #### 2.2 delete(T entity) 根据实体类删除
-    #### 2.3 deleteById(Serializable id) 根据ID删除
-    #### 2.4 save(T entity) 保存
-    #### 2.5 update(T entity) 更新
-    #### 2.6 list(Query query) 列表动态查询
-    #### 2.7 List<T> all() 查询所有数据
-    #### 2.8 count(Query query) 动态count查询
-    #### 2.9 Pager<T> paging(Query query, Pager<T> pager) 分页查询
-    #### 3.0 <R> R get(Query query) 单个动态查询
+
+#### 2.1 getById(Serializable id) 根据ID查询实体
+#### 2.2 delete(T entity) 根据实体类删除
+#### 2.3 deleteById(Serializable id) 根据ID删除
+#### 2.4 save(T entity) 保存
+#### 2.5 update(T entity) 更新
+#### 2.6 list(Query query) 列表动态查询
+#### 2.7 List<T> all() 查询所有数据
+#### 2.8 count(Query query) 动态count查询
+#### 2.9 Pager<T> paging(Query query, Pager<T> pager) 分页查询
+#### 3.0 <R> R get(Query query) 单个动态查询
+
 ## CRUD
 ### 1.1 单个查询
 
@@ -172,7 +175,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
             .eq(Achievement::getId, 1)
     );
 ```
->  join 可结合 @ForeignKey使用 这样无法加 ON 条件 或者 使用下面的方式 join
+>  join 可结合 @ForeignKey使用 这样无需加 ON 条件 或者 使用下面的方式 join
 ```agsl
     List<Achievement> achievementList2 = achievementMapper.list(new Query()
             .select(Achievement.class)

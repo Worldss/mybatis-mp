@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>mybatis-mp-test</artifactId>
-    <version>${mybatis-mp.version}</version>
 
     <dependencies>
 

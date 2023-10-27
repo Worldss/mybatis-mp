@@ -3,7 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <name>mybatis-mp</name>
+    <url>https://gitee.com/hiaii/mybatis-mp</url>
+    <description>
+        一款基于mybatis的ORM框架
+    </description>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp</artifactId>
     <version>1.0.0</version>
@@ -12,6 +16,8 @@
         <module>mybatis-mp-annotation</module>
         <module>mybatis-mp-core</module>
         <module>mybatis-mp-test</module>
+        <module>mybatis-mp-sql-api</module>
+        <module>mybatis-mp-sql-core</module>
     </modules>
 
     <licenses>
@@ -52,8 +58,6 @@
         <mybatis-spring.version>2.1.1</mybatis-spring.version>
         <mybatis-spring-boot-starter.version>2.3.1</mybatis-spring-boot-starter.version>
 
-        <db-sql.version>1.0.0</db-sql.version>
-
         <lombok.version>1.18.28</lombok.version>
     </properties>
 
@@ -61,13 +65,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>db-sql</groupId>
-                <artifactId>db-sql-core</artifactId>
-                <version>${db-sql.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mybatis-mp</groupId>
+                <groupId>cn.mybatis-mp</groupId>
                 <artifactId>mybatis-mp-core</artifactId>
                 <version>${mybatis-mp.version}</version>
             </dependency>
@@ -143,10 +141,89 @@
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>db-sql</groupId>
-            <artifactId>db-sql-core</artifactId>
-        </dependency>
     </dependencies>
+
+
+    <profiles>
+        <profile>
+            <!-- 跳过测试：mvn package -Dmaven.test.skip=true   -->
+            <!-- 检测依赖最新版本：mvn versions:display-dependency-updates  -->
+            <!-- 统一修改版本号：mvn versions:set -DnewVersion=3.0  -->
+            <!-- mvn -N versions:update-child-modules  -->
+            <!-- mvn versions:set -DnewVersion=2.0 -DprocessAllModules=true -DallowSnapshots=true -->
+
+            <!-- mvn clean source:jar install -->
+            <!-- mvn deploy -Dmaven.test.skip=true -e -P release -->
+            <!-- mvn deploy -e -P release -->
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- Source -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Javadoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <configuration>
+                            <windowtitle>mybatis-mp</windowtitle>
+                            <doctitle>mybatis-mp</doctitle>
+                            <show>private</show>
+                            <detectLinks>false</detectLinks>
+                            <detectOfflineLinks>true</detectOfflineLinks>
+                            <linksource>true</linksource>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                            <detectJavaApiLink>true</detectJavaApiLink>
+                            <source>8</source>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- 以下是GPG -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>sonatype-nexus-snapshots</id>
+                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>sonatype-nexus-releases</id>
+                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>

@@ -22,7 +22,7 @@
 
 ```
 <dependency>
-    <groupId>org.mybatis-mp</groupId>
+    <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-spring-boot-starter</artifactId>
     <version>1.0.0</version>
 </dependency>  

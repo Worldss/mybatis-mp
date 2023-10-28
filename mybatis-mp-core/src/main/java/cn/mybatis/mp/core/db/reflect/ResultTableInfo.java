@@ -58,9 +58,9 @@ public class ResultTableInfo {
             if (entityNum == 0) {
                 return StringPool.EMPTY;
             } else if (entityNum == 1) {
-                return "$";
+                return "_";
             } else {
-                return "$" + entityNum;
+                return "_" + entityNum;
             }
         });
     }

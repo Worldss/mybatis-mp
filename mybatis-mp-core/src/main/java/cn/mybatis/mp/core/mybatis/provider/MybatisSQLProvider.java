@@ -141,12 +141,12 @@ public class MybatisSQLProvider {
             ResultTableInfo resultTableInfo = ResultTables.get(MybatisConfiguration.INSTANCE, query.getReturnType());
             if (Objects.nonNull(resultTableInfo)) {
                 resultTableInfo.getEntitysPrefix().forEach((key, value) -> {
-                    Table table = null;
                     for (int i = 1; i < 5; i++) {
-                        table = queryContext.getExecution().$().cacheTable(key, i);
-                    }
-                    if (table != null) {
-                        table.setPrefix(value);
+                        Table table = queryContext.getExecution().$().cacheTable(key, i);
+                        if(Objects.nonNull(table)){
+                            table.setPrefix(value);
+                            break;
+                        }
                     }
                 });
             }

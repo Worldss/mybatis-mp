@@ -1,8 +1,10 @@
 package cn.mybatis.mp.core.mybatis.provider;
 
 
-import cn.mybatis.mp.core.db.reflect.*;
-import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
+import cn.mybatis.mp.core.db.reflect.ResultClassEntityPrefixs;
+import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
+import cn.mybatis.mp.core.db.reflect.TableInfo;
+import cn.mybatis.mp.core.db.reflect.TableInfos;
 import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdDeleteContext;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdInsertContext;
@@ -139,9 +141,9 @@ public class MybatisSQLProvider {
         if (query.getReturnType() == null) {
             query.setReturnType(MapperTables.get(providerContext.getMapperType()));
         } else {
-            ResultTableInfo resultTableInfo = ResultTables.get(query.getReturnType());
-            if (Objects.nonNull(resultTableInfo)) {
-                resultTableInfo.getEntitysPrefix().forEach((key, value) -> {
+            Map<Class, String> entityPrefixMap = ResultClassEntityPrefixs.getEntityPrefix(query.getReturnType());
+            if (Objects.nonNull(entityPrefixMap)) {
+                entityPrefixMap.forEach((key, value) -> {
                     for (int i = 1; i < 5; i++) {
                         Table table = queryContext.getExecution().$().cacheTable(key, i);
                         if (Objects.nonNull(table)) {

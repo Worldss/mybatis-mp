@@ -8,63 +8,38 @@ import org.apache.ibatis.mapping.ResultMapping;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ResultTableInfo {
-
-    /**
-     * 实体类前缀
-     */
-    private final Map<Class, String> entitysPrefix;
-
-
     /**
      * 结果映射-mybatis原生
      */
     private final List<ResultMapping> resultMappings;
 
-    private int entityNum = -1;
-
-
     public ResultTableInfo(MybatisConfiguration configuration, Class clazz) {
         ResultEntity resultEntity = (ResultEntity) clazz.getAnnotation(ResultEntity.class);
-        Map<Class, String> entitysPrefix = new HashMap<>();
-        //前缀占位
-        createAndGetPrefix(entitysPrefix, resultEntity.value());
+        Map<Class, String> entitysPrefixMap = ResultClassEntityPrefixs.getEntityPrefix(clazz);
         List<ResultMapping> resultMappings = FieldUtils.getResultMappingFields(clazz).stream().map(field -> {
             if (field.isAnnotationPresent(ResultField.class)) {
                 ResultField resultField = field.getAnnotation(ResultField.class);
                 return createResultMapping(configuration, clazz, resultField, field);
             } else if (field.isAnnotationPresent(ResultEntityField.class)) {
                 ResultEntityField resultEntityField = field.getAnnotation(ResultEntityField.class);
-                return createResultMapping(configuration, clazz, createAndGetPrefix(entitysPrefix, resultEntityField.target()), resultEntityField, field);
+                return createResultMapping(configuration, clazz, entitysPrefixMap.get(resultEntityField.target()), resultEntityField, field);
             } else if (field.isAnnotationPresent(NestedResultEntity.class)) {
                 NestedResultEntity nestedResultEntity = field.getAnnotation(NestedResultEntity.class);
-                return createNestedResultMapping(configuration, clazz, createAndGetPrefix(entitysPrefix, nestedResultEntity.target()), nestedResultEntity, field);
+                return createNestedResultMapping(configuration, clazz, entitysPrefixMap.get(nestedResultEntity.target()), nestedResultEntity, field);
             } else {
                 return createResultMapping(configuration, clazz, resultEntity, field);
             }
         }).collect(Collectors.toList());
 
-
         this.resultMappings = Collections.unmodifiableList(resultMappings);
-        this.entitysPrefix = Collections.unmodifiableMap(entitysPrefix);
     }
-
-    private String createAndGetPrefix(Map<Class, String> entitysPrefix, Class entity) {
-        return entitysPrefix.computeIfAbsent(entity, key -> {
-            ++entityNum;
-            if (entityNum == 0) {
-                return StringPool.EMPTY;
-            } else if (entityNum == 1) {
-                return "_";
-            } else {
-                return "_" + entityNum;
-            }
-        });
-    }
-
 
     /**
      * 根据 @ResultEntity 匹配并构建ResultMapping
@@ -180,7 +155,4 @@ public class ResultTableInfo {
         return resultMappings;
     }
 
-    public Map<Class, String> getEntitysPrefix() {
-        return entitysPrefix;
-    }
 }

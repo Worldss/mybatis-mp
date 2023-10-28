@@ -1,11 +1,10 @@
 package db.sql.core.api.cmd.executor;
 
 import db.sql.api.Cmd;
+import db.sql.api.Getter;
 import db.sql.api.executor.Insert;
 import db.sql.core.api.cmd.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,6 +57,20 @@ public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY ex
 
         this.insertValues.add(values);
         return this.insertValues;
+    }
+
+    @Override
+    public SELF insert(Class entity) {
+        return this.insert($.table(entity));
+    }
+
+    @Override
+    public <T> SELF field(Getter<T>... fields) {
+        TableField[] tableField = new TableField[fields.length];
+        for (int i = 0; i < fields.length; i++) {
+            tableField[i] = $.field(fields[i]);
+        }
+        return this.field(tableField);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package cn.mybatis.mp.core.sql.executor;
 
+import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfos;
 import db.sql.api.Getter;
@@ -8,6 +9,8 @@ import db.sql.core.api.cmd.Table;
 import db.sql.core.api.cmd.TableField;
 import db.sql.core.api.tookit.LambdaUtil;
 import org.apache.ibatis.util.MapUtil;
+
+import java.util.Objects;
 
 
 public class MybatisCmdFactory extends CmdFactory {
@@ -41,7 +44,11 @@ public class MybatisCmdFactory extends CmdFactory {
         return MapUtil.computeIfAbsent(tableFieldCache, String.format("%s.%s.%s", clazz.getName(), filedName, storey), key -> {
             Table table = table(clazz, storey);
             TableInfo tableInfo = TableInfos.get(clazz);
-            return new TableField(table, tableInfo.getFieldInfo(filedName).getColumnName());
+            TableFieldInfo tableFieldInfo = tableInfo.getFieldInfo(filedName);
+            if (Objects.isNull(tableFieldInfo)) {
+                throw new RuntimeException(String.format("property %s is not a column", filedName));
+            }
+            return new TableField(table, tableFieldInfo.getColumnName());
         });
     }
 

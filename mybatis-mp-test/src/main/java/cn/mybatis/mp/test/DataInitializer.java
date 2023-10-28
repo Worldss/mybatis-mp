@@ -1,6 +1,17 @@
 package cn.mybatis.mp.test;
 
 
+import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
+import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
+import cn.mybatis.mp.core.sql.executor.Insert;
+import cn.mybatis.mp.core.sql.executor.Query;
+import cn.mybatis.mp.core.sql.executor.Update;
+import cn.mybatis.mp.test.commons.DataSourceFactory;
+import cn.mybatis.mp.test.entity.Achievement;
+import cn.mybatis.mp.test.entity.Student;
+import cn.mybatis.mp.test.mapper.AchievementMybatisMapper;
+import cn.mybatis.mp.test.mapper.StudentMapper;
+import cn.mybatis.mp.test.vo.StudentAchievementVo;
 import db.sql.core.api.cmd.Table;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -9,19 +20,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
-import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
-import cn.mybatis.mp.core.sql.executor.Query;
-import cn.mybatis.mp.test.commons.DataSourceFactory;
-import cn.mybatis.mp.test.entity.Achievement;
-import cn.mybatis.mp.test.entity.Student;
-import cn.mybatis.mp.test.mapper.AchievementMybatisMapper;
-import cn.mybatis.mp.test.mapper.StudentMapper;
-import cn.mybatis.mp.test.vo.StudentAchievementVo;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -57,10 +60,23 @@ public class DataInitializer {
         student.setCreateTime(LocalDateTime.now());
         studentMapper.save(student);
 
+        studentMapper.save(new Insert().insert(Student.class).field(
+                Student::getName,
+                Student::getExcellent,
+                Student::getCreateTime
+        ).values(Arrays.asList("哈哈", true, LocalDateTime.now())));
+
         System.out.println(student);
 
         student.setName("嘿嘿");
         studentMapper.update(student);
+
+
+        studentMapper.update(new Update()
+                .update(Student.class)
+                .set(Student::getName, "嘿嘿")
+                .eq(Student::getId, 1)
+        );
 
 
         System.out.println(studentMapper.getById(1));

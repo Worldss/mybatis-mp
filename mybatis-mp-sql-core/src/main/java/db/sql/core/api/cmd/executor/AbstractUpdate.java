@@ -1,13 +1,12 @@
 package db.sql.core.api.cmd.executor;
 
 import db.sql.api.Cmd;
+import db.sql.api.Getter;
 import db.sql.api.JoinMode;
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.executor.Update;
 import db.sql.core.api.cmd.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -55,6 +54,15 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
+    public SELF update(Class... entitys) {
+        Dataset[] tables = new Dataset[entitys.length];
+        for (int i = 0; i < entitys.length; i++) {
+            tables[i] = $.table(entitys[i]);
+        }
+        return this.update(tables);
+    }
+
+    @Override
     public SELF set(Cmd field, Object value) {
         Value v;
         if (value instanceof Value) {
@@ -68,6 +76,11 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
         }
         this.updateSets.set((TableField) field, v);
         return (SELF) this;
+    }
+
+    @Override
+    public <T> SELF set(Getter<T> field, Object value) {
+        return this.set($.field(field), value);
     }
 
     @Override

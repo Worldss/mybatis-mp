@@ -4,10 +4,10 @@ package cn.mybatis.mp.core.mybatis.provider;
 import cn.mybatis.mp.core.db.reflect.*;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
-import cn.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
-import cn.mybatis.mp.core.mybatis.mapper.context.EntityUpdateContext;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdDeleteContext;
+import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdInsertContext;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
+import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdUpdateContext;
 import cn.mybatis.mp.core.sql.executor.Query;
 import db.sql.core.api.cmd.Dataset;
 import db.sql.core.api.cmd.Table;
@@ -55,11 +55,11 @@ public class MybatisSQLProvider {
 
     }
 
-    public static StringBuilder save(EntityInsertContext insertContext, ProviderContext providerContext) {
+    public static StringBuilder save(SQLCmdInsertContext insertContext, ProviderContext providerContext) {
         return insertContext.sql(providerContext.getDatabaseId());
     }
 
-    public static StringBuilder update(EntityUpdateContext updateContext, ProviderContext providerContext) {
+    public static StringBuilder update(SQLCmdUpdateContext updateContext, ProviderContext providerContext) {
         return updateContext.sql(providerContext.getDatabaseId());
     }
 
@@ -159,7 +159,7 @@ public class MybatisSQLProvider {
         //sql = sql.insert(sql.indexOf("SELECT") + 7, "count(");
         //sql = sql.insert(sql.indexOf("FROM") - 1, ")");
         sql.replace(sql.indexOf("SELECT") + 7, sql.indexOf("FROM") - 1, "count(*)");
-        return sql;
+        return new StringBuilder("SELECT COUNT(*) FROM (").append(sql).append(") T");
     }
 
     public static StringBuilder cmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {

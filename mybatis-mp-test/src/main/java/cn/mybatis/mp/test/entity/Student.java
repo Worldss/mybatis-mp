@@ -1,12 +1,11 @@
 package cn.mybatis.mp.test.entity;
 
-import lombok.Data;
-import org.apache.ibatis.type.LocalDateTimeTypeHandler;
 import cn.mybatis.mp.db.IdAutoType;
-import cn.mybatis.mp.db.annotations.Ignore;
 import cn.mybatis.mp.db.annotations.Table;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;
+import lombok.Data;
+import org.apache.ibatis.type.LocalDateTimeTypeHandler;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +18,6 @@ public class Student {
 
     private String name;
 
-    @Ignore
     private Boolean excellent;
 
     @TableField(typeHandler = LocalDateTimeTypeHandler.class)

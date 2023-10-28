@@ -6,7 +6,9 @@ import cn.mybatis.mp.core.db.reflect.TableInfos;
 import cn.mybatis.mp.core.mybatis.mapper.context.*;
 import cn.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import cn.mybatis.mp.core.sql.executor.Delete;
+import cn.mybatis.mp.core.sql.executor.Insert;
 import cn.mybatis.mp.core.sql.executor.Query;
+import cn.mybatis.mp.core.sql.executor.Update;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
@@ -41,6 +43,16 @@ public interface BaseMapper<T> {
     }
 
     /**
+     * 动态插入
+     *
+     * @param insert
+     * @return
+     */
+    default int save(Insert insert) {
+        return this.$$save(new SQLCmdInsertContext<>(insert));
+    }
+
+    /**
      * 实体类修改
      *
      * @param entity
@@ -50,6 +62,22 @@ public interface BaseMapper<T> {
         return this.$update(new EntityUpdateContext(entity));
     }
 
+    /**
+     * 动态修改
+     *
+     * @param update
+     * @return
+     */
+    default int update(Update update) {
+        return this.$$update(new SQLCmdUpdateContext(update));
+    }
+
+    /**
+     * 实体类删除
+     *
+     * @param entity
+     * @return
+     */
     default int delete(T entity) {
         TableInfo tableInfo = TableInfos.get(entity.getClass());
         try {
@@ -57,10 +85,20 @@ public interface BaseMapper<T> {
             Delete delete = new Delete().delete(entity.getClass()).from(entity.getClass());
             Serializable id = (Serializable) idInfo.getReadFieldInvoker().invoke(entity, null);
             delete.eq(delete.$().field(entity.getClass(), idInfo.getField().getName(), 1), id);
-            return this.$delete(new SQLCmdDeleteContext(delete));
+            return this.delete(delete);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 动态删除
+     *
+     * @param delete
+     * @return
+     */
+    default int delete(Delete delete) {
+        return this.$delete(new SQLCmdDeleteContext(delete));
     }
 
     /**
@@ -100,7 +138,7 @@ public interface BaseMapper<T> {
      * @param pager
      * @return
      */
-    default Pager<T> paging(Query query, Pager<T> pager) {
+    default <R> Pager<R> paging(Query query, Pager<R> pager) {
         if (pager.isExecuteCount()) {
             Class returnType = query.getReturnType();
             query.setReturnType(Integer.TYPE);
@@ -128,19 +166,25 @@ public interface BaseMapper<T> {
     /**
      * @param insertContext
      * @return
-     * @see MybatisSQLProvider#save(EntityInsertContext, ProviderContext)
+     * @see MybatisSQLProvider#save(SQLCmdInsertContext, ProviderContext)
      */
     @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
     int $save(EntityInsertContext<T> insertContext);
 
 
+    @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
+    int $$save(SQLCmdInsertContext insertContext);
+
     /**
      * @param updateContext
      * @return
-     * @see MybatisSQLProvider#update(EntityUpdateContext, ProviderContext)
+     * @see MybatisSQLProvider#update(SQLCmdUpdateContext, ProviderContext)
      */
     @UpdateProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.UPDATE_NAME)
     int $update(EntityUpdateContext<T> updateContext);
+
+    @UpdateProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.UPDATE_NAME)
+    int $$update(SQLCmdUpdateContext updateContext);
 
 
     /**

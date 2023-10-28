@@ -90,7 +90,7 @@ public class Achievement {
 ```java
 @Data
 @ToString(callSuper = true)
-@ResultTable(Student.class)
+@ResultEntity(Student.class)
 public class StudentVo {
 
     private Integer id;
@@ -99,33 +99,35 @@ public class StudentVo {
 
     //private LocalDateTime stCreateTime;
 
-    @ResultField(target = Student.class, property = "createTime")
+    @ResultEntityField(target = Student.class, property = "createTime")
     private LocalDateTime st2CreateTime;
 }
 
 @Data
 @ToString(callSuper = true)
 @ResultTable(Student.class)
-@ResultTable(value = Achievement.class, prefix = "achievement",columnPrefix = "xx_")
 public class StudentAchievementVo extends StudentVo {
-    
+
+    @ResultEntityField(target = Achievement.class, property = "id")
     private Integer achievementId;
 
-    @NestedResultTable(target =  Achievement.class,columnPrefix = "xx_")
+    @NestedResultTable(target =  Achievement.class)
     private Achievement achievement;
 
-    @ResultField(columnPrefix = "xx_")
+    @ResultField(value = "xx_score")
     private Integer score;
 
 }
 ```
-> @ResultTable 用于返回类 和 实体类关联
+> @ResultEntity 用于返回类 和 实体类关联 (只能配置一个，哪个返回列多，配哪个实体类)
 > 
-> @ResultField 用于解决规则特殊的字段名称
+> @ResultEntityField 用于解决字段名字和实体类名字不一致的问题
 > 
-> @NestedResultTable 用于内嵌类的映射 和 @ResultTable类似
+> @NestedResultEntity 用于内嵌类的映射 和 @ResultEntity 类似
 > 
-> @NestedResultField 用于解决内嵌类字段规则特殊的字段名称
+> @NestedResultEntityField 用于解决内嵌字段名字和实体类名字不一致的问题
+> 
+> @ResultField 返回列的映射（用于非实体类字段，可以设置列名、typeHandler、jdbcType）
 > 
 > 返回可以平级 或者 1级 2级 两层映射
 ### 1.mybatis Mapper 实现
@@ -138,16 +140,26 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 ### 2.Mapper方法
 
-#### 2.1 getById(Serializable id) 根据ID查询实体
-#### 2.2 delete(T entity) 根据实体类删除
-#### 2.3 deleteById(Serializable id) 根据ID删除
-#### 2.4 save(T entity) 保存
-#### 2.5 update(T entity) 更新
-#### 2.6 list(Query query) 列表动态查询
-#### 2.7 List<T> all() 查询所有数据
-#### 2.8 count(Query query) 动态count查询
-#### 2.9 Pager<T> paging(Query query, Pager<T> pager) 分页查询
-#### 3.0 <R> R get(Query query) 单个动态查询
+####  getById(Serializable id) 根据ID查询实体
+####  <R> R get(Query query) 单个动态查询（可自定返回类型）
+
+####  deleteById(Serializable id) 根据ID删除
+####  delete(T entity) 根据实体类删除
+####  delete(Delete delete) 动态删除
+
+
+####  save(T entity) 实体类保存
+####  save(Insert insert) 动态插入（无法返回ID）
+
+####  update(T entity) 实体类更新
+####  update(Update update) 动态更新
+
+#### <R> List<R> list(Query query) 列表动态查询（可自定返回类型）
+#### List<T> all() 查询所有数据
+
+#### count(Query query) 动态count查询
+
+#### Pager<R> paging(Query query, Pager<R> pager) 分页查询（可自定返回类型）
 
 ## CRUD
 ### 1.1 单个查询
@@ -186,5 +198,55 @@ public interface StudentMapper extends MybatisMapper<Student> {
     );
 ```
 > 支持各种连接：INNER JOIN ,LEFT JOIN 等等
-> 
 >
+### 1.3 删除
+
+```agsl
+     studentMapper.deleteById(1);
+     或
+     studentMapper.delete(new Delete().from(Student.class).eq(Student::getId,1));
+```
+> 能用前者优先前者，后者为单个动态删除
+>
+### 1.4 新增
+
+```agsl
+    Student student = new Student();
+    //student.setId(11);
+    student.setName("哈哈");
+    student.setExcellent(true);
+    student.setCreateTime(LocalDateTime.now());
+    studentMapper.save(student);
+    
+    或者
+    
+    studentMapper.save(new Insert().insert(Student.class).field(
+            Student::getName,
+            Student::getExcellent,
+            Student::getCreateTime
+    ).values(Arrays.asList("哈哈", true, LocalDateTime.now())));
+    
+```
+> 能用前者优先前者，后者为动态插入（可多个）
+>
+
+### 1.4 更新
+
+```agsl
+    Student student = new Student();
+    student.setName("哈哈");
+    student.setExcellent(true);
+    student.setCreateTime(LocalDateTime.now());
+    studentMapper.update(student);
+    
+    或者
+    
+    studentMapper.update(new Update()
+            .update(Student.class)
+            .set(Student::getName, "嘿嘿")
+            .eq(Student::getId, 1)
+    );
+    
+```
+> 能用前者优先前者，后者为动态更新
+> 

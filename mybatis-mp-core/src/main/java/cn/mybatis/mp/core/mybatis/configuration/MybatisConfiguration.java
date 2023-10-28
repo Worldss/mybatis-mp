@@ -38,8 +38,6 @@ public class MybatisConfiguration extends Configuration {
      */
     private boolean tableUnderline = true;
 
-    public static MybatisConfiguration INSTANCE;
-
     public MybatisConfiguration() {
         super();
 
@@ -47,7 +45,6 @@ public class MybatisConfiguration extends Configuration {
 
     public MybatisConfiguration(Environment environment) {
         super(environment);
-        INSTANCE = this;
     }
 
     public void printBanner() {

@@ -51,6 +51,7 @@ public class MybatisSQLProvider {
     public static final String DELETE_BY_ID_NAME = "deleteById";
     public static final String ALL_NAME = "all";
     private static final Map<String, String> SQL_CACHE_MAP = new ConcurrentHashMap<>();
+
     private MybatisSQLProvider() {
 
     }
@@ -138,12 +139,12 @@ public class MybatisSQLProvider {
         if (query.getReturnType() == null) {
             query.setReturnType(MapperTables.get(providerContext.getMapperType()));
         } else {
-            ResultTableInfo resultTableInfo = ResultTables.get(MybatisConfiguration.INSTANCE, query.getReturnType());
+            ResultTableInfo resultTableInfo = ResultTables.get(query.getReturnType());
             if (Objects.nonNull(resultTableInfo)) {
                 resultTableInfo.getEntitysPrefix().forEach((key, value) -> {
                     for (int i = 1; i < 5; i++) {
                         Table table = queryContext.getExecution().$().cacheTable(key, i);
-                        if(Objects.nonNull(table)){
+                        if (Objects.nonNull(table)) {
                             table.setPrefix(value);
                             break;
                         }

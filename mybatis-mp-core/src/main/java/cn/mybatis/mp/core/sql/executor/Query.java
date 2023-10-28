@@ -33,7 +33,7 @@ public class Query extends db.sql.core.api.cmd.executor.AbstractQuery<Query, Myb
 
     @Override
     public Query select(Class entity, int storey) {
-        TableInfo tableInfo = TableInfos.load(MybatisConfiguration.INSTANCE, entity);
+        TableInfo tableInfo = TableInfos.get(entity);
         if (tableInfo == null) {
             return super.select(entity, storey);
         } else {

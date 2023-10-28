@@ -1,13 +1,13 @@
 package cn.mybatis.mp.core.sql.executor;
 
+import cn.mybatis.mp.core.db.reflect.TableInfo;
+import cn.mybatis.mp.core.db.reflect.TableInfos;
 import db.sql.api.Getter;
 import db.sql.core.api.cmd.CmdFactory;
 import db.sql.core.api.cmd.Table;
 import db.sql.core.api.cmd.TableField;
 import db.sql.core.api.tookit.LambdaUtil;
 import org.apache.ibatis.util.MapUtil;
-import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.TableInfos;
 
 
 public class MybatisCmdFactory extends CmdFactory {
@@ -24,7 +24,7 @@ public class MybatisCmdFactory extends CmdFactory {
         return MapUtil.computeIfAbsent(this.tableCache, String.format("%s.%s", entity.getName(), storey), key -> {
             TableInfo tableInfo = TableInfos.get(entity);
             tableNums++;
-            Table table = new Table(tableInfo.getBasicInfo().getSchemaAndTableName());
+            Table table = new Table(tableInfo.getSchemaAndTableName());
             table.as(tableAs(storey, tableNums));
             return table;
         });

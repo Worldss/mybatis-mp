@@ -1,12 +1,12 @@
 package cn.mybatis.mp.core.mybatis.mapper;
 
 
+import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfos;
 import cn.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
-import cn.mybatis.mp.core.db.reflect.TableInfo;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -34,7 +34,7 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
         }
         TableInfo tableInfo = TableInfos.get(entity.getClass());
         try {
-            Serializable id = (Serializable) tableInfo.getIdInfo().getReadFieldInvoker().invoke(entity, null);
+            Serializable id = (Serializable) tableInfo.getIdFieldInfo().getReadFieldInvoker().invoke(entity, null);
             return this.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -8,10 +8,10 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface NestedResultField {
+public @interface NestedResultEntityField {
 
     /**
-     * 对应target属性
+     * 对应内嵌类target的属性
      *
      * @return
      */

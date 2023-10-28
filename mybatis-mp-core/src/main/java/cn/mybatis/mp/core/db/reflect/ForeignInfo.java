@@ -2,28 +2,20 @@ package cn.mybatis.mp.core.db.reflect;
 
 public class ForeignInfo {
 
-    private Class foreignEntityClass;
+    private final Class foreignEntity;
 
-    private FieldInfo fieldInfo;
+    private final TableFieldInfo tableFieldInfo;
 
-    public ForeignInfo(Class foreignEntityClass,FieldInfo fieldInfo){
-        this.foreignEntityClass=foreignEntityClass;
-        this.fieldInfo=fieldInfo;
+    public ForeignInfo(Class foreignEntity, TableFieldInfo tableFieldInfo) {
+        this.foreignEntity = foreignEntity;
+        this.tableFieldInfo = tableFieldInfo;
     }
 
-    public Class getForeignEntityClass() {
-        return foreignEntityClass;
+    public Class getForeignEntity() {
+        return foreignEntity;
     }
 
-    public void setForeignEntityClass(Class foreignEntityClass) {
-        this.foreignEntityClass = foreignEntityClass;
-    }
-
-    public FieldInfo getFieldInfo() {
-        return fieldInfo;
-    }
-
-    public void setFieldInfo(FieldInfo fieldInfo) {
-        this.fieldInfo = fieldInfo;
+    public TableFieldInfo getTableFieldInfo() {
+        return tableFieldInfo;
     }
 }

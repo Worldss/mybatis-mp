@@ -3,11 +3,11 @@ package cn.mybatis.mp.core.mybatis.mapper.context;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfos;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
+import cn.mybatis.mp.db.IdAutoType;
+import cn.mybatis.mp.db.annotations.TableField;
 import db.sql.core.api.cmd.Table;
 import db.sql.core.api.cmd.executor.AbstractInsert;
 import db.sql.core.api.cmd.executor.Insert;
-import cn.mybatis.mp.db.IdAutoType;
-import cn.mybatis.mp.db.annotations.TableField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,19 +26,19 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
     private static Insert createCmd(Object t) {
         TableInfo tableInfo = TableInfos.get(t.getClass());
         Insert insert = new Insert() {{
-            Table table = $.table(tableInfo.getBasicInfo().getSchemaAndTableName());
+            Table table = $.table(tableInfo.getSchemaAndTableName());
             insert(table);
             List<Object> values = new ArrayList<>();
-            tableInfo.getFieldInfos().stream().forEach(item -> {
+            tableInfo.getTableFieldInfos().stream().forEach(item -> {
                 boolean isNeedInsert = false;
                 Object value = item.getValue(t);
 
                 if (Objects.nonNull(value)) {
                     isNeedInsert = true;
-                } else if (item.isId()) {
-                    if (item.getIdAnnotation().value() != IdAutoType.AUTO && item.getIdAnnotation().executeBefore()) {
+                } else if (item.isTableId()) {
+                    if (item.getTableIdAnnotation().value() != IdAutoType.AUTO && item.getTableIdAnnotation().executeBefore()) {
                         isNeedInsert = true;
-                        if (item.getIdAnnotation().executeBefore()) {
+                        if (item.getTableIdAnnotation().executeBefore()) {
                             Supplier supplier = () -> item.getValue(t);
                             value = supplier;
                         }
@@ -59,7 +59,7 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
 
     public void setId(Object id) {
         try {
-            TableInfos.get(this.value.getClass()).getIdInfo().getWriteFieldInvoker().invoke(this.value, new Object[]{id});
+            TableInfos.get(this.value.getClass()).getIdFieldInfo().getWriteFieldInvoker().invoke(this.value, new Object[]{id});
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

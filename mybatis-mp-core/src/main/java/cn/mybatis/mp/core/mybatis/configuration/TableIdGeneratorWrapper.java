@@ -1,5 +1,10 @@
 package cn.mybatis.mp.core.mybatis.configuration;
 
+import cn.mybatis.mp.core.db.reflect.TableInfo;
+import cn.mybatis.mp.core.db.reflect.TableInfos;
+import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
+import cn.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
+import cn.mybatis.mp.db.annotations.TableId;
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
@@ -11,11 +16,6 @@ import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.reflection.MetaObject;
-import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.TableInfos;
-import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
-import cn.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
-import cn.mybatis.mp.db.annotations.TableId;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -40,10 +40,10 @@ public class TableIdGeneratorWrapper {
             //可能是动态的 所以无法获取entityClass
             return;
         }
-        TableInfo tableInfo = TableInfos.get(entityClass, (MybatisConfiguration) ms.getConfiguration());
-        if (Objects.nonNull(tableInfo.getIdInfo())) {
+        TableInfo tableInfo = TableInfos.get((MybatisConfiguration) ms.getConfiguration(), entityClass);
+        if (Objects.nonNull(tableInfo.getIdFieldInfo())) {
             KeyGenerator keyGenerator = null;
-            TableId tableId = tableInfo.getIdInfo().getIdAnnotation();
+            TableId tableId = tableInfo.getIdFieldInfo().getTableIdAnnotation();
             switch (tableId.value()) {
                 //数据库默认自增
                 case AUTO: {
@@ -59,7 +59,7 @@ public class TableIdGeneratorWrapper {
                 case SQL: {
 
                     SqlSource sqlSource = new StaticSqlSource(ms.getConfiguration(), tableId.sql());
-                    ResultMap selectKeyResultMap = new ResultMap.Builder(ms.getConfiguration(), selectKeyId, tableInfo.getIdInfo().getReflectField().getType(),
+                    ResultMap selectKeyResultMap = new ResultMap.Builder(ms.getConfiguration(), selectKeyId, tableInfo.getIdFieldInfo().getField().getType(),
                             Collections.emptyList(), false).build();
                     MappedStatement selectKeyMappedStatement = new MappedStatement.Builder(ms.getConfiguration(), selectKeyId, sqlSource, SqlCommandType.SELECT)
                             .keyProperty("id")
@@ -85,7 +85,7 @@ public class TableIdGeneratorWrapper {
             MetaObject msMetaObject = ms.getConfiguration().newMetaObject(ms);
             msMetaObject.setValue("keyGenerator", keyGenerator);
             msMetaObject.setValue("keyProperties", new String[]{"id"});
-            msMetaObject.setValue("keyColumns", new String[]{tableInfo.getIdInfo().getColumnName()});
+            msMetaObject.setValue("keyColumns", new String[]{tableInfo.getIdFieldInfo().getColumnName()});
 
             ms.getConfiguration().addKeyGenerator(selectKeyId, keyGenerator);
         }

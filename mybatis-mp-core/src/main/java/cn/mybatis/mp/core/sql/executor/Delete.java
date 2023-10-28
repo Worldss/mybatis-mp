@@ -1,12 +1,12 @@
 package cn.mybatis.mp.core.sql.executor;
 
-import cn.mybatis.mp.core.db.reflect.FieldInfo;
 import cn.mybatis.mp.core.db.reflect.ForeignInfo;
+import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
+import cn.mybatis.mp.core.db.reflect.TableInfo;
+import cn.mybatis.mp.core.db.reflect.TableInfos;
 import db.sql.api.JoinMode;
 import db.sql.core.api.cmd.On;
 import db.sql.core.api.cmd.executor.AbstractDelete;
-import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.TableInfos;
 
 import java.util.function.Consumer;
 
@@ -28,14 +28,14 @@ public class Delete extends AbstractDelete<Delete, MybatisCmdFactory> {
         TableInfo secondTableInfo = TableInfos.get(secondTable);
         ForeignInfo foreignInfo;
         if ((foreignInfo = secondTableInfo.getForeignInfo(mainTable)) != null) {
-            final FieldInfo foreignFieldInfo = foreignInfo.getFieldInfo();
+            final TableFieldInfo foreignFieldInfo = foreignInfo.getTableFieldInfo();
             consumer = consumer.andThen(on -> {
-                on.eq(this.$().field(mainTable, mainTableInfo.getIdInfo().getReflectField().getName(), mainTableStorey), this.$().field(secondTable, foreignFieldInfo.getReflectField().getName(), secondTableStorey));
+                on.eq(this.$().field(mainTable, mainTableInfo.getIdFieldInfo().getField().getName(), mainTableStorey), this.$().field(secondTable, foreignFieldInfo.getField().getName(), secondTableStorey));
             });
         } else if ((foreignInfo = mainTableInfo.getForeignInfo(secondTable)) != null) {
-            final FieldInfo foreignFieldInfo = foreignInfo.getFieldInfo();
+            final TableFieldInfo foreignFieldInfo = foreignInfo.getTableFieldInfo();
             consumer = consumer.andThen(on -> {
-                on.eq(this.$().field(secondTable, secondTableInfo.getIdInfo().getReflectField().getName(), secondTableStorey), this.$().field(mainTable, foreignFieldInfo.getReflectField().getName(), mainTableStorey));
+                on.eq(this.$().field(secondTable, secondTableInfo.getIdFieldInfo().getField().getName(), secondTableStorey), this.$().field(mainTable, foreignFieldInfo.getField().getName(), mainTableStorey));
             });
         }
 

@@ -1,6 +1,7 @@
 package cn.mybatis.mp.core.mybatis.configuration;
 
 
+import cn.mybatis.mp.core.db.reflect.ResultTables;
 import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
 import org.apache.ibatis.executor.*;
@@ -17,7 +18,6 @@ import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
-import cn.mybatis.mp.core.db.reflect.ResultTables;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -86,7 +86,7 @@ public class MybatisConfiguration extends Configuration {
     public <T> void addMapper(Class<T> type) {
         if (!MapperTables.add(type)) {
             //提前缓存
-            ResultTables.load(type, this);
+            ResultTables.load(this, type);
         }
         super.addMapper(type);
     }

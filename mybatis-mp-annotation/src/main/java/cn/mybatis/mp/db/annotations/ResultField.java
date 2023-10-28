@@ -7,35 +7,20 @@ import org.apache.ibatis.type.UnknownTypeHandler;
 import java.lang.annotation.*;
 
 /**
- * 优先级 column > property > columnPrefix
- * 结果字段 用于解决字段冲突问题
+ * 用户返回非表真实列，例如 max，min后产生的列或者 新的列
  */
+
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 public @interface ResultField {
 
     /**
-     * 对应的实体类
+     * 列名
      *
      * @return
      */
-    Class target();
-
-    /**
-     * 对应target属性
-     *
-     * @return
-     */
-    String property() default "";
-
-
-    /**
-     * 列前缀
-     *
-     * @return
-     */
-    String columnPrefix() default "";
+    String value() default "";
 
     /**
      * 配置 列的 jdbcType
@@ -50,5 +35,4 @@ public @interface ResultField {
      * @return
      */
     Class<? extends TypeHandler<?>> typeHandler() default UnknownTypeHandler.class;
-
 }

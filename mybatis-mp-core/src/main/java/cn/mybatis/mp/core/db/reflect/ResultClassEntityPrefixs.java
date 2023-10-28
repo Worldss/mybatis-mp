@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 实体类前缀
+ * 返回类内的实体类前缀
  */
 public class ResultClassEntityPrefixs {
 

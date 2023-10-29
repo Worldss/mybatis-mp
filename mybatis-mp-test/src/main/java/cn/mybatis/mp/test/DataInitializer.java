@@ -2,6 +2,7 @@ package cn.mybatis.mp.test;
 
 
 import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
+import cn.mybatis.mp.core.mybatis.configuration.MybatisMpConfig;
 import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.Insert;
 import cn.mybatis.mp.core.sql.executor.Query;
@@ -47,7 +48,8 @@ public class DataInitializer {
     }
 
     public static void main(String[] args) {
-
+        MybatisMpConfig.setTableUnderline(true);
+        MybatisMpConfig.setColumnUnderline(true);
         init();
         SqlSession session = sqlSessionFactory.openSession(true);
         StudentMapper studentMapper = session.getMapper(StudentMapper.class);

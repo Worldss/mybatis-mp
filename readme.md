@@ -34,12 +34,10 @@
 > 
 > 3.配置参数，参考 https://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/zh/index.html
 >
-> 4.新增配置项：（其他配置和mybatis-spring-boot-starter 一致）
-```azure
-mybatis:
-    configuration:
-        columnUnderline: true # 列名是否下划线 默认 true
-        tableUnderline: true # 表名是否下划线 默认 true
+> 4.mybatis-mp 配置，可不加（，启动项目时执行，命名特殊时修改）
+```
+MybatisMpConfig.setTableUnderline(true); //数据库表是否下划线规则 默认 true
+MybatisMpConfig.setColumnUnderline(true); ///数据库列是否下划线规则 默认 true
 ```
 
 # 注解

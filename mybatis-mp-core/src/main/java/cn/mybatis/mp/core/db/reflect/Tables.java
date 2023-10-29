@@ -9,11 +9,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * table 信息库
  */
-public final class TableInfos {
+public final class Tables {
 
-    private static final Map<Class, TableInfo> TABLE_INFO_MAP = new ConcurrentHashMap<>();
+    private static final Map<Class, TableInfo> CACHE = new ConcurrentHashMap<>();
 
-    private TableInfos() {
+    private Tables() {
 
     }
 
@@ -28,6 +28,6 @@ public final class TableInfos {
         if (!entity.isAnnotationPresent(Table.class)) {
             return null;
         }
-        return TABLE_INFO_MAP.computeIfAbsent(entity, key -> new TableInfo(entity));
+        return CACHE.computeIfAbsent(entity, key -> new TableInfo(entity));
     }
 }

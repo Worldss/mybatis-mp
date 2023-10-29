@@ -1,11 +1,9 @@
 package cn.mybatis.mp.core.mybatis.mapper.context;
 
-import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
-import cn.mybatis.mp.core.db.reflect.TableIds;
-import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.Tables;
+import cn.mybatis.mp.core.db.reflect.*;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import cn.mybatis.mp.db.IdAutoType;
+import cn.mybatis.mp.db.Model;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;
 import db.sql.core.api.cmd.Table;
@@ -17,29 +15,29 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> {
+public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<AbstractInsert> {
 
     private final T value;
 
-    public EntityInsertContext(T t) {
+    public ModelInsertContext(T t) {
         super(createCmd(t));
         this.value = t;
     }
 
     private static Insert createCmd(Object t) {
-        TableInfo tableInfo = Tables.get(t.getClass());
+        ModelInfo modelInfo = Models.get(t.getClass());
         Insert insert = new Insert() {{
-            Table table = $.table(tableInfo.getSchemaAndTableName());
+            Table table = $.table(modelInfo.getTableInfo().getSchemaAndTableName());
             insert(table);
             List<Object> values = new ArrayList<>();
-            tableInfo.getTableFieldInfos().stream().forEach(item -> {
+            modelInfo.getModelFieldInfos().stream().forEach(item -> {
                 boolean isNeedInsert = false;
                 Object value = item.getValue(t);
 
                 if (Objects.nonNull(value)) {
                     isNeedInsert = true;
-                } else if (item.isTableId()) {
-                    TableId tableId = TableIds.get(t.getClass());
+                } else if (item.getTableFieldInfo().isTableId()) {
+                    TableId tableId = TableIds.get(modelInfo.getTableInfo().getType());
                     if (tableId.value() != IdAutoType.AUTO && tableId.executeBefore()) {
                         isNeedInsert = true;
                         Supplier supplier = () -> item.getValue(t);
@@ -48,8 +46,8 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
                 }
 
                 if (isNeedInsert) {
-                    field($.field(table, item.getColumnName()));
-                    TableField tableField = item.getFieldAnnotation();
+                    field($.field(table, item.getTableFieldInfo().getColumnName()));
+                    TableField tableField = item.getTableFieldInfo().getFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());
                     values.add($.value(mybatisParameter));
                 }
@@ -61,8 +59,10 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
 
     public void setId(Object id) {
         try {
-            TableFieldInfo tableFieldInfo = Tables.get(this.value.getClass()).getIdFieldInfo();
-            tableFieldInfo.getWriteFieldInvoker().invoke(this.value, new Object[]{id});
+            ModelInfo modelInfo = Models.get(this.value.getClass());
+            if (modelInfo.getIdFieldInfo() != null) {
+                modelInfo.getIdFieldInfo().getWriteFieldInvoker().invoke(this.value, new Object[]{id});
+            }
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

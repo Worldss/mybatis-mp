@@ -2,7 +2,7 @@ package cn.mybatis.mp.core.sql.executor;
 
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.TableInfos;
+import cn.mybatis.mp.core.db.reflect.Tables;
 import db.sql.api.Getter;
 import db.sql.core.api.cmd.CmdFactory;
 import db.sql.core.api.cmd.Table;
@@ -25,7 +25,7 @@ public class MybatisCmdFactory extends CmdFactory {
     @Override
     public Table table(Class entity, int storey) {
         return MapUtil.computeIfAbsent(this.tableCache, String.format("%s.%s", entity.getName(), storey), key -> {
-            TableInfo tableInfo = TableInfos.get(entity);
+            TableInfo tableInfo = Tables.get(entity);
             tableNums++;
             Table table = new Table(tableInfo.getSchemaAndTableName());
             table.as(tableAs(storey, tableNums));
@@ -43,7 +43,7 @@ public class MybatisCmdFactory extends CmdFactory {
     public TableField field(Class clazz, String filedName, int storey) {
         return MapUtil.computeIfAbsent(tableFieldCache, String.format("%s.%s.%s", clazz.getName(), filedName, storey), key -> {
             Table table = table(clazz, storey);
-            TableInfo tableInfo = TableInfos.get(clazz);
+            TableInfo tableInfo = Tables.get(clazz);
             TableFieldInfo tableFieldInfo = tableInfo.getFieldInfo(filedName);
             if (Objects.isNull(tableFieldInfo)) {
                 throw new RuntimeException(String.format("property %s is not a column", filedName));

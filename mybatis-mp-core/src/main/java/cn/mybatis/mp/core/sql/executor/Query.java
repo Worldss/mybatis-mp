@@ -3,8 +3,7 @@ package cn.mybatis.mp.core.sql.executor;
 import cn.mybatis.mp.core.db.reflect.ForeignInfo;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.TableInfos;
-import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
+import cn.mybatis.mp.core.db.reflect.Tables;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.JoinMode;
@@ -33,7 +32,7 @@ public class Query extends db.sql.core.api.cmd.executor.AbstractQuery<Query, Myb
 
     @Override
     public Query select(Class entity, int storey) {
-        TableInfo tableInfo = TableInfos.get(entity);
+        TableInfo tableInfo = Tables.get(entity);
         if (tableInfo == null) {
             return super.select(entity, storey);
         } else {
@@ -59,8 +58,8 @@ public class Query extends db.sql.core.api.cmd.executor.AbstractQuery<Query, Myb
             };
         }
 
-        TableInfo mainTableInfo = TableInfos.get(mainTable);
-        TableInfo secondTableInfo = TableInfos.get(secondTable);
+        TableInfo mainTableInfo = Tables.get(mainTable);
+        TableInfo secondTableInfo = Tables.get(secondTable);
         ForeignInfo foreignInfo;
         if ((foreignInfo = secondTableInfo.getForeignInfo(mainTable)) != null) {
             final TableFieldInfo foreignFieldInfo = foreignInfo.getTableFieldInfo();

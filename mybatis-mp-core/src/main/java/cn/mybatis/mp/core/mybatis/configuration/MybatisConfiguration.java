@@ -1,7 +1,6 @@
 package cn.mybatis.mp.core.mybatis.configuration;
 
 
-import cn.mybatis.mp.core.db.reflect.ResultMaps;
 import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;

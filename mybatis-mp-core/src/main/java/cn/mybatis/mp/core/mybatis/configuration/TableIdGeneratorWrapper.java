@@ -2,9 +2,10 @@ package cn.mybatis.mp.core.mybatis.configuration;
 
 import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.TableInfos;
+import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
 import cn.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
+import cn.mybatis.mp.core.mybatis.mapper.context.ModelInsertContext;
 import cn.mybatis.mp.db.annotations.TableId;
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
@@ -32,7 +33,8 @@ public class TableIdGeneratorWrapper {
     }
 
     public static void addEntityKeyGenerator(MappedStatement ms) {
-        if (ms.getSqlCommandType() != SqlCommandType.INSERT || !(ms.getSqlSource() instanceof ProviderSqlSource) || ms.getParameterMap().getType() != EntityInsertContext.class) {
+        if (ms.getSqlCommandType() != SqlCommandType.INSERT || !(ms.getSqlSource() instanceof ProviderSqlSource)
+                || (ms.getParameterMap().getType() != EntityInsertContext.class && ms.getParameterMap().getType() != ModelInsertContext.class)) {
             return;
         }
         String selectKeyId = ms.getId() + SelectKeyGenerator.SELECT_KEY_SUFFIX;
@@ -41,54 +43,58 @@ public class TableIdGeneratorWrapper {
             //可能是动态的 所以无法获取entityClass
             return;
         }
-        TableInfo tableInfo = TableInfos.get(entityClass);
+        TableInfo tableInfo = Tables.get(entityClass);
         if (Objects.nonNull(tableInfo.getIdFieldInfo())) {
-            KeyGenerator keyGenerator = null;
-            TableId tableId = TableIds.get(ms.getConfiguration(), entityClass);
-            switch (tableId.value()) {
-                //数据库默认自增
-                case AUTO: {
-                    keyGenerator = Jdbc3KeyGenerator.INSTANCE;
-                    break;
-                }
-                //自己输入
-                case NONE: {
-                    keyGenerator = NoKeyGenerator.INSTANCE;
-                    break;
-                }
-                //序列
-                case SQL: {
-
-                    SqlSource sqlSource = new StaticSqlSource(ms.getConfiguration(), tableId.sql());
-                    ResultMap selectKeyResultMap = new ResultMap.Builder(ms.getConfiguration(), selectKeyId, tableInfo.getIdFieldInfo().getField().getType(),
-                            Collections.emptyList(), false).build();
-                    MappedStatement selectKeyMappedStatement = new MappedStatement.Builder(ms.getConfiguration(), selectKeyId, sqlSource, SqlCommandType.SELECT)
-                            .keyProperty("id")
-                            .resultMaps(Collections.singletonList(selectKeyResultMap))
-                            .keyGenerator(NoKeyGenerator.INSTANCE)
-                            .useCache(false)
-                            .build();
-                    keyGenerator = new SelectKeyGenerator(selectKeyMappedStatement, tableId.executeBefore());
-                    break;
-                }
-                case GENERATOR: {
-                    try {
-                        keyGenerator = tableId.generator().newInstance();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    break;
-                }
-                default: {
-                    throw new RuntimeException("Not supported");
-                }
-            }
-            MetaObject msMetaObject = ms.getConfiguration().newMetaObject(ms);
-            msMetaObject.setValue("keyGenerator", keyGenerator);
-            msMetaObject.setValue("keyProperties", new String[]{"id"});
-            msMetaObject.setValue("keyColumns", new String[]{tableInfo.getIdFieldInfo().getColumnName()});
-
-            ms.getConfiguration().addKeyGenerator(selectKeyId, keyGenerator);
+            addEntityKeyGenerator(ms, selectKeyId, tableInfo);
         }
+    }
+
+    public static void addEntityKeyGenerator(MappedStatement ms, String selectKeyId, TableInfo tableInfo) {
+        KeyGenerator keyGenerator = null;
+        TableId tableId = TableIds.get(ms.getConfiguration(), tableInfo.getType());
+        switch (tableId.value()) {
+            //数据库默认自增
+            case AUTO: {
+                keyGenerator = Jdbc3KeyGenerator.INSTANCE;
+                break;
+            }
+            //自己输入
+            case NONE: {
+                keyGenerator = NoKeyGenerator.INSTANCE;
+                break;
+            }
+            //序列
+            case SQL: {
+
+                SqlSource sqlSource = new StaticSqlSource(ms.getConfiguration(), tableId.sql());
+                ResultMap selectKeyResultMap = new ResultMap.Builder(ms.getConfiguration(), selectKeyId, tableInfo.getIdFieldInfo().getField().getType(),
+                        Collections.emptyList(), false).build();
+                MappedStatement selectKeyMappedStatement = new MappedStatement.Builder(ms.getConfiguration(), selectKeyId, sqlSource, SqlCommandType.SELECT)
+                        .keyProperty("id")
+                        .resultMaps(Collections.singletonList(selectKeyResultMap))
+                        .keyGenerator(NoKeyGenerator.INSTANCE)
+                        .useCache(false)
+                        .build();
+                keyGenerator = new SelectKeyGenerator(selectKeyMappedStatement, tableId.executeBefore());
+                break;
+            }
+            case GENERATOR: {
+                try {
+                    keyGenerator = tableId.generator().newInstance();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            }
+            default: {
+                throw new RuntimeException("Not supported");
+            }
+        }
+        MetaObject msMetaObject = ms.getConfiguration().newMetaObject(ms);
+        msMetaObject.setValue("keyGenerator", keyGenerator);
+        msMetaObject.setValue("keyProperties", new String[]{"id"});
+        msMetaObject.setValue("keyColumns", new String[]{tableInfo.getIdFieldInfo().getColumnName()});
+
+        ms.getConfiguration().addKeyGenerator(selectKeyId, keyGenerator);
     }
 }

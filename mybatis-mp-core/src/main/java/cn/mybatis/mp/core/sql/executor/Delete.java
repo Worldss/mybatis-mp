@@ -3,7 +3,7 @@ package cn.mybatis.mp.core.sql.executor;
 import cn.mybatis.mp.core.db.reflect.ForeignInfo;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.TableInfos;
+import cn.mybatis.mp.core.db.reflect.Tables;
 import db.sql.api.JoinMode;
 import db.sql.core.api.cmd.On;
 import db.sql.core.api.cmd.executor.AbstractDelete;
@@ -24,8 +24,8 @@ public class Delete extends AbstractDelete<Delete, MybatisCmdFactory> {
             };
         }
 
-        TableInfo mainTableInfo = TableInfos.get(mainTable);
-        TableInfo secondTableInfo = TableInfos.get(secondTable);
+        TableInfo mainTableInfo = Tables.get(mainTable);
+        TableInfo secondTableInfo = Tables.get(secondTable);
         ForeignInfo foreignInfo;
         if ((foreignInfo = secondTableInfo.getForeignInfo(mainTable)) != null) {
             final TableFieldInfo foreignFieldInfo = foreignInfo.getTableFieldInfo();

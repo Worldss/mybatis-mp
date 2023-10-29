@@ -24,7 +24,7 @@
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-spring-boot-starter</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>  
 ```
 
@@ -147,9 +147,11 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 
 ####  save(T entity) 实体类保存
+####  save(Model entity) 实体类部分保存
 ####  save(Insert insert) 动态插入（无法返回ID）
 
 ####  update(T entity) 实体类更新
+####  update(Model entity) 实体类部分更新
 ####  update(Update update) 动态更新
 
 #### <R> List<R> list(Query query) 列表动态查询（可自定返回类型）
@@ -218,6 +220,23 @@ public interface StudentMapper extends MybatisMapper<Student> {
     
     或者
     
+    @Data
+    public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
+    
+        private Integer id;
+    
+        private String name;
+    
+        private LocalDateTime createTime;
+    }
+    
+    StudentDTO studentDTO=new StudentDTO();
+    studentDTO.setName("DTO Insert");
+    studentDTO.setCreateTime(LocalDateTime.now());
+    studentMapper.save(studentDTO);
+    
+    或者
+    
     studentMapper.save(new Insert().insert(Student.class).field(
             Student::getName,
             Student::getExcellent,
@@ -236,6 +255,23 @@ public interface StudentMapper extends MybatisMapper<Student> {
     student.setExcellent(true);
     student.setCreateTime(LocalDateTime.now());
     studentMapper.update(student);
+    
+    或者
+    
+    @Data
+    public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
+    
+        private Integer id;
+    
+        private String name;
+    
+        private LocalDateTime createTime;
+    }
+    
+    StudentDTO studentDTO=new StudentDTO();
+    studentDTO.setId(1)
+    studentDTO.setName("DTO Insert");
+    studentMapper.update(studentDTO);
     
     或者
     

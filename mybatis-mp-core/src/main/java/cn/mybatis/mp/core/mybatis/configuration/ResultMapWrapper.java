@@ -1,6 +1,5 @@
 package cn.mybatis.mp.core.mybatis.configuration;
 
-import cn.mybatis.mp.core.db.reflect.ResultMaps;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;

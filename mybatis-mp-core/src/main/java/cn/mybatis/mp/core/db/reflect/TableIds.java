@@ -21,7 +21,7 @@ public final class TableIds {
 
     public final static TableId get(Configuration configuration, Class entity) {
         return CACHE.computeIfAbsent(entity, key -> {
-            TableFieldInfo tableFieldInfo = TableInfos.get(entity).getIdFieldInfo();
+            TableFieldInfo tableFieldInfo = Tables.get(entity).getIdFieldInfo();
             return TableInfoUtil.getTableIdAnnotation(configuration, tableFieldInfo.getField());
         });
     }

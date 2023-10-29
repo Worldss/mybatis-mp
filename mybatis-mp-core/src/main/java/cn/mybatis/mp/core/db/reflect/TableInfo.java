@@ -12,6 +12,11 @@ import java.util.*;
 public class TableInfo {
 
     /**
+     * 对应的类
+     */
+    private final Class type;
+
+    /**
      * 数据库 schema
      */
     private final String schema;
@@ -45,6 +50,7 @@ public class TableInfo {
     private final Map<String, TableFieldInfo> tableFieldInfoMap;
 
     public TableInfo(Class entity) {
+        this.type = entity;
         Table table = (Table) entity.getAnnotation(Table.class);
         this.schema = table.schema();
         this.tableName = TableInfoUtil.getTableName(entity);
@@ -99,6 +105,10 @@ public class TableInfo {
      */
     public final ForeignInfo getForeignInfo(Class entityClass) {
         return this.foreignInfoMap.get(entityClass);
+    }
+
+    public Class getType() {
+        return this.type;
     }
 
     public String getSchema() {

@@ -116,4 +116,8 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
         joins.add(join);
         return (SELF) this;
     }
+
+    public Where getWhere(){
+        return this.where;
+    }
 }

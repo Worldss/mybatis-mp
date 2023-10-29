@@ -4,7 +4,7 @@ package cn.mybatis.mp.core.mybatis.provider;
 import cn.mybatis.mp.core.db.reflect.ResultClassEntityPrefixes;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.TableInfos;
+import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdDeleteContext;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdInsertContext;
@@ -91,7 +91,7 @@ public class MybatisSQLProvider {
 
 
     public static String getById(Serializable id, ProviderContext context) {
-        TableInfo tableInfo = TableInfos.get(MapperTables.get(context.getMapperType()));
+        TableInfo tableInfo = Tables.get(MapperTables.get(context.getMapperType()));
         if (tableInfo.getIdFieldInfo() == null) {
             throw new RuntimeException("ID not found");
         }
@@ -99,7 +99,7 @@ public class MybatisSQLProvider {
     }
 
     public static String deleteById(Serializable id, ProviderContext context) {
-        TableInfo tableInfo = TableInfos.get(MapperTables.get(context.getMapperType()));
+        TableInfo tableInfo = Tables.get(MapperTables.get(context.getMapperType()));
         if (Objects.isNull(tableInfo.getIdFieldInfo())) {
             throw new RuntimeException("ID not found");
         }
@@ -116,7 +116,7 @@ public class MybatisSQLProvider {
     }
 
     public static String all(ProviderContext context) {
-        TableInfo tableInfo = TableInfos.get(MapperTables.get(context.getMapperType()));
+        TableInfo tableInfo = Tables.get(MapperTables.get(context.getMapperType()));
         return getTableDefaultSelect(tableInfo).toString();
     }
 

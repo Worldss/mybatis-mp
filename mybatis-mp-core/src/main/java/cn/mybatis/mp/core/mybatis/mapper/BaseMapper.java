@@ -2,13 +2,14 @@ package cn.mybatis.mp.core.mybatis.mapper;
 
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.TableInfos;
+import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.mybatis.mapper.context.*;
 import cn.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import cn.mybatis.mp.core.sql.executor.Delete;
 import cn.mybatis.mp.core.sql.executor.Insert;
 import cn.mybatis.mp.core.sql.executor.Query;
 import cn.mybatis.mp.core.sql.executor.Update;
+import cn.mybatis.mp.db.Model;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
@@ -43,13 +44,23 @@ public interface BaseMapper<T> {
     }
 
     /**
+     * model插入 部分字段插入
+     *
+     * @param model
+     * @return
+     */
+    default int save(Model<T> model) {
+        return this.$$save(new ModelInsertContext<>(model));
+    }
+
+    /**
      * 动态插入
      *
      * @param insert
      * @return
      */
     default int save(Insert insert) {
-        return this.$$save(new SQLCmdInsertContext<>(insert));
+        return this.$$$save(new SQLCmdInsertContext<>(insert));
     }
 
     /**
@@ -60,6 +71,17 @@ public interface BaseMapper<T> {
      */
     default int update(T entity) {
         return this.$update(new EntityUpdateContext(entity));
+    }
+
+
+    /**
+     * model插入 部分字段修改
+     *
+     * @param model
+     * @return
+     */
+    default int update(Model<T> model) {
+        return this.$$update(new ModelUpdateContext<>(model));
     }
 
     /**
@@ -79,7 +101,7 @@ public interface BaseMapper<T> {
      * @return
      */
     default int delete(T entity) {
-        TableInfo tableInfo = TableInfos.get(entity.getClass());
+        TableInfo tableInfo = Tables.get(entity.getClass());
         try {
             TableFieldInfo idInfo = tableInfo.getIdFieldInfo();
             Delete delete = new Delete().delete(entity.getClass()).from(entity.getClass());
@@ -171,9 +193,11 @@ public interface BaseMapper<T> {
     @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
     int $save(EntityInsertContext<T> insertContext);
 
+    @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
+    int $$save(ModelInsertContext<Model<T>> insertContext);
 
     @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
-    int $$save(SQLCmdInsertContext insertContext);
+    int $$$save(SQLCmdInsertContext insertContext);
 
     /**
      * @param updateContext

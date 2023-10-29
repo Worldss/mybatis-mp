@@ -103,13 +103,13 @@ public class StudentVo {
 
 @Data
 @ToString(callSuper = true)
-@ResultTable(Student.class)
+@ResultEntity(Student.class)
 public class StudentAchievementVo extends StudentVo {
 
     @ResultEntityField(target = Achievement.class, property = "id")
     private Integer achievementId;
 
-    @NestedResultTable(target =  Achievement.class)
+    @NestedResultEntity(target =  Achievement.class)
     private Achievement achievement;
 
     @ResultField(value = "xx_score")

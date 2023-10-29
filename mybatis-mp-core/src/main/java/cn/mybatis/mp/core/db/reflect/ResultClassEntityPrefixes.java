@@ -14,11 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 返回类内的实体类前缀
  */
-public class ResultClassEntityPrefixs {
+public class ResultClassEntityPrefixes {
 
     private static final Map<Class, Map<Class, String>> CACHE = new ConcurrentHashMap<>();
 
-    private ResultClassEntityPrefixs() {
+    private ResultClassEntityPrefixes() {
 
     }
 

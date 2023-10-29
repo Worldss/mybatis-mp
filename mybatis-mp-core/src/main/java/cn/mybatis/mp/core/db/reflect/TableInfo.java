@@ -1,12 +1,10 @@
 package cn.mybatis.mp.core.db.reflect;
 
-import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import cn.mybatis.mp.core.util.FieldUtils;
 import cn.mybatis.mp.core.util.StringPool;
 import cn.mybatis.mp.core.util.TableInfoUtil;
 import cn.mybatis.mp.db.annotations.ForeignKey;
 import cn.mybatis.mp.db.annotations.Table;
-import org.apache.ibatis.mapping.ResultMapping;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -35,11 +33,6 @@ public class TableInfo {
      */
     private final TableFieldInfo idFieldInfo;
 
-    /**
-     * 结果映射-mybatis原生
-     */
-    private final List<ResultMapping> resultMappings;
-
 
     /**
      * 外键关系
@@ -51,10 +44,10 @@ public class TableInfo {
      */
     private final Map<String, TableFieldInfo> tableFieldInfoMap;
 
-    public TableInfo(MybatisConfiguration configuration, Class entity) {
+    public TableInfo(Class entity) {
         Table table = (Table) entity.getAnnotation(Table.class);
         this.schema = table.schema();
-        this.tableName = TableInfoUtil.getTableName(configuration, entity);
+        this.tableName = TableInfoUtil.getTableName(entity);
         if (schema == null || StringPool.EMPTY.equals(schema)) {
             this.schemaAndTableName = tableName;
         } else {
@@ -63,15 +56,13 @@ public class TableInfo {
 
         TableFieldInfo idFieldInfo = null;
         List<TableFieldInfo> tableFieldInfos = new ArrayList<>();
-        List<ResultMapping> resultMappings = new ArrayList<>();
         Map<String, TableFieldInfo> tableFieldInfoMap = new HashMap<>();
         Map<Class, ForeignInfo> foreignInfoMap = new HashMap<>();
 
         List<Field> fieldList = FieldUtils.getResultMappingFields(entity);
         for (Field field : fieldList) {
-            TableFieldInfo tableFieldInfo = new TableFieldInfo(configuration, field);
+            TableFieldInfo tableFieldInfo = new TableFieldInfo(field);
             tableFieldInfos.add(tableFieldInfo);
-            resultMappings.add(tableFieldInfo.getResultMapping());
             tableFieldInfoMap.put(field.getName(), tableFieldInfo);
 
             if (field.isAnnotationPresent(ForeignKey.class)) {
@@ -85,7 +76,6 @@ public class TableInfo {
 
         this.tableFieldInfos = Collections.unmodifiableList(tableFieldInfos);
         this.idFieldInfo = idFieldInfo;
-        this.resultMappings = Collections.unmodifiableList(resultMappings);
         this.tableFieldInfoMap = Collections.unmodifiableMap(tableFieldInfoMap);
         this.foreignInfoMap = Collections.unmodifiableMap(foreignInfoMap);
     }
@@ -137,10 +127,6 @@ public class TableInfo {
 
     public TableFieldInfo getIdFieldInfo() {
         return idFieldInfo;
-    }
-
-    public List<ResultMapping> getResultMappings() {
-        return resultMappings;
     }
 
 }

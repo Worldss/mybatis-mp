@@ -1,10 +1,12 @@
 package cn.mybatis.mp.core.mybatis.mapper.context;
 
+import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfos;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.annotations.TableField;
+import cn.mybatis.mp.db.annotations.TableId;
 import db.sql.core.api.cmd.Table;
 import db.sql.core.api.cmd.executor.AbstractInsert;
 import db.sql.core.api.cmd.executor.Insert;
@@ -36,12 +38,11 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
                 if (Objects.nonNull(value)) {
                     isNeedInsert = true;
                 } else if (item.isTableId()) {
-                    if (item.getTableIdAnnotation().value() != IdAutoType.AUTO && item.getTableIdAnnotation().executeBefore()) {
+                    TableId tableId = TableIds.get(t.getClass());
+                    if (tableId.value() != IdAutoType.AUTO && tableId.executeBefore()) {
                         isNeedInsert = true;
-                        if (item.getTableIdAnnotation().executeBefore()) {
-                            Supplier supplier = () -> item.getValue(t);
-                            value = supplier;
-                        }
+                        Supplier supplier = () -> item.getValue(t);
+                        value = supplier;
                     }
                 }
 

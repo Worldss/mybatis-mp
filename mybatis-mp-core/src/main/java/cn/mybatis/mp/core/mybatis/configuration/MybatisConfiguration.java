@@ -1,7 +1,8 @@
 package cn.mybatis.mp.core.mybatis.configuration;
 
 
-import cn.mybatis.mp.core.db.reflect.ResultTables;
+import cn.mybatis.mp.core.db.reflect.ResultMaps;
+import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
 import org.apache.ibatis.executor.*;
@@ -28,19 +29,8 @@ import java.util.Objects;
 
 public class MybatisConfiguration extends Configuration {
 
-    /**
-     * 列名否是下划线命名
-     */
-    private boolean columnUnderline = true;
-
-    /**
-     * 表名否是下划线命名
-     */
-    private boolean tableUnderline = true;
-
     public MybatisConfiguration() {
         super();
-
     }
 
     public MybatisConfiguration(Environment environment) {
@@ -81,9 +71,11 @@ public class MybatisConfiguration extends Configuration {
 
     @Override
     public <T> void addMapper(Class<T> type) {
-        if (!MapperTables.add(type)) {
+        if (MapperTables.add(type)) {
             //提前缓存
-            ResultTables.load(this, type);
+            Class entity = MapperTables.get(type);
+            ResultMaps.getResultMappings(this, entity);
+            TableIds.get(this, entity);
         }
         super.addMapper(type);
     }
@@ -156,22 +148,6 @@ public class MybatisConfiguration extends Configuration {
             executor = new CachingExecutor(executor);
         }
         return (Executor) this.interceptorChain.pluginAll(executor);
-    }
-
-    public boolean isColumnUnderline() {
-        return columnUnderline;
-    }
-
-    public void setColumnUnderline(boolean columnUnderline) {
-        this.columnUnderline = columnUnderline;
-    }
-
-    public boolean isTableUnderline() {
-        return tableUnderline;
-    }
-
-    public void setTableUnderline(boolean tableUnderline) {
-        this.tableUnderline = tableUnderline;
     }
 }
 

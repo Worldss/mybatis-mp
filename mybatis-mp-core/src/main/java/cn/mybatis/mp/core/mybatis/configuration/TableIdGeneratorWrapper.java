@@ -1,5 +1,6 @@
 package cn.mybatis.mp.core.mybatis.configuration;
 
+import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfos;
 import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
@@ -40,10 +41,10 @@ public class TableIdGeneratorWrapper {
             //可能是动态的 所以无法获取entityClass
             return;
         }
-        TableInfo tableInfo = TableInfos.get((MybatisConfiguration) ms.getConfiguration(), entityClass);
+        TableInfo tableInfo = TableInfos.get(entityClass);
         if (Objects.nonNull(tableInfo.getIdFieldInfo())) {
             KeyGenerator keyGenerator = null;
-            TableId tableId = tableInfo.getIdFieldInfo().getTableIdAnnotation();
+            TableId tableId = TableIds.get(ms.getConfiguration(), entityClass);
             switch (tableId.value()) {
                 //数据库默认自增
                 case AUTO: {

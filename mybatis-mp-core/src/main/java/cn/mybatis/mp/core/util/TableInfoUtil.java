@@ -2,11 +2,13 @@ package cn.mybatis.mp.core.util;
 
 import cn.mybatis.mp.core.db.reflect.Default;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
+import cn.mybatis.mp.core.mybatis.configuration.MybatisMpConfig;
 import cn.mybatis.mp.db.DbType;
 import cn.mybatis.mp.db.annotations.Table;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;
 import org.apache.ibatis.mapping.ResultMapping;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
@@ -15,13 +17,13 @@ import java.util.Objects;
 
 public final class TableInfoUtil {
 
-    public static String getTableName(MybatisConfiguration configuration, Class entity) {
+    public static String getTableName(Class entity) {
         Table table = (Table) entity.getAnnotation(Table.class);
         String tableName = table.value();
         if (StringPool.EMPTY.equals(tableName)) {
             //未设置表
             tableName = entity.getSimpleName();
-            if (configuration.isTableUnderline()) {
+            if (MybatisMpConfig.isTableUnderline()) {
                 tableName = NamingUtil.camelToUnderline(tableName);
             }
         }
@@ -35,7 +37,7 @@ public final class TableInfoUtil {
      * @param field
      * @return
      */
-    public final static TableId getTableIdAnnotation(MybatisConfiguration configuration, Field field) {
+    public static TableId getTableIdAnnotation(Configuration configuration, Field field) {
         TableId[] tableIdAnnotations = field.getAnnotationsByType(TableId.class);
         if (tableIdAnnotations.length < 1) {
             return null;
@@ -73,15 +75,15 @@ public final class TableInfoUtil {
     /**
      * 获取列名
      *
-     * @param configuration
      * @param field
      * @return
      */
-    public final static String getFieldColumnName(MybatisConfiguration configuration, Field field, TableField tableFieldAnnotation) {
+    public static String getFieldColumnName(Field field) {
+        TableField tableFieldAnnotation = getTableFieldAnnotation(field);
         String columnName = tableFieldAnnotation.value();
         if (StringPool.EMPTY.equals(columnName)) {
             columnName = field.getName();
-            if (configuration.isColumnUnderline()) {
+            if (MybatisMpConfig.isColumnUnderline()) {
                 columnName = NamingUtil.camelToUnderline(columnName);
             }
         }

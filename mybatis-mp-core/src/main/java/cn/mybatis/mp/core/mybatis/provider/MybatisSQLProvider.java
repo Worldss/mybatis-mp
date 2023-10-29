@@ -1,7 +1,7 @@
 package cn.mybatis.mp.core.mybatis.provider;
 
 
-import cn.mybatis.mp.core.db.reflect.ResultClassEntityPrefixs;
+import cn.mybatis.mp.core.db.reflect.ResultClassEntityPrefixes;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfos;
@@ -141,7 +141,7 @@ public class MybatisSQLProvider {
         if (query.getReturnType() == null) {
             query.setReturnType(MapperTables.get(providerContext.getMapperType()));
         } else {
-            Map<Class, String> entityPrefixMap = ResultClassEntityPrefixs.getEntityPrefix(query.getReturnType());
+            Map<Class, String> entityPrefixMap = ResultClassEntityPrefixes.getEntityPrefix(query.getReturnType());
             if (Objects.nonNull(entityPrefixMap)) {
                 entityPrefixMap.forEach((key, value) -> {
                     for (int i = 1; i < 5; i++) {

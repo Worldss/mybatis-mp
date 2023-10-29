@@ -8,6 +8,8 @@ public class SqlConst {
 
     public static final String BLANK = " ";
 
+    public static final String NULL = " NULL ";
+
     public static final String ALL = "*";
 
     public static final String DOT = ".";
@@ -19,6 +21,10 @@ public class SqlConst {
     }
 
     public static final String AS = " AS ";
+
+    public static final String IS = " IS ";
+
+    public static final String IS_NOT = " IS NOT ";
 
     public static final String CREATE_TABLE = "CREATE TABLE ";
 

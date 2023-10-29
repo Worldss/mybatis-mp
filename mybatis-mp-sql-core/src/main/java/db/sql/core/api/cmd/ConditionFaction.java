@@ -166,6 +166,21 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         return cmdFactory.notBetween(cmd, convert(value), convert(value2));
     }
 
+    @Override
+    public Condition isNull(Cmd cmd, boolean when) {
+        if (!isValid(when, cmd, true)) {
+            return null;
+        }
+        return cmdFactory.isNull(cmd);
+    }
+
+    @Override
+    public Condition isNotNull(Cmd cmd, boolean when) {
+        if (!isValid(when, cmd, true)) {
+            return null;
+        }
+        return cmdFactory.isNotNull(cmd);
+    }
 
     @Override
     public <T> Condition between(Getter<T> column, Object value, Object value2, int storey, boolean when) {
@@ -293,6 +308,22 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
             return null;
         }
         return cmdFactory.notLike(convert(column, storey), convert(value), mode);
+    }
+
+    @Override
+    public <T> Condition isNull(Getter<T> column, int storey, boolean when) {
+        if (!isValid(when, true)) {
+            return null;
+        }
+        return cmdFactory.isNull(convert(column, storey));
+    }
+
+    @Override
+    public <T> Condition isNotNull(Getter<T> column, int storey, boolean when) {
+        if (!isValid(when, true)) {
+            return null;
+        }
+        return cmdFactory.isNotNull(convert(column, storey));
     }
 
     public Condition in(Cmd cmd, Object[] values, boolean when) {

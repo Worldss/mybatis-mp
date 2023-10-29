@@ -151,7 +151,9 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ####  save(Insert insert) 动态插入（无法返回ID）
 
 ####  update(T entity) 实体类更新
+####  update(T entity,F... fields) 实体类更新 + 强制字段更新
 ####  update(Model entity) 实体类部分更新
+####  update(Model entity,F... fields) 实体类部分更新 + 强制字段更新
 ####  update(Update update) 动态更新
 
 #### <R> List<R> list(Query query) 列表动态查询（可自定返回类型）

@@ -21,6 +21,10 @@ public class CmdFactory {
 
     protected int tableNums = 0;
 
+    public NULL NULL() {
+        return NULL.NULL;
+    }
+
     protected String tableAs(int storey, int tableNums) {
         StringBuilder as = new StringBuilder();
         for (int i = 0; i < storey; i++) {
@@ -96,6 +100,14 @@ public class CmdFactory {
 
     public Ne ne(Cmd key, Cmd value) {
         return new Ne(key, value);
+    }
+
+    public IsNull isNull(Cmd key) {
+        return new IsNull(key);
+    }
+
+    public IsNotNull isNotNull(Cmd key) {
+        return new IsNotNull(key);
     }
 
     public Gt gt(Cmd key, Serializable value) {
@@ -174,4 +186,5 @@ public class CmdFactory {
         In in = new In(main);
         return in;
     }
+
 }

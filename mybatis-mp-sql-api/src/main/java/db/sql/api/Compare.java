@@ -22,6 +22,8 @@ public interface Compare<RV, COLUMN, V> extends
         NotLikeGetterCompare<RV, V>,
         BetweenGetterCompare<RV, V>,
         NotBetweenGetterCompare<RV, V>,
+        IsNullGetterCompare<RV>,
+        IsNotNullGetterCompare<RV>,
         Serializable {
 
     default RV eq(COLUMN column, V value) {
@@ -100,4 +102,16 @@ public interface Compare<RV, COLUMN, V> extends
     }
 
     RV notBetween(COLUMN column, V value, V value2, boolean when);
+
+    default RV isNull(COLUMN column) {
+        return isNull(column, true);
+    }
+
+    RV isNull(COLUMN column, boolean when);
+
+    default RV isNotNull(COLUMN column) {
+        return isNotNull(column, true);
+    }
+
+    RV isNotNull(COLUMN column, boolean when);
 }

@@ -89,6 +89,18 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
     }
 
     @Override
+    default SELF isNull(COLUMN column, boolean when) {
+        conditionChain().isNull(column, when);
+        return (SELF) this;
+    }
+
+    @Override
+    default SELF isNotNull(COLUMN column, boolean when) {
+        conditionChain().isNotNull(column, when);
+        return (SELF) this;
+    }
+
+    @Override
     default <T> SELF eq(Getter<T> column, V value, int storey, boolean when) {
         conditionChain().eq(column, value, storey, when);
         return (SELF) this;
@@ -182,6 +194,18 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
     @Override
     default <T> SELF notBetween(Getter<T> column, V value, V value2, int storey, boolean when) {
         conditionChain().notBetween(column, value, value2, storey, when);
+        return (SELF) this;
+    }
+
+    @Override
+    default <T> SELF isNull(Getter<T> column, int storey, boolean when) {
+        conditionChain().isNull(column, storey, when);
+        return (SELF) this;
+    }
+
+    @Override
+    default <T> SELF isNotNull(Getter<T> column, int storey, boolean when) {
+        conditionChain().isNotNull(column, storey, when);
         return (SELF) this;
     }
 }

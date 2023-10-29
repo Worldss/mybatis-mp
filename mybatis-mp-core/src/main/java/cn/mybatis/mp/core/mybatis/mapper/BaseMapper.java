@@ -10,6 +10,8 @@ import cn.mybatis.mp.core.sql.executor.Insert;
 import cn.mybatis.mp.core.sql.executor.Query;
 import cn.mybatis.mp.core.sql.executor.Update;
 import cn.mybatis.mp.db.Model;
+import db.sql.api.Getter;
+import db.sql.core.api.tookit.LambdaUtil;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
@@ -17,8 +19,10 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.session.RowBounds;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface BaseMapper<T> {
 
@@ -75,6 +79,22 @@ public interface BaseMapper<T> {
 
 
     /**
+     * 实体类修改
+     *
+     * @param entity
+     * @param forceUpdateFields 强制更新指定，解决需要修改为null的需求
+     * @return
+     */
+    default int update(T entity, Getter<T>... forceUpdateFields) {
+        Set<String> forceUpdateFieldsSet = new HashSet<>();
+        for (Getter<T> getter : forceUpdateFields) {
+            forceUpdateFieldsSet.add(LambdaUtil.getName(getter));
+        }
+        return this.$update(new EntityUpdateContext(entity, forceUpdateFieldsSet));
+    }
+
+
+    /**
      * model插入 部分字段修改
      *
      * @param model
@@ -82,6 +102,21 @@ public interface BaseMapper<T> {
      */
     default int update(Model<T> model) {
         return this.$$update(new ModelUpdateContext<>(model));
+    }
+
+    /**
+     * model插入 部分字段修改
+     *
+     * @param model
+     * @param forceUpdateFields 强制更新指定，解决需要修改为null的需求
+     * @return
+     */
+    default <M extends Model<T>> int update(Model<T> model, Getter<M>... forceUpdateFields) {
+        Set<String> forceUpdateFieldsSet = new HashSet<>();
+        for (Getter<M> getter : forceUpdateFields) {
+            forceUpdateFieldsSet.add(LambdaUtil.getName(getter));
+        }
+        return this.$$update(new ModelUpdateContext<>(model, forceUpdateFieldsSet));
     }
 
     /**

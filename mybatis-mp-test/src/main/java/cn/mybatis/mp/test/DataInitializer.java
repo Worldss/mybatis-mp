@@ -85,14 +85,14 @@ public class DataInitializer {
         System.out.println(studentMapper.getById(1));
 
 
-        StudentDTO studentDTO=new StudentDTO();
+        StudentDTO studentDTO = new StudentDTO();
         studentDTO.setName("DTO Insert");
         studentDTO.setCreateTime(LocalDateTime.now());
         studentMapper.save(studentDTO);
 
         System.out.println(studentDTO);
         studentDTO.setName("DTO Update");
-        studentMapper.update(studentDTO);
+        studentMapper.update(studentDTO, StudentDTO::getExcellent);
         System.out.println(studentDTO);
 
         student.setId(null);

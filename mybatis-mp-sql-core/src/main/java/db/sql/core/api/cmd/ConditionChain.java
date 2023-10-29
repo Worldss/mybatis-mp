@@ -149,6 +149,24 @@ public class ConditionChain implements db.sql.api.ConditionChain<ConditionChain,
     }
 
     @Override
+    public ConditionChain isNull(Cmd cmd, boolean when) {
+        Condition condition = conditionFaction.isNull(cmd, when);
+        if (condition != null) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
+    }
+
+    @Override
+    public ConditionChain isNotNull(Cmd cmd, boolean when) {
+        Condition condition = conditionFaction.isNotNull(cmd, when);
+        if (condition != null) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
+    }
+
+    @Override
     public ConditionChain like(Cmd cmd, Object value, LikeMode mode, boolean when) {
         Condition condition = conditionFaction.like(cmd, value, mode, when);
         if (condition != null) {
@@ -310,6 +328,7 @@ public class ConditionChain implements db.sql.api.ConditionChain<ConditionChain,
         return this;
     }
 
+
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (conditionBlocks == null || conditionBlocks.isEmpty()) {
@@ -337,5 +356,15 @@ public class ConditionChain implements db.sql.api.ConditionChain<ConditionChain,
         }
 
         return sqlBuilder;
+    }
+
+    @Override
+    public <T> ConditionChain isNotNull(Getter<T> column, int storey, boolean when) {
+        return null;
+    }
+
+    @Override
+    public <T> ConditionChain isNull(Getter<T> column, int storey, boolean when) {
+        return null;
     }
 }

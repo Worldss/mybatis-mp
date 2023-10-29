@@ -13,5 +13,7 @@ public class StudentDTO implements Model<Student> {
 
     private String name;
 
+    private Boolean excellent;
+
     private LocalDateTime createTime;
 }

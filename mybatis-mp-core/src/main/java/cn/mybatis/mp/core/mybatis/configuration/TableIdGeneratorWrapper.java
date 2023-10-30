@@ -44,7 +44,7 @@ public class TableIdGeneratorWrapper {
             return;
         }
         TableInfo tableInfo = Tables.get(entityClass);
-        if (Objects.nonNull(tableInfo.getIdFieldInfo())) {
+        if (Objects.nonNull(tableInfo) && Objects.nonNull(tableInfo.getIdFieldInfo())) {
             addEntityKeyGenerator(ms, selectKeyId, tableInfo);
         }
     }

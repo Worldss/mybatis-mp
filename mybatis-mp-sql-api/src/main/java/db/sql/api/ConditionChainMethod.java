@@ -162,7 +162,7 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
 
     @Override
     default <T> SELF lte(Getter<T> column, V value, int storey, boolean when) {
-        conditionChain().lt(column, value, storey, when);
+        conditionChain().lte(column, value, storey, when);
         return (SELF) this;
     }
 

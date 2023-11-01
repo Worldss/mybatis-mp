@@ -42,21 +42,19 @@ public class BaseQuery<Q extends BaseQuery> extends db.sql.core.api.cmd.executor
 
     @Override
     public Q join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
-        if (Objects.nonNull(consumer)) {
-            TableInfo mainTableInfo = Tables.get(mainTable);
-            TableInfo secondTableInfo = Tables.get(secondTable);
-            ForeignInfo foreignInfo;
-            if ((foreignInfo = secondTableInfo.getForeignInfo(mainTable)) != null) {
-                final TableFieldInfo foreignFieldInfo = foreignInfo.getTableFieldInfo();
-                consumer = consumer.andThen(on -> {
+        if (Objects.isNull(consumer)) {
+            consumer = on -> {
+                TableInfo mainTableInfo = Tables.get(mainTable);
+                TableInfo secondTableInfo = Tables.get(secondTable);
+                ForeignInfo foreignInfo;
+                if ((foreignInfo = secondTableInfo.getForeignInfo(mainTable)) != null) {
+                    TableFieldInfo foreignFieldInfo = foreignInfo.getTableFieldInfo();
                     on.eq(this.$().field(mainTable, mainTableInfo.getIdFieldInfo().getField().getName(), mainTableStorey), this.$().field(secondTable, foreignFieldInfo.getField().getName(), secondTableStorey));
-                });
-            } else if ((foreignInfo = mainTableInfo.getForeignInfo(secondTable)) != null) {
-                final TableFieldInfo foreignFieldInfo = foreignInfo.getTableFieldInfo();
-                consumer = consumer.andThen(on -> {
+                } else if ((foreignInfo = mainTableInfo.getForeignInfo(secondTable)) != null) {
+                    TableFieldInfo foreignFieldInfo = foreignInfo.getTableFieldInfo();
                     on.eq(this.$().field(secondTable, secondTableInfo.getIdFieldInfo().getField().getName(), secondTableStorey), this.$().field(mainTable, foreignFieldInfo.getField().getName(), mainTableStorey));
-                });
-            }
+                }
+            };
         }
         this.join(mode, $().table(mainTable, mainTableStorey), $().table(secondTable, secondTableStorey), consumer);
         return (Q) this;

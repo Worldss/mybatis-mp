@@ -360,11 +360,19 @@ public class ConditionChain implements db.sql.api.ConditionChain<ConditionChain,
 
     @Override
     public <T> ConditionChain isNotNull(Getter<T> column, int storey, boolean when) {
-        return null;
+        Condition condition = conditionFaction.isNotNull(column,  storey, when);
+        if (condition != null) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
     }
 
     @Override
     public <T> ConditionChain isNull(Getter<T> column, int storey, boolean when) {
-        return null;
+        Condition condition = conditionFaction.isNull(column,  storey, when);
+        if (condition != null) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
     }
 }

@@ -312,7 +312,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
 
     @Override
     public <T> Condition isNull(Getter<T> column, int storey, boolean when) {
-        if (!isValid(when, true)) {
+        if (!when) {
             return null;
         }
         return cmdFactory.isNull(convert(column, storey));
@@ -320,7 +320,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
 
     @Override
     public <T> Condition isNotNull(Getter<T> column, int storey, boolean when) {
-        if (!isValid(when, true)) {
+        if (!when) {
             return null;
         }
         return cmdFactory.isNotNull(convert(column, storey));

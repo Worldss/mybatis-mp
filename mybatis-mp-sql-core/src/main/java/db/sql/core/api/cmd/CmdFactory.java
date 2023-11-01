@@ -7,6 +7,7 @@ import db.sql.api.LikeMode;
 import db.sql.core.api.cmd.condition.*;
 import db.sql.core.api.tookit.LambdaUtil;
 
+import javax.xml.crypto.Data;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,16 +34,24 @@ public class CmdFactory {
         return as.append(tableNums == 1 ? "" : tableNums).toString();
     }
 
-    public Table table(Class clazz) {
-        return this.table(clazz, 1);
+    public Table cacheTable(Class entity, int storey) {
+        return this.tableCache.get(String.format("%s.%s", entity.getName(), storey));
     }
 
-    public Table table(Class clazz, int storey) {
-        return tableCache.computeIfAbsent(clazz.getName(), key -> {
-            Table table = new Table(clazz.getSimpleName());
+    public Table table(Class entity) {
+        return this.table(entity, 1);
+    }
+
+    public Table table(Class entity, int storey) {
+        return tableCache.computeIfAbsent(entity.getName(), key -> {
+            Table table = new Table(entity.getSimpleName());
             table.as(tableAs(storey, ++tableNums));
             return table;
         });
+    }
+
+    public <T> String columnName(Getter<T> getter) {
+        return LambdaUtil.getName(getter);
     }
 
     public <T> TableField field(Getter<T> getter) {
@@ -60,6 +69,11 @@ public class CmdFactory {
             Table table = table(clazz, storey);
             return new TableField(table, filedName);
         });
+    }
+
+    public <T> DatasetField field(Dataset dataset, Getter<T> getter) {
+        String filedName = LambdaUtil.getName(getter);
+        return new DatasetField<>(dataset, filedName);
     }
 
     public Consumer<On> on(Class mainTable, Class secondTable, Consumer<On> consumer) {

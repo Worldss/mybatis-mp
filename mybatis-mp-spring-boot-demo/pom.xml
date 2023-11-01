@@ -9,7 +9,7 @@
         <version>1.0.4</version>
     </parent>
 
-    <artifactId>mybatis-mp-test</artifactId>
+    <artifactId>mybatis-mp-spring-boot-demo</artifactId>
 
     <dependencies>
 

@@ -26,7 +26,7 @@ public interface Dataset<T extends Dataset> extends Cmd, Alias<T> {
      *
      * @return
      */
-    default AllField $() {
+    default AllField $allField() {
         return new AllField(this);
     }
 }

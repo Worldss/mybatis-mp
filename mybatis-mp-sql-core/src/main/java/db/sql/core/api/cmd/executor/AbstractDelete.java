@@ -93,6 +93,11 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
     }
 
     @Override
+    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<On> consumer) {
+        return this.join(mode, this.$.table(mainTable, mainTableStorey), secondTable, consumer);
+    }
+
+    @Override
     public Where $where() {
         if (where == null) {
             where = new Where(this.conditionFaction);

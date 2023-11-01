@@ -15,7 +15,7 @@
     <modules>
         <module>mybatis-mp-annotation</module>
         <module>mybatis-mp-core</module>
-        <module>mybatis-mp-test</module>
+        <module>mybatis-mp-spring-boot-demo</module>
         <module>mybatis-mp-sql-api</module>
         <module>mybatis-mp-sql-core</module>
     </modules>

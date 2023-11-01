@@ -114,6 +114,10 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
     }
 
+    @Override
+    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<On> consumer) {
+        return this.join(mode, this.$.table(mainTable, mainTableStorey), secondTable, consumer);
+    }
 
     @Override
     public Where $where() {

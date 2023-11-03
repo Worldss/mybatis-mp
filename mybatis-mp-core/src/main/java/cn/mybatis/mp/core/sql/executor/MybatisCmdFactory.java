@@ -13,6 +13,10 @@ import org.apache.ibatis.util.MapUtil;
 import java.util.Objects;
 
 
+/**
+ * CMD 命令工厂
+ * 增加了对实体类的映射
+ */
 public class MybatisCmdFactory extends CmdFactory {
 
     @Override

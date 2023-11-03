@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public class CmdFactory {
@@ -54,8 +55,16 @@ public class CmdFactory {
         return LambdaUtil.getName(getter);
     }
 
+    public <T, R extends Cmd> R create(Getter<T> getter, Function<TableField, R> RF) {
+        return RF.apply(this.field(getter));
+    }
+
     public <T> TableField field(Getter<T> getter) {
         return this.field(getter, 1);
+    }
+
+    public <T, R> R create(Getter<T> getter, int storey, Function<TableField, R> RF) {
+        return RF.apply(this.field(getter, storey));
     }
 
     public <T> TableField field(Getter<T> getter, int storey) {

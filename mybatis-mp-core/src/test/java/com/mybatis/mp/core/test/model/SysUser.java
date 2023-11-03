@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class SysUser {
 
     @TableId
-    @TableField("_id")
+    @TableField("id")
     private Integer id;
 
     private String userName;

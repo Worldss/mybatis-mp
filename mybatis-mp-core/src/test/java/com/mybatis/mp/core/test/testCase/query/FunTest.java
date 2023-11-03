@@ -159,7 +159,7 @@ public class FunTest extends BaseTest {
                 from(SysUser.class).
                 eq(SysUser::getId, 3).
                 setReturnType(BigDecimal.class);
-        check("if_", "SELECT  POW( t._id , 2) FROM t_sys_user t WHERE  t._id = 3", query);
+        check("if_", "SELECT  POW( t.id , 2) FROM t_sys_user t WHERE  t.id = 3", query);
     }
 
 
@@ -224,7 +224,7 @@ public class FunTest extends BaseTest {
                 eq(SysUser::getId, 3).
                 setReturnType(String.class)
         );
-        check("if_", "SELECT  IF( t._id = 3 , 'abc' , '') FROM t_sys_user t WHERE  t._id = 3", query);
+        check("if_", "SELECT  IF( t.id = 3 , 'abc' , '') FROM t_sys_user t WHERE  t.id = 3", query);
     }
 
     @Test

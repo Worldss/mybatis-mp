@@ -149,9 +149,9 @@ public final class ResultMaps {
                 String targetFieldName = nestedFiled.getName();
                 NestedResultEntityField nestedResultEntityField = nestedFiled.getAnnotation(NestedResultEntityField.class);
                 if (Objects.nonNull(nestedResultEntityField)) {
-                    targetFieldName = nestedResultEntityField.property();
+                    targetFieldName = nestedResultEntityField.value();
                 } else if (nestedFiled.isAnnotationPresent(ResultField.class)) {
-                    ResultField resultField = field.getAnnotation(ResultField.class);
+                    ResultField resultField = nestedFiled.getAnnotation(ResultField.class);
                     return configuration.buildResultMapping(nestedFiled, resultField.value(), resultField.jdbcType(), resultField.typeHandler());
                 }
                 TableFieldInfo tableFieldInfo = tableInfo.getFieldInfo(targetFieldName);

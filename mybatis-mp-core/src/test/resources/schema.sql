@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS t_sys_user
 (
-    _id   INTEGER PRIMARY KEY auto_increment,
+    id   INTEGER PRIMARY KEY auto_increment,
     user_name VARCHAR(100),
     password VARCHAR(100),
     role_id  INTEGER,

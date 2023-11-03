@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @ResultEntity(SysUser.class)
-public class SysUserVo {
+public class SysUserRoleVo {
 
     private Integer id;
 
@@ -19,9 +19,9 @@ public class SysUserVo {
     @ResultEntityField(target = SysUser.class, property = "password")
     private String pwd;
 
-    @ResultField("kk")
-    private String kkName;
+    @ResultField("maxId")
+    private Integer maxId;
 
     @NestedResultEntity(target = SysRole.class)
-    private SysRole role;
+    private NestedSysRoleVo role;
 }

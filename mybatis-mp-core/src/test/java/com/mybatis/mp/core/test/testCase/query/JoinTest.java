@@ -97,7 +97,7 @@ public class JoinTest extends BaseTest {
                 .from(SysUser.class)
                 .join(JoinMode.FULL, SysUser.class, SysRole.class)
                 .setReturnType(Integer.TYPE);
-        check("fullJoin", "SELECT  COUNT( t._id) FROM t_sys_user t  FULL OUTER JOIN sys_role t2 ON  t2.id =  t.role_id", query);
+        check("fullJoin", "SELECT  COUNT( t.id) FROM t_sys_user t  FULL OUTER JOIN sys_role t2 ON  t2.id =  t.role_id", query);
 
     }
 

@@ -15,6 +15,6 @@ public @interface NestedResultEntityField {
      *
      * @return
      */
-    String property();
+    String value();
 
 }

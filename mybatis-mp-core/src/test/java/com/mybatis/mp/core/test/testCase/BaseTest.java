@@ -14,7 +14,9 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -29,6 +31,7 @@ public class BaseTest {
 
     @BeforeEach
     public void init() {
+
         dataSource = new EmbeddedDatabaseBuilder()
                 .setName("test_db")
                 .setType(EmbeddedDatabaseType.H2)
@@ -48,7 +51,7 @@ public class BaseTest {
 
     @AfterEach
     public void close() {
-        this.dataSource.shutdown();
+        dataSource.shutdown();
     }
 
     public void check(String message, String targetSql, Cmd cmd) {

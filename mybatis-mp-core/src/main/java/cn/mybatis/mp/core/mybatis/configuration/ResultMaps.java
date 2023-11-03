@@ -46,17 +46,17 @@ public final class ResultMaps {
 
     private static final List<ResultMapping> getResultEntityResultMappings(MybatisConfiguration configuration, Class clazz) {
         ResultEntity resultEntity = (ResultEntity) clazz.getAnnotation(ResultEntity.class);
-        Map<Class, String> entitysPrefixMap = ResultClassEntityPrefixes.getEntityPrefix(clazz);
+        Map<Class, String> entitiesPrefixMap = ResultClassEntityPrefixes.getEntityPrefix(clazz);
         List<ResultMapping> resultMappings = FieldUtils.getResultMappingFields(clazz).stream().map(field -> {
             if (field.isAnnotationPresent(ResultField.class)) {
                 ResultField resultField = field.getAnnotation(ResultField.class);
                 return createResultMapping(configuration, clazz, resultField, field);
             } else if (field.isAnnotationPresent(ResultEntityField.class)) {
                 ResultEntityField resultEntityField = field.getAnnotation(ResultEntityField.class);
-                return createResultMapping(configuration, clazz, entitysPrefixMap.get(resultEntityField.target()), resultEntityField, field);
+                return createResultMapping(configuration, clazz, entitiesPrefixMap.get(resultEntityField.target()), resultEntityField, field);
             } else if (field.isAnnotationPresent(NestedResultEntity.class)) {
                 NestedResultEntity nestedResultEntity = field.getAnnotation(NestedResultEntity.class);
-                return createNestedResultMapping(configuration, clazz, entitysPrefixMap.get(nestedResultEntity.target()), nestedResultEntity, field);
+                return createNestedResultMapping(configuration, clazz, entitiesPrefixMap.get(nestedResultEntity.target()), nestedResultEntity, field);
             } else {
                 return createResultMapping(configuration, clazz, resultEntity, field);
             }

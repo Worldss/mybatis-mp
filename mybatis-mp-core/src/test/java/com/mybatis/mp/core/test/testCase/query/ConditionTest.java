@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+
+@SuppressWarnings("unchecked")
 public class ConditionTest extends BaseTest {
 
     @Test

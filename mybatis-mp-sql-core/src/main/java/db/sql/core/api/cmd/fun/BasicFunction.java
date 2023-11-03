@@ -6,7 +6,7 @@ import db.sql.core.api.cmd.Field;
 import db.sql.core.api.cmd.Select;
 import db.sql.core.api.tookit.SqlConst;
 
-public abstract class BasicFunction<T extends BasicFunction> extends Field<T> implements Function, FunctionInterface {
+public abstract class BasicFunction<T extends BasicFunction> extends Field<BasicFunction<T>> implements Function, FunctionInterface {
 
     protected final String operator;
 

@@ -22,6 +22,7 @@ public class ResultClassEntityPrefixes {
 
     }
 
+    @SuppressWarnings("unchecked")
     public static Map<Class, String> getEntityPrefix(Class clazz) {
         if (!clazz.isAnnotationPresent(ResultEntity.class)) {
             return null;

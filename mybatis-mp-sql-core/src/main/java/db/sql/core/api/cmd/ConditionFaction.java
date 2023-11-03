@@ -326,6 +326,22 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         return cmdFactory.isNotNull(convert(column, storey));
     }
 
+    public <T> Condition in(Getter<T> column, Object[] values, boolean when) {
+        if (!isValid(when, false, values)) {
+            return null;
+        }
+
+        Cmd[] cmds = new Cmd[values.length];
+        int i = 0;
+        for (Object value : values) {
+            if (!hasValue(value)) {
+                continue;
+            }
+            cmds[i++] = convert(value);
+        }
+        return cmdFactory.in(convert(column, 1)).add(cmds);
+    }
+
     public Condition in(Cmd cmd, Object[] values, boolean when) {
         if (!isValid(when, cmd, false, values)) {
             return null;

@@ -10,10 +10,12 @@ public interface OrderBy<SELF extends OrderBy, COLUMN> {
 
     SELF orderBy(COLUMN column, boolean asc);
 
+    @SuppressWarnings("unchecked")
     default SELF orderBy(COLUMN... columns) {
         return this.orderBy(true, columns);
     }
 
+    @SuppressWarnings("unchecked")
     default SELF orderBy(boolean asc, COLUMN... columns) {
         for (COLUMN column : columns) {
             this.orderBy(column, asc);
@@ -21,10 +23,12 @@ public interface OrderBy<SELF extends OrderBy, COLUMN> {
         return (SELF) this;
     }
 
+    @SuppressWarnings("unchecked")
     default SELF orderBy(List<COLUMN> columns) {
         return this.orderBy(true, columns);
     }
 
+    @SuppressWarnings("unchecked")
     default SELF orderBy(boolean asc, List<COLUMN> columns) {
         for (COLUMN column : columns) {
             this.orderBy(column, asc);

@@ -5,7 +5,7 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.tookit.SqlConst;
 
-public class Table<T extends Table> implements Dataset<T> {
+public class Table implements Dataset<Table> {
 
     private final String name;
 
@@ -34,12 +34,12 @@ public class Table<T extends Table> implements Dataset<T> {
         return alias;
     }
 
-    public T as(String alias) {
+    public Table as(String alias) {
         this.alias = alias;
-        return (T) this;
+        return this;
     }
 
-    public T setAlias(String alias) {
+    public Table setAlias(String alias) {
         return as(alias);
     }
 
@@ -48,9 +48,9 @@ public class Table<T extends Table> implements Dataset<T> {
         return prefix;
     }
 
-    public T setPrefix(String prefix) {
+    public Table setPrefix(String prefix) {
         this.prefix = prefix;
-        return (T) this;
+        return this;
     }
 
     @Override

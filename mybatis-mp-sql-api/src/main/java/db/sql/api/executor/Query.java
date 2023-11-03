@@ -24,6 +24,7 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
 
     SELECT $select();
 
+    @SuppressWarnings("unchecked")
     FROM $from(TABLE... tables);
 
     JOIN $join(JoinMode mode, TABLE mainTable, TABLE secondTable);
@@ -37,30 +38,35 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
     ORDER $orderBy();
 
     @Override
+    @SuppressWarnings("unchecked")
     default SELF select(COLUMN column) {
         $select().select(column);
         return (SELF) this;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     default SELF from(TABLE... tables) {
         $from(tables);
         return (SELF) this;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     default SELF groupBy(COLUMN column) {
         $groupBy().groupBy(column);
         return (SELF) this;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     default SELF having(Consumer<HAVING> consumer) {
         consumer.accept($having());
         return (SELF) this;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     default SELF orderBy(COLUMN column, boolean asc) {
         $orderBy().orderBy(column, asc);
         return (SELF) this;

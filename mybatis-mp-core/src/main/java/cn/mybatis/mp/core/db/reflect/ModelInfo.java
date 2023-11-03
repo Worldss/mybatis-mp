@@ -15,7 +15,7 @@ public class ModelInfo {
     /**
      * 对应的类
      */
-    private final Class type;
+    private final Class<?> type;
 
     /**
      * 表信息
@@ -32,9 +32,10 @@ public class ModelInfo {
      */
     private final ModelFieldInfo idFieldInfo;
 
-    public ModelInfo(Class model) {
+    @SuppressWarnings("unchecked")
+    public ModelInfo(Class<?> model) {
         this.type = model;
-        Class entity = GenericUtil.getGenericInterfaceClass(model).stream().filter(item -> item.isAnnotationPresent(Table.class)).findFirst().orElseThrow(() -> {
+        Class<?> entity = GenericUtil.getGenericInterfaceClass(model).stream().filter(item -> item.isAnnotationPresent(Table.class)).findFirst().orElseThrow(() -> {
             return new RuntimeException(MessageFormat.format("class {0} have no generic type", model.getName()));
         });
 
@@ -51,7 +52,7 @@ public class ModelInfo {
         this.modelFieldInfos = Collections.unmodifiableList(modelFieldInfos);
     }
 
-    public Class getType() {
+    public Class<?> getType() {
         return type;
     }
 

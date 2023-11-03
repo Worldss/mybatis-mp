@@ -65,6 +65,7 @@ public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY ex
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> SELF field(Getter<T>... fields) {
         TableField[] tableField = new TableField[fields.length];
         for (int i = 0; i < fields.length; i++) {
@@ -74,6 +75,7 @@ public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY ex
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public SELF values(List<Object> values) {
         this.$values(values.stream().map(item -> {
             if (item instanceof Value) {

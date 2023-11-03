@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class DataInitializer {
 
     private static SqlSessionFactory sqlSessionFactory;

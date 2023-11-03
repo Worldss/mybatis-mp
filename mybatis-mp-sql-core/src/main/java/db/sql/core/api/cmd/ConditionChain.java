@@ -7,6 +7,7 @@ import db.sql.api.LikeMode;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.tookit.SqlConst;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -370,6 +371,24 @@ public class ConditionChain implements db.sql.api.ConditionChain<ConditionChain,
     @Override
     public <T> ConditionChain isNull(Getter<T> column, int storey, boolean when) {
         Condition condition = conditionFaction.isNull(column,  storey, when);
+        if (condition != null) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
+    }
+
+    @Override
+    public ConditionChain in(Cmd cmd, boolean when, Serializable... values) {
+        Condition condition = conditionFaction.in(cmd, values, when);
+        if (condition != null) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
+    }
+
+    @Override
+    public <T> ConditionChain in(Getter<T> column, boolean when, Serializable... values) {
+        Condition condition = conditionFaction.in(column, values, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }

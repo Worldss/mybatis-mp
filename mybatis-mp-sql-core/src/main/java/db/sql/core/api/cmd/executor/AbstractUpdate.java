@@ -54,15 +54,16 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-    public SELF update(Class... entitys) {
-        Dataset[] tables = new Dataset[entitys.length];
-        for (int i = 0; i < entitys.length; i++) {
-            tables[i] = $.table(entitys[i]);
+    public SELF update(Class... entities) {
+        Dataset[] tables = new Dataset[entities.length];
+        for (int i = 0; i < entities.length; i++) {
+            tables[i] = $.table(entities[i]);
         }
         return this.update(tables);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public SELF set(Cmd field, Object value) {
         Value v;
         if (value instanceof Value) {
@@ -79,6 +80,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> SELF set(Getter<T> field, Object value) {
         return this.set($.field(field), value);
     }
@@ -91,11 +93,13 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<On> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), secondTable, consumer);
     }
@@ -110,6 +114,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<On> consumer) {
         Join join = $join(mode, mainTable, secondTable);
         if (consumer != null) {

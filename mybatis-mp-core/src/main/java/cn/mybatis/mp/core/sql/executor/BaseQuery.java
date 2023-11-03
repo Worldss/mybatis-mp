@@ -21,6 +21,7 @@ public class BaseQuery<Q extends BaseQuery> extends db.sql.core.api.cmd.executor
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Q select(Class entity, int storey) {
         TableInfo tableInfo = Tables.get(entity);
         if (tableInfo == null) {
@@ -36,11 +37,13 @@ public class BaseQuery<Q extends BaseQuery> extends db.sql.core.api.cmd.executor
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> Q select(Getter<T> column, Function<TableField, Cmd> f) {
         return super.select(column, f);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Q join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
         if (Objects.isNull(consumer)) {
             consumer = on -> {

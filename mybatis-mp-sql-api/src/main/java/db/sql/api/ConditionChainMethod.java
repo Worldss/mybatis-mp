@@ -1,7 +1,9 @@
 package db.sql.api;
 
+import java.io.Serializable;
 import java.util.function.Consumer;
 
+@SuppressWarnings("unchecked")
 public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN, V, CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>> extends Compare<SELF, COLUMN, V>, Nested<SELF, CONDITION_CHAIN> {
 
     CONDITION_CHAIN conditionChain();
@@ -206,6 +208,24 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
     @Override
     default <T> SELF isNotNull(Getter<T> column, int storey, boolean when) {
         conditionChain().isNotNull(column, storey, when);
+        return (SELF) this;
+    }
+
+    default SELF in(COLUMN column, Serializable... values) {
+        return this.in(column, true, values);
+    }
+
+    default SELF in(COLUMN column, boolean when, Serializable... values) {
+        conditionChain().in(column, when, values);
+        return (SELF) this;
+    }
+
+    default <T> SELF in(Getter<T> column, Serializable... values) {
+        return this.in(column, true, values);
+    }
+
+    default <T> SELF in(Getter<T> column, boolean when, Serializable... values) {
+        conditionChain().in(column, when, values);
         return (SELF) this;
     }
 }

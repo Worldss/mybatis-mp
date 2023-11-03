@@ -7,6 +7,7 @@ public interface GroupByMethod<SELF extends GroupByMethod, TABLE_FIELD, COLUMN> 
 
     SELF groupBy(COLUMN column);
 
+    @SuppressWarnings("unchecked")
     default SELF groupBy(COLUMN... columns) {
         for (COLUMN column : columns) {
             this.groupBy(column);
@@ -14,6 +15,7 @@ public interface GroupByMethod<SELF extends GroupByMethod, TABLE_FIELD, COLUMN> 
         return (SELF) this;
     }
 
+    @SuppressWarnings("unchecked")
     default SELF groupBy(List<COLUMN> columns) {
         for (COLUMN column : columns) {
             this.groupBy(column);
@@ -35,10 +37,12 @@ public interface GroupByMethod<SELF extends GroupByMethod, TABLE_FIELD, COLUMN> 
 
     <T> SELF groupBy(Getter<T> column, int storey, Function<TABLE_FIELD, Cmd> f);
 
+    @SuppressWarnings("unchecked")
     default <T> SELF groupBy(Getter<T>... columns) {
         return this.groupBy(1, columns);
     }
 
+    @SuppressWarnings("unchecked")
     default <T> SELF groupBy(int storey, Getter<T>... columns) {
         for (Getter<T> column : columns) {
             this.groupBy(column, storey);

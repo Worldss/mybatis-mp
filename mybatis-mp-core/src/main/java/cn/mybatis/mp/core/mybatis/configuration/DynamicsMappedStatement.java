@@ -9,7 +9,7 @@ import java.util.Collections;
 
 public class DynamicsMappedStatement {
 
-    public static MappedStatement create(Class returnTypeClass, MappedStatement ms, Query query) {
+    public static MappedStatement create(Class returnTypeClass, MappedStatement ms) {
         String id = ms.getId() + "." + returnTypeClass.getName();
         if (ms.getConfiguration().hasStatement(id)) {
             return ms.getConfiguration().getMappedStatement(id);

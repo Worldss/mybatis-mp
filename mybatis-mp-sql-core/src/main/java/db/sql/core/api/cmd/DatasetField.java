@@ -5,7 +5,7 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.tookit.SqlConst;
 
-public class DatasetField<T extends DatasetField> extends Field<DatasetField> {
+public class DatasetField<T extends DatasetField<T>> extends Field<T> {
 
     private final Dataset table;
 

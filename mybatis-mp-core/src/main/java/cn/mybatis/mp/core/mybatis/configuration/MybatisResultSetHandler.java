@@ -12,7 +12,10 @@ import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 
 import java.util.Objects;
 
+@SuppressWarnings("unchecked")
 public class MybatisResultSetHandler extends DefaultResultSetHandler {
+
+
     private static MappedStatement create(MappedStatement ms, BoundSql boundSql) {
         if (ms.getSqlCommandType() != SqlCommandType.SELECT) {
             return ms;
@@ -25,8 +28,9 @@ public class MybatisResultSetHandler extends DefaultResultSetHandler {
         if (Objects.isNull(queryContext.getExecution().getReturnType())) {
             return ms;
         }
-        return DynamicsMappedStatement.create(queryContext.getExecution().getReturnType(), ms, queryContext.getExecution());
+        return DynamicsMappedStatement.create(queryContext.getExecution().getReturnType(), ms);
     }
+
 
     public MybatisResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler, ResultHandler<?> resultHandler, BoundSql boundSql, RowBounds rowBounds) {
         super(executor, create(mappedStatement, boundSql), parameterHandler, resultHandler, boundSql, rowBounds);

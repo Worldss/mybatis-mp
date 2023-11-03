@@ -4,14 +4,17 @@ import java.util.function.Consumer;
 
 public interface FromMethod<SELF extends FromMethod, TABLE> {
 
+    @SuppressWarnings("unchecked")
     SELF from(TABLE... tables);
 
-    default SELF from(Class... tables) {
-        return this.from(1, tables);
+    @SuppressWarnings("unchecked")
+    default SELF from(Class... entities) {
+        return this.from(1, entities);
     }
 
-    default SELF from(int storey, Class... entitys) {
-        for (Class entity : entitys) {
+    @SuppressWarnings("unchecked")
+    default SELF from(int storey, Class... entities) {
+        for (Class entity : entities) {
             this.from(entity, storey);
         }
         return (SELF) this;

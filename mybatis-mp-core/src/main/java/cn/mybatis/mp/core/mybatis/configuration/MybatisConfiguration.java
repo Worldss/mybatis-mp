@@ -69,6 +69,7 @@ public class MybatisConfiguration extends Configuration {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> void addMapper(Class<T> type) {
         if (MapperTables.add(type)) {
             //提前缓存
@@ -79,6 +80,7 @@ public class MybatisConfiguration extends Configuration {
         super.addMapper(type);
     }
 
+    @SuppressWarnings("unchecked")
     public ResultMapping buildResultMapping(Field property, String columnName, JdbcType jdbcType, Class<? extends TypeHandler<?>> typeHandlerClass) {
         return new ResultMapping.Builder(this, property.getName())
                 .column(columnName)
@@ -114,6 +116,7 @@ public class MybatisConfiguration extends Configuration {
                 .build();
     }
 
+    @SuppressWarnings("unchecked")
     public TypeHandler buildTypeHandler(Class type, Class<? extends TypeHandler<?>> typeHandlerClass) {
         if (typeHandlerClass == UnknownTypeHandler.class) {
             TypeHandler typeHandler = this.getTypeHandlerRegistry().getTypeHandler(type);

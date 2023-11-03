@@ -51,6 +51,14 @@ public class CmdFactory {
         });
     }
 
+    public <R extends Cmd> R create(Class entity, Function<Table, R> RF) {
+        return RF.apply(this.table(entity));
+    }
+
+    public <R extends Cmd> R create(Class entity, int storey, Function<Table, R> RF) {
+        return RF.apply(this.table(entity, storey));
+    }
+
     public <T> String columnName(Getter<T> getter) {
         return LambdaUtil.getName(getter);
     }

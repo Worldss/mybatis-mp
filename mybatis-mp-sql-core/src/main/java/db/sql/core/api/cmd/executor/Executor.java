@@ -4,6 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.CmdFactory;
+import db.sql.core.api.cmd.Table;
 import db.sql.core.api.cmd.TableField;
 import db.sql.core.api.tookit.CmdJoins;
 
@@ -21,6 +22,31 @@ public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory>
     Map<Class<? extends Cmd>, Integer> cmdSorts();
 
     List<Cmd> cmds();
+
+
+    default Table $(Class entity) {
+        return $().table(entity);
+    }
+
+    default Table $(Class entity, int storey) {
+        return $().table(entity);
+    }
+
+    default <T, R extends Cmd> R $(Class entity, Function<Table, R> RF) {
+        return $().create(entity, RF);
+    }
+
+    default <T, R extends Cmd> R $(Class entity, int storey, Function<Table, R> RF) {
+        return $().create(entity, storey, RF);
+    }
+
+    default <T> TableField $(Getter<T> getter) {
+        return $().field(getter);
+    }
+
+    default <T> TableField $(Getter<T> getter, int storey) {
+        return $().field(getter, storey);
+    }
 
     /**
      * 万能创建SQL命令方法

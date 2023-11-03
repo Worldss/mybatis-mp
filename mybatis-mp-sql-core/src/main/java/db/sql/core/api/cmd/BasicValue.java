@@ -20,7 +20,7 @@ public class BasicValue extends Field<BasicValue> {
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (context.getSqlMode() == SQLMode.PRINT) {
+        if (context.getSqlMode() == SQLMode.PRINT || user instanceof OrderBy) {
             if (this.value instanceof Number) {
                 sqlBuilder = sqlBuilder.append(this.value);
             } else {

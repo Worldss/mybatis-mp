@@ -2,7 +2,13 @@ package db.sql.core.api;
 
 public enum DatabaseId implements db.sql.api.DatabaseId {
 
-    MYSQL;
+    MYSQL,
+
+    SQL_SERVER,
+
+    PGSQL,
+
+    ORACLE;
 
     public static DatabaseId getByName(String name) {
         DatabaseId[] databaseIds = values();

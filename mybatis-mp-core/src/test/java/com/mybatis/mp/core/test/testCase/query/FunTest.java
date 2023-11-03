@@ -246,7 +246,7 @@ public class FunTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             String str = sysUserMapper.get(new Query() {{
-                select(SysUser::getId, c -> c.eq(1).caseThen(1).when($.eq($.field(SysUser::getId), 2), 3).else_(4));
+                select(SysUser::getId, c -> c.eq(1).caseThen(1).when($.eq($(SysUser::getId), 2), 3).else_(4));
                 from(SysUser.class);
                 eq(SysUser::getId, 3);
                 setReturnType(String.class);

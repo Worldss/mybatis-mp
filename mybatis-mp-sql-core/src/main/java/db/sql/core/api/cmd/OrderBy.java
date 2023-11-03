@@ -25,7 +25,7 @@ public class OrderBy implements db.sql.api.OrderBy<OrderBy, Cmd>, Cmd {
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.ORDER_BY);
-        sqlBuilder = CmdJoins.join(user, context, sqlBuilder, this.orderByValues, SqlConst.DELIMITER);
+        sqlBuilder = CmdJoins.join(this, context, sqlBuilder, this.orderByValues, SqlConst.DELIMITER);
         return sqlBuilder;
     }
 }

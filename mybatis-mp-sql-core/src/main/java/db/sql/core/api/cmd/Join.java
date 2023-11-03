@@ -44,7 +44,7 @@ public class Join implements db.sql.api.Join<Join, Dataset, On>, Cmd {
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(this.mode).append(SqlConst.JOIN);
+        sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(this.mode.getSql());
         sqlBuilder = getSecondTable().sql(this, context, sqlBuilder);
         sqlBuilder = getOn().sql(this, context, sqlBuilder);
         return sqlBuilder;

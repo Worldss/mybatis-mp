@@ -23,7 +23,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class MybatisConfiguration extends Configuration {
@@ -34,6 +36,12 @@ public class MybatisConfiguration extends Configuration {
 
     public MybatisConfiguration(Environment environment) {
         super(environment);
+    }
+
+    private final Map<Class, List<ResultMapping>> classResultMappings = new ConcurrentHashMap<>();
+
+    public Map<Class, List<ResultMapping>> getClassResultMappings() {
+        return classResultMappings;
     }
 
     public void printBanner() {
@@ -99,7 +107,8 @@ public class MybatisConfiguration extends Configuration {
      * @return
      */
     public void registerNestedResultMap(String nestedResultMapId, Field property, List<ResultMapping> resultMappings) {
-        ResultMap resultMap = new ResultMap.Builder(this, nestedResultMapId, property.getType(), resultMappings, false).build();
+        ResultMap resultMap = new ResultMap.Builder(this, nestedResultMapId, property.getType(), resultMappings, false)
+                .build();
         addResultMap(resultMap);
     }
 
@@ -112,6 +121,8 @@ public class MybatisConfiguration extends Configuration {
      */
     public ResultMapping buildNestedResultMapping(String nestedResultMapId, Field property) {
         return new ResultMapping.Builder(this, property.getName())
+                .javaType(property.getType())
+                .jdbcType(JdbcType.UNDEFINED)
                 .nestedResultMapId(nestedResultMapId)
                 .build();
     }

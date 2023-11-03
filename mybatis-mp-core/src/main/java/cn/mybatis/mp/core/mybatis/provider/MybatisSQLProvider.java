@@ -25,27 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 public class MybatisSQLProvider {
-
-    private static class EntityPrefix {
-
-        private final Class entity;
-
-        private final String columnPrefix;
-
-        public EntityPrefix(Class entity, String columnPrefix) {
-            this.entity = entity;
-            this.columnPrefix = columnPrefix;
-        }
-
-        public Class getEntity() {
-            return entity;
-        }
-
-        public String getColumnPrefix() {
-            return columnPrefix;
-        }
-    }
-
     public static final String SAVE_NAME = "save";
     public static final String UPDATE_NAME = "update";
     public static final String DELETE_NAME = "delete";
@@ -167,6 +146,7 @@ public class MybatisSQLProvider {
 
     public static StringBuilder cmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
         fill(queryContext, providerContext);
+        System.out.println(queryContext.sql(providerContext.getDatabaseId()));
         return queryContext.sql(providerContext.getDatabaseId());
     }
 }

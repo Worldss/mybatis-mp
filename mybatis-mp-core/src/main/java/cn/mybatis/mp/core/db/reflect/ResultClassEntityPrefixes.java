@@ -46,14 +46,16 @@ public class ResultClassEntityPrefixes {
                 if (field.isAnnotationPresent(ResultEntityField.class)) {
                     ResultEntityField resultEntityField = field.getAnnotation(ResultEntityField.class);
                     entity = resultEntityField.target();
-                    index++;
                 } else if (field.isAnnotationPresent(NestedResultEntity.class)) {
                     NestedResultEntity nestedResultEntity = field.getAnnotation(NestedResultEntity.class);
                     entity = nestedResultEntity.target();
-                    index++;
                 }
 
                 if (Objects.nonNull(entity)) {
+                    if (entityPrefixMap.containsKey(entity)) {
+                        continue;
+                    }
+                    index++;
                     if (index == 1) {
                         entityPrefixMap.put(entity, "_");
                     } else {

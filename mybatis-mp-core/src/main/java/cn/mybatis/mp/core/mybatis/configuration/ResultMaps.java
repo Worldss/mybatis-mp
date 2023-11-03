@@ -5,7 +5,6 @@ import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.util.FieldUtils;
-import cn.mybatis.mp.core.util.StringPool;
 import cn.mybatis.mp.db.annotations.*;
 import org.apache.ibatis.mapping.ResultMapping;
 
@@ -15,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public final class ResultMaps {
@@ -24,14 +22,12 @@ public final class ResultMaps {
 
     }
 
-    private static final Map<Class, List<ResultMapping>> CACHE = new ConcurrentHashMap<>();
-
 
     public static final List<ResultMapping> getResultMappings(MybatisConfiguration configuration, Class clazz) {
         if (clazz.isAnnotationPresent(Table.class)) {
-            return CACHE.computeIfAbsent(clazz, key -> getEntityResultMappings(configuration, clazz));
+            return configuration.getClassResultMappings().computeIfAbsent(clazz, key -> getEntityResultMappings(configuration, clazz));
         } else if (clazz.isAnnotationPresent(ResultEntity.class)) {
-            return CACHE.computeIfAbsent(clazz, key -> getResultEntityResultMappings(configuration, clazz));
+            return configuration.getClassResultMappings().computeIfAbsent(clazz, key -> getResultEntityResultMappings(configuration, clazz));
         }
         return null;
     }
@@ -111,11 +107,7 @@ public final class ResultMaps {
         if (Objects.isNull(tableFieldInfo)) {
             throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The field {2} can't found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
         }
-        if (Objects.isNull(columnPrefix) || StringPool.EMPTY.equals(columnPrefix)) {
-            return getEntityResultMappings(configuration, resultEntityField.target()).stream().filter(item -> item.getProperty().equals(targetFieldName)).findFirst().get();
-        } else {
-            return configuration.buildResultMapping(field, columnPrefix + tableFieldInfo.getColumnName(), tableFieldInfo.getFieldAnnotation().jdbcType(), tableFieldInfo.getFieldAnnotation().typeHandler());
-        }
+        return configuration.buildResultMapping(field, columnPrefix + tableFieldInfo.getColumnName(), tableFieldInfo.getFieldAnnotation().jdbcType(), tableFieldInfo.getFieldAnnotation().typeHandler());
     }
 
     /**

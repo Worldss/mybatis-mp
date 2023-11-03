@@ -4,17 +4,14 @@ import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.annotations.Table;
 import cn.mybatis.mp.db.annotations.TableId;
 import lombok.Data;
-
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Data
 @Table
-public class SysRole {
+public class SysUserScore {
 
-    @TableId(IdAutoType.AUTO)
-    private Integer id;
+    @TableId(IdAutoType.NONE)
+    private Integer userId;
 
-    private String name;
-
-    private LocalDateTime createTime;
+    private BigDecimal score;
 }

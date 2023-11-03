@@ -3,6 +3,10 @@ package com.mybatis.mp.core.test.testCase;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import com.mybatis.mp.core.test.mapper.SysRoleMapper;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
+import com.mybatis.mp.core.test.mapper.SysUserScoreMapper;
+import db.sql.api.Cmd;
+import db.sql.core.api.tookit.SQLPrinter;
+import junit.framework.Assert;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -36,6 +40,7 @@ public class BaseTest {
         MybatisConfiguration configuration = new MybatisConfiguration(environment);
         configuration.addMapper(SysUserMapper.class);
         configuration.addMapper(SysRoleMapper.class);
+        configuration.addMapper(SysUserScoreMapper.class);
         configuration.setLogImpl(StdOutImpl.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     }
@@ -44,6 +49,34 @@ public class BaseTest {
     @AfterEach
     public void close() {
         this.dataSource.shutdown();
+    }
+
+    public void check(String message, String targetSql, Cmd cmd) {
+        String sql1 = trim(targetSql);
+        String sql2 = trim(SQLPrinter.sql(cmd));
+        System.out.println("sql1:  " + sql1);
+        System.out.println("sql2:  " + sql2);
+        Assert.assertEquals(message, sql1, sql2);
+    }
+
+    private String trim(String sql) {
+        return sql.replaceAll("  ", " ")
+                .replaceAll(" ,", ",")
+                .replaceAll(", ", ",")
+                .replaceAll(" =", "=")
+                .replaceAll("= ", "=")
+
+
+                .replaceAll("\\( ", "(")
+
+                .replaceAll(" \\)", ")")
+
+                .replaceAll("> ", ">")
+                .replaceAll(" >", ">")
+                .replaceAll("< ", "<")
+                .replaceAll(" <", "<")
+
+                .toLowerCase().trim();
     }
 
 }

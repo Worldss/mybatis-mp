@@ -4,6 +4,7 @@ import cn.mybatis.mp.db.DbType;
 import cn.mybatis.mp.db.IdAutoType;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
+import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 
 import java.lang.annotation.*;
 
@@ -21,7 +22,7 @@ public @interface TableId {
      *
      * @return
      */
-    IdAutoType value() default IdAutoType.NONE;
+    IdAutoType value() default IdAutoType.AUTO;
 
     /**
      * 数据库类型
@@ -35,7 +36,7 @@ public @interface TableId {
      *
      * @return
      */
-    Class<? extends KeyGenerator> generator() default NoKeyGenerator.class;
+    Class<? extends KeyGenerator> generator() default SelectKeyGenerator.class;
 
     /**
      * id 自增的sql语句

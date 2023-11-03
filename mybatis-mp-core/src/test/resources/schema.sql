@@ -16,6 +16,12 @@ CREATE TABLE IF NOT EXISTS sys_role
 );
 
 
+CREATE TABLE IF NOT EXISTS sys_user_score
+(
+    user_id   INTEGER PRIMARY KEY,
+    score decimal(6,2)
+);
+
 insert into t_sys_user
 values
     (1,'admin','123',0,'2023-10-10 10:10:10'),
@@ -26,3 +32,7 @@ insert into sys_role
 values
     (1,'测试','2022-10-10'),
     (2,'运维','2022-10-10');
+
+
+insert into sys_user_score
+values(2,3.2),(3,2.6);

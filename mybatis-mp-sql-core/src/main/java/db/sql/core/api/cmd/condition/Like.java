@@ -41,11 +41,11 @@ public class Like extends BasicCondition {
                 break;
             }
             case RIGHT: {
-                before = true;
+                after = true;
                 break;
             }
             default: {
-                after = true;
+                before = true;
             }
         }
         if (before) {

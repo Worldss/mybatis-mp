@@ -70,7 +70,7 @@ public class DatasourceConfig {
 }
 
 ```
-### 其他配置
+### 其他配置(可不配置)
 #### 数据库命名规则配置(可不配置)
 ```
 @SpringBootApplication

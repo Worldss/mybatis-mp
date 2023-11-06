@@ -4,9 +4,9 @@ import java.util.List;
 
 public class Pager<T> {
 
-    private boolean optimize = false;
+    private transient boolean optimize = false;
 
-    private boolean executeCount = true;
+    private transient boolean executeCount = true;
 
     private List<T> results;
 

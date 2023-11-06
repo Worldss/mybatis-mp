@@ -1,6 +1,6 @@
 package db.sql.core.api.tookit;
 
-import db.sql.api.DatabaseId;
+import db.sql.api.DbType;
 
 public class SqlConst {
 
@@ -16,7 +16,7 @@ public class SqlConst {
 
     public static final String DELIMITER = " , ";
 
-    public static final String SINGLE_QUOT(DatabaseId databaseId) {
+    public static final String SINGLE_QUOT(DbType dbType) {
         return "'";
     }
 

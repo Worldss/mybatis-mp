@@ -24,7 +24,7 @@ public class BasicValue extends Field<BasicValue> {
             if (this.value instanceof Number) {
                 sqlBuilder = sqlBuilder.append(this.value);
             } else {
-                sqlBuilder = sqlBuilder.append(SqlConst.SINGLE_QUOT(context.getDatabaseId())).append(this.value).append(SqlConst.SINGLE_QUOT(context.getDatabaseId()));
+                sqlBuilder = sqlBuilder.append(SqlConst.SINGLE_QUOT(context.getDbType())).append(this.value).append(SqlConst.SINGLE_QUOT(context.getDbType()));
             }
         } else {
             sqlBuilder = sqlBuilder.append(context.addParam(this.value));

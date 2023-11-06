@@ -1,16 +1,15 @@
-CREATE TABLE IF NOT EXISTS `student`
+CREATE TABLE IF NOT EXISTS `sys_user`
 (
     `id`   INTEGER PRIMARY KEY auto_increment,
     `name` VARCHAR(100),
-    `excellent` BOOL,
+    `role_id` INTEGER NOT NULL,
     `create_time`  DATETIME NOT NULL DEFAULT NOW()
 );
 
 
-CREATE TABLE IF NOT EXISTS `achievement`
+CREATE TABLE IF NOT EXISTS `sys_role`
 (
     `id`   INTEGER PRIMARY KEY auto_increment,
-    `student_id` INTEGER not null,
-    `score` decimal(5,2),
+    `name` VARCHAR(100),
     `create_time`  DATETIME NOT NULL DEFAULT NOW()
 );

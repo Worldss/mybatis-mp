@@ -57,7 +57,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         cmdSorts.put(Join.class, ++i);
         cmdSorts.put(Where.class, ++i);
         cmdSorts.put(GroupBy.class, ++i);
-        cmdSorts.put(Limit.class, Integer.MAX_VALUE);
+        cmdSorts.put(OrderBy.class, ++i);
     }
 
 
@@ -172,6 +172,18 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
             this.append(having);
         }
         return having;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> SELF havingAnd(Getter<T> getter, Function<TableField, db.sql.api.Condition> f) {
+        return this.havingAnd(f.apply($.field(getter)));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> SELF havingOr(Getter<T> getter, Function<TableField, db.sql.api.Condition> f) {
+        return this.havingOr(f.apply($.field(getter)));
     }
 
     @Override

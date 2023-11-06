@@ -2,17 +2,17 @@ package db.sql.api;
 
 public class SqlBuilderContext {
 
-    private final DatabaseId databaseId;
+    private final DbType dbType;
 
     private final SQLMode sqlMode;
 
-    public SqlBuilderContext(DatabaseId databaseId, SQLMode sqlMode) {
-        this.databaseId = databaseId;
+    public SqlBuilderContext(DbType dbType, SQLMode sqlMode) {
+        this.dbType = dbType;
         this.sqlMode = sqlMode;
     }
 
-    public DatabaseId getDatabaseId() {
-        return databaseId;
+    public DbType getDbType() {
+        return dbType;
     }
 
     public SQLMode getSqlMode() {

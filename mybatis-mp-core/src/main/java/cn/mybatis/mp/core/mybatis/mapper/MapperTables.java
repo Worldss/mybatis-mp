@@ -16,10 +16,13 @@ public class MapperTables {
 
     private final static Map<String, Class> CACHE = new HashMap<>();
 
+    @SuppressWarnings("unchecked")
     public final static boolean add(Class mapper) {
         return GenericUtil.getGenericInterfaceClass(mapper).stream().filter(item -> {
             boolean isTableClass = item.isAnnotationPresent(Table.class);
-            CACHE.put(mapper.getName(), item);
+            if (isTableClass) {
+                CACHE.put(mapper.getName(), item);
+            }
             return isTableClass;
         }).findFirst().isPresent();
     }

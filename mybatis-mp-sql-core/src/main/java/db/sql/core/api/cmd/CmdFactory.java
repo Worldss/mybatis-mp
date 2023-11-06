@@ -7,7 +7,6 @@ import db.sql.api.LikeMode;
 import db.sql.core.api.cmd.condition.*;
 import db.sql.core.api.tookit.LambdaUtil;
 
-import javax.xml.crypto.Data;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,9 +28,7 @@ public class CmdFactory {
 
     protected String tableAs(int storey, int tableNums) {
         StringBuilder as = new StringBuilder();
-        for (int i = 0; i < storey; i++) {
-            as.append('t');
-        }
+        as = as.append('t');
         return as.append(tableNums == 1 ? "" : tableNums).toString();
     }
 

@@ -19,7 +19,7 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
         FromMethod<SELF, TABLE>, JoinMethod<SELF, TABLE, ON>,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
         GroupByMethod<SELF, TABLE_FIELD, COLUMN>,
-        HavingMethod<SELF, COLUMN, V, CONDITION_CHAIN, HAVING>,
+        HavingMethod<SELF, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN, HAVING>,
         OrderByMethod<SELF, TABLE_FIELD, COLUMN> {
 
     SELECT $select();
@@ -62,6 +62,20 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
     @SuppressWarnings("unchecked")
     default SELF having(Consumer<HAVING> consumer) {
         consumer.accept($having());
+        return (SELF) this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    default SELF havingAnd(Condition condition) {
+        $having().and(condition);
+        return (SELF) this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    default SELF havingOr(Condition condition) {
+        $having().or(condition);
         return (SELF) this;
     }
 

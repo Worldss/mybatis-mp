@@ -5,11 +5,13 @@ import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.model.SysRole;
 import com.mybatis.mp.core.test.model.SysUser;
 import com.mybatis.mp.core.test.testCase.BaseTest;
+import db.sql.core.api.cmd.fun.FunctionInterface;
 import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class QueryTest extends BaseTest {
@@ -66,5 +68,65 @@ public class QueryTest extends BaseTest {
         }
     }
 
+    @Test
+    public void groupBy() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            List<Integer> counts = sysUserMapper.list(new Query()
+                    .select(SysUser::getId, c -> c.count())
+                    .from(SysUser.class)
+                    .groupBy(SysUser::getRole_id)
+                    .setReturnType(Integer.TYPE)
+            );
 
+            Assert.assertEquals("groupBy", counts.get(0), Integer.valueOf(1));
+            Assert.assertEquals("groupBy", counts.get(1), Integer.valueOf(2));
+        }
+    }
+
+    @Test
+    public void orderby() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            SysUser sysUser = sysUserMapper.get(new Query()
+                    .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+                    .from(SysUser.class)
+                    .orderBy(false, SysUser::getRole_id, SysUser::getId)
+                    .limit(1)
+            );
+            SysUser eqSysUser = new SysUser();
+            eqSysUser.setId(3);
+            eqSysUser.setUserName("test2");
+            eqSysUser.setRole_id(1);
+            Assert.assertEquals("orderby", sysUser, eqSysUser);
+        }
+    }
+
+    @Test
+    public void having() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            Integer count = sysUserMapper.get(new Query()
+                    .select(SysUser::getRole_id, FunctionInterface::count)
+                    .from(SysUser.class)
+                    .groupBy(SysUser::getRole_id)
+                    .having(SysUser::getRole_id, c -> c.gt(0))
+                    .setReturnType(Integer.TYPE)
+            );
+
+            Assert.assertEquals("having", count, Integer.valueOf(2));
+            new Query() {{
+                select(SysUser::getRole_id)
+                        .from(SysUser.class)
+                        .eq($().field(SysUser::getId), 1)
+                        .gt($().table(SysUser.class).$("role_id"), 2);
+            }};
+
+            new Query() {{
+                select($(SysUser::getId))
+                        .from($(SysUser.class))
+                        .eq($(SysUser::getId), 1);
+            }};
+        }
+    }
 }

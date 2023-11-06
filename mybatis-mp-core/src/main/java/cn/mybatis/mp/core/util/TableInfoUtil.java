@@ -1,20 +1,17 @@
 package cn.mybatis.mp.core.util;
 
 import cn.mybatis.mp.core.db.reflect.Default;
-import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisMpConfig;
-import cn.mybatis.mp.db.DbType;
 import cn.mybatis.mp.db.annotations.Table;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;
-import org.apache.ibatis.mapping.ResultMapping;
+import db.sql.api.DbType;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
 
+@SuppressWarnings("unchecked")
 public final class TableInfoUtil {
 
     public static String getTableName(Class entity) {
@@ -44,7 +41,7 @@ public final class TableInfoUtil {
         }
         TableId tableId = null;
         for (TableId item : tableIdAnnotations) {
-            if (Objects.isNull(tableId) && item.dbType() == DbType.DEFAULT) {
+            if (Objects.isNull(tableId) && item.dbType() == DbType.MYSQL) {
                 tableId = item;
             }
             if (item.dbType().name().equals(configuration.getDatabaseId())) {
@@ -89,20 +86,4 @@ public final class TableInfoUtil {
         }
         return columnName;
     }
-
-
-    /**
-     * 获取字段结果映射
-     *
-     * @param configuration
-     * @param field
-     * @param columnName
-     * @param jdbcType
-     * @param typeHandler
-     * @return
-     */
-    public final static ResultMapping getFieldResultMapping(MybatisConfiguration configuration, Field field, String columnName, JdbcType jdbcType, Class<? extends TypeHandler<?>> typeHandler) {
-        return configuration.buildResultMapping(field, columnName, jdbcType, typeHandler);
-    }
-
 }

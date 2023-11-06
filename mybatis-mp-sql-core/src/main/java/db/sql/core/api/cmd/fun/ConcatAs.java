@@ -8,7 +8,6 @@ import db.sql.core.api.tookit.SqlConst;
 
 import java.io.Serializable;
 
-import static db.sql.core.api.tookit.SqlConst.CONCAT;
 import static db.sql.core.api.tookit.SqlConst.CONCAT_WS;
 
 public class ConcatAs extends BasicFunction<ConcatAs> {
@@ -40,7 +39,7 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(this.operator).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = sqlBuilder.append(SqlConst.SINGLE_QUOT(context.getDatabaseId())).append(this.split).append(SqlConst.SINGLE_QUOT(context.getDatabaseId())).append(SqlConst.DELIMITER);
+        sqlBuilder = sqlBuilder.append(SqlConst.SINGLE_QUOT(context.getDbType())).append(this.split).append(SqlConst.SINGLE_QUOT(context.getDbType())).append(SqlConst.DELIMITER);
         sqlBuilder = this.key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
         sqlBuilder = CmdJoins.join(this, context, sqlBuilder, this.values, SqlConst.DELIMITER);

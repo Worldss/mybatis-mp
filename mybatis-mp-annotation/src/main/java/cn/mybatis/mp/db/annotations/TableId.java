@@ -1,9 +1,8 @@
 package cn.mybatis.mp.db.annotations;
 
-import cn.mybatis.mp.db.DbType;
 import cn.mybatis.mp.db.IdAutoType;
+import db.sql.api.DbType;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
-import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 
 import java.lang.annotation.*;
@@ -29,7 +28,7 @@ public @interface TableId {
      *
      * @return
      */
-    DbType dbType() default DbType.DEFAULT;
+    DbType dbType() default DbType.MYSQL;
 
     /**
      * value = IdIncrementType.GENERATOR 时 生效

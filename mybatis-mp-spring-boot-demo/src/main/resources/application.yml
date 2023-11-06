@@ -1,0 +1,3 @@
+mybatis:
+  configuration:
+    databaseId: MYSQL

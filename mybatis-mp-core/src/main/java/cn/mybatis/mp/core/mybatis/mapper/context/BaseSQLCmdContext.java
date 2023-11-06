@@ -3,6 +3,7 @@ package cn.mybatis.mp.core.mybatis.mapper.context;
 
 
 import cn.mybatis.mp.core.mybatis.provider.MybatisSqlBuilderContext;
+import db.sql.api.DbType;
 import db.sql.api.SQLMode;
 import db.sql.core.api.cmd.executor.Executor;
 
@@ -33,11 +34,11 @@ public abstract class BaseSQLCmdContext<E extends Executor> implements SQLCmdCon
     private StringBuilder sql;
 
     @Override
-    public StringBuilder sql(String databaseId) {
+    public StringBuilder sql(String dbType) {
         if (Objects.nonNull(sql)) {
             return sql;
         }
-        sqlBuilderContext = new MybatisSqlBuilderContext(databaseId, SQLMode.PREPARED);
+        sqlBuilderContext = new MybatisSqlBuilderContext(DbType.getByName(dbType), SQLMode.PREPARED);
         sql = execution.sql(sqlBuilderContext, new StringBuilder());
         return sql;
     }

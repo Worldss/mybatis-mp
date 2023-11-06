@@ -23,8 +23,20 @@ public class Having implements db.sql.api.Having<Having>, Cmd {
         return this;
     }
 
+    @Override
+    public Having and(db.sql.api.Condition condition) {
+        conditionBlocks.add(new ConditionBlock(Connector.AND, condition));
+        return this;
+    }
+
     public Having or(Function<CmdFactory, Condition> f) {
         conditionBlocks.add(new ConditionBlock(Connector.OR, f.apply(this.cmdFactory)));
+        return this;
+    }
+
+    @Override
+    public Having or(db.sql.api.Condition condition) {
+        conditionBlocks.add(new ConditionBlock(Connector.OR, condition));
         return this;
     }
 

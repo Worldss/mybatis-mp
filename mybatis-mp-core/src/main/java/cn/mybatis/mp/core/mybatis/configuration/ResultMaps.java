@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unchecked")
 public final class ResultMaps {
 
     private ResultMaps() {

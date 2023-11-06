@@ -1,9 +1,9 @@
 package db.sql.core.api.cmd.condition;
 
 import db.sql.api.Cmd;
+import db.sql.api.DbType;
 import db.sql.api.LikeMode;
 import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.DatabaseId;
 import db.sql.core.api.tookit.SqlConst;
 
 public class Like extends BasicCondition {
@@ -26,7 +26,7 @@ public class Like extends BasicCondition {
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = getField().sql(user, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(getOperator());
-        if (context.getDatabaseId() == DatabaseId.MYSQL) {
+        if (context.getDbType() == DbType.MYSQL) {
 
         }
         sqlBuilder = sqlBuilder.append(SqlConst.CONCAT).append(SqlConst.BRACKET_LEFT);

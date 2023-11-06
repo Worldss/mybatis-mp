@@ -11,13 +11,17 @@ import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdInsertContext;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdUpdateContext;
 import cn.mybatis.mp.core.sql.executor.Query;
+import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.Dataset;
+import db.sql.core.api.cmd.Select;
 import db.sql.core.api.cmd.Table;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.util.MapUtil;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -135,13 +139,26 @@ public class MybatisSQLProvider {
         }
     }
 
+    private static final Cmd cmd1 = new Cmd() {
+        @Override
+        public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+            return sqlBuilder.append(" 1 ");
+        }
+    };
+
     public static StringBuilder countCmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
         fill(queryContext, providerContext);
-        StringBuilder sql = queryContext.sql(providerContext.getDatabaseId());
-        //sql = sql.insert(sql.indexOf("SELECT") + 7, "count(");
-        //sql = sql.insert(sql.indexOf("FROM") - 1, ")");
-        sql.replace(sql.indexOf("SELECT") + 7, sql.indexOf("FROM") - 1, "count(*)");
-        return new StringBuilder("SELECT COUNT(*) FROM (").append(sql).append(") T");
+        Select select = queryContext.getExecution().getSelect();
+        List<Cmd> selectFiled = new ArrayList<>(select.getSelectFiled());
+        try {
+            select.getSelectFiled().clear();
+            select.getSelectFiled().add(cmd1);
+            StringBuilder sql = queryContext.sql(providerContext.getDatabaseId());
+            return new StringBuilder("SELECT COUNT(*) FROM (").append(sql).append(") T");
+        } finally {
+            select.getSelectFiled().clear();
+            select.getSelectFiled().addAll(selectFiled);
+        }
     }
 
     public static StringBuilder cmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {

@@ -7,6 +7,10 @@ import db.sql.core.api.tookit.SqlConst;
 
 public class AllField extends DatasetField {
 
+    public AllField() {
+        super(null, SqlConst.ALL);
+    }
+
     public AllField(Dataset table) {
         super(table, SqlConst.ALL);
     }
@@ -19,8 +23,10 @@ public class AllField extends DatasetField {
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (user instanceof Select) {
-            if (getTable().getAlias() != null) {
-                sqlBuilder = sqlBuilder.append(getTable().getAlias()).append(SqlConst.DOT);
+            if (getTable() != null) {
+                if (getTable().getAlias() != null) {
+                    sqlBuilder = sqlBuilder.append(getTable().getAlias()).append(SqlConst.DOT);
+                }
             }
         }
         return sqlBuilder.append(SqlConst.ALL);

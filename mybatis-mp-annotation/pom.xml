@@ -6,8 +6,15 @@
     <parent>
         <groupId>cn.mybatis-mp</groupId>
         <artifactId>mybatis-mp</artifactId>
-        <version>1.0.5</version>
+        <version>1.0.6</version>
     </parent>
 
     <artifactId>mybatis-mp-annotation</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>cn.mybatis-mp</groupId>
+            <artifactId>mybatis-mp-sql-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>

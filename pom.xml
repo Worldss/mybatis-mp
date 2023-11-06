@@ -154,7 +154,7 @@
 
             <!-- mvn clean source:jar install -->
             <!-- mvn deploy -Dmaven.test.skip=true -e -P release -->
-            <!-- mvn clean install deploy -e -P release -->
+            <!-- mvn clean deploy -e -P release -->
             <id>release</id>
             <build>
                 <plugins>

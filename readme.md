@@ -71,7 +71,7 @@ public class DatasourceConfig {
 
 ```
 ### 其他配置
-#### 数据库规则配置
+#### 数据库命名规则配置(可不配置)
 ```
 @SpringBootApplication
 public class DemoApplication {
@@ -309,7 +309,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 > 注意 select(SysUser.class) 只是返回前面那个表的数据，如需返回后面那个表，则需要 结合注解@ResultField(别名)
 > 
 > 然后 new Query().select(SysUser::getUserName,2,c->c.as("sub_name"))，其中2 表示实体类SysUser对应的表实例的缓存层级
-### 1.3.4 不同表join
+#### 1.3.4 不同表join
 ```
     List<SysUserAndRole> list = sysUserMapper.list(new Query()
             .select(SysUser.class)

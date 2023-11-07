@@ -3,6 +3,8 @@ package db.sql.api.executor;
 
 import db.sql.api.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
@@ -20,7 +22,8 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
         GroupByMethod<SELF, TABLE_FIELD, COLUMN>,
         HavingMethod<SELF, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN, HAVING>,
-        OrderByMethod<SELF, TABLE_FIELD, COLUMN> {
+        OrderByMethod<SELF, TABLE_FIELD, COLUMN>,
+        Cmd {
 
     SELECT $select();
 
@@ -90,4 +93,7 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
     default CONDITION_CHAIN conditionChain() {
         return $where().conditionChain();
     }
+
+    StringBuilder countSql(SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize);
+
 }

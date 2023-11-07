@@ -16,6 +16,19 @@ public class Pager<T> {
 
     private int size = 20;
 
+    public Pager() {
+
+    }
+
+    public Pager(int size) {
+        this(1, size);
+    }
+
+    public Pager(int number, int size) {
+        this.number = number;
+        this.size = size;
+    }
+
     public int getOffset() {
         return (number - 1) * size;
     }
@@ -66,6 +79,13 @@ public class Pager<T> {
 
     public void setOptimize(boolean optimize) {
         this.optimize = optimize;
+    }
+
+    public Integer getTotalPage() {
+        if (total == null || total < 1) {
+            return 0;
+        }
+        return this.total / this.size + (this.total % this.size == 0 ? 0 : 1);
     }
 
     @Override

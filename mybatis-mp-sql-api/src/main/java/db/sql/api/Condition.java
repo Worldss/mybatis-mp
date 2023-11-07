@@ -1,5 +1,5 @@
 package db.sql.api;
 
-public interface Condition {
+public interface Condition extends Cmd{
 
 }

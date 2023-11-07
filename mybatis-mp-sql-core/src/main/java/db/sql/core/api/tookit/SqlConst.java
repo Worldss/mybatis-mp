@@ -56,6 +56,8 @@ public class SqlConst {
 
     public static final String WHERE = " WHERE ";
 
+    public static final String EXISTS = " EXISTS ";
+
     public static final String AND = " AND ";
 
     public static final String IN = " IN ";

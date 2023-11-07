@@ -12,7 +12,9 @@ import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdUpdateContext;
 import cn.mybatis.mp.core.sql.executor.Query;
 import db.sql.api.Cmd;
-import db.sql.api.SqlBuilderContext;
+import db.sql.api.Count1;
+import db.sql.api.DbType;
+import db.sql.api.SQLMode;
 import db.sql.core.api.cmd.Dataset;
 import db.sql.core.api.cmd.Select;
 import db.sql.core.api.cmd.Table;
@@ -139,31 +141,15 @@ public class MybatisSQLProvider {
         }
     }
 
-    private static final Cmd cmd1 = new Cmd() {
-        @Override
-        public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-            return sqlBuilder.append(" 1 ");
-        }
-    };
 
-    public static StringBuilder countCmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
+    public static StringBuilder countFromQuery(SQLCmdQueryContext<?> queryContext, boolean optimize, ProviderContext providerContext) {
         fill(queryContext, providerContext);
-        Select select = queryContext.getExecution().getSelect();
-        List<Cmd> selectFiled = new ArrayList<>(select.getSelectFiled());
-        try {
-            select.getSelectFiled().clear();
-            select.getSelectFiled().add(cmd1);
-            StringBuilder sql = queryContext.sql(providerContext.getDatabaseId());
-            return new StringBuilder("SELECT COUNT(*) FROM (").append(sql).append(") T");
-        } finally {
-            select.getSelectFiled().clear();
-            select.getSelectFiled().addAll(selectFiled);
-        }
+        MybatisSqlBuilderContext sqlBuilderContext = new MybatisSqlBuilderContext(DbType.getByName(providerContext.getDatabaseId()), SQLMode.PREPARED);
+        return queryContext.getExecution().countSql(sqlBuilderContext, new StringBuilder(), optimize);
     }
 
     public static StringBuilder cmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
         fill(queryContext, providerContext);
-        System.out.println(queryContext.sql(providerContext.getDatabaseId()));
         return queryContext.sql(providerContext.getDatabaseId());
     }
 }

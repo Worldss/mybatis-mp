@@ -44,4 +44,10 @@ public interface ConditionChain<SELF extends ConditionChain, COLUMN, V> extends 
     }
 
     <T> SELF in(Getter<T> column, boolean when, Serializable... values);
+
+    default SELF exists(Cmd existsCmd) {
+        return this.exists(existsCmd, true);
+    }
+
+    SELF exists(Cmd existsCmd, boolean when);
 }

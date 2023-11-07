@@ -1,5 +1,6 @@
 package com.mybatis.mp.core.test.testCase.query;
 
+import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.Query;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.model.SysRole;
@@ -127,6 +128,44 @@ public class QueryTest extends BaseTest {
                         .from($(SysUser.class))
                         .eq($(SysUser::getId), 1);
             }};
+        }
+    }
+
+    @Test
+    public void count1() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            Integer count = sysUserMapper.count(new Query()
+                    .selectCount1()
+                    .from(SysUser.class)
+            );
+            Assert.assertEquals("count1", count, Integer.valueOf(3));
+        }
+    }
+
+    @Test
+    public void countAll() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            Integer count = sysUserMapper.count(new Query()
+                    .selectCountAll()
+                    .from(SysUser.class)
+            );
+            Assert.assertEquals("countAll", count, Integer.valueOf(3));
+        }
+    }
+
+    @Test
+    public void paging() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            Pager<SysUser> pager = sysUserMapper.paging(new Query()
+                            .select(SysUser.class)
+                            .from(SysUser.class)
+                    , new Pager<>(2));
+            Assert.assertEquals("paging Total", pager.getTotal(), Integer.valueOf(3));
+            Assert.assertEquals("paging Results size", pager.getResults().size(), 2);
+            Assert.assertEquals("paging TotalPage", pager.getTotalPage(), Integer.valueOf(2));
         }
     }
 }

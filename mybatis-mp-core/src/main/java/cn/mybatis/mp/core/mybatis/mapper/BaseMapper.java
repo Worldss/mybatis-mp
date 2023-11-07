@@ -200,7 +200,7 @@ public interface BaseMapper<T> {
         if (pager.isExecuteCount()) {
             Class returnType = query.getReturnType();
             query.setReturnType(Integer.TYPE);
-            Integer count = this.$count(new SQLCmdQueryContext(query));
+            Integer count = this.$countFromQuery(new SQLCmdQueryContext(query), pager.isOptimize());
             pager.setTotal(Optional.of(count).orElse(0));
             query.setReturnType(returnType);
         }
@@ -270,8 +270,18 @@ public interface BaseMapper<T> {
      *
      * @param queryContext
      * @return
-     * @see MybatisSQLProvider#countCmdQuery(SQLCmdQueryContext, ProviderContext)
+     * @see MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
-    @SelectProvider(type = MybatisSQLProvider.class, method = "countCmdQuery")
+    @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
     Integer $count(SQLCmdQueryContext queryContext);
+
+    /**
+     * count查询
+     *
+     * @param queryContext
+     * @return
+     * @see MybatisSQLProvider#countFromQuery(SQLCmdQueryContext, boolean, ProviderContext)
+     */
+    @SelectProvider(type = MybatisSQLProvider.class, method = "countFromQuery")
+    Integer $countFromQuery(SQLCmdQueryContext queryContext, boolean optimize);
 }

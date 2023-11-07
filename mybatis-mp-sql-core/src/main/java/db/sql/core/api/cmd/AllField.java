@@ -7,6 +7,8 @@ import db.sql.core.api.tookit.SqlConst;
 
 public class AllField extends DatasetField {
 
+    public final static AllField ALL=new AllField();
+
     public AllField() {
         super(null, SqlConst.ALL);
     }

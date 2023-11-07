@@ -1,9 +1,17 @@
 package db.sql.core.api.cmd.executor;
 
-import db.sql.api.Cmd;
-import db.sql.api.Getter;
-import db.sql.api.JoinMode;
+import db.sql.api.*;
+import db.sql.api.executor.Query;
 import db.sql.core.api.cmd.*;
+import db.sql.core.api.cmd.ConditionChain;
+import db.sql.core.api.cmd.From;
+import db.sql.core.api.cmd.GroupBy;
+import db.sql.core.api.cmd.Having;
+import db.sql.core.api.cmd.Join;
+import db.sql.core.api.cmd.On;
+import db.sql.core.api.cmd.OrderBy;
+import db.sql.core.api.cmd.Select;
+import db.sql.core.api.cmd.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +81,18 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     @Override
     public SELF select(Class entity, int storey) {
         return this.select(this.$.all(this.$.table(entity, storey)));
+    }
+
+    @Override
+    public SELF selectCount1() {
+        $select().select(Count1.INSTANCE);
+        return (SELF) this;
+    }
+
+    @Override
+    public SELF selectCountAll() {
+        $select().select(CountAll.INSTANCE);
+        return (SELF) this;
     }
 
     @Override
@@ -247,6 +267,23 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
             this.limit.set(offset, limit);
         }
         return (SELF) this;
+    }
+
+    private static final Cmd cmd1= (user, context, sqlBuilder) -> sqlBuilder.append(" 1 ");
+
+    @Override
+    public StringBuilder countSql(SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize) {
+        db.sql.api.Select select = $select();
+        List<Cmd> selectFiled = new ArrayList<>(select.getSelectFiled());
+        try {
+            select.getSelectFiled().clear();
+            select.getSelectFiled().add(cmd1);
+            StringBuilder sql = this.sql(null, context, sqlBuilder);
+            return new StringBuilder("SELECT COUNT(*) FROM (").append(sql).append(") T");
+        } finally {
+            select.getSelectFiled().clear();
+            select.getSelectFiled().addAll(selectFiled);
+        }
     }
 }
 

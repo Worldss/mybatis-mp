@@ -3,6 +3,7 @@ package cn.mybatis.mp.core.sql.executor;
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.Dataset;
+import db.sql.core.api.cmd.condition.Exists;
 import db.sql.core.api.tookit.SqlConst;
 
 /**
@@ -42,6 +43,9 @@ public class SubQuery extends BaseQuery<SubQuery> implements Dataset<SubQuery> {
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        if (user instanceof Exists) {
+            return super.sql(user, context, sqlBuilder);
+        }
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
         sqlBuilder = super.sql(user, context, sqlBuilder);
         sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.AS).append(this.alias);

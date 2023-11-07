@@ -215,4 +215,7 @@ public class CmdFactory {
         return in;
     }
 
+    public Exists exists(Cmd existsCmd) {
+        return new Exists(existsCmd);
+    }
 }

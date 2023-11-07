@@ -228,4 +228,14 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
         conditionChain().in(column, when, values);
         return (SELF) this;
     }
+
+    default <T> SELF exists(Cmd existsCmd) {
+        return this.exists(existsCmd, true);
+    }
+
+    default <T> SELF exists(Cmd existsCmd, boolean when) {
+        conditionChain().exists(existsCmd, when);
+        return (SELF) this;
+    }
+
 }

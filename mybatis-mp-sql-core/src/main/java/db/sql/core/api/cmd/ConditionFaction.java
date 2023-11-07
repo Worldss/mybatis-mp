@@ -4,6 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.Compare;
 import db.sql.api.Getter;
 import db.sql.api.LikeMode;
+import db.sql.api.Condition;
 
 public class ConditionFaction implements Compare<Condition, Cmd, Object> {
 
@@ -355,5 +356,15 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
             cmds[i++] = convert(value);
         }
         return cmdFactory.in(cmd).add(cmds);
+    }
+
+    public Condition exists(Cmd existsCmd) {
+        return this.exists(existsCmd,true);
+    }
+    public Condition exists(Cmd existsCmd, boolean when) {
+        if(!when){
+            return null;
+        }
+        return cmdFactory.exists(existsCmd);
     }
 }

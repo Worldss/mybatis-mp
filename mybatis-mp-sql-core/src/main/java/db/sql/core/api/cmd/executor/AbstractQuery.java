@@ -112,6 +112,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
+    public SELF selectDistinct() {
+        $select().distinct();
+        return (SELF) this;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <T> SELF select(Getter<T> column, int storey, Function<TableField, Cmd> f) {
         TableField field = this.$.field(column, storey);

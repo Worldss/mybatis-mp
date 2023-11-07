@@ -223,4 +223,41 @@ public class QueryTest extends BaseTest {
             Assert.assertEquals("inSubQuery", list.get(1), eqSysUser);
         }
     }
+
+
+    @Test
+    public void selectDistinct() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            List<Integer> roleIds = sysUserMapper.list(new Query()
+                    .selectDistinct()
+                    .select(SysUser::getRole_id, c -> c.as("role_id"))
+                    .from(SysUser.class)
+                    .setReturnType(Integer.TYPE)
+            );
+            Assert.assertEquals("selectDistinct", roleIds.size(), 2);
+            Assert.assertEquals("selectDistinct", roleIds.get(0), Integer.valueOf(0));
+            Assert.assertEquals("selectDistinct", roleIds.get(1), Integer.valueOf(1));
+        }
+    }
+
+    @Test
+    public void selectDistinctMuti() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            List<SysUser> list = sysUserMapper.list(new Query()
+                    .selectDistinct()
+                    .select(SysUser::getRole_id, c -> c.as("role_id"))
+                    .select(SysUser::getId, c -> c.as("id"))
+                    .from(SysUser.class)
+            );
+            Assert.assertEquals("selectDistinctMuti", list.size(), 3);
+            {
+                SysUser eqSysUser = new SysUser();
+                eqSysUser.setId(1);
+                eqSysUser.setRole_id(0);
+                Assert.assertEquals("selectDistinctMuti", list.get(0), eqSysUser);
+            }
+        }
+    }
 }

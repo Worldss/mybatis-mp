@@ -8,6 +8,8 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, COLUMN> {
     @SuppressWarnings("unchecked")
     SELF select(COLUMN column);
 
+    SELF selectDistinct();
+
     SELF select1();
 
     SELF selectAll();

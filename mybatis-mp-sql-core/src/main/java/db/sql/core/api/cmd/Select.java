@@ -1,6 +1,7 @@
 package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
+import db.sql.api.Distinct;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.tookit.CmdJoins;
 import db.sql.core.api.tookit.Lists;
@@ -16,6 +17,19 @@ public class Select implements db.sql.api.Select<Select, Cmd>, Cmd {
     @Override
     public List<Cmd> getSelectFiled() {
         return selectFields;
+    }
+
+    private boolean distinct = false;
+
+    @Override
+    public Select distinct() {
+        this.distinct = true;
+        return this;
+    }
+
+    @Override
+    public boolean isDistinct() {
+        return this.distinct;
     }
 
     @Override
@@ -39,6 +53,9 @@ public class Select implements db.sql.api.Select<Select, Cmd>, Cmd {
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.SELECT);
+        if (distinct) {
+            sqlBuilder = Distinct.INSTANCE.sql(user, context, sqlBuilder);
+        }
         sqlBuilder = CmdJoins.join(this, context, sqlBuilder, this.getSelectFiled(), SqlConst.DELIMITER);
         return sqlBuilder;
     }

@@ -21,6 +21,10 @@ import java.util.function.Function;
 
 public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY>
         implements db.sql.api.executor.Query<SELF, Dataset, TableField, Cmd, Object, ConditionChain, Select, From, Join, On, Where, GroupBy, Having, OrderBy>, Cmd {
+    protected static final Cmd SQL_1 = (user, context, sqlBuilder) -> sqlBuilder.append(" 1 ");
+
+    protected static final Cmd SQL_ALL = (user, context, sqlBuilder) -> sqlBuilder.append(" * ");
+
     protected Select select;
 
     protected From from;
@@ -81,6 +85,18 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     @Override
     public SELF select(Class entity, int storey) {
         return this.select(this.$.all(this.$.table(entity, storey)));
+    }
+
+    @Override
+    public SELF select1() {
+        $select().select(SQL_1);
+        return (SELF) this;
+    }
+
+    @Override
+    public SELF selectAll() {
+        $select().select(SQL_ALL);
+        return (SELF) this;
     }
 
     @Override
@@ -269,7 +285,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return (SELF) this;
     }
 
-    private static final Cmd cmd1= (user, context, sqlBuilder) -> sqlBuilder.append(" 1 ");
 
     @Override
     public StringBuilder countSql(SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize) {
@@ -277,7 +292,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         List<Cmd> selectFiled = new ArrayList<>(select.getSelectFiled());
         try {
             select.getSelectFiled().clear();
-            select.getSelectFiled().add(cmd1);
+            select.getSelectFiled().add(SQL_1);
             StringBuilder sql = this.sql(null, context, sqlBuilder);
             return new StringBuilder("SELECT COUNT(*) FROM (").append(sql).append(") T");
         } finally {

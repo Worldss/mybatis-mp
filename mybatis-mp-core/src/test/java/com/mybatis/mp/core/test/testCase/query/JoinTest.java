@@ -1,6 +1,7 @@
 package com.mybatis.mp.core.test.testCase.query;
 
 import cn.mybatis.mp.core.sql.executor.Query;
+import cn.mybatis.mp.core.sql.executor.SubQuery;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.model.SysRole;
 import com.mybatis.mp.core.test.model.SysUser;
@@ -10,6 +11,8 @@ import db.sql.core.api.cmd.fun.FunctionInterface;
 import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 
 public class JoinTest extends BaseTest {
@@ -112,6 +115,25 @@ public class JoinTest extends BaseTest {
                     .setReturnType(Integer.TYPE)
             );
             Assert.assertEquals("joinSelf", Integer.valueOf(2), count);
+        }
+    }
+
+    @Test
+    public void joinSubQuery() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+
+            SubQuery subQuery = new SubQuery("sub")
+                    .select(SysRole.class)
+                    .from(SysRole.class)
+                    .eq(SysRole::getId, 1);
+
+            List<SysUser> list = sysUserMapper.list(new Query()
+                    .select(SysUser.class)
+                    .from(SysUser.class)
+                    .join(JoinMode.INNER, SysUser.class, subQuery, on -> on.eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId)))
+            );
+            Assert.assertEquals("joinSelf", 2, list.size());
         }
     }
 }

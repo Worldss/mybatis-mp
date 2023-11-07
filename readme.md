@@ -459,7 +459,7 @@ Integer count = sysUserMapper.get(new Query()
     select(SysUser::getId, c -> c.plus(1))
     select(SysUser::getId, c -> c.subtract(1))
     select(SysUser::getId, c -> c.multiply(1))
-    select(SysUser::getId, c -> c.multiply(divide))
+    select(SysUser::getId, c -> c.divide(1))
 ```
 ### 1.3 其他函数
     abs，
@@ -471,6 +471,72 @@ Integer count = sysUserMapper.get(new Query()
     case when
     比较函数
     gte,gt,lt,lte 等等还很多
+
+# 复杂SQL示例
+## exists
+```
+    List<SysUser> list = sysUserMapper.list(new Query() {{
+        select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+                .from(SysUser.class)
+                .exists(new SubQuery()
+                        .select1()
+                        .from(SysUser.class)
+                        .eq(SysUser::getId, $(SysUser::getId))
+                        .isNotNull(SysUser::getPassword)
+                        .limit(1)
+                );
+
+    }});
+```
+## in 一张表的数据
+``` 
+List<SysUser> list = sysUserMapper.list(new Query() {{
+    select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+            .from(SysUser.class)
+            .in(SysUser::getId,new SubQuery()
+                    .select(SysUser::getId)
+                    .from(SysUser.class)
+                    .eq(SysUser::getId, $(SysUser::getId))
+                    .isNotNull(SysUser::getPassword)
+                    .limit(1)
+            );
+
+}});
+```
+## join 自己
+```
+    Integer count = sysUserMapper.get(new Query()
+            .select(SysUser::getId, FunctionInterface::count)
+            .from(SysUser.class)
+            .join(JoinMode.INNER, SysUser.class, 1, SysUser.class, 2, on -> on.eq(SysUser::getId, 1, SysUser::getRole_id, 2))
+            .setReturnType(Integer.TYPE)
+    );
+```
+## join 子表
+```
+     SubQuery subQuery = new SubQuery("sub")
+            .select(SysRole.class)
+            .from(SysRole.class)
+            .eq(SysRole::getId, 1);
+
+    List<SysUser> list = sysUserMapper.list(new Query()
+            .select(SysUser.class)
+            .from(SysUser.class)
+            .join(JoinMode.INNER, SysUser.class, subQuery, on -> on.eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId)))
+    );
+```
+## select 1 or  select *
+```
+    new Query().select1();
+    new Query().selectAll();
+```
+## select count(1) or select count(*)
+```
+    new Query().selectCount1();
+    new Query().selectCountAll();
+```
+
+
 # 如何创建条件，列，表等
 >    Query类中有个方法，专门提供创建sql的工厂类，new Query().$()
 > 

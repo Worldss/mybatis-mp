@@ -4,6 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.Dataset;
 import db.sql.core.api.cmd.condition.Exists;
+import db.sql.core.api.cmd.condition.In;
 import db.sql.core.api.tookit.SqlConst;
 
 /**
@@ -15,8 +16,12 @@ public class SubQuery extends BaseQuery<SubQuery> implements Dataset<SubQuery> {
 
     private String prefix;
 
+    public SubQuery() {
+        this(null);
+    }
+
     public SubQuery(String alias) {
-        super();
+        super(new MybatisCmdFactory("st"));
         this.alias = alias;
     }
 
@@ -43,12 +48,16 @@ public class SubQuery extends BaseQuery<SubQuery> implements Dataset<SubQuery> {
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (user instanceof Exists) {
+        if (user instanceof In || user instanceof Exists) {
             return super.sql(user, context, sqlBuilder);
         }
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
         sqlBuilder = super.sql(user, context, sqlBuilder);
-        sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.AS).append(this.alias);
+        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        if (this.alias != null) {
+            sqlBuilder = sqlBuilder.append(SqlConst.AS).append(this.alias);
+        }
+
         return sqlBuilder;
     }
 }

@@ -19,6 +19,14 @@ import java.util.Objects;
  */
 public class MybatisCmdFactory extends CmdFactory {
 
+    public MybatisCmdFactory(){
+        super();
+    }
+
+    public MybatisCmdFactory(String tableAsPrefix){
+        super(tableAsPrefix);
+    }
+
     @Override
     public Table table(Class entity, int storey) {
         return MapUtil.computeIfAbsent(this.tableCache, String.format("%s.%s", entity.getName(), storey), key -> {

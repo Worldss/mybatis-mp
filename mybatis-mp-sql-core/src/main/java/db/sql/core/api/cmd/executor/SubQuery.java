@@ -17,7 +17,7 @@ public class SubQuery extends AbstractQuery<SubQuery, CmdFactory> implements Dat
     private String prefix;
 
     public SubQuery(String alias) {
-        super(new CmdFactory());
+        super(new CmdFactory("st"));
         this.alias = alias;
     }
 

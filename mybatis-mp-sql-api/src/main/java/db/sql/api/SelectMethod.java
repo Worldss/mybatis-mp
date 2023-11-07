@@ -8,9 +8,13 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, COLUMN> {
     @SuppressWarnings("unchecked")
     SELF select(COLUMN column);
 
-    SELF selectCount1();
+    SELF select1();
+
+    SELF selectAll();
 
     SELF selectCountAll();
+
+    SELF selectCount1();
 
     @SuppressWarnings("unchecked")
     default SELF select(COLUMN... columns) {

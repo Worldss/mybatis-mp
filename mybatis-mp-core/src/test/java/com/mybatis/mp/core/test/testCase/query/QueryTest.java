@@ -2,6 +2,7 @@ package com.mybatis.mp.core.test.testCase.query;
 
 import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.Query;
+import cn.mybatis.mp.core.sql.executor.SubQuery;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.model.SysRole;
 import com.mybatis.mp.core.test.model.SysUser;
@@ -166,6 +167,60 @@ public class QueryTest extends BaseTest {
             Assert.assertEquals("paging Total", pager.getTotal(), Integer.valueOf(3));
             Assert.assertEquals("paging Results size", pager.getResults().size(), 2);
             Assert.assertEquals("paging TotalPage", pager.getTotalPage(), Integer.valueOf(2));
+        }
+    }
+
+    @Test
+    public void exists() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            List<SysUser> list = sysUserMapper.list(new Query() {{
+                select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+                        .from(SysUser.class)
+                        .exists(new SubQuery()
+                                .select1()
+                                .from(SysUser.class)
+                                .eq(SysUser::getId, $(SysUser::getId))
+                                .isNotNull(SysUser::getPassword)
+                                .limit(1)
+                        );
+
+            }});
+
+            Assert.assertEquals("exists size", list.size(), 2);
+
+            SysUser eqSysUser = new SysUser();
+            eqSysUser.setId(2);
+            eqSysUser.setUserName("test1");
+            eqSysUser.setRole_id(1);
+            Assert.assertEquals("exists", list.get(1), eqSysUser);
+        }
+    }
+
+    @Test
+    public void inSubQuery() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            List<SysUser> list = sysUserMapper.list(new Query() {{
+                select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+                        .from(SysUser.class)
+                        .in(SysUser::getId, new SubQuery()
+                                .select(SysUser::getId)
+                                .from(SysUser.class)
+                                .eq(SysUser::getId, $(SysUser::getId))
+                                .isNotNull(SysUser::getPassword)
+                                .limit(1)
+                        );
+
+            }});
+
+            Assert.assertEquals("inSubQuery size", list.size(), 2);
+
+            SysUser eqSysUser = new SysUser();
+            eqSysUser.setId(2);
+            eqSysUser.setUserName("test1");
+            eqSysUser.setRole_id(1);
+            Assert.assertEquals("inSubQuery", list.get(1), eqSysUser);
         }
     }
 }

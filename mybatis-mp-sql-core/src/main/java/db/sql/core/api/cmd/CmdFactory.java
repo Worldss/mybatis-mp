@@ -22,13 +22,23 @@ public class CmdFactory {
 
     protected int tableNums = 0;
 
+    private final String tableAsPrefix;
+
+    public CmdFactory(){
+        this("t");
+    }
+
+    public CmdFactory(String tableAsPrefix){
+        this.tableAsPrefix=tableAsPrefix;
+    }
+
     public NULL NULL() {
         return NULL.NULL;
     }
 
     protected String tableAs(int storey, int tableNums) {
         StringBuilder as = new StringBuilder();
-        as = as.append('t');
+        as = as.append(this.tableAsPrefix);
         return as.append(tableNums == 1 ? "" : tableNums).toString();
     }
 

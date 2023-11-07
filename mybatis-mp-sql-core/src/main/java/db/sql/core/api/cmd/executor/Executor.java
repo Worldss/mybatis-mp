@@ -3,9 +3,7 @@ package db.sql.core.api.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.cmd.CmdFactory;
-import db.sql.core.api.cmd.Table;
-import db.sql.core.api.cmd.TableField;
+import db.sql.core.api.cmd.*;
 import db.sql.core.api.tookit.CmdJoins;
 
 import java.util.List;
@@ -42,6 +40,10 @@ public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory>
 
     default <T> TableField $(Getter<T> getter) {
         return $().field(getter);
+    }
+
+    default <T> DatasetField $(Dataset dataset,Getter<T> getter) {
+        return dataset.$($().columnName(getter));
     }
 
     default <T> TableField $(Getter<T> getter, int storey) {

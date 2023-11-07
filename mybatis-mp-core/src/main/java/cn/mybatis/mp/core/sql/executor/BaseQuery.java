@@ -17,7 +17,11 @@ import java.util.function.Function;
 public class BaseQuery<Q extends BaseQuery> extends db.sql.core.api.cmd.executor.AbstractQuery<Q, MybatisCmdFactory> {
 
     public BaseQuery() {
-        super(new MybatisCmdFactory());
+        this(new MybatisCmdFactory());
+    }
+
+    public BaseQuery(MybatisCmdFactory mybatisCmdFactory) {
+        super(mybatisCmdFactory);
     }
 
     @Override

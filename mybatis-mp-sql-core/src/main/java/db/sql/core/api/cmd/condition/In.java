@@ -42,9 +42,9 @@ public class In extends BaseCondition<Cmd, List<Cmd>> {
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = key.sql(user, context, sqlBuilder);
+        sqlBuilder = key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(getOperator()).append(SqlConst.BLANK).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = CmdJoins.join(user, context, sqlBuilder, this.values, SqlConst.DELIMITER);
+        sqlBuilder = CmdJoins.join(this, context, sqlBuilder, this.values, SqlConst.DELIMITER);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);
         return sqlBuilder;
     }

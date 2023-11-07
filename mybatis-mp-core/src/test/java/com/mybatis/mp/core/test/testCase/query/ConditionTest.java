@@ -30,6 +30,20 @@ public class ConditionTest extends BaseTest {
     }
 
     @Test
+    public void andOr() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            Integer id = sysUserMapper.get(new Query()
+                    .select(SysUser::getId)
+                    .from(SysUser.class)
+                    .eq(SysUser::getId, 2).and().or().eq(SysUser::getId, 1)
+                    .setReturnType(Integer.TYPE)
+            );
+            Assert.assertEquals("eq", Integer.valueOf(2), id);
+        }
+    }
+
+    @Test
     public void ne() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
@@ -258,8 +272,8 @@ public class ConditionTest extends BaseTest {
             );
 
 
-            Assert.assertEquals("notLeftLike", Integer.valueOf(1), list.get(0));
-            Assert.assertEquals("notLeftLike", Integer.valueOf(2), list.get(1));
+            Assert.assertEquals("between", Integer.valueOf(1), list.get(0));
+            Assert.assertEquals("between", Integer.valueOf(2), list.get(1));
         }
     }
 
@@ -278,6 +292,23 @@ public class ConditionTest extends BaseTest {
 
             Assert.assertEquals("notLeftLike", 1, list.size());
             Assert.assertEquals("notLeftLike", Integer.valueOf(3), list.get(0));
+        }
+    }
+
+    @Test
+    public void in() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            List<Integer> list = sysUserMapper.list(new Query().
+                    select(SysUser::getId).
+                    from(SysUser.class).
+                    in(SysUser::getId, 1, 2).
+                    setReturnType(Integer.TYPE)
+            );
+
+
+            Assert.assertEquals("between", Integer.valueOf(1), list.get(0));
+            Assert.assertEquals("between", Integer.valueOf(2), list.get(1));
         }
     }
 }

@@ -320,6 +320,21 @@ public interface StudentMapper extends MybatisMapper<Student> {
     );
 ```
 > SysUserAndRole 如何映射，请查看注解说明。
+#### 1.3.5 join 子表
+```
+    List<SysUser> list = sysUserMapper.list(new Query() {{
+        select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+                .from(SysUser.class)
+                .in(SysUser::getId, new SubQuery()
+                        .select(SysUser::getId)
+                        .from(SysUser.class)
+                        .eq(SysUser::getId, $(SysUser::getId))
+                        .isNotNull(SysUser::getPassword)
+                        .limit(1)
+                );
+
+    }});
+```
     
 ### 1.4 删除
 
@@ -436,7 +451,189 @@ Integer count = sysUserMapper.get(new Query()
         .setReturnType(Integer.TYPE)
 );
 ```
+### 2.0 条件
+#### 2.1 and or 相互切换
+```
+    sysUserMapper.get(new Query()
+            .select(SysUser::getId)
+            .from(SysUser.class)
+            .eq(SysUser::getId, 2).or().eq(SysUser::getId, 1)
+            .setReturnType(Integer.TYPE)
+    );
+```
+> 调用 and(),则后续操作默认都and操作
+> 
+> 调用 or(),则后续操作默认都or操作
+#### 2.2 大于( gt() )
+```
+    sysUserMapper.get(new Query()
+            .select(SysUser::getId)
+            .from(SysUser.class)
+            .gt(SysUser::getId, 2)
+            .setReturnType(Integer.TYPE)
+    );
+```    
+#### 2.3 大于等于( gte() )
+```
+    sysUserMapper.get(new Query()
+            .select(SysUser::getId)
+            .from(SysUser.class)
+            .gte(SysUser::getId, 2)
+            .setReturnType(Integer.TYPE)
+    );
+```   
+#### 2.4 小于( lt() )
+```
+    sysUserMapper.get(new Query()
+            .select(SysUser::getId)
+            .from(SysUser.class)
+            .lt(SysUser::getId, 2)
+            .setReturnType(Integer.TYPE)
+    );
+```    
+#### 2.5 小于等于( lte() )
+```
+    sysUserMapper.get(new Query()
+            .select(SysUser::getId)
+            .from(SysUser.class)
+            .lte(SysUser::getId, 2)
+            .setReturnType(Integer.TYPE)
+    );
+```   
 
+#### 2.6 等于( eq() )
+```
+    sysUserMapper.get(new Query()
+            .select(SysUser::getId)
+            .from(SysUser.class)
+            .lt(SysUser::getId, 2)
+            .setReturnType(Integer.TYPE)
+    );
+```    
+#### 2.7 不等于( ne() )
+```
+    sysUserMapper.get(new Query()
+            .select(SysUser::getId)
+            .from(SysUser.class)
+            .lte(SysUser::getId, 2)
+            .setReturnType(Integer.TYPE)
+    );
+```  
+
+#### 2.8 is NULL
+```
+    sysUserMapper.get(new Query()
+            .select(SysUser::getId)
+            .from(SysUser.class)
+            .isNull(SysUser::getId)
+            .setReturnType(Integer.TYPE)
+    );
+```    
+#### 2.9 is NOT NULL
+```
+    sysUserMapper.get(new Query()
+            .select(SysUser::getId)
+            .from(SysUser.class)
+            .isNotNull(SysUser::getId)
+            .setReturnType(Integer.TYPE)
+    );
+```  
+#### 3.0 in
+```
+    List<Integer> list = sysUserMapper.list(new Query().
+            select(SysUser::getId).
+            from(SysUser.class).
+            in(SysUser::getId, 1, 2).
+            setReturnType(Integer.TYPE)
+    );
+```
+#### 3.1 like
+```
+     SysUser sysUser = sysUserMapper.get(new Query() {{
+        select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id);
+        from(SysUser.class);
+        like(SysUser::getUserName, "test1");
+    }});
+```
+#### 3.2 left like
+```
+     SysUser sysUser = sysUserMapper.get(new Query().
+            select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id).
+            from(SysUser.class).
+            like(SysUser::getUserName, "test1", LikeMode.LEFT)
+
+    );
+```
+#### 3.3 right like
+```
+    Integer count = sysUserMapper.get(new Query().
+            select(SysUser::getId, c -> c.count()).
+            from(SysUser.class).
+            like(SysUser::getUserName, "test", LikeMode.RIGHT).
+            setReturnType(Integer.TYPE)
+    );
+```
+
+#### 3.4 not like
+```
+     SysUser sysUser = sysUserMapper.get(new Query() {{
+        select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id);
+        from(SysUser.class);
+        notLike(SysUser::getUserName, "test1");
+    }});
+```
+#### 3.5 not left like
+```
+     SysUser sysUser = sysUserMapper.get(new Query().
+            select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id).
+            from(SysUser.class).
+            notLike(SysUser::getUserName, "test1", LikeMode.LEFT)
+
+    );
+```
+#### 3.6 not right like
+```
+    Integer count = sysUserMapper.get(new Query().
+            select(SysUser::getId, c -> c.count()).
+            from(SysUser.class).
+            notLike(SysUser::getUserName, "test", LikeMode.RIGHT).
+            setReturnType(Integer.TYPE)
+    );
+```
+#### 3.7 between
+```
+    List<Integer> list = sysUserMapper.list(new Query().
+            select(SysUser::getId).
+            from(SysUser.class).
+            between(SysUser::getId, 1, 2).
+            setReturnType(Integer.TYPE)
+    );
+```
+#### 3.8 not between
+```
+    List<Integer> list = sysUserMapper.list(new Query().
+            select(SysUser::getId).
+            from(SysUser.class).
+            between(SysUser::getId, 1, 3).
+            notBetween(SysUser::getId, 1, 2).
+            setReturnType(Integer.TYPE)
+    );
+```
+#### 3.9 exists
+```
+    List<SysUser> list = sysUserMapper.list(new Query() {{
+        select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+                .from(SysUser.class)
+                .exists(new SubQuery()
+                        .select1()
+                        .from(SysUser.class)
+                        .eq(SysUser::getId, $(SysUser::getId))
+                        .isNotNull(SysUser::getPassword)
+                        .limit(1)
+                );
+
+    }});
+```
 
 # 函数操作
 ### 1.1 聚合函数（min,count,max,avg）

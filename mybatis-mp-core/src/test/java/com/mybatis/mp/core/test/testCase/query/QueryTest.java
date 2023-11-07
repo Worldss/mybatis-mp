@@ -231,7 +231,7 @@ public class QueryTest extends BaseTest {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             List<Integer> roleIds = sysUserMapper.list(new Query()
                     .selectDistinct()
-                    .select(SysUser::getRole_id, c -> c.as("role_id"))
+                    .select(SysUser::getRole_id)
                     .from(SysUser.class)
                     .setReturnType(Integer.TYPE)
             );
@@ -257,6 +257,69 @@ public class QueryTest extends BaseTest {
                 eqSysUser.setId(1);
                 eqSysUser.setRole_id(0);
                 Assert.assertEquals("selectDistinctMuti", list.get(0), eqSysUser);
+            }
+        }
+    }
+
+    @Test
+    public void union(){
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            List<SysUser> list = sysUserMapper.list(new Query()
+                    .select(SysUser::getRole_id ,SysUser::getId)
+                    .from(SysUser.class)
+                    .eq(SysUser::getId,1)
+                    .union(new Query()
+                            .select(SysUser::getRole_id ,SysUser::getId)
+                            .from(SysUser.class)
+                            .lt(SysUser::getId,3)
+                    )
+            );
+            Assert.assertEquals("union", list.size(), 2);
+            {
+                SysUser eqSysUser = new SysUser();
+                eqSysUser.setId(1);
+                eqSysUser.setRole_id(0);
+                Assert.assertEquals("union", list.get(0), eqSysUser);
+            }
+
+            {
+                SysUser eqSysUser = new SysUser();
+                eqSysUser.setId(2);
+                eqSysUser.setRole_id(1);
+                Assert.assertEquals("union", list.get(1), eqSysUser);
+            }
+        }
+    }
+
+    @Test
+    public void unionAll(){
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            List<SysUser> list = sysUserMapper.list(new Query()
+                    .select(SysUser::getRole_id ,SysUser::getId)
+                    .from(SysUser.class)
+                    .eq(SysUser::getId,1)
+                    .unionAll(new Query()
+                            .select(SysUser::getRole_id ,SysUser::getId)
+                            .from(SysUser.class)
+                            .lt(SysUser::getId,3)
+                    )
+            );
+            Assert.assertEquals("unionAll", list.size(), 3);
+            {
+                SysUser eqSysUser = new SysUser();
+                eqSysUser.setId(1);
+                eqSysUser.setRole_id(0);
+                Assert.assertEquals("unionAll", list.get(0), eqSysUser);
+                Assert.assertEquals("unionAll", list.get(1), eqSysUser);
+            }
+
+            {
+                SysUser eqSysUser = new SysUser();
+                eqSysUser.setId(2);
+                eqSysUser.setRole_id(1);
+                Assert.assertEquals("unionAll", list.get(2), eqSysUser);
             }
         }
     }

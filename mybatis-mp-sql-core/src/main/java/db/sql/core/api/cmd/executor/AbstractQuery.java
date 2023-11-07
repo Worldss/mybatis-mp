@@ -12,6 +12,7 @@ import db.sql.core.api.cmd.On;
 import db.sql.core.api.cmd.OrderBy;
 import db.sql.core.api.cmd.Select;
 import db.sql.core.api.cmd.Where;
+import db.sql.core.api.tookit.SqlConst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,8 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     protected OrderBy orderBy;
 
     protected Limit limit;
+
+    protected Unions unions;
 
     protected final ConditionFaction conditionFaction;
 
@@ -70,6 +73,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         cmdSorts.put(Where.class, ++i);
         cmdSorts.put(GroupBy.class, ++i);
         cmdSorts.put(OrderBy.class, ++i);
+        cmdSorts.put(Unions.class, i++);
     }
 
 
@@ -245,6 +249,26 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
             return this.orderBy(f.apply(tableField), asc);
         }
         return this.orderBy(tableField, asc);
+    }
+
+    public Unions $unions() {
+        if (this.unions == null) {
+            this.unions = new Unions();
+            this.cmds.add(unions);
+        }
+        return this.unions;
+    }
+
+    @Override
+    public SELF union(Cmd query) {
+        $unions().add(new Union(query));
+        return (SELF) this;
+    }
+
+    @Override
+    public SELF unionAll(Cmd subQuery) {
+        $unions().add(new Union(SqlConst.UNION_ALL, subQuery));
+        return (SELF) this;
     }
 
     public Select getSelect() {

@@ -10,6 +10,10 @@ public class SqlConst {
 
     public static final String NULL = " NULL ";
 
+    public static final String UNION = " UNION ";
+
+    public static final String UNION_ALL = " UNION ALL ";
+
     public static final String ALL = "*";
 
     public static final String DOT = ".";

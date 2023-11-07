@@ -3,6 +3,7 @@ package db.sql.core.api.cmd.fun;
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.BasicValue;
+import db.sql.core.api.tookit.CmdUtils;
 
 import static db.sql.core.api.tookit.SqlConst.MULTIPLY;
 
@@ -29,4 +30,8 @@ public class Multiply extends BasicFunction<Multiply> {
         return sqlBuilder;
     }
 
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.key, this.value);
+    }
 }

@@ -2,6 +2,7 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public class On implements db.sql.api.On<On, Dataset, Cmd, Object, Join, ConditionChain>, Cmd {
@@ -36,5 +37,10 @@ public class On implements db.sql.api.On<On, Dataset, Cmd, Object, Join, Conditi
         }
         sqlBuilder = conditionChain().sql(user, context, sqlBuilder);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.join, this.conditionChain);
     }
 }

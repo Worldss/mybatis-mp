@@ -4,6 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.Field;
 import db.sql.core.api.cmd.Select;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public abstract class BasicFunction<T extends BasicFunction> extends Field<BasicFunction<T>> implements Function, FunctionInterface {
@@ -35,9 +36,12 @@ public abstract class BasicFunction<T extends BasicFunction> extends Field<Basic
         sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
         this.key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-
         sqlBuilder = appendAlias(user, sqlBuilder);
         return sqlBuilder;
     }
 
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.key);
+    }
 }

@@ -3,6 +3,7 @@ package db.sql.core.api.cmd.condition;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public class Between extends BaseCondition<Cmd, Cmd[]> {
@@ -39,5 +40,10 @@ public class Between extends BaseCondition<Cmd, Cmd[]> {
     @Override
     public Cmd[] getValue() {
         return this.value;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.field, this.value);
     }
 }

@@ -3,6 +3,7 @@ package db.sql.core.api.cmd.condition;
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.NULL;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public class IsNull extends BaseCondition<Cmd, NULL> {
@@ -30,5 +31,10 @@ public class IsNull extends BaseCondition<Cmd, NULL> {
     @Override
     public NULL getValue() {
         return NULL.NULL;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.field);
     }
 }

@@ -2,6 +2,7 @@ package db.sql.core.api.cmd.condition;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public class Exists implements db.sql.api.Condition, Cmd {
@@ -19,5 +20,10 @@ public class Exists implements db.sql.api.Condition, Cmd {
         sqlBuilder = existsCmd.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.existsCmd);
     }
 }

@@ -4,6 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.BasicValue;
 import db.sql.core.api.cmd.Condition;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 import java.io.Serializable;
@@ -41,5 +42,10 @@ public class If extends BasicFunction<If> {
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         sqlBuilder = appendAlias(user, sqlBuilder);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.key, this.value, this.value2);
     }
 }

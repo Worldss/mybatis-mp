@@ -3,15 +3,13 @@ package db.sql.core.api.cmd.fun;
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.BasicValue;
-import db.sql.core.api.cmd.CmdFactory;
 import db.sql.core.api.cmd.Condition;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static db.sql.core.api.tookit.SqlConst.CASE;
 
@@ -54,6 +52,11 @@ public class Case extends BasicFunction<Case> {
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         sqlBuilder = appendAlias(user, sqlBuilder);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.values);
     }
 }
 

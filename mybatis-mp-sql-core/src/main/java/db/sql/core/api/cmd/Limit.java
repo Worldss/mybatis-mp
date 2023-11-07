@@ -44,4 +44,9 @@ public class Limit implements Cmd {
     public void setLimit(int limit) {
         this.limit = limit;
     }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return false;
+    }
 }

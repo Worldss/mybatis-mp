@@ -26,6 +26,14 @@ public interface JoinMethod<SELF extends JoinMethod, TABLE, ON> {
         return join(mode, mainTable, 1, secondTable, 1, consumer);
     }
 
+    default SELF join(Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey) {
+        return join(JoinMode.INNER, mainTable, mainTableStorey, secondTable, secondTableStorey);
+    }
+
+    default SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey) {
+        return join(mode, mainTable, mainTableStorey, secondTable, secondTableStorey, null);
+    }
+
     default SELF join(Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<ON> consumer) {
         return join(JoinMode.INNER, mainTable, mainTableStorey, secondTable, secondTableStorey, consumer);
     }

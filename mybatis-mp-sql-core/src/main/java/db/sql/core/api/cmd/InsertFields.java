@@ -2,6 +2,7 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.Lists;
 import db.sql.core.api.tookit.SqlConst;
 
@@ -54,5 +55,10 @@ public class InsertFields implements db.sql.api.InsertFields<TableField>, Cmd {
         }
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.tableFields);
     }
 }

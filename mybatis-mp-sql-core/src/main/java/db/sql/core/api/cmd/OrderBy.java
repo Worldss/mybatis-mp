@@ -2,7 +2,7 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.tookit.CmdJoins;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 import java.util.ArrayList;
@@ -24,8 +24,16 @@ public class OrderBy implements db.sql.api.OrderBy<OrderBy, Cmd>, Cmd {
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        if (this.orderByValues == null || this.orderByValues.isEmpty()) {
+            return sqlBuilder;
+        }
         sqlBuilder = sqlBuilder.append(SqlConst.ORDER_BY);
-        sqlBuilder = CmdJoins.join(this, context, sqlBuilder, this.orderByValues, SqlConst.DELIMITER);
+        sqlBuilder = CmdUtils.join(this, context, sqlBuilder, this.orderByValues, SqlConst.DELIMITER);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.orderByValues);
     }
 }

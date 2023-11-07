@@ -3,6 +3,7 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public class UpdateSet implements db.sql.api.UpdateSet<TableField, Value>, Cmd {
@@ -32,5 +33,10 @@ public class UpdateSet implements db.sql.api.UpdateSet<TableField, Value>, Cmd {
         sqlBuilder = sqlBuilder.append(SqlConst.EQ);
         sqlBuilder = this.value.sql(this, context, sqlBuilder);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.field, this.value);
     }
 }

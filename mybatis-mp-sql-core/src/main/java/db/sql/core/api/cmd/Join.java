@@ -3,6 +3,7 @@ package db.sql.core.api.cmd;
 import db.sql.api.Cmd;
 import db.sql.api.JoinMode;
 import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public class Join implements db.sql.api.Join<Join, Dataset, On>, Cmd {
@@ -48,5 +49,10 @@ public class Join implements db.sql.api.Join<Join, Dataset, On>, Cmd {
         sqlBuilder = getSecondTable().sql(this, context, sqlBuilder);
         sqlBuilder = getOn().sql(this, context, sqlBuilder);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.mainTable, this.secondTable, this.on);
     }
 }

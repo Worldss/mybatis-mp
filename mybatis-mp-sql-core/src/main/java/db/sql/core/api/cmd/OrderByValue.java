@@ -2,6 +2,7 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public class OrderByValue implements Cmd {
@@ -20,5 +21,10 @@ public class OrderByValue implements Cmd {
         sqlBuilder = key.sql(user, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(asc ? SqlConst.ASC : SqlConst.DESC);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.key);
     }
 }

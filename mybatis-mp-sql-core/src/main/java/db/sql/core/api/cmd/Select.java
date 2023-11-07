@@ -3,7 +3,7 @@ package db.sql.core.api.cmd;
 import db.sql.api.Cmd;
 import db.sql.api.Distinct;
 import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.tookit.CmdJoins;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.Lists;
 import db.sql.core.api.tookit.SqlConst;
 
@@ -56,7 +56,12 @@ public class Select implements db.sql.api.Select<Select, Cmd>, Cmd {
         if (distinct) {
             sqlBuilder = Distinct.INSTANCE.sql(user, context, sqlBuilder);
         }
-        sqlBuilder = CmdJoins.join(this, context, sqlBuilder, this.getSelectFiled(), SqlConst.DELIMITER);
+        sqlBuilder = CmdUtils.join(this, context, sqlBuilder, this.getSelectFiled(), SqlConst.DELIMITER);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.selectFields);
     }
 }

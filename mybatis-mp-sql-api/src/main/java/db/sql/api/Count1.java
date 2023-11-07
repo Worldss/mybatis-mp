@@ -8,4 +8,9 @@ public class Count1 implements Cmd {
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         return sqlBuilder.append(" COUNT(1) ");
     }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return false;
+    }
 }

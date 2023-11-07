@@ -6,8 +6,9 @@ import db.sql.api.SqlBuilderContext;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
-public class CmdJoins {
+public class CmdUtils {
 
     public static StringBuilder join(Cmd user, SqlBuilderContext context, StringBuilder builder, List<? extends Cmd> cmdList) {
         return join(user, context, builder, cmdList, null);
@@ -46,5 +47,57 @@ public class CmdJoins {
             builder = cmds[i].sql(user, context, builder);
         }
         return builder;
+    }
+
+    public static boolean contain(Cmd cmd, Object... params) {
+        if (Objects.isNull(params)) {
+            return false;
+        }
+        for (Object param : params) {
+            if (contain(cmd, param)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean contain(Cmd cmd, Object another) {
+        if (Objects.isNull(another)) {
+            return false;
+        }
+        if (cmd == another) {
+            return true;
+        }
+        if (another instanceof Cmd) {
+            return contain(cmd, (Cmd) another);
+        } else if (another instanceof List) {
+            return contain(cmd, (List) another);
+        } else if (another instanceof Object[]) {
+            return contain(cmd, (Object[]) another);
+        }
+        return false;
+    }
+
+    public static boolean contain(Cmd cmd, Cmd another) {
+        if (Objects.isNull(another)) {
+            return false;
+        }
+        if (cmd == another) {
+            return true;
+        }
+        return another.contain(cmd);
+    }
+
+    public static boolean contain(Cmd cmd, List<?> another) {
+        if (Objects.isNull(another)) {
+            return false;
+        }
+        for (Object param : another) {
+            if (contain(cmd, param)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

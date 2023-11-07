@@ -1,8 +1,6 @@
 package db.sql.core.api.cmd.executor;
 
 import db.sql.api.*;
-import db.sql.api.executor.Query;
-import db.sql.core.api.cmd.*;
 import db.sql.core.api.cmd.ConditionChain;
 import db.sql.core.api.cmd.From;
 import db.sql.core.api.cmd.GroupBy;
@@ -12,6 +10,8 @@ import db.sql.core.api.cmd.On;
 import db.sql.core.api.cmd.OrderBy;
 import db.sql.core.api.cmd.Select;
 import db.sql.core.api.cmd.Where;
+import db.sql.core.api.cmd.*;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 import java.util.ArrayList;
@@ -22,9 +22,31 @@ import java.util.function.Function;
 
 public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY>
         implements db.sql.api.executor.Query<SELF, Dataset, TableField, Cmd, Object, ConditionChain, Select, From, Join, On, Where, GroupBy, Having, OrderBy>, Cmd {
-    protected static final Cmd SQL_1 = (user, context, sqlBuilder) -> sqlBuilder.append(" 1 ");
+    protected static final Cmd SQL_1 = new Cmd() {
+        @Override
+        public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+            sqlBuilder = sqlBuilder.append(" 1 ");
+            return sqlBuilder;
+        }
 
-    protected static final Cmd SQL_ALL = (user, context, sqlBuilder) -> sqlBuilder.append(" * ");
+        @Override
+        public boolean contain(Cmd cmd) {
+            return false;
+        }
+    };
+
+    protected static final Cmd SQL_ALL = new Cmd() {
+        @Override
+        public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+            sqlBuilder = sqlBuilder.append(" * ");
+            return sqlBuilder;
+        }
+
+        @Override
+        public boolean contain(Cmd cmd) {
+            return false;
+        }
+    };
 
     protected Select select;
 
@@ -315,19 +337,100 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return (SELF) this;
     }
 
+    /**
+     * 不优化 count sql 构建
+     *
+     * @param context
+     * @param sqlBuilder
+     * @return
+     */
+    private StringBuilder countSql(SqlBuilderContext context, StringBuilder sqlBuilder) {
+        try {
+            if (this.limit != null) {
+                this.cmds.remove(this.limit);
+            }
+            StringBuilder sql = this.sql((Cmd) null, context, sqlBuilder);
+            return new StringBuilder("SELECT COUNT(*) FROM (").append(sql).append(") T");
+        } finally {
+            if (this.limit != null) {
+                this.cmds.add(this.limit);
+            }
+        }
+    }
+
+    private StringBuilder optimizeCountSql(SqlBuilderContext context, StringBuilder sqlBuilder) {
+        List<Join> removedJoins = null;
+        Select newSelect = null;
+        try {
+            if (this.orderBy != null) {
+                this.cmds.remove(this.orderBy);
+            }
+
+            //有 union 不继续优化
+            if (this.unions != null) {
+                return this.countSql(context, sqlBuilder);
+            }
+
+            //有排重 不继续优化
+            if (this.select.isDistinct()) {
+                return this.countSql(context, sqlBuilder);
+            }
+
+            newSelect = new Select();
+            newSelect.select(SQL_1);
+            this.cmds.remove(this.select);
+            this.cmds.add(newSelect);
+
+            //有分组 不继续优化
+            if (this.groupBy != null) {
+                return this.countSql(context, sqlBuilder);
+            }
+
+            if (this.joins != null) {
+                for (Join join : this.joins) {
+                    //有非left join 不继续优化
+                    if (join.getMode() != JoinMode.LEFT) {
+                        return this.countSql(context, sqlBuilder);
+                    }
+                }
+                //查看left join的表是否在where里边包含
+                for (Join join : this.joins) {
+                    //有非left join 不继续优化
+                    if (CmdUtils.contain(join.getSecondTable(), this.where)) {
+                        return this.countSql(context, sqlBuilder);
+                    }
+                }
+                removedJoins = new ArrayList<>(this.joins);
+                for (Join join : joins) {
+                    this.cmds.remove(join);
+                }
+            }
+            return this.countSql(context, sqlBuilder);
+        } finally {
+            if (this.orderBy != null) {
+                this.cmds.add(this.orderBy);
+            }
+
+            if (newSelect != null) {
+                this.cmds.remove(newSelect);
+                this.cmds.add(this.select);
+            }
+
+            if (removedJoins != null) {
+                for (Join join : removedJoins) {
+                    this.cmds.add(join);
+                }
+            }
+        }
+    }
 
     @Override
     public StringBuilder countSql(SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize) {
-        db.sql.api.Select select = $select();
-        List<Cmd> selectFiled = new ArrayList<>(select.getSelectFiled());
-        try {
-            select.getSelectFiled().clear();
-            select.getSelectFiled().add(SQL_1);
-            StringBuilder sql = this.sql(null, context, sqlBuilder);
-            return new StringBuilder("SELECT COUNT(*) FROM (").append(sql).append(") T");
-        } finally {
-            select.getSelectFiled().clear();
-            select.getSelectFiled().addAll(selectFiled);
+        if (!optimize) {
+            return countSql(context, sqlBuilder);
+        } else {
+            // 优化 count sql
+            return optimizeCountSql(context, sqlBuilder);
         }
     }
 }

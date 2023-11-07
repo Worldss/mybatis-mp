@@ -2,6 +2,7 @@ package db.sql.core.api.cmd.executor;
 
 import db.sql.api.Cmd;
 import db.sql.core.api.cmd.CmdFactory;
+import db.sql.core.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,4 +35,9 @@ public abstract class BaseExecutor<SELF extends BaseExecutor, CMD_FACTORY extend
     }
 
     abstract void initCmdSorts(Map<Class<? extends Cmd>, Integer> cmdSorts);
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.cmds);
+    }
 }

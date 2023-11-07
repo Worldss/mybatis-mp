@@ -7,4 +7,9 @@ public class Distinct implements Cmd{
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         return sqlBuilder.append(" DISTINCT ");
     }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return false;
+    }
 }

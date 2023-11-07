@@ -2,7 +2,7 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.tookit.CmdJoins;
+import db.sql.core.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,5 +27,10 @@ public class Unions implements Cmd {
             sqlBuilder = union.sql(user, context, sqlBuilder);
         }
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.unions);
     }
 }

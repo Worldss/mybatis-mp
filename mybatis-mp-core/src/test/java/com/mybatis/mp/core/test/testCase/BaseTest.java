@@ -13,10 +13,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -55,8 +52,12 @@ public class BaseTest {
     }
 
     public void check(String message, String targetSql, Cmd cmd) {
+        this.check(message, targetSql, SQLPrinter.sql(cmd));
+    }
+
+    public void check(String message, String targetSql, String sql) {
         String sql1 = trim(targetSql);
-        String sql2 = trim(SQLPrinter.sql(cmd));
+        String sql2 = trim(sql);
         System.out.println("sql1:  " + sql1);
         System.out.println("sql2:  " + sql2);
         Assert.assertEquals(message, sql1, sql2);

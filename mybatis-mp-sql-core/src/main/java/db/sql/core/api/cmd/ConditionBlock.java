@@ -1,6 +1,11 @@
 package db.sql.core.api.cmd;
 
-public class ConditionBlock {
+import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.tookit.CmdUtils;
+import db.sql.core.api.tookit.SqlConst;
+
+public class ConditionBlock implements Cmd {
 
     private final Connector connector;
 
@@ -17,5 +22,17 @@ public class ConditionBlock {
 
     public db.sql.api.Condition getCondition() {
         return condition;
+    }
+
+    @Override
+    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(connector).append(SqlConst.BLANK);
+        sqlBuilder = this.condition.sql(user, context, sqlBuilder);
+        return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.condition);
     }
 }

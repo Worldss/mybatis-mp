@@ -3,7 +3,7 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.tookit.CmdJoins;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 import java.util.ArrayList;
@@ -29,6 +29,11 @@ public class UpdateSets implements db.sql.api.UpdateSets<TableField, Value, Upda
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.SET);
-        return CmdJoins.join(this, context, sqlBuilder, this.updateSets, SqlConst.DELIMITER);
+        return CmdUtils.join(this, context, sqlBuilder, this.updateSets, SqlConst.DELIMITER);
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.updateSets);
     }
 }

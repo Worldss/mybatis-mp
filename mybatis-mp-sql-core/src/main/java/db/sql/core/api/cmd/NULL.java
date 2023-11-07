@@ -12,4 +12,9 @@ public class NULL implements Value{
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         return sqlBuilder.append(SqlConst.NULL);
     }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return false;
+    }
 }

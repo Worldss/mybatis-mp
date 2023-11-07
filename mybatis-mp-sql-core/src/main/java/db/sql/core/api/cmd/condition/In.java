@@ -2,7 +2,7 @@ package db.sql.core.api.cmd.condition;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.tookit.CmdJoins;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.Lists;
 import db.sql.core.api.tookit.SqlConst;
 
@@ -44,7 +44,7 @@ public class In extends BaseCondition<Cmd, List<Cmd>> {
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(getOperator()).append(SqlConst.BLANK).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = CmdJoins.join(this, context, sqlBuilder, this.values, SqlConst.DELIMITER);
+        sqlBuilder = CmdUtils.join(this, context, sqlBuilder, this.values, SqlConst.DELIMITER);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);
         return sqlBuilder;
     }
@@ -57,5 +57,10 @@ public class In extends BaseCondition<Cmd, List<Cmd>> {
     @Override
     public List<Cmd> getValue() {
         return this.values;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.key, this.values);
     }
 }

@@ -2,11 +2,12 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public class InsertTable implements db.sql.api.InsertTable<Table>, Cmd {
 
-    protected Table table;
+    protected final Table table;
 
     public InsertTable(Table table) {
         this.table = table;
@@ -22,5 +23,10 @@ public class InsertTable implements db.sql.api.InsertTable<Table>, Cmd {
         sqlBuilder = sqlBuilder.append(SqlConst.INSERT_INTO);
         sqlBuilder = sqlBuilder.append(this.table.getName());
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.table);
     }
 }

@@ -2,6 +2,7 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 import java.util.ArrayList;
@@ -63,5 +64,10 @@ public class Having implements db.sql.api.Having<Having>, Cmd {
             isFirst = false;
         }
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.conditionBlocks);
     }
 }

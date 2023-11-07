@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.*;
-import db.sql.core.api.tookit.CmdJoins;
+import db.sql.core.api.tookit.CmdUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory>
         return $().field(getter);
     }
 
-    default <T> DatasetField $(Dataset dataset,Getter<T> getter) {
+    default <T> DatasetField $(Dataset dataset, Getter<T> getter) {
         return dataset.$($().columnName(getter));
     }
 
@@ -111,7 +111,13 @@ public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory>
         if (cmdList == null || cmdList.isEmpty()) {
             return sqlBuilder;
         }
-        cmdList = sortedCmds();
-        return CmdJoins.join(null, context, sqlBuilder, cmdList);
+        return this.sql(this.sortedCmds(), context, sqlBuilder);
+    }
+
+    default StringBuilder sql(List<Cmd> sortedCmds, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        if (sortedCmds == null || sortedCmds.isEmpty()) {
+            return sqlBuilder;
+        }
+        return CmdUtils.join(null, context, sqlBuilder, sortedCmds);
     }
 }

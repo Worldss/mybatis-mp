@@ -3,7 +3,7 @@ package db.sql.core.api.cmd.fun;
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.BasicValue;
-import db.sql.core.api.tookit.CmdJoins;
+import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 import java.io.Serializable;
@@ -42,9 +42,14 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
         sqlBuilder = sqlBuilder.append(SqlConst.SINGLE_QUOT(context.getDbType())).append(this.split).append(SqlConst.SINGLE_QUOT(context.getDbType())).append(SqlConst.DELIMITER);
         sqlBuilder = this.key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        sqlBuilder = CmdJoins.join(this, context, sqlBuilder, this.values, SqlConst.DELIMITER);
+        sqlBuilder = CmdUtils.join(this, context, sqlBuilder, this.values, SqlConst.DELIMITER);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         sqlBuilder = appendAlias(user, sqlBuilder);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.key, this.values);
     }
 }

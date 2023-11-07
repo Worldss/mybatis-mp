@@ -3,6 +3,7 @@ package db.sql.core.api.cmd.condition;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.core.api.tookit.CmdUtils;
 
 public abstract class BasicCondition extends BaseCondition<Cmd, Cmd> {
 
@@ -32,5 +33,10 @@ public abstract class BasicCondition extends BaseCondition<Cmd, Cmd> {
         sqlBuilder = sqlBuilder.append(getOperator());
         sqlBuilder = value.sql(user, context, sqlBuilder);
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.field, this.value);
     }
 }

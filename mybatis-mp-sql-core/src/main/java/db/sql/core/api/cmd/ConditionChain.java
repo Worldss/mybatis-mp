@@ -1,12 +1,10 @@
 package db.sql.core.api.cmd;
 
 
-import db.sql.api.Cmd;
-import db.sql.api.Getter;
-import db.sql.api.LikeMode;
-import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.tookit.SqlConst;
 import db.sql.api.Condition;
+import db.sql.api.*;
+import db.sql.core.api.tookit.CmdUtils;
+import db.sql.core.api.tookit.SqlConst;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ public class ConditionChain implements db.sql.api.ConditionChain<ConditionChain,
         this.parent = parent;
     }
 
-    private List<ConditionBlock> conditionBlocks = new ArrayList<>();
+    private List<ConditionBlock> conditionBlocks;
 
     private Connector connector = Connector.AND;
 
@@ -358,6 +356,11 @@ public class ConditionChain implements db.sql.api.ConditionChain<ConditionChain,
         }
 
         return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.conditionBlocks);
     }
 
     @Override

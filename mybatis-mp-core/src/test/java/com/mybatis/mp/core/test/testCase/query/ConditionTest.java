@@ -30,16 +30,16 @@ public class ConditionTest extends BaseTest {
     }
 
     @Test
-    public void andOr() {
+    public void wandOr() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            Integer id = sysUserMapper.get(new Query()
-                    .select(SysUser::getId)
+            Integer count = sysUserMapper.count(new Query()
+                    .selectCountAll()
                     .from(SysUser.class)
                     .eq(SysUser::getId, 2).and().or().eq(SysUser::getId, 1)
                     .setReturnType(Integer.TYPE)
             );
-            Assert.assertEquals("eq", Integer.valueOf(2), id);
+            Assert.assertEquals("andOr", Integer.valueOf(2), count);
         }
     }
 

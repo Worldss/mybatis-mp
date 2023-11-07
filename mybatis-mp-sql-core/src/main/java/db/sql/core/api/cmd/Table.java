@@ -62,4 +62,8 @@ public class Table implements Dataset<Table> {
         return sqlBuilder;
     }
 
+    @Override
+    public boolean contain(Cmd cmd) {
+        return false;
+    }
 }

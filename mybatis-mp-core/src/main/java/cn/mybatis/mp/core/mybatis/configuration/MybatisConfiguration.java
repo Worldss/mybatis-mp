@@ -9,7 +9,10 @@ import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.mapping.*;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ResultMapping;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.ResultHandler;
@@ -22,10 +25,7 @@ import org.apache.ibatis.type.UnknownTypeHandler;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 public class MybatisConfiguration extends Configuration {
@@ -36,12 +36,6 @@ public class MybatisConfiguration extends Configuration {
 
     public MybatisConfiguration(Environment environment) {
         super(environment);
-    }
-
-    private final Map<Class, List<ResultMapping>> classResultMappings = new ConcurrentHashMap<>();
-
-    public Map<Class, List<ResultMapping>> getClassResultMappings() {
-        return classResultMappings;
     }
 
     public void printBanner() {
@@ -82,7 +76,7 @@ public class MybatisConfiguration extends Configuration {
         if (MapperTables.add(type)) {
             //提前缓存
             Class entity = MapperTables.get(type);
-            ResultMaps.getResultMappings(this, entity);
+            ResultMapUtils.getResultMap(this, entity);
             TableIds.get(this, entity);
         }
         super.addMapper(type);
@@ -98,34 +92,6 @@ public class MybatisConfiguration extends Configuration {
                 .build();
     }
 
-    /**
-     * 注册 ResultMap
-     *
-     * @param nestedResultMapId
-     * @param property
-     * @param resultMappings
-     * @return
-     */
-    public void registerNestedResultMap(String nestedResultMapId, Field property, List<ResultMapping> resultMappings) {
-        ResultMap resultMap = new ResultMap.Builder(this, nestedResultMapId, property.getType(), resultMappings, false)
-                .build();
-        addResultMap(resultMap);
-    }
-
-    /**
-     * 构建内嵌 ResultMapping
-     *
-     * @param nestedResultMapId
-     * @param property
-     * @return
-     */
-    public ResultMapping buildNestedResultMapping(String nestedResultMapId, Field property) {
-        return new ResultMapping.Builder(this, property.getName())
-                .javaType(property.getType())
-                .jdbcType(JdbcType.UNDEFINED)
-                .nestedResultMapId(nestedResultMapId)
-                .build();
-    }
 
     @SuppressWarnings("unchecked")
     public TypeHandler buildTypeHandler(Class type, Class<? extends TypeHandler<?>> typeHandlerClass) {

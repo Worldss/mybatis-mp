@@ -129,7 +129,7 @@ public class ConditionTest extends BaseTest {
                 eq(SysUser::getId, 3);
                 setReturnType(Integer.TYPE);
             }});
-            Assert.assertEquals("isNotNull", null, sysUser);
+            Assert.assertNull("isNotNull", sysUser);
         }
     }
 

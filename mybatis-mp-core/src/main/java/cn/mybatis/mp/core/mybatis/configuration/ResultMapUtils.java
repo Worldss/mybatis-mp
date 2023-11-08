@@ -6,7 +6,10 @@ import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.util.FieldUtils;
 import cn.mybatis.mp.db.annotations.*;
+import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
@@ -16,21 +19,29 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("unchecked")
-public final class ResultMaps {
+public final class ResultMapUtils {
 
-    private ResultMaps() {
+    private ResultMapUtils() {
 
     }
 
-
-    public static final List<ResultMapping> getResultMappings(MybatisConfiguration configuration, Class clazz) {
-        if (clazz.isAnnotationPresent(Table.class)) {
-            return configuration.getClassResultMappings().computeIfAbsent(clazz, key -> getEntityResultMappings(configuration, clazz));
-        } else if (clazz.isAnnotationPresent(ResultEntity.class)) {
-            return configuration.getClassResultMappings().computeIfAbsent(clazz, key -> getResultEntityResultMappings(configuration, clazz));
+    public static ResultMap getResultMap(MybatisConfiguration configuration, Class clazz) {
+        String id = clazz.getName();
+        if (configuration.hasResultMap(id)) {
+            return configuration.getResultMap(id);
         }
-        return null;
+        List<ResultMapping> resultMappings = null;
+        if (clazz.isAnnotationPresent(Table.class)) {
+            resultMappings = getEntityResultMappings(configuration, clazz);
+        } else if (clazz.isAnnotationPresent(ResultEntity.class)) {
+            resultMappings = getResultEntityResultMappings(configuration, clazz);
+        }
+        ResultMap resultMap = null;
+        if (Objects.nonNull(resultMappings)) {
+            resultMap = new ResultMap.Builder(configuration, id, clazz, resultMappings, false).build();
+            configuration.addResultMap(resultMap);
+        }
+        return resultMap;
     }
 
     private static final List<ResultMapping> getEntityResultMappings(MybatisConfiguration configuration, Class entity) {
@@ -83,8 +94,7 @@ public final class ResultMaps {
         if (Objects.isNull(tableFieldInfo)) {
             throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The field {2} can't found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
         }
-
-        return getEntityResultMappings(configuration, resultEntity.value()).stream().filter(item -> item.getProperty().equals(targetFieldName)).findFirst().get();
+        return configuration.buildResultMapping(field, tableFieldInfo.getColumnName(), tableFieldInfo.getFieldAnnotation().jdbcType(), tableFieldInfo.getFieldAnnotation().typeHandler());
     }
 
     /**
@@ -159,14 +169,16 @@ public final class ResultMaps {
                 if (Objects.isNull(tableFieldInfo)) {
                     throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The nested field {2} can't found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
                 }
-                if (tableFieldInfo.getField().getType() != nestedFiled.getType()) {
-                    throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The type of nested field {2}.{3} must be {4}", field.getName(), clazz.getName(), targetEntityName, targetFieldName, tableFieldInfo.getField().getType().getName()));
-                }
                 return configuration.buildResultMapping(nestedFiled, columnPrefix + tableFieldInfo.getColumnName(), tableFieldInfo.getFieldAnnotation().jdbcType(), tableFieldInfo.getFieldAnnotation().typeHandler());
             }).collect(Collectors.toList());
-            configuration.registerNestedResultMap(nestedResultMapId, field, nestedMappings);
+
+            //注册内嵌 ResultMap
+            ResultMap resultMap = new ResultMap.Builder(configuration, nestedResultMapId, field.getType(), nestedMappings, false).build();
+            configuration.addResultMap(resultMap);
         }
-        return configuration.buildNestedResultMapping(nestedResultMapId, field);
+
+        //构建内嵌ResultMapping
+        return new ResultMapping.Builder(configuration, field.getName()).javaType(field.getType()).jdbcType(JdbcType.UNDEFINED).nestedResultMapId(nestedResultMapId).build();
     }
 
 }

@@ -262,17 +262,17 @@ public class QueryTest extends BaseTest {
     }
 
     @Test
-    public void union(){
+    public void union() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             List<SysUser> list = sysUserMapper.list(new Query()
-                    .select(SysUser::getRole_id ,SysUser::getId)
+                    .select(SysUser::getRole_id, SysUser::getId)
                     .from(SysUser.class)
-                    .eq(SysUser::getId,1)
+                    .eq(SysUser::getId, 1)
                     .union(new Query()
-                            .select(SysUser::getRole_id ,SysUser::getId)
+                            .select(SysUser::getRole_id, SysUser::getId)
                             .from(SysUser.class)
-                            .lt(SysUser::getId,3)
+                            .lt(SysUser::getId, 3)
                     )
             );
             Assert.assertEquals("union", list.size(), 2);
@@ -293,17 +293,17 @@ public class QueryTest extends BaseTest {
     }
 
     @Test
-    public void unionAll(){
+    public void unionAll() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             List<SysUser> list = sysUserMapper.list(new Query()
-                    .select(SysUser::getRole_id ,SysUser::getId)
+                    .select(SysUser::getRole_id, SysUser::getId)
                     .from(SysUser.class)
-                    .eq(SysUser::getId,1)
+                    .eq(SysUser::getId, 1)
                     .unionAll(new Query()
-                            .select(SysUser::getRole_id ,SysUser::getId)
+                            .select(SysUser::getRole_id, SysUser::getId)
                             .from(SysUser.class)
-                            .lt(SysUser::getId,3)
+                            .lt(SysUser::getId, 3)
                     )
             );
             Assert.assertEquals("unionAll", list.size(), 3);

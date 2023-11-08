@@ -1,6 +1,5 @@
 package cn.mybatis.mp.core.mybatis.configuration;
 
-import cn.mybatis.mp.core.sql.executor.Query;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
@@ -23,7 +22,7 @@ public class DynamicsMappedStatement {
         }
         MappedStatement.Builder msBuilder = new MappedStatement.Builder(ms.getConfiguration(), id, ms.getSqlSource(), ms.getSqlCommandType())
                 .resource(ms.getResource())
-                .resultMaps(ResultMapWrapper.getResultMap((MybatisConfiguration) ms.getConfiguration(), Collections.singletonList(resultMap)))
+                .resultMaps(ResultMapWrapper.replaceResultMap((MybatisConfiguration) ms.getConfiguration(), Collections.singletonList(resultMap)))
                 .parameterMap(ms.getParameterMap())
                 .keyGenerator(NoKeyGenerator.INSTANCE)
                 .fetchSize(ms.getFetchSize())

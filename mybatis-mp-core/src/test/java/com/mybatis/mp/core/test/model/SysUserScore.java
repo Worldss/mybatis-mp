@@ -4,6 +4,7 @@ import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.annotations.Table;
 import cn.mybatis.mp.db.annotations.TableId;
 import lombok.Data;
+
 import java.math.BigDecimal;
 
 @Data

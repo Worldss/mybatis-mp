@@ -27,6 +27,15 @@ public class Union implements Cmd {
         return sqlBuilder;
     }
 
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public Cmd getUnionCmd() {
+        return unionCmd;
+    }
+
     @Override
     public boolean contain(Cmd cmd) {
         return CmdUtils.contain(cmd, this.unionCmd);

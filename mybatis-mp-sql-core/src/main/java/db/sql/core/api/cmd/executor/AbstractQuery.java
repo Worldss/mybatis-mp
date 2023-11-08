@@ -11,14 +11,14 @@ import db.sql.core.api.cmd.OrderBy;
 import db.sql.core.api.cmd.Select;
 import db.sql.core.api.cmd.Where;
 import db.sql.core.api.cmd.*;
+import db.sql.core.api.cmd.fun.Count;
 import db.sql.core.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY>
         implements db.sql.api.executor.Query<SELF, Dataset, TableField, Cmd, Object, ConditionChain, Select, From, Join, On, Where, GroupBy, Having, OrderBy>, Cmd {
@@ -54,7 +54,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     protected Where where;
 
-    protected List<Join> joins;
+    protected Joins joins;
 
     protected GroupBy groupBy;
 
@@ -91,11 +91,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         int i = 0;
         cmdSorts.put(Select.class, ++i);
         cmdSorts.put(From.class, ++i);
-        cmdSorts.put(Join.class, ++i);
+        cmdSorts.put(Joins.class, ++i);
         cmdSorts.put(Where.class, ++i);
         cmdSorts.put(GroupBy.class, ++i);
         cmdSorts.put(OrderBy.class, ++i);
         cmdSorts.put(Unions.class, i++);
+        cmdSorts.put(Limit.class, ++i);
     }
 
 
@@ -175,7 +176,11 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     @Override
     public Join $join(JoinMode mode, Dataset mainTable, Dataset secondTable) {
         Join join = new Join(this.conditionFaction, mode, mainTable, secondTable);
-        this.append(join);
+        if (Objects.isNull(joins)) {
+            joins = new Joins();
+            this.append(joins);
+        }
+        joins.add(join);
         return join;
     }
 
@@ -207,10 +212,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         if (consumer != null) {
             consumer.accept(join.getOn());
         }
-        if (joins == null) {
-            joins = new ArrayList<>();
-        }
-        joins.add(join);
         return (SELF) this;
     }
 
@@ -301,7 +302,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return this.from;
     }
 
-    public List<Join> getJoins() {
+    public Joins getJoins() {
         return this.joins;
     }
 
@@ -337,101 +338,152 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return (SELF) this;
     }
 
-    /**
-     * 不优化 count sql 构建
-     *
-     * @param context
-     * @param sqlBuilder
-     * @return
-     */
-    private StringBuilder countSql(SqlBuilderContext context, StringBuilder sqlBuilder) {
-        try {
-            if (this.limit != null) {
-                this.cmds.remove(this.limit);
-            }
-            StringBuilder sql = this.sql((Cmd) null, context, sqlBuilder);
-            return new StringBuilder("SELECT COUNT(*) FROM (").append(sql).append(") T");
-        } finally {
-            if (this.limit != null) {
-                this.cmds.add(this.limit);
-            }
-        }
+
+    private static List<Cmd> removeOrderBy(List<Cmd> cmds) {
+        return cmds.stream().filter(item -> item.getClass() != OrderBy.class && item.getClass() != Limit.class).collect(Collectors.toList());
     }
 
-    private StringBuilder optimizeCountSql(SqlBuilderContext context, StringBuilder sqlBuilder) {
-        List<Join> removedJoins = null;
-        Select newSelect = null;
-        try {
-            if (this.orderBy != null) {
-                this.cmds.remove(this.orderBy);
-            }
+    /**
+     * 删除order by
+     * 删除join
+     * 替换 select 多字段 为 select 1
+     *
+     * @param cmds
+     * @param context
+     * @param sqlBuilder
+     * @param optimize
+     * @return
+     */
+    private static List<Cmd> getOptimizeCountCmdList(List<Cmd> cmds, SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize) {
+        //移除order by
+        cmds = removeOrderBy(cmds);
 
-            //有 union 不继续优化
-            if (this.unions != null) {
-                return this.countSql(context, sqlBuilder);
-            }
+        if (!optimize) {
+            return cmds;
+        }
 
-            //有排重 不继续优化
-            if (this.select.isDistinct()) {
-                return this.countSql(context, sqlBuilder);
-            }
 
-            newSelect = new Select();
-            newSelect.select(SQL_1);
-            this.cmds.remove(this.select);
-            this.cmds.add(newSelect);
+        //用于后续替换
+        int selectIndex = -1;
 
-            //有分组 不继续优化
-            if (this.groupBy != null) {
-                return this.countSql(context, sqlBuilder);
-            }
+        //删选组件
+        Select select = null;
+        Joins joins = null;
+        GroupBy groupBy = null;
+        Where where = null;
+        Unions unions = null;
 
-            if (this.joins != null) {
-                for (Join join : this.joins) {
-                    //有非left join 不继续优化
-                    if (join.getMode() != JoinMode.LEFT) {
-                        return this.countSql(context, sqlBuilder);
-                    }
-                }
-                //查看left join的表是否在where里边包含
-                for (Join join : this.joins) {
-                    //有非left join 不继续优化
-                    if (CmdUtils.contain(join.getSecondTable(), this.where)) {
-                        return this.countSql(context, sqlBuilder);
-                    }
-                }
-                removedJoins = new ArrayList<>(this.joins);
-                for (Join join : joins) {
-                    this.cmds.remove(join);
-                }
+        Iterator<Cmd> cmdIterator = cmds.iterator();
+        while (cmdIterator.hasNext()) {
+            Cmd cmd = cmdIterator.next();
+            Class c = cmd.getClass();
+            if (select == null) {
+                selectIndex++;
             }
-            return this.countSql(context, sqlBuilder);
-        } finally {
-            if (this.orderBy != null) {
-                this.cmds.add(this.orderBy);
-            }
-
-            if (newSelect != null) {
-                this.cmds.remove(newSelect);
-                this.cmds.add(this.select);
-            }
-
-            if (removedJoins != null) {
-                for (Join join : removedJoins) {
-                    this.cmds.add(join);
-                }
+            if (c == Select.class) {
+                select = (Select) cmd;
+            } else if (c == Joins.class) {
+                joins = (Joins) cmd;
+            } else if (c == GroupBy.class) {
+                groupBy = (GroupBy) cmd;
+            } else if (c == Unions.class) {
+                unions = (Unions) cmd;
+            } else if (c == Where.class) {
+                where = (Where) cmd;
             }
         }
+
+        boolean continueOptimize = true;
+        if (continueOptimize && unions != null) {
+            //有union不优化
+            continueOptimize = false;
+        }
+
+        if (continueOptimize && select.isDistinct()) {
+            continueOptimize = false;
+        }
+
+        if (continueOptimize && joins != null) {
+            List<Join> joinList = joins.getJoins();
+            for (Join join : joinList) {
+                //有非left join 不继续优化
+                if (join.getMode() != JoinMode.LEFT) {
+                    continueOptimize = false;
+                    break;
+                }
+            }
+            //查看left join的表是否在where里边包含
+            if (continueOptimize) {
+                for (Join join : joinList) {
+                    //有非left join 不继续优化
+                    if (CmdUtils.contain(join.getSecondTable(), where) || CmdUtils.contain(join.getSecondTable(), groupBy)) {
+                        continueOptimize = false;
+                        break;
+                    }
+                }
+            }
+            if (continueOptimize) {
+                cmds.remove(joins);
+            }
+        }
+
+        if (continueOptimize && groupBy != null) {
+            //有group by 不继续优化
+            continueOptimize = false;
+        }
+
+        if (Objects.isNull(unions) && !select.isDistinct()) {
+            Select newSelect = new Select().select(SQL_1);
+            cmds.set(selectIndex, newSelect);
+        }
+        return cmds;
     }
 
     @Override
-    public StringBuilder countSql(SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize) {
-        if (!optimize) {
-            return countSql(context, sqlBuilder);
-        } else {
-            // 优化 count sql
-            return optimizeCountSql(context, sqlBuilder);
+    public StringBuilder countSqlFromQuery(SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize) {
+        List<Cmd> cmdList = getOptimizeCountCmdList(new ArrayList<>(this.sortedCmds()), context, sqlBuilder, optimize);
+        int size = cmdList.size();
+        boolean needWarp = false;
+        for (int i = 0; i < size; i++) {
+            Cmd cmd = cmdList.get(i);
+            if (cmd instanceof Select) {
+                Select select = (Select) cmd;
+                if (Objects.nonNull(this.unions)) {
+                    needWarp = true;
+                } else if (Objects.nonNull(this.groupBy)) {
+                    needWarp = true;
+                }
+
+                if (!needWarp) {
+                    Select newSelect = new Select();
+                    if (select.isDistinct()) {
+                        newSelect.select(new Count(select));
+                    } else {
+                        newSelect.select(CountAll.INSTANCE);
+                    }
+                    cmdList.set(i, newSelect);
+                }
+                break;
+            }
         }
+
+        if (Objects.nonNull(this.unions)) {
+            List<Union> unionList = this.unions.getUnions();
+            cmdList.remove(this.unions);
+            for (Union union : unionList) {
+                if (union.getUnionCmd() instanceof AbstractQuery) {
+                    AbstractQuery abstractQuery = (AbstractQuery) union.getUnionCmd();
+                    cmdList.add(new CmdList(union.getOperator(), getOptimizeCountCmdList(abstractQuery.sortedCmds(), context, sqlBuilder, false)));
+                } else {
+                    cmdList.add(union);
+                }
+            }
+        }
+
+        if (needWarp) {
+            return new StringBuilder("SELECT COUNT(*) FROM (").append(CmdUtils.join(null, context, sqlBuilder, cmdList)).append(") AS T");
+        }
+        return CmdUtils.join(null, context, sqlBuilder, cmdList);
     }
 }
 

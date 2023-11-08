@@ -19,10 +19,7 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.session.RowBounds;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public interface BaseMapper<T> {
@@ -201,8 +198,13 @@ public interface BaseMapper<T> {
             Class returnType = query.getReturnType();
             query.setReturnType(Integer.TYPE);
             Integer count = this.$countFromQuery(new SQLCmdCountQueryContext(query, pager.isOptimize()));
-            pager.setTotal(Optional.of(count).orElse(0));
             query.setReturnType(returnType);
+
+            pager.setTotal(Optional.of(count).orElse(0));
+            if (pager.getTotal() < 1) {
+                pager.setResults(Collections.emptyList());
+                return pager;
+            }
         }
         query.limit(pager.getOffset(), pager.getSize());
         pager.setResults(this.$list(new SQLCmdQueryContext(query)));

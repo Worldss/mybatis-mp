@@ -22,7 +22,7 @@ public class SQLCmdCountQueryContext<R> extends SQLCmdQueryContext<Query> {
             return sql;
         }
         sqlBuilderContext = new MybatisSqlBuilderContext(DbType.getByName(dbType), SQLMode.PREPARED);
-        sql = execution.countSql(sqlBuilderContext, new StringBuilder(), this.optimize);
+        sql = execution.countSqlFromQuery(sqlBuilderContext, new StringBuilder(), this.optimize);
         return sql;
     }
 

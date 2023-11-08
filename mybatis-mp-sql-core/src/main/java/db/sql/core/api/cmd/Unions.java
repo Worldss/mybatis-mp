@@ -5,6 +5,7 @@ import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Unions implements Cmd {
@@ -32,5 +33,9 @@ public class Unions implements Cmd {
     @Override
     public boolean contain(Cmd cmd) {
         return CmdUtils.contain(cmd, this.unions);
+    }
+
+    public List<Union> getUnions() {
+        return Collections.unmodifiableList(unions);
     }
 }

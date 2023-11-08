@@ -97,6 +97,6 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
         return $where().conditionChain();
     }
 
-    StringBuilder countSql(SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize);
+    StringBuilder countSqlFromQuery(SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize);
 
 }

@@ -9,6 +9,7 @@ import db.sql.core.api.cmd.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY> implements Delete<SELF, Dataset, Cmd, Object, ConditionChain, DeleteTable, From, Join, On, Where> {
@@ -19,7 +20,7 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
 
     protected Where where;
 
-    protected List<Join> joins;
+    protected Joins joins;
 
     protected final ConditionFaction conditionFaction;
 
@@ -39,7 +40,7 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
         int i = 0;
         cmdSorts.put(DeleteTable.class, ++i);
         cmdSorts.put(From.class, ++i);
-        cmdSorts.put(Join.class, ++i);
+        cmdSorts.put(Joins.class, ++i);
         cmdSorts.put(Where.class, ++i);
     }
 
@@ -84,7 +85,11 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
     @Override
     public Join $join(JoinMode mode, Dataset mainTable, Dataset secondTable) {
         Join join = new Join(this.conditionFaction, mode, mainTable, secondTable);
-        this.append(join);
+        if (Objects.isNull(joins)) {
+            joins = new Joins();
+            this.append(joins);
+        }
+        joins.add(join);
         return join;
     }
 
@@ -114,10 +119,6 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
     public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<On> consumer) {
         Join join = $join(mode, mainTable, secondTable);
         consumer.accept(join.getOn());
-        if (joins == null) {
-            joins = new ArrayList<>();
-        }
-        joins.add(join);
         return (SELF) this;
     }
 

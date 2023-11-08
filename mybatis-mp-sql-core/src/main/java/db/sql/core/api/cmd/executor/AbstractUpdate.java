@@ -9,6 +9,7 @@ import db.sql.core.api.cmd.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY> implements Update<SELF, Dataset, Cmd, Object, ConditionChain, UpdateTable, Join, On, Where> {
@@ -19,7 +20,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
 
     protected Where where;
 
-    protected List<Join> joins;
+    protected Joins joins;
 
     protected final ConditionFaction conditionFaction;
 
@@ -40,7 +41,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
         int i = 0;
         cmdSorts.put(UpdateTable.class, ++i);
         cmdSorts.put(UpdateSets.class, ++i);
-        cmdSorts.put(Join.class, ++i);
+        cmdSorts.put(Joins.class, ++i);
         cmdSorts.put(Where.class, ++i);
     }
 
@@ -88,7 +89,11 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     @Override
     public Join $join(JoinMode mode, Dataset mainTable, Dataset secondTable) {
         Join join = new Join(this.conditionFaction, mode, mainTable, secondTable);
-        this.append(join);
+        if (Objects.isNull(joins)) {
+            joins = new Joins();
+            this.append(joins);
+        }
+        joins.add(join);
         return join;
     }
 
@@ -120,14 +125,10 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
         if (consumer != null) {
             consumer.accept(join.getOn());
         }
-        if (joins == null) {
-            joins = new ArrayList<>();
-        }
-        joins.add(join);
         return (SELF) this;
     }
 
-    public Where getWhere(){
+    public Where getWhere() {
         return this.where;
     }
 }

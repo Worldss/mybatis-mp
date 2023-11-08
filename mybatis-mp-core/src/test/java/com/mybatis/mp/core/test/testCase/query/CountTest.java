@@ -24,7 +24,7 @@ public class CountTest extends BaseTest {
     }
 
     @Test
-    public void optimizeCountSql() {
+    public void optimizeCountSqlTest() {
 
         check("order by count优化",
                 "select count(*) from t_sys_user t where t.id=1",

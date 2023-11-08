@@ -11,11 +11,11 @@ import java.util.Objects;
 
 public abstract class BaseSQLCmdContext<E extends Executor> implements SQLCmdContext<E> {
 
-    private final E execution;
+    protected final E execution;
 
     private final boolean usePlaceholder;
 
-    private MybatisSqlBuilderContext sqlBuilderContext;
+    protected MybatisSqlBuilderContext sqlBuilderContext;
 
     public BaseSQLCmdContext(E execution) {
         this(execution, false);
@@ -31,7 +31,7 @@ public abstract class BaseSQLCmdContext<E extends Executor> implements SQLCmdCon
         return execution;
     }
 
-    private StringBuilder sql;
+    protected StringBuilder sql;
 
     @Override
     public StringBuilder sql(String dbType) {

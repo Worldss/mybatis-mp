@@ -41,6 +41,6 @@ public class On implements db.sql.api.On<On, Dataset, Cmd, Object, Join, Conditi
 
     @Override
     public boolean contain(Cmd cmd) {
-        return CmdUtils.contain(cmd, this.join, this.conditionChain);
+        return CmdUtils.contain(cmd, this.conditionChain);
     }
 }

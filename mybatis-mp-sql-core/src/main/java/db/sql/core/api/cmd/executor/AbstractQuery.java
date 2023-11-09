@@ -343,6 +343,71 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return cmds.stream().filter(item -> item.getClass() != OrderBy.class && item.getClass() != Limit.class).collect(Collectors.toList());
     }
 
+    private static boolean isCanRemoveLeftJoin(Join current, List<Join> joinList, Select select, Where where, GroupBy groupBy) {
+        if (select.isDistinct() && select.contain(current.getSecondTable())) {
+            //包含在distinct中 不行
+            return false;
+        } else if (where != null && where.contain(current.getSecondTable())) {
+            //包含在where中条件
+            return false;
+        } else if (groupBy != null && groupBy.contain(current.getSecondTable())) {
+            //包含在groupBy中条件
+            return false;
+        }
+        for (Join j : joinList) {
+            if (j == current) {
+                continue;
+            }
+            if (j.getOn().contain(current.getSecondTable())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean removeLeftJoin(List<Join> joinList, Select select, Where where, GroupBy groupBy) {
+        boolean hasLeftJoin = false;
+
+        for (Join join : joinList) {
+            if (join.getMode() == JoinMode.LEFT) {
+                hasLeftJoin = true;
+                break;
+            }
+        }
+
+        if (!hasLeftJoin) {
+            //未包含left join 不优化
+            return false;
+        }
+
+        //循环中是否优化过
+        boolean removeOne = false;
+
+        int size = joinList.size();
+        while (true) {
+            boolean remove = false;
+            for (int i = size - 1; i >= 0; i--) {
+                //从后面扫描 因为从习惯上 最后一个是最容易被优化的
+                Join join = joinList.get(i);
+                if (join.getMode() == JoinMode.LEFT) {
+                    //判断是否能删除
+                    if (isCanRemoveLeftJoin(join, joinList, select, where, groupBy)) {
+                        removeOne = true;
+                        remove = true;
+                        joinList.remove(i);
+                        --size;
+                        break;
+                    }
+                }
+            }
+            if (!remove) {
+                //假如一个都没有优化，说明无法再优化了
+                break;
+            }
+        }
+        return removeOne;
+    }
+
     /**
      * 删除order by
      * 删除join
@@ -362,9 +427,9 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
             return cmds;
         }
 
-
         //用于后续替换
         int selectIndex = -1;
+        int joinsIndex = -1;
 
         //删选组件
         Select select = null;
@@ -374,16 +439,18 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         Unions unions = null;
 
         Iterator<Cmd> cmdIterator = cmds.iterator();
+        int index = -1;
         while (cmdIterator.hasNext()) {
             Cmd cmd = cmdIterator.next();
             Class c = cmd.getClass();
-            if (select == null) {
-                selectIndex++;
-            }
+            index++;
             if (c == Select.class) {
                 select = (Select) cmd;
+                selectIndex = index;
+
             } else if (c == Joins.class) {
                 joins = (Joins) cmd;
+                joinsIndex = index;
             } else if (c == GroupBy.class) {
                 groupBy = (GroupBy) cmd;
             } else if (c == Unions.class) {
@@ -393,43 +460,15 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
             }
         }
 
-        boolean continueOptimize = true;
-        if (continueOptimize && unions != null) {
-            //有union不优化
-            continueOptimize = false;
-        }
-
-        if (continueOptimize && select.isDistinct()) {
-            continueOptimize = false;
-        }
-
-        if (continueOptimize && joins != null) {
-            List<Join> joinList = joins.getJoins();
-            for (Join join : joinList) {
-                //有非left join 不继续优化
-                if (join.getMode() != JoinMode.LEFT) {
-                    continueOptimize = false;
-                    break;
+        if (Objects.nonNull(joins)) {
+            List<Join> joinList = new ArrayList<>(joins.getJoins());
+            if (removeLeftJoin(joinList, select, where, groupBy)) {
+                if (joinList.isEmpty()) {
+                    cmds.remove(joins);
+                } else {
+                    cmds.set(joinsIndex, new Joins(joinList));
                 }
             }
-            //查看left join的表是否在where里边包含
-            if (continueOptimize) {
-                for (Join join : joinList) {
-                    //有非left join 不继续优化
-                    if (CmdUtils.contain(join.getSecondTable(), where) || CmdUtils.contain(join.getSecondTable(), groupBy)) {
-                        continueOptimize = false;
-                        break;
-                    }
-                }
-            }
-            if (continueOptimize) {
-                cmds.remove(joins);
-            }
-        }
-
-        if (continueOptimize && groupBy != null) {
-            //有group by 不继续优化
-            continueOptimize = false;
         }
 
         if (Objects.isNull(unions) && !select.isDistinct()) {

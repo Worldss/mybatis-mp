@@ -26,6 +26,32 @@ public class CountTest extends BaseTest {
     @Test
     public void optimizeCountSqlTest() {
 
+        check("inner join left join count优化",
+                "select count(*) from t_sys_user t inner join sys_role t3 on t3.id=t.role_id where t.id=1",
+                getCountSql(new Query()
+                        .select(SysUser::getId, SysUser::getUserName)
+                        .from(SysUser.class)
+                        .join(JoinMode.LEFT, SysUser.class, SysRole.class)
+                        .join(JoinMode.INNER, SysUser.class,1, SysRole.class,2)
+                        .eq(SysUser::getId, 1)
+                        .orderBy(SysUser::getId)
+                )
+        );
+
+        check("inner join left join count优化",
+                "select count(distinct t.id,t.user_name) from t_sys_user t inner join sys_role t3 on t3.id=t.role_id where t.id=1",
+                getCountSql(new Query()
+                        .selectDistinct()
+                        .select(SysUser::getId, SysUser::getUserName)
+                        .from(SysUser.class)
+                        .join(JoinMode.LEFT, SysUser.class, SysRole.class)
+                        .join(JoinMode.INNER, SysUser.class,1, SysRole.class,2)
+                        .eq(SysUser::getId, 1)
+                        .orderBy(SysUser::getId)
+                )
+        );
+
+
         check("order by count优化",
                 "select count(*) from t_sys_user t where t.id=1",
                 getCountSql(new Query()
@@ -46,6 +72,9 @@ public class CountTest extends BaseTest {
                         .orderBy(SysUser::getId)
                 )
         );
+
+
+
 
         check("多个left join count优化",
                 "select count(*) from t_sys_user t where t.id=1",
@@ -85,8 +114,8 @@ public class CountTest extends BaseTest {
         );
 
 
-        check("distinct count 不优化",
-                "select count(distinct t.id,t.user_name) from t_sys_user t left join sys_role t2 on t2.id=t.role_id where t.id=1",
+        check("distinct count 优化",
+                "select count(distinct t.id,t.user_name) from t_sys_user t where t.id=1",
                 getCountSql(new Query()
                         .selectDistinct()
                         .select(SysUser::getId, SysUser::getUserName)

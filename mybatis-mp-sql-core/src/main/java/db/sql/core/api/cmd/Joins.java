@@ -10,7 +10,15 @@ import java.util.List;
 
 public class Joins implements Cmd {
 
-    private List<Join> joins = new ArrayList<>();
+    private List<Join> joins;
+
+    public Joins(){
+        this(new ArrayList<>());
+    }
+
+    public Joins(List<Join> joins){
+        this.joins=joins;
+    }
 
     public void add(Join join){
         this.joins.add(join);

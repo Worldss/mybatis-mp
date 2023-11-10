@@ -2,28 +2,29 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.tookit.CmdUtils;
+import db.sql.api.executor.Query;
+import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
-public class Union implements Cmd {
+public class Union implements db.sql.api.Union {
 
     private final String operator;
 
-    private final Cmd unionCmd;
+    private final Query unionQuery;
 
-    public Union(Cmd unionCmd) {
-        this(SqlConst.UNION, unionCmd);
+    public Union(Query unionQuery) {
+        this(SqlConst.UNION, unionQuery);
     }
 
-    public Union(String operator, Cmd unionCmd) {
+    public Union(String operator, Query unionQuery) {
         this.operator = operator;
-        this.unionCmd = unionCmd;
+        this.unionQuery = unionQuery;
     }
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(this.operator);
-        sqlBuilder = unionCmd.sql(user, context, sqlBuilder);
+        sqlBuilder = unionQuery.sql(user, context, sqlBuilder);
         return sqlBuilder;
     }
 
@@ -32,12 +33,13 @@ public class Union implements Cmd {
         return operator;
     }
 
-    public Cmd getUnionCmd() {
-        return unionCmd;
+    @Override
+    public Query getUnionQuery() {
+        return unionQuery;
     }
 
     @Override
     public boolean contain(Cmd cmd) {
-        return CmdUtils.contain(cmd, this.unionCmd);
+        return CmdUtils.contain(cmd, this.unionQuery);
     }
 }

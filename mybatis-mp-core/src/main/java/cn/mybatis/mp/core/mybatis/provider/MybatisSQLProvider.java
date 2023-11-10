@@ -102,7 +102,7 @@ public class MybatisSQLProvider {
         return getTableDefaultSelect(tableInfo).toString();
     }
 
-    private static void fill(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
+    private static void fill(SQLCmdQueryContext queryContext, ProviderContext providerContext) {
         Query query = queryContext.getExecution();
         if (Objects.isNull(query.getFrom())) {
             Class tableClass = MapperTables.get(providerContext.getMapperType());
@@ -139,17 +139,17 @@ public class MybatisSQLProvider {
     }
 
 
-    public static StringBuilder countFromQuery(SQLCmdCountQueryContext<?> queryContext, ProviderContext providerContext) {
+    public static StringBuilder countFromQuery(SQLCmdCountQueryContext queryContext, ProviderContext providerContext) {
         fill(queryContext, providerContext);
         return queryContext.sql(providerContext.getDatabaseId());
     }
 
-    public static StringBuilder cmdQuery(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
+    public static StringBuilder cmdQuery(SQLCmdQueryContext queryContext, ProviderContext providerContext) {
         fill(queryContext, providerContext);
         return queryContext.sql(providerContext.getDatabaseId());
     }
 
-    public static StringBuilder cmdCount(SQLCmdQueryContext<?> queryContext, ProviderContext providerContext) {
+    public static StringBuilder cmdCount(SQLCmdQueryContext queryContext, ProviderContext providerContext) {
         fill(queryContext, providerContext);
         return queryContext.sql(providerContext.getDatabaseId());
     }

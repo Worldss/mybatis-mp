@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class Lists {
 
-    @SuppressWarnings("unchecked")
+    
     public final static <T> List<T> merge(List<T> list, T... ts) {
         if (ts == null || ts.length < 1) {
             return list;

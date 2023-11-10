@@ -3,7 +3,7 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Condition;
 import db.sql.api.*;
-import db.sql.core.api.tookit.CmdUtils;
+import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 import java.io.Serializable;

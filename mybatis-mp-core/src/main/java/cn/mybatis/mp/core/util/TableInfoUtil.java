@@ -11,7 +11,7 @@ import org.apache.ibatis.session.Configuration;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-@SuppressWarnings("unchecked")
+
 public final class TableInfoUtil {
 
     public static String getTableName(Class entity) {

@@ -5,6 +5,7 @@ import db.sql.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
@@ -12,11 +13,16 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
         SELECT extends Select<SELECT, COLUMN>, FROM extends From<TABLE>,
         JOIN extends Join<JOIN, TABLE, ON>,
         ON extends On<ON, TABLE, COLUMN, V, JOIN, CONDITION_CHAIN>,
+        JOINS extends Joins<JOIN>,
         WHERE extends Where<WHERE, COLUMN, V, CONDITION_CHAIN>,
-        GROUP extends GroupBy<GROUP, COLUMN>,
+        GROUPBY extends GroupBy<GROUPBY, COLUMN>,
         HAVING extends Having<HAVING>,
-        ORDER extends OrderBy<ORDER, COLUMN>
+        ORDERBY extends OrderBy<ORDERBY, COLUMN>,
+        LIMIT,
+        UNION extends Union,
+        UNIONS extends Unions<UNION>
         >
+
         extends SelectMethod<SELF, TABLE_FIELD, COLUMN>,
         FromMethod<SELF, TABLE>, JoinMethod<SELF, TABLE, ON>,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
@@ -24,79 +30,92 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
         HavingMethod<SELF, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN, HAVING>,
         OrderByMethod<SELF, TABLE_FIELD, COLUMN>,
         UnionMethod<SELF>,
-        Cmd {
+        Executor {
 
     SELECT $select();
 
-    @SuppressWarnings("unchecked")
+    
     FROM $from(TABLE... tables);
 
     JOIN $join(JoinMode mode, TABLE mainTable, TABLE secondTable);
 
     WHERE $where();
 
-    GROUP $groupBy();
+    GROUPBY $groupBy();
 
     HAVING $having();
 
-    ORDER $orderBy();
+    ORDERBY $orderBy();
+
+    LIMIT $limit(int offset, int limit);
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     default SELF select(COLUMN column) {
         $select().select(column);
         return (SELF) this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     default SELF from(TABLE... tables) {
         $from(tables);
         return (SELF) this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     default SELF groupBy(COLUMN column) {
         $groupBy().groupBy(column);
         return (SELF) this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     default SELF having(Consumer<HAVING> consumer) {
         consumer.accept($having());
         return (SELF) this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     default SELF havingAnd(Condition condition) {
         $having().and(condition);
         return (SELF) this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     default SELF havingOr(Condition condition) {
         $having().or(condition);
         return (SELF) this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     default SELF orderBy(COLUMN column, boolean asc) {
         $orderBy().orderBy(column, asc);
         return (SELF) this;
     }
 
+    SELECT getSelect();
 
+    WHERE getWhere();
+
+    FROM getFrom();
+
+    JOINS getJoins();
+
+    GROUPBY getGroupBy();
+
+    ORDERBY getOrderBy();
+
+    LIMIT getLimit();
+
+    UNIONS getUnions();
 
     @Override
     default CONDITION_CHAIN conditionChain() {
         return $where().conditionChain();
     }
-
-    StringBuilder countSqlFromQuery(SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize);
-
 }

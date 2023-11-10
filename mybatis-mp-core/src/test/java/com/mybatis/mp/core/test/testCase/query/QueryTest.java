@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
+
 public class QueryTest extends BaseTest {
 
     @Test

@@ -1,18 +1,16 @@
-package db.sql.core.api.cmd;
+package db.sql.api;
 
-import db.sql.api.Cmd;
-import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.tookit.CmdUtils;
+import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Unions implements Cmd {
+public class Unions<UNION extends Union> implements Cmd {
 
-    private List<Union> unions;
+    private List<UNION> unions;
 
-    public void add(Union union) {
+    public void add(UNION union) {
         if (unions == null) {
             unions = new ArrayList<>();
         }
@@ -35,7 +33,7 @@ public class Unions implements Cmd {
         return CmdUtils.contain(cmd, this.unions);
     }
 
-    public List<Union> getUnions() {
+    public List<UNION> getUnions() {
         return Collections.unmodifiableList(unions);
     }
 }

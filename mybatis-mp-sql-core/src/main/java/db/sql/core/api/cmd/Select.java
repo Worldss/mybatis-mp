@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.Distinct;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.fun.Count;
-import db.sql.core.api.tookit.CmdUtils;
+import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.Lists;
 import db.sql.core.api.tookit.SqlConst;
 

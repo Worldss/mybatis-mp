@@ -3,7 +3,7 @@ package db.sql.api;
 import java.io.Serializable;
 import java.util.function.Consumer;
 
-@SuppressWarnings("unchecked")
+
 public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN, V, CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>> extends Compare<SELF, COLUMN, V>, Nested<SELF, CONDITION_CHAIN> {
 
     CONDITION_CHAIN conditionChain();

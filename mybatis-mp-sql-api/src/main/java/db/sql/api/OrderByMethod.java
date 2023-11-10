@@ -11,12 +11,12 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, COLUMN> 
 
     SELF orderBy(COLUMN column, boolean asc);
 
-    @SuppressWarnings("unchecked")
+    
     default SELF orderBy(COLUMN... columns) {
         return this.orderBy(true, columns);
     }
 
-    @SuppressWarnings("unchecked")
+    
     default SELF orderBy(boolean asc, COLUMN... columns) {
         for (COLUMN column : columns) {
             this.orderBy(column, asc);
@@ -24,12 +24,12 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, COLUMN> 
         return (SELF) this;
     }
 
-    @SuppressWarnings("unchecked")
+    
     default SELF orderBy(List<COLUMN> columns) {
         return this.orderBy(true, columns);
     }
 
-    @SuppressWarnings("unchecked")
+    
     default SELF orderBy(boolean asc, List<COLUMN> columns) {
         for (COLUMN column : columns) {
             this.orderBy(column, asc);
@@ -67,17 +67,17 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, COLUMN> 
 
     <T> SELF orderBy(Getter<T> column, int storey, boolean asc, Function<TABLE_FIELD, Cmd> f);
 
-    @SuppressWarnings("unchecked")
+    
     default <T> SELF orderBy(Getter<T>... columns) {
         return this.orderBy(true, columns);
     }
 
-    @SuppressWarnings("unchecked")
+    
     default <T> SELF orderBy(boolean asc, Getter<T>... columns) {
         return this.orderBy(1, asc, columns);
     }
 
-    @SuppressWarnings("unchecked")
+    
     default <T> SELF orderBy(int storey, boolean asc, Getter<T>... columns) {
         for (Getter<T> column : columns) {
             this.orderBy(column, storey, asc);

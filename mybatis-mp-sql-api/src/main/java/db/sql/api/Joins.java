@@ -1,26 +1,26 @@
-package db.sql.core.api.cmd;
+package db.sql.api;
 
-import db.sql.api.Cmd;
-import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.tookit.CmdUtils;
+
+
+import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Joins implements Cmd {
+public class Joins<JOIN extends Join> implements Cmd {
 
-    private List<Join> joins;
+    private List<JOIN> joins;
 
     public Joins(){
         this(new ArrayList<>());
     }
 
-    public Joins(List<Join> joins){
+    public Joins(List<JOIN> joins){
         this.joins=joins;
     }
 
-    public void add(Join join){
+    public void add(JOIN join){
         this.joins.add(join);
     }
 
@@ -34,7 +34,7 @@ public class Joins implements Cmd {
         return CmdUtils.contain(cmd, this.joins);
     }
 
-    public List<Join> getJoins() {
+    public List<JOIN> getJoins() {
         return Collections.unmodifiableList(joins);
     }
 }

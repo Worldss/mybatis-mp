@@ -1,9 +1,11 @@
 package db.sql.api;
 
+import db.sql.api.executor.Query;
+
 public interface UnionMethod<SELF extends UnionMethod> {
 
-    SELF union(Cmd cmd);
+    SELF union(Query unionQuery);
 
-    SELF unionAll(Cmd cmd);
+    SELF unionAll(Query unionQuery);
 
 }

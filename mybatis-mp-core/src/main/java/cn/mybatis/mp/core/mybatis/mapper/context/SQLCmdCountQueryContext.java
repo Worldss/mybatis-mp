@@ -4,10 +4,11 @@ import cn.mybatis.mp.core.mybatis.provider.MybatisSqlBuilderContext;
 import cn.mybatis.mp.core.sql.executor.Query;
 import db.sql.api.DbType;
 import db.sql.api.SQLMode;
+import db.sql.core.api.tookit.SQLOptimizeUtils;
 
 import java.util.Objects;
 
-public class SQLCmdCountQueryContext<R> extends SQLCmdQueryContext<Query> {
+public class SQLCmdCountQueryContext extends SQLCmdQueryContext {
 
     private final boolean optimize;
 
@@ -22,8 +23,7 @@ public class SQLCmdCountQueryContext<R> extends SQLCmdQueryContext<Query> {
             return sql;
         }
         sqlBuilderContext = new MybatisSqlBuilderContext(DbType.getByName(dbType), SQLMode.PREPARED);
-        sql = execution.countSqlFromQuery(sqlBuilderContext, new StringBuilder(), this.optimize);
-        return sql;
+        return SQLOptimizeUtils.getOptimizedCountSql(execution,sqlBuilderContext,new StringBuilder());
     }
 
     public boolean isOptimize() {

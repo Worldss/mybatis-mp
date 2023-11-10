@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.Field;
 import db.sql.core.api.cmd.Select;
-import db.sql.core.api.tookit.CmdUtils;
+import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public abstract class BasicFunction<T extends BasicFunction> extends Field<BasicFunction<T>> implements Function, FunctionInterface {

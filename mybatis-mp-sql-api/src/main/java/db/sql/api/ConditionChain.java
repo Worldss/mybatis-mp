@@ -4,7 +4,7 @@ package db.sql.api;
 import java.io.Serializable;
 import java.util.function.Consumer;
 
-@SuppressWarnings("unchecked")
+
 public interface ConditionChain<SELF extends ConditionChain, COLUMN, V> extends Compare<SELF, COLUMN, V>, Nested<SELF, SELF>, Condition {
 
     boolean hasContent();

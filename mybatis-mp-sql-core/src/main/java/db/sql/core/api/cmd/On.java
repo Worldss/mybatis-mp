@@ -2,7 +2,7 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.tookit.CmdUtils;
+import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public class On implements db.sql.api.On<On, Dataset, Cmd, Object, Join, ConditionChain>, Cmd {

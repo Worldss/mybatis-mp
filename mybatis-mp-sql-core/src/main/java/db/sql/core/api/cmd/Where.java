@@ -3,7 +3,7 @@ package db.sql.core.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.tookit.CmdUtils;
+import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 public class Where implements db.sql.api.Where<Where, Cmd, Object, ConditionChain>, Cmd {

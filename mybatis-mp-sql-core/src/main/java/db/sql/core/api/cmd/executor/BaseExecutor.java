@@ -1,15 +1,15 @@
 package db.sql.core.api.cmd.executor;
 
 import db.sql.api.Cmd;
+import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.cmd.CmdFactory;
-import db.sql.core.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("unchecked")
+
 public abstract class BaseExecutor<SELF extends BaseExecutor, CMD_FACTORY extends CmdFactory> implements Executor<SELF, CMD_FACTORY> {
     protected final List<Cmd> cmds = new ArrayList<>();
     private Map<Class<? extends Cmd>, Integer> cmdSorts;

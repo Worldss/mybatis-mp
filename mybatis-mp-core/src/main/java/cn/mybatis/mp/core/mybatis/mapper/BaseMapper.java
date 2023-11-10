@@ -21,7 +21,7 @@ import org.apache.ibatis.session.RowBounds;
 import java.io.Serializable;
 import java.util.*;
 
-@SuppressWarnings("unchecked")
+
 public interface BaseMapper<T> {
 
     /**
@@ -32,7 +32,7 @@ public interface BaseMapper<T> {
      */
 
     default <R> R get(Query query) {
-        return this.$get(new SQLCmdQueryContext<>(query), new RowBounds(0, 1));
+        return this.$get(new SQLCmdQueryContext(query), new RowBounds(0, 1));
     }
 
     /**
@@ -163,7 +163,7 @@ public interface BaseMapper<T> {
      * @return
      */
     default <R> List<R> list(Query query) {
-        return this.$list(new SQLCmdQueryContext<>(query));
+        return this.$list(new SQLCmdQueryContext(query));
     }
 
 
@@ -220,7 +220,7 @@ public interface BaseMapper<T> {
      * @see MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
-    <R> R $get(SQLCmdQueryContext<R> queryContext, RowBounds rowBounds);
+    <R> R $get(SQLCmdQueryContext queryContext, RowBounds rowBounds);
 
 
     /**
@@ -265,7 +265,7 @@ public interface BaseMapper<T> {
      * @return
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
-    <T> List<T> $list(SQLCmdQueryContext<T> queryContext);
+    <T> List<T> $list(SQLCmdQueryContext queryContext);
 
     /**
      * count查询

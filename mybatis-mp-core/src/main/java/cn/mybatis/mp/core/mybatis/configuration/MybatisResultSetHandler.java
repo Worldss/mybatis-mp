@@ -12,7 +12,7 @@ import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdQueryContext;
 
 import java.util.Objects;
 
-@SuppressWarnings("unchecked")
+
 public class MybatisResultSetHandler extends DefaultResultSetHandler {
 
 
@@ -24,7 +24,7 @@ public class MybatisResultSetHandler extends DefaultResultSetHandler {
         } else if (ms.getResultMaps().get(0).getType() != Object.class) {
             return ms;
         }
-        SQLCmdQueryContext<?> queryContext = (SQLCmdQueryContext) boundSql.getParameterObject();
+        SQLCmdQueryContext queryContext = (SQLCmdQueryContext) boundSql.getParameterObject();
         if (Objects.isNull(queryContext.getExecution().getReturnType())) {
             return ms;
         }

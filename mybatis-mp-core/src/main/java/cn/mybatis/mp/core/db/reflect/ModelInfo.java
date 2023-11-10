@@ -32,7 +32,7 @@ public class ModelInfo {
      */
     private final ModelFieldInfo idFieldInfo;
 
-    @SuppressWarnings("unchecked")
+    
     public ModelInfo(Class<?> model) {
         this.type = model;
         Class<?> entity = GenericUtil.getGenericInterfaceClass(model).stream().filter(item -> item.isAnnotationPresent(Table.class)).findFirst().orElseThrow(() -> {

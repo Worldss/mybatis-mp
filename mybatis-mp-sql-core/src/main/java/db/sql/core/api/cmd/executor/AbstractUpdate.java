@@ -3,11 +3,10 @@ package db.sql.core.api.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.JoinMode;
+import db.sql.api.Joins;
 import db.sql.api.executor.Update;
 import db.sql.core.api.cmd.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -64,7 +63,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     public SELF set(Cmd field, Object value) {
         Value v;
         if (value instanceof Value) {
@@ -81,7 +80,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     public <T> SELF set(Getter<T> field, Object value) {
         return this.set($.field(field), value);
     }
@@ -98,13 +97,13 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<On> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), secondTable, consumer);
     }
@@ -119,7 +118,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    
     public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<On> consumer) {
         Join join = $join(mode, mainTable, secondTable);
         if (consumer != null) {

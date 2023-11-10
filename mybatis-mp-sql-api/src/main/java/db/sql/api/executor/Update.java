@@ -17,16 +17,16 @@ public interface Update<SELF extends Update,
         JoinMethod<SELF, TABLE, ON>,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN> {
 
-    
+
     UPDATE_TABLE $update(TABLE... tables);
 
-    
+
     JOIN $join(JoinMode mode, TABLE mainTable, TABLE secondTable);
 
     WHERE $where();
 
     @Override
-    
+
     default SELF update(TABLE... tables) {
         $update(tables);
         return (SELF) this;

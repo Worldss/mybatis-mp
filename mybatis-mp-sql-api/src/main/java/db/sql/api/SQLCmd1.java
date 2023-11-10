@@ -1,8 +1,8 @@
 package db.sql.api;
 
-public class SQLCmd1 implements Cmd{
+public class SQLCmd1 implements Cmd {
 
-    public final static SQLCmd1 INSTANCE=new SQLCmd1();
+    public final static SQLCmd1 INSTANCE = new SQLCmd1();
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {

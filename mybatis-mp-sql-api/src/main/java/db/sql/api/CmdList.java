@@ -1,7 +1,5 @@
 package db.sql.api;
 
-import db.sql.api.Cmd;
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.tookit.CmdUtils;
 
 import java.util.List;

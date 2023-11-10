@@ -24,12 +24,12 @@ public class CmdFactory {
 
     private final String tableAsPrefix;
 
-    public CmdFactory(){
+    public CmdFactory() {
         this("t");
     }
 
-    public CmdFactory(String tableAsPrefix){
-        this.tableAsPrefix=tableAsPrefix;
+    public CmdFactory(String tableAsPrefix) {
+        this.tableAsPrefix = tableAsPrefix;
     }
 
     public NULL NULL() {

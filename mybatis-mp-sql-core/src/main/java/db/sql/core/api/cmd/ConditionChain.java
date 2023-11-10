@@ -348,7 +348,7 @@ public class ConditionChain implements db.sql.api.ConditionChain<ConditionChain,
             if (!isFirst) {
                 sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(conditionBlock.getConnector()).append(SqlConst.BLANK);
             }
-            ((Cmd) conditionBlock.getCondition()).sql(user, context, sqlBuilder);
+            conditionBlock.getCondition().sql(user, context, sqlBuilder);
             isFirst = false;
         }
         if (parent != null) {
@@ -365,7 +365,7 @@ public class ConditionChain implements db.sql.api.ConditionChain<ConditionChain,
 
     @Override
     public <T> ConditionChain isNotNull(Getter<T> column, int storey, boolean when) {
-        Condition condition = conditionFaction.isNotNull(column,  storey, when);
+        Condition condition = conditionFaction.isNotNull(column, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -374,7 +374,7 @@ public class ConditionChain implements db.sql.api.ConditionChain<ConditionChain,
 
     @Override
     public <T> ConditionChain isNull(Getter<T> column, int storey, boolean when) {
-        Condition condition = conditionFaction.isNull(column,  storey, when);
+        Condition condition = conditionFaction.isNull(column, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }

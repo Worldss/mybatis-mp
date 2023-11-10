@@ -13,7 +13,7 @@ public class From implements db.sql.api.From<Dataset>, Cmd {
 
     private final List<Dataset> tables = new ArrayList<>();
 
-    public From append(Dataset... tables){
+    public From append(Dataset... tables) {
         Lists.merge(this.tables, tables);
         return this;
     }

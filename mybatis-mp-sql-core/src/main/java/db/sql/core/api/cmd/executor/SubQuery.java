@@ -44,7 +44,7 @@ public class SubQuery extends AbstractQuery<SubQuery, CmdFactory> implements Dat
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if(user instanceof Exists){
+        if (user instanceof Exists) {
             return super.sql(user, context, sqlBuilder);
         }
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);

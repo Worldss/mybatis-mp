@@ -8,10 +8,10 @@ import db.sql.core.api.tookit.SQLOptimizeUtils;
 
 import java.util.Objects;
 
-public class SQLCmdCountQueryContext extends SQLCmdQueryContext {
+public class SQLCmdCountFromQueryContext extends SQLCmdQueryContext {
 
 
-    public SQLCmdCountQueryContext(Query execution, boolean optimize) {
+    public SQLCmdCountFromQueryContext(Query execution, boolean optimize) {
         super(execution, optimize);
     }
 
@@ -20,12 +20,8 @@ public class SQLCmdCountQueryContext extends SQLCmdQueryContext {
         if (Objects.nonNull(sql)) {
             return sql;
         }
-        if (this.isOptimize()) {
-            sqlBuilderContext = new MybatisSqlBuilderContext(DbType.getByName(dbType), SQLMode.PREPARED);
-            sql = SQLOptimizeUtils.getOptimizedCountSql(execution, sqlBuilderContext, new StringBuilder());
-        } else {
-            sql = super.sql(dbType);
-        }
+        sqlBuilderContext = new MybatisSqlBuilderContext(DbType.getByName(dbType), SQLMode.PREPARED);
+        sql = SQLOptimizeUtils.getCountSqlFromQuery(execution, sqlBuilderContext, new StringBuilder(), this.isOptimize());
         return sql;
     }
 }

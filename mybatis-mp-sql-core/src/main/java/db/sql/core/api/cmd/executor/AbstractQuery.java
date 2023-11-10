@@ -15,7 +15,9 @@ import db.sql.core.api.cmd.Where;
 import db.sql.core.api.cmd.*;
 import db.sql.core.api.tookit.SqlConst;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -139,7 +141,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    
+
     public <T> SELF select(Getter<T> column, int storey, Function<TableField, Cmd> f) {
         TableField field = this.$.field(column, storey);
         if (f != null) {
@@ -160,7 +162,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    
+
     public SELF from(Class entity, int storey, Consumer<Dataset> consumer) {
         Table table = this.$.table(entity, storey);
         this.from(table);
@@ -179,13 +181,13 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    
+
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
     }
 
     @Override
-    
+
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<On> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), secondTable, consumer);
     }
@@ -200,7 +202,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    
+
     public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<On> consumer) {
         Join join = $join(mode, mainTable, secondTable);
         if (consumer != null) {
@@ -219,7 +221,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    
+
     public <T> SELF groupBy(Getter<T> column, int storey, Function<TableField, Cmd> f) {
         TableField tableField = $.field(column, storey);
         if (f != null) {
@@ -238,13 +240,13 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    
+
     public <T> SELF havingAnd(Getter<T> getter, Function<TableField, db.sql.api.Condition> f) {
         return this.havingAnd(f.apply($.field(getter)));
     }
 
     @Override
-    
+
     public <T> SELF havingOr(Getter<T> getter, Function<TableField, db.sql.api.Condition> f) {
         return this.havingOr(f.apply($.field(getter)));
     }
@@ -259,18 +261,18 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public Limit $limit(int offset, int limit){
-        if(this.limit==null){
-            this.limit=new Limit(offset,limit);
+    public Limit $limit(int offset, int limit) {
+        if (this.limit == null) {
+            this.limit = new Limit(offset, limit);
             this.append(this.limit);
-        }else{
-            this.limit.set(offset,limit);
+        } else {
+            this.limit.set(offset, limit);
         }
         return this.limit;
     }
 
     @Override
-    
+
     public <T> SELF orderBy(Getter<T> column, int storey, boolean asc, Function<TableField, Cmd> f) {
         TableField tableField = $.field(column, storey);
         if (f != null) {
@@ -344,9 +346,9 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return this.unions;
     }
 
-    
+
     public SELF limit(int offset, int limit) {
-        this.$limit(offset,limit);
+        this.$limit(offset, limit);
         return (SELF) this;
     }
 }

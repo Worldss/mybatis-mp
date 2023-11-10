@@ -1,7 +1,6 @@
 package db.sql.api;
 
 
-
 import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
@@ -10,17 +9,17 @@ import java.util.List;
 
 public class Joins<JOIN extends Join> implements Cmd {
 
-    private List<JOIN> joins;
+    private final List<JOIN> joins;
 
-    public Joins(){
+    public Joins() {
         this(new ArrayList<>());
     }
 
-    public Joins(List<JOIN> joins){
-        this.joins=joins;
+    public Joins(List<JOIN> joins) {
+        this.joins = joins;
     }
 
-    public void add(JOIN join){
+    public void add(JOIN join) {
         this.joins.add(join);
     }
 

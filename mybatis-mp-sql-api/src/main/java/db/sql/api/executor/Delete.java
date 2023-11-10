@@ -19,10 +19,10 @@ public interface Delete<SELF extends Delete,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
         Executor {
 
-    
+
     DELETE_TABLE $delete(TABLE... tables);
 
-    
+
     FROM $from(TABLE... tables);
 
     JOIN $join(JoinMode mode, TABLE mainTable, TABLE secondTable);
@@ -31,14 +31,14 @@ public interface Delete<SELF extends Delete,
 
 
     @Override
-    
+
     default SELF delete(TABLE... tables) {
         $delete(tables);
         return (SELF) this;
     }
 
     @Override
-    
+
     default SELF from(TABLE... tables) {
         $from(tables);
         return (SELF) this;

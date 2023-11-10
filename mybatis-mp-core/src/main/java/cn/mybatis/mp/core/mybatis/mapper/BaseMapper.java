@@ -32,8 +32,22 @@ public interface BaseMapper<T> {
      */
 
     default <R> R get(Query query) {
-        return this.$get(new SQLCmdQueryContext(query), new RowBounds(0, 1));
+        return this.get(query, true);
     }
+
+    /**
+     * 动态查询 返回单个当前实体
+     *
+     * @param query
+     * @param optimize 是否优化
+     * @param <R>
+     * @return
+     */
+    default <R> R get(Query query, boolean optimize) {
+        query.limit(1);
+        return this.$get(new SQLCmdQueryContext(query, optimize), new RowBounds(0, 1));
+    }
+
 
     /**
      * 实体类新增
@@ -163,7 +177,19 @@ public interface BaseMapper<T> {
      * @return
      */
     default <R> List<R> list(Query query) {
-        return this.$list(new SQLCmdQueryContext(query));
+        return this.list(query, true);
+    }
+
+
+    /**
+     * 列表查询
+     *
+     * @param query
+     * @param optimize 是否优化
+     * @return
+     */
+    default <R> List<R> list(Query query, boolean optimize) {
+        return this.$list(new SQLCmdQueryContext(query, optimize));
     }
 
 
@@ -197,7 +223,7 @@ public interface BaseMapper<T> {
         if (pager.isExecuteCount()) {
             Class returnType = query.getReturnType();
             query.setReturnType(Integer.TYPE);
-            Integer count = this.$countFromQuery(new SQLCmdCountQueryContext(query, pager.isOptimize()));
+            Integer count = this.$countFromQuery(new SQLCmdCountFromQueryContext(query, pager.isOptimize()));
             query.setReturnType(returnType);
 
             pager.setTotal(Optional.of(count).orElse(0));
@@ -207,7 +233,7 @@ public interface BaseMapper<T> {
             }
         }
         query.limit(pager.getOffset(), pager.getSize());
-        pager.setResults(this.$list(new SQLCmdQueryContext(query)));
+        pager.setResults(this.list(query, pager.isOptimize()));
         return pager;
     }
 
@@ -272,18 +298,18 @@ public interface BaseMapper<T> {
      *
      * @param queryContext
      * @return
-     * @see MybatisSQLProvider#cmdCount(SQLCmdQueryContext, ProviderContext)
+     * @see MybatisSQLProvider#cmdCount(SQLCmdCountQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = "cmdCount")
-    Integer $count(SQLCmdQueryContext queryContext);
+    Integer $count(SQLCmdCountQueryContext queryContext);
 
     /**
      * count查询
      *
      * @param queryContext
      * @return
-     * @see MybatisSQLProvider#countFromQuery(SQLCmdCountQueryContext, ProviderContext)
+     * @see MybatisSQLProvider#countFromQuery(SQLCmdCountFromQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = "countFromQuery")
-    Integer $countFromQuery(SQLCmdCountQueryContext queryContext);
+    Integer $countFromQuery(SQLCmdCountFromQueryContext queryContext);
 }

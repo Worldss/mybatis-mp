@@ -2,9 +2,9 @@ package db.sql.core.api.cmd.fun;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.cmd.BasicValue;
 import db.sql.core.api.cmd.Condition;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 import java.io.Serializable;

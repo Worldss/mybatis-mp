@@ -17,15 +17,15 @@ public interface Insert<SELF extends Insert,
         >
         extends Executor {
 
-    
+
     INSERT_TABLE $insert(TABLE table);
 
-    
+
     INSERT_FIELD $field(COLUMN... fields);
 
     INSERT_VALUE $values(List<V> values);
 
-    
+
     default SELF insert(TABLE table) {
         $insert(table);
         return (SELF) this;
@@ -33,13 +33,13 @@ public interface Insert<SELF extends Insert,
 
     SELF insert(Class entity);
 
-    
+
     default SELF field(COLUMN... fields) {
         $field(fields);
         return (SELF) this;
     }
 
-    
+
     <T> SELF field(Getter<T>... fields);
 
     SELF values(List<Object> values);

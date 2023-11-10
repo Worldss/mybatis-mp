@@ -10,7 +10,7 @@ public abstract class Field<T extends Field<T>> implements Alias<T>, Value, Func
         return alias;
     }
 
-    
+
     public T as(String alias) {
         this.alias = alias;
         return (T) this;

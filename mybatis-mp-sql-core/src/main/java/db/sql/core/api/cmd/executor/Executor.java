@@ -8,7 +8,6 @@ import db.sql.core.api.cmd.*;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory> extends db.sql.api.executor.Executor {
 

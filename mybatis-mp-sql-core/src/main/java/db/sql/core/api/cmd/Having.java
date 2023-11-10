@@ -13,7 +13,7 @@ public class Having implements db.sql.api.Having<Having>, Cmd {
 
     private final CmdFactory cmdFactory;
 
-    private List<ConditionBlock> conditionBlocks = new ArrayList<>();
+    private final List<ConditionBlock> conditionBlocks = new ArrayList<>();
 
     public Having(CmdFactory cmdFactory) {
         this.cmdFactory = cmdFactory;
@@ -60,7 +60,7 @@ public class Having implements db.sql.api.Having<Having>, Cmd {
             if (!isFirst) {
                 sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(conditionBlock.getConnector()).append(SqlConst.BLANK);
             }
-            ((Cmd) conditionBlock.getCondition()).sql(user, context, sqlBuilder);
+            conditionBlock.getCondition().sql(user, context, sqlBuilder);
             isFirst = false;
         }
         return sqlBuilder;

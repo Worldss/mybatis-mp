@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public interface Executor extends Cmd{
+public interface Executor extends Cmd {
 
     Map<Class<? extends Cmd>, Integer> cmdSorts();
 
     List<Cmd> cmds();
 
-    default Comparator<Cmd> comparator(){
+    default Comparator<Cmd> comparator() {
         return (o1, o2) -> {
             Integer n1 = cmdSorts().get(o1.getClass());
             Integer n2 = cmdSorts().get(o2.getClass());
@@ -30,7 +30,7 @@ public interface Executor extends Cmd{
             }
             return n1.compareTo(n2);
         };
-    };
+    }
 
 
     default List<Cmd> sortedCmds() {
@@ -38,7 +38,7 @@ public interface Executor extends Cmd{
         if (cmdList == null || cmdList.isEmpty()) {
             return cmdList;
         }
-        Comparator<Cmd> comparator=comparator();
+        Comparator<Cmd> comparator = comparator();
         cmdList = cmdList.stream().sorted(comparator).collect(Collectors.toList());
         return cmdList;
     }

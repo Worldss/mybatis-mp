@@ -8,19 +8,13 @@ import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
 import cn.mybatis.mp.core.mybatis.mapper.context.*;
 import cn.mybatis.mp.core.sql.executor.Query;
-import db.sql.api.Cmd;
-import db.sql.api.Count1;
-import db.sql.api.DbType;
-import db.sql.api.SQLMode;
 import db.sql.core.api.cmd.Dataset;
-import db.sql.core.api.cmd.Select;
 import db.sql.core.api.cmd.Table;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.util.MapUtil;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -139,7 +133,7 @@ public class MybatisSQLProvider {
     }
 
 
-    public static StringBuilder countFromQuery(SQLCmdCountQueryContext queryContext, ProviderContext providerContext) {
+    public static StringBuilder countFromQuery(SQLCmdCountFromQueryContext queryContext, ProviderContext providerContext) {
         fill(queryContext, providerContext);
         return queryContext.sql(providerContext.getDatabaseId());
     }
@@ -149,7 +143,7 @@ public class MybatisSQLProvider {
         return queryContext.sql(providerContext.getDatabaseId());
     }
 
-    public static StringBuilder cmdCount(SQLCmdQueryContext queryContext, ProviderContext providerContext) {
+    public static StringBuilder cmdCount(SQLCmdCountQueryContext queryContext, ProviderContext providerContext) {
         fill(queryContext, providerContext);
         return queryContext.sql(providerContext.getDatabaseId());
     }

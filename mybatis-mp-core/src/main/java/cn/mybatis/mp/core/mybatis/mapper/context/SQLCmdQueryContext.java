@@ -10,8 +10,11 @@ import java.util.Objects;
 
 public class SQLCmdQueryContext extends BaseSQLCmdContext<Query> {
 
-    public SQLCmdQueryContext(Query execution) {
+    private final boolean optimize;
+
+    public SQLCmdQueryContext(Query execution, boolean optimize) {
         super(execution);
+        this.optimize = optimize;
     }
 
     @Override
@@ -20,7 +23,15 @@ public class SQLCmdQueryContext extends BaseSQLCmdContext<Query> {
             return sql;
         }
         sqlBuilderContext = new MybatisSqlBuilderContext(DbType.getByName(dbType), SQLMode.PREPARED);
-        sql = SQLOptimizeUtils.getOptimizedSql(this.execution,sqlBuilderContext,new StringBuilder());
+        if (optimize) {
+            sql = SQLOptimizeUtils.getOptimizedSql(this.execution, sqlBuilderContext, new StringBuilder());
+        } else {
+            sql = super.sql(dbType);
+        }
         return sql;
+    }
+
+    public boolean isOptimize() {
+        return optimize;
     }
 }

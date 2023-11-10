@@ -13,6 +13,7 @@ public class CmdUtils {
     public static StringBuilder join(SqlBuilderContext context, StringBuilder builder, List<? extends Cmd> cmdList) {
         return join(null, context, builder, cmdList);
     }
+
     public static StringBuilder join(Cmd user, SqlBuilderContext context, StringBuilder builder, List<? extends Cmd> cmdList) {
         return join(user, context, builder, cmdList, null);
     }

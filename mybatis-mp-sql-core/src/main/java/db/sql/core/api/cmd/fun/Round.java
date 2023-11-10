@@ -4,8 +4,6 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.tookit.SqlConst;
 
-import java.math.BigDecimal;
-
 import static db.sql.core.api.tookit.SqlConst.ROUND;
 
 public class Round extends BasicFunction<Divide> {

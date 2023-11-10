@@ -3,9 +3,6 @@ package db.sql.api.executor;
 
 import db.sql.api.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
@@ -34,7 +31,7 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
 
     SELECT $select();
 
-    
+
     FROM $from(TABLE... tables);
 
     JOIN $join(JoinMode mode, TABLE mainTable, TABLE secondTable);
@@ -50,49 +47,49 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
     LIMIT $limit(int offset, int limit);
 
     @Override
-    
+
     default SELF select(COLUMN column) {
         $select().select(column);
         return (SELF) this;
     }
 
     @Override
-    
+
     default SELF from(TABLE... tables) {
         $from(tables);
         return (SELF) this;
     }
 
     @Override
-    
+
     default SELF groupBy(COLUMN column) {
         $groupBy().groupBy(column);
         return (SELF) this;
     }
 
     @Override
-    
+
     default SELF having(Consumer<HAVING> consumer) {
         consumer.accept($having());
         return (SELF) this;
     }
 
     @Override
-    
+
     default SELF havingAnd(Condition condition) {
         $having().and(condition);
         return (SELF) this;
     }
 
     @Override
-    
+
     default SELF havingOr(Condition condition) {
         $having().or(condition);
         return (SELF) this;
     }
 
     @Override
-    
+
     default SELF orderBy(COLUMN column, boolean asc) {
         $orderBy().orderBy(column, asc);
         return (SELF) this;

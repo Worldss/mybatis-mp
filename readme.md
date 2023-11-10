@@ -35,6 +35,12 @@
 > 没有过于复杂的设计，但是api却很丰富，足够使用！
 > 其他框架或多或少设计的过于复杂，反而容易出现各种问题。
 
+#### 5、优秀的分页和SQL优化能力
+
+> 自动过滤多余的left join
+> count查询 自动去除order by ，无效的left join，以及select部分替换成 select count(*) 或 select 1 后 在select count(*)
+> 内置分页功能，超级牛逼！
+
 ## QQ 群
 
 群号： 917404304 ,邀请各位大神参与补充，绝对开源，大家都可以进行代码提交，审核通过会进行master分支。
@@ -305,6 +311,16 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### 分页查询
 
 > Pager<R> paging(Query query, Pager<R> pager) 分页查询（可自定返回类型）
+
+### 牛逼的SQL优化
+#### 查询优化
+> 去除无用left join
+#### count优化
+> 去除无用left join (自动判断是否有效)
+> 
+> 去除无用的order by (自动判断是否有效)
+> 
+> 优化union 查询 （优化 left join 和 order by,自动判断是否有效）
 
 # CRUD 操作
 

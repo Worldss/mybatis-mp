@@ -1,6 +1,6 @@
 package db.sql.api;
 
-public interface Join<SELF extends Join, TABLE, ON> extends Cmd{
+public interface Join<SELF extends Join, TABLE, ON> extends Cmd {
 
     TABLE getMainTable();
 

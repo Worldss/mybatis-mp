@@ -2,9 +2,9 @@ package db.sql.core.api.cmd.fun;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.cmd.BasicValue;
 import db.sql.core.api.cmd.Condition;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.SqlConst;
 
 import java.io.Serializable;
@@ -15,7 +15,7 @@ import static db.sql.core.api.tookit.SqlConst.CASE;
 
 public class Case extends BasicFunction<Case> {
 
-    private List<Cmd> values = new ArrayList<>();
+    private final List<Cmd> values = new ArrayList<>();
 
     public Case() {
         super(CASE, null);

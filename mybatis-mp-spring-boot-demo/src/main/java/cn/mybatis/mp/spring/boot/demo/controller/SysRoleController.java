@@ -37,11 +37,6 @@ public class SysRoleController {
         return sysRoleService.delete(id);
     }
 
-    @RequestMapping("/all")
-    public List<SysRole> all() {
-        return sysRoleService.all();
-    }
-
 
     @RequestMapping("/search")
     public Pager<SysRole> search(String name, Pager<SysRole> pager) {

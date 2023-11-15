@@ -134,4 +134,20 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
         }
         return super.sql(user, context, sqlBuilder);
     }
+
+    public DeleteTable getDeleteTable() {
+        return deleteTable;
+    }
+
+    public From getFrom() {
+        return from;
+    }
+
+    public Joins getJoins() {
+        return joins;
+    }
+
+    public Where getWhere() {
+        return where;
+    }
 }

@@ -3,7 +3,7 @@ package cn.mybatis.mp.core.mybatis.configuration;
 import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
-import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
+import cn.mybatis.mp.core.mybatis.mapper.MapperEntitys;
 import cn.mybatis.mp.core.mybatis.mapper.context.EntityInsertContext;
 import cn.mybatis.mp.core.mybatis.mapper.context.ModelInsertContext;
 import cn.mybatis.mp.db.annotations.TableId;
@@ -29,7 +29,7 @@ public class TableIdGeneratorWrapper {
     }
 
     private static Class getEntityClass(MappedStatement ms) {
-        return MapperTables.get(getMapperName(ms));
+        return MapperEntitys.get(getMapperName(ms));
     }
 
     public static void addEntityKeyGenerator(MappedStatement ms) {

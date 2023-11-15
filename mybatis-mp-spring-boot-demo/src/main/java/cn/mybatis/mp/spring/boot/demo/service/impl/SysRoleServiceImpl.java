@@ -35,12 +35,6 @@ public class SysRoleServiceImpl implements SysRoleService {
     public int delete(Integer id) {
         return sysRoleMapper.deleteById(id);
     }
-
-    @Override
-    public List<SysRole> all() {
-        return sysRoleMapper.all();
-    }
-
     @Override
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public Pager<SysRole> search(String name, Pager<SysRole> pager) {

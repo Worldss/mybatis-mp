@@ -5,9 +5,9 @@ import cn.mybatis.mp.core.db.reflect.ResultClassEntityPrefixes;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
-import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
+import cn.mybatis.mp.core.mybatis.mapper.MapperEntitys;
 import cn.mybatis.mp.core.mybatis.mapper.context.*;
-import cn.mybatis.mp.core.sql.executor.Query;
+import cn.mybatis.mp.core.sql.executor.BaseQuery;
 import db.sql.core.api.cmd.Dataset;
 import db.sql.core.api.cmd.Table;
 import org.apache.ibatis.builder.annotation.ProviderContext;
@@ -27,7 +27,7 @@ public class MybatisSQLProvider {
     public static final String DELETE_NAME = "delete";
     public static final String GET_BY_ID_NAME = "getById";
     public static final String DELETE_BY_ID_NAME = "deleteById";
-    public static final String ALL_NAME = "all";
+
     private static final Map<String, String> SQL_CACHE_MAP = new ConcurrentHashMap<>();
 
     private MybatisSQLProvider() {
@@ -67,7 +67,7 @@ public class MybatisSQLProvider {
 
 
     public static String getById(Serializable id, ProviderContext context) {
-        TableInfo tableInfo = Tables.get(MapperTables.get(context.getMapperType()));
+        TableInfo tableInfo = Tables.get(MapperEntitys.get(context.getMapperType()));
         if (tableInfo.getIdFieldInfo() == null) {
             throw new RuntimeException("ID not found");
         }
@@ -75,7 +75,7 @@ public class MybatisSQLProvider {
     }
 
     public static String deleteById(Serializable id, ProviderContext context) {
-        TableInfo tableInfo = Tables.get(MapperTables.get(context.getMapperType()));
+        TableInfo tableInfo = Tables.get(MapperEntitys.get(context.getMapperType()));
         if (Objects.isNull(tableInfo.getIdFieldInfo())) {
             throw new RuntimeException("ID not found");
         }
@@ -91,15 +91,10 @@ public class MybatisSQLProvider {
         });
     }
 
-    public static String all(ProviderContext context) {
-        TableInfo tableInfo = Tables.get(MapperTables.get(context.getMapperType()));
-        return getTableDefaultSelect(tableInfo).toString();
-    }
-
     private static void fill(SQLCmdQueryContext queryContext, ProviderContext providerContext) {
-        Query query = queryContext.getExecution();
+        BaseQuery query = queryContext.getExecution();
         if (Objects.isNull(query.getFrom())) {
-            Class tableClass = MapperTables.get(providerContext.getMapperType());
+            Class tableClass = MapperEntitys.get(providerContext.getMapperType());
             if (Objects.nonNull(tableClass)) {
                 query.from(tableClass);
             }
@@ -115,7 +110,7 @@ public class MybatisSQLProvider {
             }
         }
         if (query.getReturnType() == null) {
-            query.setReturnType(MapperTables.get(providerContext.getMapperType()));
+            query.setReturnType(MapperEntitys.get(providerContext.getMapperType()));
         } else {
             Map<Class, String> entityPrefixMap = ResultClassEntityPrefixes.getEntityPrefix(query.getReturnType());
             if (Objects.nonNull(entityPrefixMap)) {

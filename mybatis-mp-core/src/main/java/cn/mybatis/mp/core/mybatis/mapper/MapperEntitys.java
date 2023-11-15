@@ -9,9 +9,9 @@ import java.util.Map;
 /**
  * 此处的mapper 均为真实类
  */
-public class MapperTables {
+public class MapperEntitys {
 
-    private MapperTables() {
+    private MapperEntitys() {
     }
 
     private final static Map<String, Class> CACHE = new HashMap<>();

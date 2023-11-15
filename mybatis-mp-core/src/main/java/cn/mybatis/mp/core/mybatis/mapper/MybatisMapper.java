@@ -34,6 +34,9 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
         }
         TableInfo tableInfo = Tables.get(entity.getClass());
         try {
+            if (tableInfo.getIdFieldInfo() == null) {
+                throw new RuntimeException("Not Supported");
+            }
             Serializable id = (Serializable) tableInfo.getIdFieldInfo().getReadFieldInvoker().invoke(entity, null);
             return this.deleteById(id);
         } catch (Exception e) {

@@ -5,10 +5,7 @@ import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.mybatis.mapper.context.*;
 import cn.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
-import cn.mybatis.mp.core.sql.executor.Delete;
-import cn.mybatis.mp.core.sql.executor.Insert;
-import cn.mybatis.mp.core.sql.executor.Query;
-import cn.mybatis.mp.core.sql.executor.Update;
+import cn.mybatis.mp.core.sql.executor.*;
 import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
 import db.sql.core.api.tookit.LambdaUtil;
@@ -31,7 +28,7 @@ public interface BaseMapper<T> {
      * @return
      */
 
-    default <R> R get(Query query) {
+    default <R> R get(BaseQuery query) {
         return this.get(query, true);
     }
 
@@ -43,7 +40,7 @@ public interface BaseMapper<T> {
      * @param <R>
      * @return
      */
-    default <R> R get(Query query, boolean optimize) {
+    default <R> R get(BaseQuery query, boolean optimize) {
         query.limit(1);
         return this.$get(new SQLCmdQueryContext(query, optimize), new RowBounds(0, 1));
     }
@@ -75,7 +72,7 @@ public interface BaseMapper<T> {
      * @param insert
      * @return
      */
-    default int save(Insert insert) {
+    default int save(BaseInsert insert) {
         return this.$$$save(new SQLCmdInsertContext<>(insert));
     }
 
@@ -123,9 +120,9 @@ public interface BaseMapper<T> {
      * @param forceUpdateFields 强制更新指定，解决需要修改为null的需求
      * @return
      */
-    default <M extends Model<T>> int update(Model<T> model, Getter<M>... forceUpdateFields) {
+    default int update(Model<T> model, Getter<T>... forceUpdateFields) {
         Set<String> forceUpdateFieldsSet = new HashSet<>();
-        for (Getter<M> getter : forceUpdateFields) {
+        for (Getter getter : forceUpdateFields) {
             forceUpdateFieldsSet.add(LambdaUtil.getName(getter));
         }
         return this.$$update(new ModelUpdateContext<>(model, forceUpdateFieldsSet));
@@ -137,7 +134,7 @@ public interface BaseMapper<T> {
      * @param update
      * @return
      */
-    default int update(Update update) {
+    default int update(BaseUpdate update) {
         return this.$$update(new SQLCmdUpdateContext(update));
     }
 
@@ -166,7 +163,7 @@ public interface BaseMapper<T> {
      * @param delete
      * @return
      */
-    default int delete(Delete delete) {
+    default int delete(BaseDelete delete) {
         return this.$delete(new SQLCmdDeleteContext(delete));
     }
 
@@ -176,7 +173,7 @@ public interface BaseMapper<T> {
      * @param query
      * @return
      */
-    default <R> List<R> list(Query query) {
+    default <R> List<R> list(BaseQuery query) {
         return this.list(query, true);
     }
 
@@ -188,19 +185,9 @@ public interface BaseMapper<T> {
      * @param optimize 是否优化
      * @return
      */
-    default <R> List<R> list(Query query, boolean optimize) {
+    default <R> List<R> list(BaseQuery query, boolean optimize) {
         return this.$list(new SQLCmdQueryContext(query, optimize));
     }
-
-
-    /**
-     * 全部
-     *
-     * @return
-     * @see MybatisSQLProvider#all(ProviderContext)
-     */
-    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.ALL_NAME)
-    List<T> all();
 
     /**
      * count查询
@@ -208,7 +195,7 @@ public interface BaseMapper<T> {
      * @param query
      * @return
      */
-    default Integer count(Query query) {
+    default Integer count(BaseQuery query) {
         return this.$count(new SQLCmdCountQueryContext(query, false));
     }
 
@@ -219,7 +206,7 @@ public interface BaseMapper<T> {
      * @param pager
      * @return
      */
-    default <R> Pager<R> paging(Query query, Pager<R> pager) {
+    default <R> Pager<R> paging(BaseQuery query, Pager<R> pager) {
         if (pager.isExecuteCount()) {
             Class returnType = query.getReturnType();
             query.setReturnType(Integer.TYPE);

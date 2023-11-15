@@ -16,6 +16,8 @@ import java.util.function.Function;
 
 public class BaseQuery<Q extends BaseQuery> extends db.sql.core.api.cmd.executor.AbstractQuery<Q, MybatisCmdFactory> {
 
+    private Class returnType;
+
     public BaseQuery() {
         this(new MybatisCmdFactory());
     }
@@ -25,7 +27,7 @@ public class BaseQuery<Q extends BaseQuery> extends db.sql.core.api.cmd.executor
     }
 
     @Override
-    
+
     public Q select(Class entity, int storey) {
         TableInfo tableInfo = Tables.get(entity);
         if (tableInfo == null) {
@@ -41,13 +43,13 @@ public class BaseQuery<Q extends BaseQuery> extends db.sql.core.api.cmd.executor
     }
 
     @Override
-    
+
     public <T> Q select(Getter<T> column, Function<TableField, Cmd> f) {
         return super.select(column, f);
     }
 
     @Override
-    
+
     public Q join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
         if (Objects.isNull(consumer)) {
             consumer = on -> {
@@ -64,6 +66,15 @@ public class BaseQuery<Q extends BaseQuery> extends db.sql.core.api.cmd.executor
             };
         }
         this.join(mode, $().table(mainTable, mainTableStorey), $().table(secondTable, secondTableStorey), consumer);
+        return (Q) this;
+    }
+
+    public Class getReturnType() {
+        return returnType;
+    }
+
+    public Q setReturnType(Class returnType) {
+        this.returnType = returnType;
         return (Q) this;
     }
 }

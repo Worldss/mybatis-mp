@@ -2,6 +2,8 @@ package db.sql.api;
 
 public enum DbType {
 
+    H2,
+
     MYSQL,
 
     SQL_SERVER,

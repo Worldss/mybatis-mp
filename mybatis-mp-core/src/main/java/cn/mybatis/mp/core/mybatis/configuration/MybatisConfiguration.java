@@ -2,7 +2,7 @@ package cn.mybatis.mp.core.mybatis.configuration;
 
 
 import cn.mybatis.mp.core.db.reflect.TableIds;
-import cn.mybatis.mp.core.mybatis.mapper.MapperTables;
+import cn.mybatis.mp.core.mybatis.mapper.MapperEntitys;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
 import org.apache.ibatis.executor.*;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
@@ -73,9 +73,9 @@ public class MybatisConfiguration extends Configuration {
     @Override
     
     public <T> void addMapper(Class<T> type) {
-        if (MapperTables.add(type)) {
+        if (MapperEntitys.add(type)) {
             //提前缓存
-            Class entity = MapperTables.get(type);
+            Class entity = MapperEntitys.get(type);
             ResultMapUtils.getResultMap(this, entity);
             TableIds.get(this, entity);
         }

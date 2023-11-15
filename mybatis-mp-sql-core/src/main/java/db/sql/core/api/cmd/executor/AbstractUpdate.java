@@ -127,6 +127,19 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
         return (SELF) this;
     }
 
+    public UpdateTable getUpdateTable() {
+        return this.updateTable;
+    }
+
+    public UpdateSets getUpdateSets() {
+        return this.updateSets;
+    }
+
+
+    public Joins getJoins() {
+        return this.joins;
+    }
+
     public Where getWhere() {
         return this.where;
     }

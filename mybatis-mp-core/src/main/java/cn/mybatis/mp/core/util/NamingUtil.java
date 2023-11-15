@@ -69,6 +69,7 @@ public final class NamingUtil {
         return sb.toString();
     }
 
+
     /**
      * 首字母小写
      *
@@ -86,6 +87,26 @@ public final class NamingUtil {
 
         char[] chars = name.toCharArray();
         chars[0] = Character.toLowerCase(first);
+        return new String(chars);
+    }
+
+    /**
+     * 首字母小写
+     *
+     * @return
+     */
+    public static String firstToUpperCase(String name) {
+        if (isBlank(name)) {
+            return name;
+        }
+
+        char first = name.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return name;
+        }
+
+        char[] chars = name.toCharArray();
+        chars[0] = Character.toUpperCase(first);
         return new String(chars);
     }
 

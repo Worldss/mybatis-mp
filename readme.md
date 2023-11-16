@@ -282,6 +282,7 @@ public class StudentAchievementVo extends StudentVo {
 > dao 里自带 queryChain()、updateChain()等方法，可以直接获取链路式CRUD类
 > 
 ## Dao 层 链路式 CRUD
+> 继承 cn.mybatis.mp.core.mvc.Dao 接口 和 cn.mybatis.mp.core.mvc.impl.DaoImpl
 ```
    queryChain()
         .select(SysUser.class)

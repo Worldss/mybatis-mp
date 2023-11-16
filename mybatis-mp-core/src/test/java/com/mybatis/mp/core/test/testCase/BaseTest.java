@@ -4,7 +4,7 @@ import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import com.mybatis.mp.core.test.mapper.SysRoleMapper;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.mapper.SysUserScoreMapper;
-import db.sql.api.Cmd;
+import db.sql.api.cmd.Cmd;
 import db.sql.core.api.tookit.SQLPrinter;
 import junit.framework.Assert;
 import org.apache.ibatis.logging.stdout.StdOutImpl;

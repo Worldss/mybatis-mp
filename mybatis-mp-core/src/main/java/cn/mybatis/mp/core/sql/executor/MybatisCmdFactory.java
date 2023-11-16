@@ -5,8 +5,8 @@ import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import db.sql.api.Getter;
 import db.sql.core.api.cmd.CmdFactory;
-import db.sql.core.api.cmd.Table;
-import db.sql.core.api.cmd.TableField;
+import db.sql.core.api.cmd.basic.Table;
+import db.sql.core.api.cmd.basic.TableField;
 import db.sql.core.api.tookit.LambdaUtil;
 import org.apache.ibatis.util.MapUtil;
 

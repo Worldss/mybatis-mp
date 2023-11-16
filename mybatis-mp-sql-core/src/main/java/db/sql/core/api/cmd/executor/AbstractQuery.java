@@ -1,18 +1,27 @@
 package db.sql.core.api.cmd.executor;
 
 import db.sql.api.*;
-import db.sql.api.executor.Query;
-import db.sql.core.api.cmd.ConditionChain;
-import db.sql.core.api.cmd.From;
-import db.sql.core.api.cmd.GroupBy;
-import db.sql.core.api.cmd.Having;
-import db.sql.core.api.cmd.Join;
-import db.sql.core.api.cmd.On;
-import db.sql.core.api.cmd.OrderBy;
-import db.sql.core.api.cmd.Select;
-import db.sql.core.api.cmd.Union;
-import db.sql.core.api.cmd.Where;
+import db.sql.api.cmd.*;
+import db.sql.api.cmd.basic.*;
+import db.sql.api.cmd.basic.Condition;
+import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.struct.Joins;
+import db.sql.api.cmd.struct.query.Unions;
+import db.sql.core.api.cmd.struct.ConditionChain;
+import db.sql.core.api.cmd.struct.From;
+import db.sql.core.api.cmd.struct.query.GroupBy;
+import db.sql.core.api.cmd.struct.query.Having;
+import db.sql.core.api.cmd.struct.Join;
+import db.sql.core.api.cmd.struct.On;
+import db.sql.core.api.cmd.struct.query.OrderBy;
+import db.sql.core.api.cmd.struct.query.Select;
+import db.sql.core.api.cmd.struct.query.Union;
+import db.sql.core.api.cmd.struct.Where;
 import db.sql.core.api.cmd.*;
+import db.sql.core.api.cmd.basic.Dataset;
+import db.sql.core.api.cmd.basic.Limit;
+import db.sql.core.api.cmd.basic.Table;
+import db.sql.core.api.cmd.basic.TableField;
 import db.sql.core.api.tookit.SqlConst;
 
 import java.util.List;
@@ -22,25 +31,25 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY>
-        implements db.sql.api.executor.Query<SELF,
+        implements Query<SELF,
         Dataset,
         TableField,
-        Cmd,
-        Object,
-        ConditionChain,
-        Select,
-        From,
-        Join,
-        On,
+                Cmd,
+                Object,
+                ConditionChain,
+                Select,
+                From,
+                Join,
+                On,
         Joins<Join>,
-        Where,
-        GroupBy,
-        Having,
-        OrderBy,
+                Where,
+                GroupBy,
+                Having,
+                OrderBy,
         Limit,
-        Union,
+                Union,
         Unions<Union>
-        >, Cmd {
+                >, Cmd {
 
     protected Select select;
 
@@ -112,7 +121,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     @Override
     public SELF select1() {
-        $select().select(SQLCmd1.INSTANCE);
+        $select().select(SQL1.INSTANCE);
         return (SELF) this;
     }
 
@@ -241,13 +250,13 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     @Override
 
-    public <T> SELF havingAnd(Getter<T> getter, Function<TableField, db.sql.api.Condition> f) {
+    public <T> SELF havingAnd(Getter<T> getter, Function<TableField, Condition> f) {
         return this.havingAnd(f.apply($.field(getter)));
     }
 
     @Override
 
-    public <T> SELF havingOr(Getter<T> getter, Function<TableField, db.sql.api.Condition> f) {
+    public <T> SELF havingOr(Getter<T> getter, Function<TableField, Condition> f) {
         return this.havingOr(f.apply($.field(getter)));
     }
 

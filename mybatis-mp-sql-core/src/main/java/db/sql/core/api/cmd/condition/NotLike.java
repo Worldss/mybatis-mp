@@ -1,7 +1,7 @@
 package db.sql.core.api.cmd.condition;
 
-import db.sql.api.Cmd;
-import db.sql.api.LikeMode;
+import db.sql.api.cmd.Cmd;
+import db.sql.api.cmd.LikeMode;
 import db.sql.core.api.tookit.SqlConst;
 
 public class NotLike extends Like {

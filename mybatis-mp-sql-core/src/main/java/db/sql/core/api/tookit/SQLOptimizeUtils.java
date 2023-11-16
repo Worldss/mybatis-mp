@@ -1,14 +1,22 @@
 package db.sql.core.api.tookit;
 
-import db.sql.api.Union;
+import db.sql.api.cmd.JoinMode;
+import db.sql.api.cmd.basic.UnionsCmdLists;
+import db.sql.api.cmd.struct.query.Union;
 import db.sql.api.*;
-import db.sql.api.executor.Query;
+import db.sql.api.cmd.Cmd;
+import db.sql.api.cmd.basic.CmdList;
+import db.sql.api.cmd.basic.CountAll;
+import db.sql.api.cmd.basic.SQL1;
+import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.struct.Joins;
+import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.tookit.CmdUtils;
-import db.sql.core.api.cmd.GroupBy;
-import db.sql.core.api.cmd.Join;
-import db.sql.core.api.cmd.OrderBy;
-import db.sql.core.api.cmd.Select;
-import db.sql.core.api.cmd.*;
+import db.sql.core.api.cmd.struct.query.GroupBy;
+import db.sql.core.api.cmd.struct.Join;
+import db.sql.core.api.cmd.struct.query.OrderBy;
+import db.sql.core.api.cmd.struct.query.Select;
+import db.sql.core.api.cmd.basic.Limit;
 import db.sql.core.api.cmd.fun.Count;
 
 import java.util.*;
@@ -155,7 +163,7 @@ public final class SQLOptimizeUtils {
 
         Select select = (Select) classCmdMap.get(Select.class);
         if (forCount && !isUnionQuery && !select.isDistinct()) {
-            Select newSelect = new Select().select(SQLCmd1.INSTANCE);
+            Select newSelect = new Select().select(SQL1.INSTANCE);
             classCmdMap.put(Select.class, newSelect);
         }
     }

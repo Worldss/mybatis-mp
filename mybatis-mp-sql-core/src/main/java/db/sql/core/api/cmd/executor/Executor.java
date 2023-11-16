@@ -1,15 +1,19 @@
 package db.sql.core.api.cmd.executor;
 
-import db.sql.api.Cmd;
+import db.sql.api.cmd.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.cmd.*;
+import db.sql.core.api.cmd.basic.Dataset;
+import db.sql.core.api.cmd.basic.DatasetField;
+import db.sql.core.api.cmd.basic.Table;
+import db.sql.core.api.cmd.basic.TableField;
 
 import java.util.List;
 import java.util.function.Function;
 
-public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory> extends db.sql.api.executor.Executor {
+public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory> extends db.sql.api.cmd.executor.Executor {
 
     CMD_FACTORY $();
 

@@ -1,7 +1,7 @@
 package db.sql.test;
 
-import db.sql.api.Cmd;
-import db.sql.core.api.cmd.Table;
+import db.sql.api.cmd.Cmd;
+import db.sql.core.api.cmd.basic.Table;
 import db.sql.core.api.tookit.SQLPrinter;
 import junit.framework.Assert;
 

@@ -1,9 +1,9 @@
 package db.sql.core.api.cmd.executor;
 
-import db.sql.api.Cmd;
+import db.sql.api.cmd.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.cmd.CmdFactory;
-import db.sql.core.api.cmd.Dataset;
+import db.sql.core.api.cmd.basic.Dataset;
 import db.sql.core.api.cmd.condition.Exists;
 import db.sql.core.api.tookit.SqlConst;
 

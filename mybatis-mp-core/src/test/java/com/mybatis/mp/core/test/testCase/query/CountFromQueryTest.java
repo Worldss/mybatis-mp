@@ -5,7 +5,7 @@ import com.mybatis.mp.core.test.model.SysRole;
 import com.mybatis.mp.core.test.model.SysUser;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import db.sql.api.DbType;
-import db.sql.api.JoinMode;
+import db.sql.api.cmd.JoinMode;
 import db.sql.api.SQLMode;
 import db.sql.api.SqlBuilderContext;
 import db.sql.core.api.tookit.SQLOptimizeUtils;

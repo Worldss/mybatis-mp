@@ -1,7 +1,10 @@
 package db.sql.core.api.cmd;
 
-import db.sql.api.Condition;
+import db.sql.api.cmd.LikeMode;
+import db.sql.api.cmd.basic.Condition;
 import db.sql.api.*;
+import db.sql.api.cmd.Cmd;
+import db.sql.api.cmd.executor.method.compare.Compare;
 
 public class ConditionFaction implements Compare<Condition, Cmd, Object> {
 

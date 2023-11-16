@@ -1,11 +1,15 @@
 package db.sql.core.api.cmd.executor;
 
-import db.sql.api.Cmd;
-import db.sql.api.JoinMode;
-import db.sql.api.Joins;
+import db.sql.api.cmd.Cmd;
+import db.sql.api.cmd.JoinMode;
+import db.sql.api.cmd.struct.Joins;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.executor.Delete;
+import db.sql.api.cmd.executor.Delete;
 import db.sql.core.api.cmd.*;
+import db.sql.core.api.cmd.basic.Dataset;
+import db.sql.core.api.cmd.basic.Table;
+import db.sql.core.api.cmd.struct.*;
+import db.sql.core.api.cmd.struct.delete.DeleteTable;
 
 import java.util.Map;
 import java.util.Objects;

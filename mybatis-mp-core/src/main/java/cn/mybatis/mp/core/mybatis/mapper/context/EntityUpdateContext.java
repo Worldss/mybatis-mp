@@ -6,7 +6,7 @@ import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import cn.mybatis.mp.core.sql.executor.Update;
 import cn.mybatis.mp.db.annotations.TableField;
-import db.sql.core.api.cmd.Table;
+import db.sql.core.api.cmd.basic.Table;
 
 import java.util.Collections;
 import java.util.Objects;

@@ -1,9 +1,16 @@
 package db.sql.core.api.cmd.executor;
 
-import db.sql.api.Cmd;
+import db.sql.api.cmd.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.executor.Insert;
+import db.sql.api.cmd.executor.Insert;
 import db.sql.core.api.cmd.*;
+import db.sql.core.api.cmd.basic.BasicValue;
+import db.sql.core.api.cmd.basic.Table;
+import db.sql.core.api.cmd.basic.TableField;
+import db.sql.core.api.cmd.basic.Value;
+import db.sql.core.api.cmd.struct.insert.InsertFields;
+import db.sql.core.api.cmd.struct.insert.InsertTable;
+import db.sql.core.api.cmd.struct.insert.InsertValues;
 
 import java.util.List;
 import java.util.Map;

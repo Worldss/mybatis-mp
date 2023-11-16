@@ -4,11 +4,11 @@ import cn.mybatis.mp.core.db.reflect.ForeignInfo;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
-import db.sql.api.Cmd;
+import db.sql.api.cmd.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.JoinMode;
-import db.sql.core.api.cmd.On;
-import db.sql.core.api.cmd.TableField;
+import db.sql.api.cmd.JoinMode;
+import db.sql.core.api.cmd.struct.On;
+import db.sql.core.api.cmd.basic.TableField;
 
 import java.util.Objects;
 import java.util.function.Consumer;

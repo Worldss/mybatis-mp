@@ -1,6 +1,6 @@
 package db.sql.core.api.cmd.condition;
 
-import db.sql.api.Cmd;
+import db.sql.api.cmd.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.tookit.Lists;

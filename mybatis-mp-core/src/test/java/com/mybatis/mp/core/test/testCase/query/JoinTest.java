@@ -6,7 +6,7 @@ import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.model.SysRole;
 import com.mybatis.mp.core.test.model.SysUser;
 import com.mybatis.mp.core.test.testCase.BaseTest;
-import db.sql.api.JoinMode;
+import db.sql.api.cmd.JoinMode;
 import db.sql.core.api.cmd.fun.FunctionInterface;
 import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;

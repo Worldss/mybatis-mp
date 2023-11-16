@@ -1,7 +1,7 @@
 package db.sql.core.api.cmd.condition;
 
 
-import db.sql.core.api.cmd.Condition;
+import db.sql.core.api.cmd.basic.Condition;
 
 public abstract class BaseCondition<COLUMN, V> implements Condition<COLUMN, V> {
 

@@ -6,7 +6,7 @@ import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.Model;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;
-import db.sql.core.api.cmd.Table;
+import db.sql.core.api.cmd.basic.Table;
 import db.sql.core.api.cmd.executor.AbstractInsert;
 import db.sql.core.api.cmd.executor.Insert;
 

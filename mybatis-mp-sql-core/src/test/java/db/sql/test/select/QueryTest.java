@@ -1,6 +1,6 @@
 package db.sql.test.select;
 
-import db.sql.api.LikeMode;
+import db.sql.api.cmd.LikeMode;
 import db.sql.core.api.cmd.executor.Query;
 import db.sql.test.BaseTest;
 import db.sql.test.Entity;

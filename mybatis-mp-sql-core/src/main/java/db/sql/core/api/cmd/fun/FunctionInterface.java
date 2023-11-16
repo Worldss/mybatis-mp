@@ -1,8 +1,8 @@
 package db.sql.core.api.cmd.fun;
 
-import db.sql.api.Cmd;
-import db.sql.api.LikeMode;
-import db.sql.core.api.cmd.BasicValue;
+import db.sql.api.cmd.Cmd;
+import db.sql.api.cmd.LikeMode;
+import db.sql.core.api.cmd.basic.BasicValue;
 import db.sql.core.api.cmd.condition.*;
 
 import java.io.Serializable;

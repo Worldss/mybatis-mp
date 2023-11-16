@@ -1,6 +1,6 @@
 package db.sql.core.api.tookit;
 
-import db.sql.api.Cmd;
+import db.sql.api.cmd.Cmd;
 import db.sql.api.DbType;
 import db.sql.api.SQLMode;
 import db.sql.api.SqlBuilderContext;

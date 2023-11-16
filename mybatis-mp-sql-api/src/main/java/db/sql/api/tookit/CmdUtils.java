@@ -1,8 +1,8 @@
 package db.sql.api.tookit;
 
 
-import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.Cmd;
 
 import java.util.Iterator;
 import java.util.List;

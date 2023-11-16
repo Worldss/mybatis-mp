@@ -1,11 +1,21 @@
 package db.sql.core.api.cmd.executor;
 
-import db.sql.api.Cmd;
+import db.sql.api.cmd.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.JoinMode;
-import db.sql.api.Joins;
-import db.sql.api.executor.Update;
+import db.sql.api.cmd.JoinMode;
+import db.sql.api.cmd.struct.Joins;
+import db.sql.api.cmd.executor.Update;
 import db.sql.core.api.cmd.*;
+import db.sql.core.api.cmd.basic.BasicValue;
+import db.sql.core.api.cmd.basic.Dataset;
+import db.sql.core.api.cmd.basic.TableField;
+import db.sql.core.api.cmd.basic.Value;
+import db.sql.core.api.cmd.struct.ConditionChain;
+import db.sql.core.api.cmd.struct.Join;
+import db.sql.core.api.cmd.struct.On;
+import db.sql.core.api.cmd.struct.Where;
+import db.sql.core.api.cmd.struct.update.UpdateSets;
+import db.sql.core.api.cmd.struct.update.UpdateTable;
 
 import java.util.Map;
 import java.util.Objects;

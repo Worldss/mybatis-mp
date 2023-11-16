@@ -1,8 +1,8 @@
 package cn.mybatis.mp.core.sql.executor;
 
-import db.sql.api.Cmd;
+import db.sql.api.cmd.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.core.api.cmd.Dataset;
+import db.sql.core.api.cmd.basic.Dataset;
 import db.sql.core.api.cmd.condition.Exists;
 import db.sql.core.api.cmd.condition.In;
 import db.sql.core.api.tookit.SqlConst;

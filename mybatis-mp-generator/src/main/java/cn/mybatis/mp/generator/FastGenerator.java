@@ -2,9 +2,9 @@ package cn.mybatis.mp.generator;
 
 
 import cn.mybatis.mp.generator.config.GeneratorConfig;
-import cn.mybatis.mp.generator.database.meta.DatabaseMetaDataWrapper;
 import cn.mybatis.mp.generator.database.meta.EntityInfo;
 import cn.mybatis.mp.generator.database.meta.TableInfo;
+import cn.mybatis.mp.generator.database.meta.TableMetaDataQuery;
 import cn.mybatis.mp.generator.template.ITemplateBuilder;
 import cn.mybatis.mp.generator.template.engine.FreemarkerTemplateEngine;
 import cn.mybatis.mp.generator.template.engine.TemplateEngine;
@@ -26,14 +26,14 @@ public class FastGenerator {
 
     public void create() {
         List<EntityInfo> entityInfoList;
-        try (Connection connection = generatorConfig.getDataSourceConfig().getConnection()) {
-            DatabaseMetaDataWrapper databaseMetaDataWrapper = new DatabaseMetaDataWrapper(generatorConfig, connection);
-            List<TableInfo> tableInfoList = databaseMetaDataWrapper.getTableInfoList(!generatorConfig.isIgnoreTable(), !generatorConfig.isIgnoreView());
-            if (!generatorConfig.getExcludeTables().isEmpty() || !generatorConfig.getIncludeTables().isEmpty()) {
+        try (Connection connection = generatorConfig.getDataBaseConfig().getConnection()) {
+            TableMetaDataQuery tableMetaDataQuery = new TableMetaDataQuery(generatorConfig, connection);
+            List<TableInfo> tableInfoList = tableMetaDataQuery.getTableInfoList(!generatorConfig.isIgnoreTable(), !generatorConfig.isIgnoreView());
+            if (!generatorConfig.getTableConfig().getExcludeTables().isEmpty() || !generatorConfig.getTableConfig().getIncludeTables().isEmpty()) {
                 tableInfoList = tableInfoList.stream().filter(tableInfo -> {
-                    return !generatorConfig.getExcludeTables().stream().anyMatch(item -> item.equalsIgnoreCase(tableInfo.getName()) || Pattern.matches(item, tableInfo.getName().toLowerCase()));
+                    return !generatorConfig.getTableConfig().getExcludeTables().stream().anyMatch(item -> item.equalsIgnoreCase(tableInfo.getName()) || Pattern.matches(item, tableInfo.getName().toLowerCase()));
                 }).filter(tableInfo -> {
-                    return generatorConfig.getIncludeTables().stream().anyMatch(item -> item.equalsIgnoreCase(tableInfo.getName()) || Pattern.matches(item, tableInfo.getName().toLowerCase()));
+                    return generatorConfig.getTableConfig().getIncludeTables().stream().anyMatch(item -> item.equalsIgnoreCase(tableInfo.getName()) || Pattern.matches(item, tableInfo.getName().toLowerCase()));
                 }).collect(Collectors.toList());
             }
             entityInfoList = tableInfoList.stream().map(item -> new EntityInfo(generatorConfig, item)).collect(Collectors.toList());

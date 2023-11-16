@@ -1,10 +1,8 @@
 package cn.mybatis.mp.generator.template.engine;
 
-import cn.mybatis.mp.core.util.NamingUtil;
 import cn.mybatis.mp.generator.template.ITemplateBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
 
 import java.io.File;

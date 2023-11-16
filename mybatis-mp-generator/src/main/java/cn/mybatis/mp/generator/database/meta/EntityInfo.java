@@ -1,6 +1,5 @@
 package cn.mybatis.mp.generator.database.meta;
 
-import cn.mybatis.mp.core.util.NamingUtil;
 import cn.mybatis.mp.generator.config.GeneratorConfig;
 import cn.mybatis.mp.generator.util.GeneratorUtil;
 import lombok.Getter;
@@ -52,8 +51,20 @@ public class EntityInfo {
 
     public final String actionPackage;
 
+    private boolean hasIgnoreTablePrefix = false;
+
     public EntityInfo(GeneratorConfig generatorConfig, TableInfo tableInfo) {
-        this.name = GeneratorUtil.getEntityName(generatorConfig, tableInfo);
+        String tmpTableName = tableInfo.getName();
+        for (String prefix : generatorConfig.getTableConfig().getTablePrefixs()) {
+            if (tmpTableName.startsWith(prefix)) {
+                tmpTableName = tmpTableName.replaceFirst(prefix, "");
+                hasIgnoreTablePrefix = true;
+                break;
+            }
+        }
+
+
+        this.name = GeneratorUtil.getEntityName(generatorConfig, tmpTableName);
         this.remarks = tableInfo.getRemarks();
         this.tableInfo = tableInfo;
         if (tableInfo.getIdColumnInfo() != null) {
@@ -91,9 +102,9 @@ public class EntityInfo {
         this.actionPackage = generatorConfig.getBasePackage() + "." + generatorConfig.getActionConfig().getPackageName();
     }
 
-    public List<EntityFieldInfo> allFiledInfoList(){
-        List<EntityFieldInfo> list= new ArrayList<>();
-        if(this.idFieldInfo!=null){
+    public List<EntityFieldInfo> allFiledInfoList() {
+        List<EntityFieldInfo> list = new ArrayList<>();
+        if (this.idFieldInfo != null) {
             list.add(this.idFieldInfo);
         }
         list.addAll(this.excludeFieldInfoList);
@@ -101,5 +112,4 @@ public class EntityInfo {
 
         return list.stream().distinct().collect(Collectors.toList());
     }
-
 }

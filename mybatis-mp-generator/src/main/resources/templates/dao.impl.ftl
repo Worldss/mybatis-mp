@@ -16,7 +16,7 @@ import ${pkg};
 public class ${entityInfo.daoImplName} ${superExtend}<#if daoConfig.isGeneric()><${entityInfo.name},<#if entityInfo.idFieldInfo??>${entityInfo.idFieldInfo.typeName}<#else>Void</#if>></#if> implements ${entityInfo.daoName}{
 
     @Autowired
-    private ${entityInfo.daoImplName} (${entityInfo.mapperName} ${util.firstToLower(entityInfo.mapperName)}){
+    public ${entityInfo.daoImplName} (${entityInfo.mapperName} ${util.firstToLower(entityInfo.mapperName)}){
         super(${util.firstToLower(entityInfo.mapperName)});
     }
 }

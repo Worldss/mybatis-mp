@@ -18,11 +18,14 @@
 <#if mapperXmlConfig.isColumnList()>
     <!-- 通用查询结果列 -->
     <sql id="ColumnList">
-        <trim suffixOverrides=",">
+
 <#list entityInfo.allFiledInfoList() as field>
-        ${field.columnInfo.name},
+    <#if field_index==0>
+        ${field.columnInfo.name}
+    <#else>
+        ,${field.columnInfo.name}
+    </#if>
 </#list>
-        </trim>
     </sql>
 </#if>
 </mapper>

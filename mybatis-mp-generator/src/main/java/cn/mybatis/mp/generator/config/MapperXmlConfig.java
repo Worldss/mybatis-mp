@@ -21,12 +21,12 @@ public class MapperXmlConfig {
     private boolean columnList = false;
 
     /**
-     * 实体类包名
+     * mapper xml 目录名字
      */
     private String packageName = "mappers";
 
     /**
-     * mapper后缀
+     * mapper xml 后缀
      */
     private String suffix = "";
 
@@ -39,7 +39,7 @@ public class MapperXmlConfig {
     }
 
     /**
-     * resultMap
+     * 生成resultMap
      */
     public MapperXmlConfig resultMap(boolean resultMap) {
         this.resultMap = resultMap;
@@ -47,18 +47,24 @@ public class MapperXmlConfig {
     }
 
     /**
-     * baseResultMap
+     * 生成查询列
      */
     public MapperXmlConfig columnList(boolean columnList) {
         this.columnList = columnList;
         return this;
     }
 
+    /**
+     * mapper xml 目录名字
+     */
     public MapperXmlConfig packageName(String packageName) {
         this.packageName = packageName;
         return this;
     }
 
+    /**
+     * mapper xml 后缀
+     */
     public MapperXmlConfig suffix(String suffix) {
         this.suffix = suffix;
         return this;

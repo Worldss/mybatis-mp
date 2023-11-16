@@ -13,21 +13,25 @@ import ${pkg};
  * @since ${date}
  */
 <#if entityConfig.isLombok()>@Data</#if>
-@Table<#if entityConfig.isSchema()>(schema="${entityInfo.tableInfo.schema!}")</#if>
+@Table(value="${entityInfo.tableInfo.name}"<#if entityConfig.isSchema()>,schema="${entityInfo.tableInfo.schema!}"</#if>)
 public class ${entityInfo.name} ${superExtend}{
 
 <#list entityInfo.fieldInfoList as field>
+<#if field.remarks?? && field.remarks != "">
     /**
-     * <p>
      * ${field.remarks!}
-     * </p>
      */
-<#if field.columnInfo.primaryKey??>
+</#if>
+<#if field.columnInfo.primaryKey>
     ${field.buildTableIdCode()!}
     private ${field.typeName} ${field.name};
 <#else>
-    <#if field.isNeedTableFiled()>${field.buildTableField()}</#if>
+<#if field.isNeedTableFiled()>
+    ${field.buildTableField()}
     private ${field.typeName} ${field.name};
+<#else>
+    private ${field.typeName} ${field.name};
+</#if>
 </#if>
 
 </#list>
@@ -42,5 +46,19 @@ public class ${entityInfo.name} ${superExtend}{
     }
 
 </#list>
+</#if>
+<#if !entityConfig.isLombok()>
+    @Override
+    public String toString() {
+        return "${entityInfo.name}{" +
+    <#list entityInfo.fieldInfoList as field>
+        <#if field_index==0>
+            "${field.name} = " + ${field.name} +
+        <#else>
+            ", ${field.name} = " + ${field.name} +
+        </#if>
+    </#list>
+        "}";
+    }
 </#if>
 }

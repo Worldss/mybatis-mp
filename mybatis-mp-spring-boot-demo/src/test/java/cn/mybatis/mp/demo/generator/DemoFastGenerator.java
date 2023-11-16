@@ -18,17 +18,19 @@ public class DemoFastGenerator {
                 .build();
 
         new FastGenerator(new GeneratorConfig(
-                "",
-                dataSource,
-                DbType.H2)
-                .baseFilePath(System.getProperty("user.dir") +"/demo-generate")
+                DbType.H2,
+                dataSource)
+                .baseFilePath(System.getProperty("user.dir") + "/demo-generate")
                 .basePackage("cn.mybatis.mp.spring.boot.demo")
-                .includeTable("sys_user","sys_role")
+                .finishOpen(true)
+                .tableConfig(tableConfig -> {
+                    tableConfig.includeTable("sys_user", "sys_role");
+                })
                 .columnConfig(columnConfig -> {
                     columnConfig.disableUpdateColumns("create_time");
                 })
                 .entityConfig(entityConfig -> {
-                    entityConfig.lombok(true);
+                    entityConfig.lombok(true).schema(true);
                 })
                 .mapperXmlConfig(mapperXmlConfig -> {
                     mapperXmlConfig.enable(true).resultMap(true).columnList(true);

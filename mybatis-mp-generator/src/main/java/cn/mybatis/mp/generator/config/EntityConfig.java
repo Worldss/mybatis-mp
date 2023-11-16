@@ -1,19 +1,27 @@
 package cn.mybatis.mp.generator.config;
 
 import cn.mybatis.mp.generator.database.meta.ColumnInfo;
-import cn.mybatis.mp.generator.database.meta.TableInfo;
 import cn.mybatis.mp.generator.strategy.NamingStrategy;
 import lombok.Getter;
 import org.apache.ibatis.type.JdbcType;
 
 import java.math.BigDecimal;
-import java.time.*;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Getter
 public class EntityConfig {
+
+    /**
+     * 实体类父类
+     */
+    private String superClass;
 
     /**
      * 是否使用 lombok
@@ -38,15 +46,8 @@ public class EntityConfig {
     /**
      * 实体类名字转换器
      */
-    private Function<TableInfo, String> nameConvert;
+    private Function<String, String> nameConvert;
 
-    /**
-     * 实体类父类
-     */
-    private String superClass;
-
-
-    private Set<String> superClassColumns = new HashSet<>();
 
     /**
      * 字段名策略
@@ -63,40 +64,54 @@ public class EntityConfig {
      */
     private Function<ColumnInfo, String> remarksConverter;
 
-
-    private Map<JdbcType, Class<?>> jdbcTypeClassMap = new HashMap<>();
+    /**
+     * 数据库类型的java映射
+     */
+    private final Map<JdbcType, Class<?>> typeMapping = new HashMap<>();
 
     {
-        jdbcTypeClassMap.put(JdbcType.BIT, Boolean.class);
-        jdbcTypeClassMap.put(JdbcType.TINYINT, Byte.class);
-        jdbcTypeClassMap.put(JdbcType.SMALLINT, Integer.class);
-        jdbcTypeClassMap.put(JdbcType.INTEGER, Integer.class);
-        jdbcTypeClassMap.put(JdbcType.BIGINT, Long.class);
-        jdbcTypeClassMap.put(JdbcType.FLOAT, Double.class);
-        jdbcTypeClassMap.put(JdbcType.REAL, Double.class);
-        jdbcTypeClassMap.put(JdbcType.DOUBLE, Double.class);
-        jdbcTypeClassMap.put(JdbcType.NUMERIC, BigDecimal.class);
-        jdbcTypeClassMap.put(JdbcType.DECIMAL, BigDecimal.class);
-        jdbcTypeClassMap.put(JdbcType.CHAR, Character.class);
-        jdbcTypeClassMap.put(JdbcType.VARCHAR, String.class);
-        jdbcTypeClassMap.put(JdbcType.LONGVARCHAR, String.class);
-        jdbcTypeClassMap.put(JdbcType.DATE, LocalDateTime.class);
-        jdbcTypeClassMap.put(JdbcType.TIME, LocalTime.class);
-        jdbcTypeClassMap.put(JdbcType.TIMESTAMP, LocalTime.class);
-        jdbcTypeClassMap.put(JdbcType.BINARY, byte[].class);
-        jdbcTypeClassMap.put(JdbcType.VARBINARY, byte[].class);
-        jdbcTypeClassMap.put(JdbcType.LONGVARBINARY, byte[].class);
-        jdbcTypeClassMap.put(JdbcType.BLOB, byte[].class);
-        jdbcTypeClassMap.put(JdbcType.CLOB, String.class);
-        jdbcTypeClassMap.put(JdbcType.BOOLEAN, Boolean.class);
-        jdbcTypeClassMap.put(JdbcType.NVARCHAR, String.class);
-        jdbcTypeClassMap.put(JdbcType.NCHAR, String.class);
-        jdbcTypeClassMap.put(JdbcType.NCLOB, String.class);
-        jdbcTypeClassMap.put(JdbcType.LONGNVARCHAR, String.class);
-        jdbcTypeClassMap.put(JdbcType.NCLOB, String.class);
-        jdbcTypeClassMap.put(JdbcType.DATETIMEOFFSET, OffsetDateTime.class);
-        jdbcTypeClassMap.put(JdbcType.TIME_WITH_TIMEZONE, OffsetTime.class);
-        jdbcTypeClassMap.put(JdbcType.TIMESTAMP_WITH_TIMEZONE, OffsetDateTime.class);
+        typeMapping.put(JdbcType.BIT, Boolean.class);
+        typeMapping.put(JdbcType.TINYINT, Byte.class);
+        typeMapping.put(JdbcType.SMALLINT, Integer.class);
+        typeMapping.put(JdbcType.INTEGER, Integer.class);
+        typeMapping.put(JdbcType.BIGINT, Long.class);
+        typeMapping.put(JdbcType.FLOAT, Double.class);
+        typeMapping.put(JdbcType.REAL, Double.class);
+        typeMapping.put(JdbcType.DOUBLE, Double.class);
+        typeMapping.put(JdbcType.NUMERIC, BigDecimal.class);
+        typeMapping.put(JdbcType.DECIMAL, BigDecimal.class);
+        typeMapping.put(JdbcType.CHAR, Character.class);
+        typeMapping.put(JdbcType.VARCHAR, String.class);
+        typeMapping.put(JdbcType.LONGVARCHAR, String.class);
+        typeMapping.put(JdbcType.DATE, LocalDateTime.class);
+        typeMapping.put(JdbcType.TIME, LocalTime.class);
+        typeMapping.put(JdbcType.TIMESTAMP, LocalTime.class);
+        typeMapping.put(JdbcType.BINARY, byte[].class);
+        typeMapping.put(JdbcType.VARBINARY, byte[].class);
+        typeMapping.put(JdbcType.LONGVARBINARY, byte[].class);
+        typeMapping.put(JdbcType.BLOB, byte[].class);
+        typeMapping.put(JdbcType.CLOB, String.class);
+        typeMapping.put(JdbcType.BOOLEAN, Boolean.class);
+        typeMapping.put(JdbcType.NVARCHAR, String.class);
+        typeMapping.put(JdbcType.NCHAR, String.class);
+        typeMapping.put(JdbcType.NCLOB, String.class);
+        typeMapping.put(JdbcType.LONGNVARCHAR, String.class);
+        typeMapping.put(JdbcType.NCLOB, String.class);
+        typeMapping.put(JdbcType.DATETIMEOFFSET, OffsetDateTime.class);
+        typeMapping.put(JdbcType.TIME_WITH_TIMEZONE, OffsetTime.class);
+        typeMapping.put(JdbcType.TIMESTAMP_WITH_TIMEZONE, OffsetDateTime.class);
+    }
+
+
+    /**
+     * 实体类的父类
+     *
+     * @param superClass
+     * @return
+     */
+    public EntityConfig superClass(String superClass) {
+        this.superClass = superClass;
+        return this;
     }
 
     /**
@@ -120,6 +135,7 @@ public class EntityConfig {
 
     /**
      * 包名设置
+     *
      * @param packageName
      * @return
      */
@@ -130,11 +146,12 @@ public class EntityConfig {
 
     /**
      * 字段类型映射
+     *
      * @param consumer
      * @return
      */
     public EntityConfig typeMapping(Consumer<Map<JdbcType, Class<?>>> consumer) {
-        consumer.accept(this.jdbcTypeClassMap);
+        consumer.accept(this.typeMapping);
         return this;
     }
 
@@ -142,20 +159,8 @@ public class EntityConfig {
     /**
      * 实体类名字转换器
      */
-    public EntityConfig nameConvert(Function<TableInfo, String> nameConvert) {
+    public EntityConfig nameConvert(Function<String, String> nameConvert) {
         this.nameConvert = nameConvert;
-        return this;
-    }
-
-    /**
-     * 实体类的父类
-     *
-     * @param superClass
-     * @return
-     */
-    public EntityConfig superClass(String superClass, String... superClassColumns) {
-        this.superClass = superClass;
-        this.superClassColumns.addAll(Arrays.asList(superClassColumns));
         return this;
     }
 

@@ -1,6 +1,10 @@
 package cn.mybatis.mp.generator.util;
 
 import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
+import cn.mybatis.mp.core.sql.executor.chain.DeleteChain;
+import cn.mybatis.mp.core.sql.executor.chain.InsertChain;
+import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
+import cn.mybatis.mp.core.sql.executor.chain.UpdateChain;
 import cn.mybatis.mp.core.util.NamingUtil;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.annotations.Table;
@@ -10,7 +14,6 @@ import cn.mybatis.mp.generator.config.EntityConfig;
 import cn.mybatis.mp.generator.config.GeneratorConfig;
 import cn.mybatis.mp.generator.database.meta.ColumnInfo;
 import cn.mybatis.mp.generator.database.meta.EntityInfo;
-import cn.mybatis.mp.generator.database.meta.TableInfo;
 import lombok.Data;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +32,17 @@ public class GeneratorUtil {
      * 获取实体类名字
      *
      * @param generatorConfig
-     * @param tableInfo
+     * @param tableName
      * @return
      */
-    public static String getEntityName(GeneratorConfig generatorConfig, TableInfo tableInfo) {
+    public static String getEntityName(GeneratorConfig generatorConfig, String tableName) {
         EntityConfig entityConfig = generatorConfig.getEntityConfig();
         if (entityConfig.getNameConvert() == null) {
             entityConfig.nameConvert((table -> {
-                return NamingUtil.firstToUpperCase(NamingUtil.underlineToCamel(table.getName()));
+                return NamingUtil.firstToUpperCase(NamingUtil.underlineToCamel(tableName));
             }));
         }
-        return entityConfig.getNameConvert().apply(tableInfo);
+        return entityConfig.getNameConvert().apply(tableName);
     }
 
 
@@ -81,7 +84,7 @@ public class GeneratorUtil {
      * @return
      */
     public static Class<?> getColumnType(GeneratorConfig generatorConfig, ColumnInfo columnInfo) {
-        Class<?> type = generatorConfig.getEntityConfig().getJdbcTypeClassMap().get(columnInfo.getJdbcType());
+        Class<?> type = generatorConfig.getEntityConfig().getTypeMapping().get(columnInfo.getJdbcType());
         if (type == null) {
             return Object.class;
         }
@@ -224,6 +227,14 @@ public class GeneratorUtil {
         classList.add(entityInfo.getServicePackage() + "." + entityInfo.getServiceName());
         classList.add(Service.class.getName());
         classList.add(Autowired.class.getName());
+
+        if (generatorConfig.getServiceImplConfig().isInjectMapper()) {
+            classList.add(entityInfo.getMapperPackage() + "." + entityInfo.getMapperName());
+            classList.add(QueryChain.class.getName());
+            classList.add(UpdateChain.class.getName());
+            classList.add(InsertChain.class.getName());
+            classList.add(DeleteChain.class.getName());
+        }
         return buildImports(classList);
     }
 

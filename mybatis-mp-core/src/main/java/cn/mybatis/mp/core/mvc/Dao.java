@@ -1,71 +1,27 @@
 package cn.mybatis.mp.core.mvc;
 
-import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
-import cn.mybatis.mp.core.util.GenericUtil;
 import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
 
-import java.io.Serializable;
-
 public interface Dao<T, K> {
 
-    MybatisMapper<T> getMapper();
+    Class<K> getIdType();
 
-    default Class<K> getIdType() {
-        return (Class<K>) GenericUtil.getGenericInterfaceClass(this.getClass()).get(1);
-    }
+    T getById(K id);
 
-    default T getById(K id) {
-        if (id.getClass() == Void.class) {
-            throw new RuntimeException("Not Supported");
-        }
-        return getMapper().getById((Serializable) id);
-    }
+    void save(T entity);
 
-    default void save(T entity) {
-        getMapper().save(entity);
-    }
+    void save(Model<T> model);
 
-    default void save(Model<T> model) {
-        getMapper().save(model);
-    }
+    void update(T entity);
 
-    default void update(T entity) {
-        if (getIdType() == Void.class) {
-            throw new RuntimeException("Not Supported");
-        }
-        getMapper().update(entity);
-    }
+    int update(T entity, Getter<T>... forceUpdateFields);
 
-    default int update(T entity, Getter<T>... forceUpdateFields) {
-        if (getIdType() == Void.class) {
-            throw new RuntimeException("Not Supported");
-        }
-        return getMapper().update(entity, forceUpdateFields);
-    }
+    int update(Model<T> model);
 
-    default int update(Model<T> model) {
-        if (getIdType() == Void.class) {
-            throw new RuntimeException("Not Supported");
-        }
-        return getMapper().update(model);
-    }
+    int update(Model<T> model, Getter<T>... forceUpdateFields);
 
-    default int update(Model<T> model, Getter<T>... forceUpdateFields) {
-        return getMapper().update(model, forceUpdateFields);
-    }
+    int delete(T entity);
 
-    default int delete(T entity) {
-        if (getIdType() == Void.class) {
-            throw new RuntimeException("Not Supported");
-        }
-        return getMapper().delete(entity);
-    }
-
-    default int deleteById(K id) {
-        if (id.getClass() == Void.class) {
-            throw new RuntimeException("Not Supported");
-        }
-        return getMapper().deleteById((Serializable) id);
-    }
+    int deleteById(K id);
 }

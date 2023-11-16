@@ -11,40 +11,57 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 @Getter
-public class DataSourceConfig {
+public class DataBaseConfig {
 
-    private final String schema;
+    private String schema;
+
+    private String databaseName;
 
     private final DbType dbType;
 
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
-    private String url;
+    private final String url;
 
-    private String username;
+    private final String username;
 
-    private String password;
+    private final String password;
 
-    public DataSourceConfig(String schema, DataSource dataSource, DbType dbType) {
-        this.schema = schema;
+    public DataBaseConfig(DbType dbType, DataSource dataSource) {
         this.dataSource = dataSource;
         this.dbType = dbType;
+
+        this.url = null;
+        this.username = null;
+        this.password = null;
     }
 
-    public DataSourceConfig(String schema, String url, String username, String password) {
-        this.schema = schema;
+    public DataBaseConfig(String url, String username, String password) {
+
         this.dbType = getDbType(url);
         this.url = url;
         this.username = username;
         this.password = password;
+
+        this.dataSource = null;
+    }
+
+    public DataBaseConfig schema(String schema) {
+        this.schema = schema;
+        return this;
+    }
+
+    public DataBaseConfig databaseName(String databaseName) {
+        this.databaseName = databaseName;
+        return this;
     }
 
     public Connection getConnection() {
         try {
             if (this.dataSource != null) {
                 return this.getDataSource().getConnection();
-            }else{
-                return getConnection(this.url,this.username,this.password);
+            } else {
+                return getConnection(this.url, this.username, this.password);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

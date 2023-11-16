@@ -7,6 +7,11 @@ import lombok.Getter;
 public class ServiceConfig {
 
     /**
+     * service接口父类
+     */
+    private String superClass = Service.class.getName();
+
+    /**
      * 是否启用
      */
     private boolean enable = true;
@@ -14,22 +19,26 @@ public class ServiceConfig {
     /**
      * 启用泛型
      */
-    private boolean generic =false;
+    private boolean generic = false;
 
     /**
-     * 实体类包名
+     * service接口包名
      */
     private String packageName = "service";
 
     /**
-     * mapper后缀
+     * service接口后缀
      */
     private String suffix = "Service";
 
     /**
-     * 接口父类
+     * service接口父类
      */
-    private String superClass = Service.class.getName();
+    public ServiceConfig superClass(String superClass) {
+        this.superClass = superClass;
+        return this;
+    }
+
 
     /**
      * 设置是否启用
@@ -39,21 +48,26 @@ public class ServiceConfig {
         return this;
     }
 
+    /**
+     * 启用泛型
+     */
     public ServiceConfig generic(boolean generic) {
         this.generic = generic;
         return this;
     }
 
-    public ServiceConfig superClass(String superClass) {
-        this.superClass = superClass;
-        return this;
-    }
 
+    /**
+     * service接口包名
+     */
     public ServiceConfig packageName(String packageName) {
         this.packageName = packageName;
         return this;
     }
 
+    /**
+     * service接口后缀
+     */
     public ServiceConfig suffix(String suffix) {
         this.suffix = suffix;
         return this;

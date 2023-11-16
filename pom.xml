@@ -24,12 +24,12 @@
     <licenses>
         <license>
             <name>Apache-2.0</name>
-            <url>https://gitee.com/hiaii/mybatis-mp/blob/master/LICENSE</url>
+            <url>https://gitee.com/mybatis-mp/mybatis-mp/blob/master/LICENSE</url>
         </license>
     </licenses>
     <scm>
-        <connection>https://gitee.com/hiaii/mybatis-mp.git</connection>
-        <url>https://gitee.com/hiaii/mybatis-mp</url>
+        <connection>https://gitee.com/mybatis-mp/mybatis-mp.git</connection>
+        <url>https://gitee.com/mybatis-mp/mybatis-mp</url>
     </scm>
     <developers>
         <developer>

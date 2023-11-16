@@ -7,6 +7,11 @@ import lombok.Getter;
 public class DaoConfig {
 
     /**
+     * dao接口父类
+     */
+    private String superClass = Dao.class.getName();
+
+    /**
      * 是否启用
      */
     private boolean enable = true;
@@ -14,7 +19,7 @@ public class DaoConfig {
     /**
      * 启用泛型
      */
-    private boolean generic =true;
+    private boolean generic = true;
 
     /**
      * 实体类包名
@@ -22,14 +27,18 @@ public class DaoConfig {
     private String packageName = "dao";
 
     /**
-     * mapper后缀
+     * dao接口后缀
      */
     private String suffix = "Dao";
 
+
     /**
-     * 接口父类
+     * dao接口父类
      */
-    private String superClass = Dao.class.getName();
+    public DaoConfig superClass(String superClass) {
+        this.superClass = superClass;
+        return this;
+    }
 
     /**
      * 设置是否启用
@@ -39,21 +48,26 @@ public class DaoConfig {
         return this;
     }
 
+    /**
+     * 启用泛型
+     */
     public DaoConfig generic(boolean generic) {
         this.generic = generic;
         return this;
     }
 
-    public DaoConfig superClass(String superClass) {
-        this.superClass = superClass;
-        return this;
-    }
 
+    /**
+     * 实体类包名
+     */
     public DaoConfig packageName(String packageName) {
         this.packageName = packageName;
         return this;
     }
 
+    /**
+     * dao接口后缀
+     */
     public DaoConfig suffix(String suffix) {
         this.suffix = suffix;
         return this;

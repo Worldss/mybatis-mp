@@ -6,12 +6,10 @@ public class Test {
 
     public static void main(String[] args) {
         new FastGenerator(new GeneratorConfig(
-                "casual_put",
-                "jdbc:mysql://test:3306/test_db",
+                "jdbc:mysql://test.qushiwan.cn:3306/casual_put",
                 "root",
                 "123456")
                 .basePackage("com.test")
-                .includeTable("app_user")
                 .columnConfig(columnConfig -> {
                     columnConfig.disableUpdateColumns("create_time");
                 })
@@ -20,6 +18,9 @@ public class Test {
                 })
                 .mapperXmlConfig(mapperXmlConfig -> {
                     mapperXmlConfig.enable(true).resultMap(true).columnList(true);
+                })
+                .serviceImplConfig(serviceImplConfig -> {
+                    serviceImplConfig.injectMapper(true);
                 })
                 .actionConfig(actionConfig -> {
                     actionConfig

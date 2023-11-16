@@ -27,16 +27,25 @@ public class ColumnConfig {
      */
     private List<String> disableSelectColumns = new ArrayList<>();
 
-    private ColumnConfig excludeColumns(String... columns) {
+    /**
+     * 排除列
+     */
+    public ColumnConfig excludeColumns(String... columns) {
         this.excludeColumns.addAll(Arrays.asList(columns));
         return this;
     }
 
+    /**
+     * 禁止修改的列
+     */
     public ColumnConfig disableUpdateColumns(String... columns) {
         this.disableUpdateColumns.addAll(Arrays.asList(columns));
         return this;
     }
 
+    /**
+     * 禁止查询列
+     */
     public ColumnConfig disableSelectColumns(String... columns) {
         this.disableSelectColumns.addAll(Arrays.asList(columns));
         return this;

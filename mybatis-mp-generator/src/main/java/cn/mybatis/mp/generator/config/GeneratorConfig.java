@@ -1,37 +1,30 @@
 package cn.mybatis.mp.generator.config;
 
-import cn.mybatis.mp.db.IdAutoType;
-import cn.mybatis.mp.generator.database.meta.ColumnInfo;
-import cn.mybatis.mp.generator.database.meta.TableInfo;
 import cn.mybatis.mp.generator.template.*;
 import cn.mybatis.mp.generator.template.engine.TemplateEngine;
 import db.sql.api.DbType;
 import lombok.Getter;
 
 import javax.sql.DataSource;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 @Getter
 public class GeneratorConfig {
 
-    private DataSourceConfig dataSourceConfig;
+    private final DataBaseConfig dataBaseConfig;
 
-    public GeneratorConfig(String schema, String jdbcUrl, String username, String password) {
-        this.dataSourceConfig = new DataSourceConfig(schema, jdbcUrl, username, password);
+    public GeneratorConfig(String jdbcUrl, String username, String password) {
+        this.dataBaseConfig = new DataBaseConfig(jdbcUrl, username, password);
     }
 
-    public GeneratorConfig(String schema, DataSource dataSource, DbType dbType) {
-        this.dataSourceConfig = new DataSourceConfig(schema, dataSource, dbType);
+    public GeneratorConfig(DbType dbType, DataSource dataSource) {
+        this.dataBaseConfig = new DataBaseConfig(dbType, dataSource);
     }
 
     /**
-     * 忽略试图
+     * 是否忽略试图
      */
     private boolean ignoreView = false;
 
@@ -57,7 +50,7 @@ public class GeneratorConfig {
     private String basePackage = "";
 
     /**
-     *
+     * 模板根目录
      */
     private String templateRootPath = "templates";
 
@@ -66,7 +59,9 @@ public class GeneratorConfig {
      */
     private String author;
 
-
+    /**
+     * 模板引擎
+     */
     private TemplateEngine templateEngine;
 
     private List<Class<? extends ITemplateBuilder>> templateBuilders = new ArrayList<>();
@@ -83,24 +78,9 @@ public class GeneratorConfig {
     }
 
     /**
-     * 需要生成的表名
+     * 表配置
      */
-    private List<String> includeTables = new ArrayList<>();
-
-    /**
-     * 需要排除的表名
-     */
-    private List<String> excludeTables = new ArrayList<>();
-
-    /**
-     * mapper 配置
-     */
-    private MapperConfig mapperConfig = new MapperConfig();
-
-    /**
-     * mapper xml 配置
-     */
-    private MapperXmlConfig mapperXmlConfig = new MapperXmlConfig();
+    private final TableConfig tableConfig = new TableConfig();
 
     /**
      * 列配置
@@ -111,6 +91,16 @@ public class GeneratorConfig {
      * 实体类配置
      */
     private EntityConfig entityConfig = new EntityConfig();
+
+    /**
+     * mapper 配置
+     */
+    private final MapperConfig mapperConfig = new MapperConfig();
+
+    /**
+     * mapper xml 配置
+     */
+    private final MapperXmlConfig mapperXmlConfig = new MapperXmlConfig();
 
     /**
      * Dao 配置
@@ -136,6 +126,17 @@ public class GeneratorConfig {
      * Action 实现类配置
      */
     private ActionConfig actionConfig = new ActionConfig();
+
+    /**
+     * 数据库配置
+     *
+     * @param consumer
+     * @return
+     */
+    public GeneratorConfig dataBaseConfig(Consumer<DataBaseConfig> consumer) {
+        consumer.accept(this.dataBaseConfig);
+        return this;
+    }
 
     /**
      * 设置模板引擎
@@ -214,25 +215,15 @@ public class GeneratorConfig {
         return this;
     }
 
-    /**
-     * 设置需要生成的表
-     *
-     * @param tables
-     * @return
-     */
-    public GeneratorConfig includeTable(String... tables) {
-        this.includeTables.addAll(Arrays.asList(tables));
-        return this;
-    }
 
     /**
-     * 设置需要不生成的表
+     * 设置表的配置
      *
-     * @param tables
+     * @param consumer
      * @return
      */
-    public GeneratorConfig excludeTable(String... tables) {
-        this.excludeTables.addAll(Arrays.asList(tables));
+    public GeneratorConfig tableConfig(Consumer<TableConfig> consumer) {
+        consumer.accept(this.tableConfig);
         return this;
     }
 

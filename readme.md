@@ -154,7 +154,7 @@ public class Student {
 @Table
 public class Student {
 
-    @TableId(value = IdAutoType.SQL, sql = "SELECT LAST_INSERT_ID()")
+    @TableId
     private Integer id;
 }
 ```
@@ -168,7 +168,7 @@ public class Student {
 @Table
 public class Student {
 
-    @TableField(typeHandler = LocalDateTimeTypeHandler.class)
+    @TableField
     private LocalDateTime createTime;
 }
 ```
@@ -185,7 +185,7 @@ public class Student {
 @Table
 public class Achievement {
 
-    @TableId(IdAutoType.AUTO)
+    @TableId
     private Integer id;
 
     @ForeignKey(Student.class)

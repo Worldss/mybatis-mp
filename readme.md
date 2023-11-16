@@ -1053,7 +1053,7 @@ mybatis:
 ```
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
-    <artifactId>mybatis-mp-core</artifactId>
+    <artifactId>mybatis-mp-generator</artifactId>
     <version>1.1.0</version>
     <scope>provided</scope>
 </dependency>

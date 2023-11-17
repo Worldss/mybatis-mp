@@ -539,6 +539,26 @@ public interface StudentMapper extends MybatisMapper<Student> {
     }});
 ```
 
+#### 1.3.6 connect 更好的内联
+> 这个方法的意义在于 拿到本身实例，从而更好的链式操作，例如下面的query.$(SysUser::getId)：
+> 
+> 这样可以使用query里方法，query.$(SysUser::getId) 就是从query里取得SysUser的id列，从而被 exists子查询引用。
+```
+    List<SysUser> list = sysUserMapper.list(new Query()
+            .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+            .from(SysUser.class)
+            .connect(query -> {
+                query.exists(new SubQuery()
+                        .select1()
+                        .from(SysUser.class)
+                        .eq(SysUser::getId, query.$(SysUser::getId))
+                        .isNotNull(SysUser::getPassword)
+                        .limit(1)
+                );
+            })
+    );
+```
+
 ### 1.4 删除
 
 ```agsl

@@ -13,7 +13,7 @@ import db.sql.core.api.cmd.basic.TableField;
 import java.util.List;
 import java.util.function.Function;
 
-public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory> extends db.sql.api.cmd.executor.Executor {
+public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory> extends db.sql.api.cmd.executor.Executor<SELF> {
 
     CMD_FACTORY $();
 

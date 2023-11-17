@@ -31,7 +31,7 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
         HavingMethod<SELF, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN, HAVING>,
         OrderByMethod<SELF, TABLE_FIELD, COLUMN>,
         UnionMethod<SELF>,
-        Executor {
+        Executor<SELF> {
 
     SELECT $select();
 
@@ -51,7 +51,6 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
     LIMIT $limit(int offset, int limit);
 
     @Override
-
     default SELF select(COLUMN column) {
         $select().select(column);
         return (SELF) this;

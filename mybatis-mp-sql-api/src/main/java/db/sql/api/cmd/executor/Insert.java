@@ -15,7 +15,7 @@ public interface Insert<SELF extends Insert,
         INSERT_FIELD extends InsertFields<COLUMN>,
         INSERT_VALUE extends InsertValues<V>
         >
-        extends Executor {
+        extends Executor<SELF> {
 
 
     INSERT_TABLE $insert(TABLE table);

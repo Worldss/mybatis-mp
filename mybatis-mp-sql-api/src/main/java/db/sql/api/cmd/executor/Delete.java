@@ -23,7 +23,7 @@ public interface Delete<SELF extends Delete,
         FromMethod<SELF, TABLE>,
         JoinMethod<SELF, TABLE, ON>,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
-        Executor {
+        Executor<SELF> {
 
 
     DELETE_TABLE $delete(TABLE... tables);

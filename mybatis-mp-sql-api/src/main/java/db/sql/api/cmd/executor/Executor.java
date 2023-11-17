@@ -7,13 +7,25 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public interface Executor extends Cmd {
+public interface Executor<T extends Executor> extends Cmd {
 
     Map<Class<? extends Cmd>, Integer> cmdSorts();
 
     List<Cmd> cmds();
+
+    /**
+     * 内联，用于获取自身
+     *
+     * @param consumer
+     * @return
+     */
+    default T connect(Consumer<T> consumer) {
+        consumer.accept((T) this);
+        return (T) this;
+    }
 
     default Comparator<Cmd> comparator() {
         return (o1, o2) -> {

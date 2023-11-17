@@ -7,8 +7,8 @@
     <a target="_blank" href="https://www.apache.org/licenses/LICENSE-2.0.txt">
 		<img src="https://img.shields.io/:license-Apache2-blue.svg" alt="Apache 2" />
 	</a>
-    <a target="_blank" href='https://gitee.com/hiaii/mybatis-mp'>
-		<img src='https://gitee.com/hiaii/mybatis-mp/badge/star.svg' alt='Gitee star'/>
+    <a target="_blank" href='https://gitee.com/mybatis-mp/mybatis-mp'>
+		<img src='https://gitee.com/mybatis-mp/mybatis-mp/badge/star.svg' alt='Gitee star'/>
 	</a>
 </p>
 ## 特征
@@ -124,7 +124,7 @@ mybatis:
 
 > 3.更多mybatis 配置参数，参考 https://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/zh/index.html
 
-> 4.参考示例：https://gitee.com/hiaii/mybatis-mp/tree/master/mybatis-mp-spring-boot-demo
+> 4.参考示例：https://gitee.com/mybatis-mp/mybatis-mp/tree/master/mybatis-mp-spring-boot-demo
 
 > 5.更多 mybatis 用法，参考：
 > mybatis：https://mybatis.org/mybatis-3/zh/index.html
@@ -133,7 +133,7 @@ mybatis:
 
 > 6.更多mybatis-mp 用法，参考作者编写的test case:(包含各种简单，复杂的CRUD操作案例)
 >
-> https://gitee.com/hiaii/mybatis-mp/tree/master/mybatis-mp-core/src/test/java/com/mybatis/mp/core/test/testCase
+> https://gitee.com/mybatis-mp/mybatis-mp/tree/master/mybatis-mp-core/src/test/java/com/mybatis/mp/core/test/testCase
 
 # 注解
 

@@ -23,11 +23,11 @@ public interface Update<SELF extends Update,
 
         extends UpdateMethod<SELF, TABLE, COLUMN, V>,
         JoinMethod<SELF, TABLE, ON>,
-        WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN> {
+        WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
+        Executor<SELF> {
 
 
     UPDATE_TABLE $update(TABLE... tables);
-
 
     JOIN $join(JoinMode mode, TABLE mainTable, TABLE secondTable);
 

@@ -38,7 +38,10 @@ public class TableInfo {
      */
     private final TableFieldInfo idFieldInfo;
 
-
+    /**
+     * 乐观锁字段
+     */
+    private final TableFieldInfo versionFieldInfo;
     /**
      * 外键关系
      */
@@ -51,7 +54,7 @@ public class TableInfo {
 
     public TableInfo(Class entity) {
         this.type = entity;
-        
+
         Table table = (Table) entity.getAnnotation(Table.class);
         this.schema = table.schema();
         this.tableName = TableInfoUtil.getTableName(entity);
@@ -62,6 +65,7 @@ public class TableInfo {
         }
 
         TableFieldInfo idFieldInfo = null;
+        TableFieldInfo versionFieldInfo = null;
         List<TableFieldInfo> tableFieldInfos = new ArrayList<>();
         Map<String, TableFieldInfo> tableFieldInfoMap = new HashMap<>();
         Map<Class, ForeignInfo> foreignInfoMap = new HashMap<>();
@@ -79,10 +83,17 @@ public class TableInfo {
             if (idFieldInfo == null && tableFieldInfo.isTableId()) {
                 idFieldInfo = tableFieldInfo;
             }
+            if (tableFieldInfo.isVersion()) {
+                if (versionFieldInfo != null) {
+                    throw new RuntimeException(String.format("Entity %s has multi @Version", entity.getName()));
+                }
+                versionFieldInfo = tableFieldInfo;
+            }
         }
 
         this.tableFieldInfos = Collections.unmodifiableList(tableFieldInfos);
         this.idFieldInfo = idFieldInfo;
+        this.versionFieldInfo = versionFieldInfo;
         this.tableFieldInfoMap = Collections.unmodifiableMap(tableFieldInfoMap);
         this.foreignInfoMap = Collections.unmodifiableMap(foreignInfoMap);
     }

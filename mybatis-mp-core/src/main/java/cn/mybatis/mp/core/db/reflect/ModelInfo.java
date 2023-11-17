@@ -32,7 +32,12 @@ public class ModelInfo {
      */
     private final ModelFieldInfo idFieldInfo;
 
-    
+    /**
+     * 乐观锁字段
+     */
+    private final ModelFieldInfo versionFieldInfo;
+
+
     public ModelInfo(Class<?> model) {
         this.type = model;
         Class<?> entity = GenericUtil.getGenericInterfaceClass(model).stream().filter(item -> item.isAnnotationPresent(Table.class)).findFirst().orElseThrow(() -> {
@@ -49,6 +54,7 @@ public class ModelInfo {
         }).collect(Collectors.toList());
 
         this.idFieldInfo = modelFieldInfos.stream().filter(item -> item.getTableFieldInfo().isTableId()).findFirst().orElse(null);
+        this.versionFieldInfo = modelFieldInfos.stream().filter(item -> item.getTableFieldInfo().isVersion()).findFirst().orElse(null);
         this.modelFieldInfos = Collections.unmodifiableList(modelFieldInfos);
     }
 

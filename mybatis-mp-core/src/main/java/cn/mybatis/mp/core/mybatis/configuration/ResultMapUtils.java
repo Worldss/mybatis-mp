@@ -46,7 +46,7 @@ public final class ResultMapUtils {
     private static final List<ResultMapping> getEntityResultMappings(MybatisConfiguration configuration, Class entity) {
         TableInfo tableInfo = Tables.get(entity);
         List<ResultMapping> resultMappings = tableInfo.getTableFieldInfos().stream().map(tableFieldInfo -> {
-            return configuration.buildResultMapping(tableFieldInfo.getField(), tableFieldInfo.getColumnName(), tableFieldInfo.getFieldAnnotation().jdbcType(), tableFieldInfo.getFieldAnnotation().typeHandler());
+            return configuration.buildResultMapping(tableFieldInfo.getField(), tableFieldInfo.getColumnName(), tableFieldInfo.getTableFieldAnnotation().jdbcType(), tableFieldInfo.getTableFieldAnnotation().typeHandler());
         }).collect(Collectors.toList());
         return Collections.unmodifiableList(resultMappings);
     }
@@ -93,7 +93,7 @@ public final class ResultMapUtils {
         if (Objects.isNull(tableFieldInfo)) {
             throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The field {2} can't found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
         }
-        return configuration.buildResultMapping(field, tableFieldInfo.getColumnName(), tableFieldInfo.getFieldAnnotation().jdbcType(), tableFieldInfo.getFieldAnnotation().typeHandler());
+        return configuration.buildResultMapping(field, tableFieldInfo.getColumnName(), tableFieldInfo.getTableFieldAnnotation().jdbcType(), tableFieldInfo.getTableFieldAnnotation().typeHandler());
     }
 
     /**
@@ -117,7 +117,7 @@ public final class ResultMapUtils {
         if (Objects.isNull(tableFieldInfo)) {
             throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The field {2} can't found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
         }
-        return configuration.buildResultMapping(field, columnPrefix + tableFieldInfo.getColumnName(), tableFieldInfo.getFieldAnnotation().jdbcType(), tableFieldInfo.getFieldAnnotation().typeHandler());
+        return configuration.buildResultMapping(field, columnPrefix + tableFieldInfo.getColumnName(), tableFieldInfo.getTableFieldAnnotation().jdbcType(), tableFieldInfo.getTableFieldAnnotation().typeHandler());
     }
 
     /**
@@ -168,7 +168,7 @@ public final class ResultMapUtils {
                 if (Objects.isNull(tableFieldInfo)) {
                     throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The nested field {2} can't found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
                 }
-                return configuration.buildResultMapping(nestedFiled, columnPrefix + tableFieldInfo.getColumnName(), tableFieldInfo.getFieldAnnotation().jdbcType(), tableFieldInfo.getFieldAnnotation().typeHandler());
+                return configuration.buildResultMapping(nestedFiled, columnPrefix + tableFieldInfo.getColumnName(), tableFieldInfo.getTableFieldAnnotation().jdbcType(), tableFieldInfo.getTableFieldAnnotation().typeHandler());
             }).collect(Collectors.toList());
 
             //注册内嵌 ResultMap

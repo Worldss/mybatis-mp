@@ -3,6 +3,7 @@ package cn.mybatis.mp.core.db.reflect;
 import cn.mybatis.mp.core.util.TableInfoUtil;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;
+import cn.mybatis.mp.db.annotations.Version;
 import org.apache.ibatis.reflection.invoker.GetFieldInvoker;
 import org.apache.ibatis.reflection.invoker.SetFieldInvoker;
 
@@ -34,6 +35,8 @@ public class TableFieldInfo {
 
     private final boolean tableId;
 
+    private final boolean version;
+
     private final SetFieldInvoker writeFieldInvoker;
 
     public TableFieldInfo(Field field) {
@@ -42,6 +45,7 @@ public class TableFieldInfo {
         this.columnName = TableInfoUtil.getFieldColumnName(field);
         this.readFieldInvoker = new GetFieldInvoker(field);
         this.tableId = field.isAnnotationPresent(TableId.class);
+        this.version = field.isAnnotationPresent(Version.class);
         this.writeFieldInvoker = new SetFieldInvoker(field);
     }
 
@@ -66,7 +70,7 @@ public class TableFieldInfo {
     }
 
 
-    public TableField getFieldAnnotation() {
+    public TableField getTableFieldAnnotation() {
         return tableFieldAnnotation;
     }
 
@@ -74,6 +78,9 @@ public class TableFieldInfo {
         return tableId;
     }
 
+    public boolean isVersion() {
+        return version;
+    }
 
     public SetFieldInvoker getWriteFieldInvoker() {
         return writeFieldInvoker;

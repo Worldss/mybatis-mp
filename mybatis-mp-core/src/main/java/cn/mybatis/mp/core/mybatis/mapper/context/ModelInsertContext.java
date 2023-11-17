@@ -1,6 +1,9 @@
 package cn.mybatis.mp.core.mybatis.mapper.context;
 
-import cn.mybatis.mp.core.db.reflect.*;
+import cn.mybatis.mp.core.db.reflect.ModelFieldInfo;
+import cn.mybatis.mp.core.db.reflect.ModelInfo;
+import cn.mybatis.mp.core.db.reflect.Models;
+import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.incrementer.IdentifierGenerator;
 import cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
@@ -37,6 +40,15 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
 
                 if (Objects.nonNull(value)) {
                     isNeedInsert = true;
+                } else if (item.getTableFieldInfo().isVersion()) {
+                    isNeedInsert = true;
+                    try {
+                        //乐观锁设置 默认值1
+                        value = Integer.valueOf(1);
+                        item.getWriteFieldInvoker().invoke(t, new Object[]{value});
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else if (item.getTableFieldInfo().isTableId()) {
                     TableId tableId = TableIds.get(modelInfo.getTableInfo().getType());
                     if (tableId.value() == IdAutoType.GENERATOR) {
@@ -54,7 +66,7 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
 
                 if (isNeedInsert) {
                     field($.field(table, item.getTableFieldInfo().getColumnName()));
-                    TableField tableField = item.getTableFieldInfo().getFieldAnnotation();
+                    TableField tableField = item.getTableFieldInfo().getTableFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());
                     values.add($.value(mybatisParameter));
                 }

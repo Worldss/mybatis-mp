@@ -292,7 +292,15 @@ public class StudentAchievementVo extends StudentVo {
 
 > 返回列的映射（用于非实体类字段，可以设置列名、typeHandler、jdbcType）
 > 返回可以平级 或者 1级 2级 两层映射
->
+
+
+### 7. @Version
+> 乐观锁，只能注解在Integer类型字段上
+> 
+> 在save(实体类)、save(Model)、update(实体类)、update(Model);
+
+<font color="red">其他update地方操作 需要自己维护，进行version+1.</font>
+
 # mybatis-mp mvc 架构理念
 > mybatis-mp 只设计到1层持久层，不过 mybatis-mp的理念，把持久层分2层，mapper层，dao层
 ## mapper层、dao层的区别

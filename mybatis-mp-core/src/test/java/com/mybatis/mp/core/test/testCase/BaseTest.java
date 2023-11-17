@@ -1,10 +1,7 @@
 package com.mybatis.mp.core.test.testCase;
 
 import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
-import com.mybatis.mp.core.test.mapper.IdTestMapper;
-import com.mybatis.mp.core.test.mapper.SysRoleMapper;
-import com.mybatis.mp.core.test.mapper.SysUserMapper;
-import com.mybatis.mp.core.test.mapper.SysUserScoreMapper;
+import com.mybatis.mp.core.test.mapper.*;
 import db.sql.api.cmd.Cmd;
 import db.sql.core.api.tookit.SQLPrinter;
 import junit.framework.Assert;
@@ -43,6 +40,8 @@ public class BaseTest {
         configuration.addMapper(SysRoleMapper.class);
         configuration.addMapper(SysUserScoreMapper.class);
         configuration.addMapper(IdTestMapper.class);
+        configuration.addMapper(VersionTestMapper.class);
+
         configuration.setLogImpl(StdOutImpl.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     }

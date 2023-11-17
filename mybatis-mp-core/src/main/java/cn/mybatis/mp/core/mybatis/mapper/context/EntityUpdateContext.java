@@ -37,12 +37,27 @@ public class EntityUpdateContext<T> extends SQLCmdUpdateContext {
                         throw new RuntimeException(item.getField().getName() + " can't be null");
                     }
                     eq($.field(table, item.getColumnName()), $.value(value));
+                } else if (item.isVersion()) {
+                    if (Objects.isNull(value)) {
+                        throw new RuntimeException(item.getField().getName() + " is version filed, can't be null");
+                    }
+                    Integer version = (Integer) value + 1;
+                    //乐观锁设置
+                    set($.field(table, item.getColumnName()), $.value(version));
+                    eq($.field(table, item.getColumnName()), $.value(value));
+
+                    try {
+                        //乐观锁回写
+                        item.getWriteFieldInvoker().invoke(t, new Object[]{version});
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else if (forceUpdateFields.contains(item.getField().getName())) {
                     set($.field(table, item.getColumnName()), Objects.isNull(value) ? $.NULL() : $.value(value));
-                } else if (!item.getFieldAnnotation().update()) {
+                } else if (!item.getTableFieldAnnotation().update()) {
                     return;
                 } else if (Objects.nonNull(value)) {
-                    TableField tableField = item.getFieldAnnotation();
+                    TableField tableField = item.getTableFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());
                     set($.field(table, item.getColumnName()), $.value(mybatisParameter));
                 }

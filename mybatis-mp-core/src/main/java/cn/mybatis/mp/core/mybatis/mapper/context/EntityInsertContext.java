@@ -39,6 +39,15 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
 
                 if (Objects.nonNull(value)) {
                     isNeedInsert = true;
+                } else if (item.isVersion()) {
+                    isNeedInsert = true;
+                    try {
+                        //乐观锁设置 默认值1
+                        value = Integer.valueOf(1);
+                        item.getWriteFieldInvoker().invoke(t, new Object[]{value});
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else if (item.isTableId()) {
                     TableId tableId = TableIds.get(t.getClass());
                     if (tableId.value() == IdAutoType.GENERATOR) {
@@ -53,7 +62,7 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
 
                 if (isNeedInsert) {
                     field($.field(table, item.getColumnName()));
-                    TableField tableField = item.getFieldAnnotation();
+                    TableField tableField = item.getTableFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());
                     values.add($.value(mybatisParameter));
                 }
@@ -63,7 +72,7 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
         return insert;
     }
 
-   private static boolean setId(Object obj, TableFieldInfo idFieldInfo, Object id) {
+    private static boolean setId(Object obj, TableFieldInfo idFieldInfo, Object id) {
         try {
             //如果设置了id 则不在设置
             if (idFieldInfo.getReadFieldInvoker().invoke(obj, null) != null) {

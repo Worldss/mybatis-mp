@@ -34,7 +34,7 @@ public class BaseQuery<Q extends BaseQuery> extends db.sql.core.api.cmd.executor
             return (Q) super.select(entity, storey);
         } else {
             tableInfo.getTableFieldInfos().stream().forEach(item -> {
-                if (item.getFieldAnnotation().select()) {
+                if (item.getTableFieldAnnotation().select()) {
                     this.select($.field(entity, item.getField().getName(), storey));
                 }
             });

@@ -49,7 +49,7 @@ public class MybatisSQLProvider {
     private static SQL getTableDefaultSelect(TableInfo tableInfo) {
         return new SQL() {{
             Predicate<TableFieldInfo> filter = (item) -> {
-                return item.getFieldAnnotation() == null || item.getFieldAnnotation().select();
+                return item.getTableFieldAnnotation() == null || item.getTableFieldAnnotation().select();
             };
             FROM(tableInfo.getSchemaAndTableName());
             tableInfo.getTableFieldInfos().stream().filter(filter).forEach(item -> {

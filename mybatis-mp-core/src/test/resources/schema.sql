@@ -45,3 +45,10 @@ CREATE TABLE IF NOT EXISTS id_test
     create_time  DATETIME NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS version_test
+(
+    id   varchar(32) PRIMARY KEY,
+    version INT NOT NULL,
+    name VARCHAR(100) not null,
+    create_time  DATETIME NOT NULL DEFAULT NOW()
+);

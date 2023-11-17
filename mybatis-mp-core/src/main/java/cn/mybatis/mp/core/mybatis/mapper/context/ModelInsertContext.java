@@ -1,8 +1,6 @@
 package cn.mybatis.mp.core.mybatis.mapper.context;
 
-import cn.mybatis.mp.core.db.reflect.ModelInfo;
-import cn.mybatis.mp.core.db.reflect.Models;
-import cn.mybatis.mp.core.db.reflect.TableIds;
+import cn.mybatis.mp.core.db.reflect.*;
 import cn.mybatis.mp.core.incrementer.IdentifierGenerator;
 import cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
@@ -44,15 +42,12 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
                     if (tableId.value() == IdAutoType.GENERATOR) {
                         isNeedInsert = true;
                         IdentifierGenerator identifierGenerator = IdentifierGeneratorFactory.getIdentifierGenerator(tableId.generatorName());
-                        Object id=identifierGenerator.nextId(modelInfo.getType());
+                        Object id = identifierGenerator.nextId(modelInfo.getType());
                         if (modelInfo.getIdFieldInfo().getField().getType() == String.class) {
                             id = id instanceof String ? id : String.valueOf(id);
                         }
-                        value = id;
-                        try {
-                            modelInfo.getIdFieldInfo().getWriteFieldInvoker().invoke(t, new Object[]{id});
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
+                        if (setId(t, item, id)) {
+                            value = id;
                         }
                     }
                 }
@@ -70,21 +65,26 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
     }
 
 
-    public void setId(Object id) {
+    private static boolean setId(Object obj, ModelFieldInfo idFieldInfo, Object id) {
         try {
-            ModelInfo modelInfo = Models.get(this.value.getClass());
-            if (modelInfo.getIdFieldInfo() != null) {
-                //如果设置了id 则不在设置
-                if (modelInfo.getIdFieldInfo().getReadFieldInvoker().invoke(this, null) != null) {
-                    return;
-                }
-                if (modelInfo.getIdFieldInfo().getField().getType() == String.class) {
-                    id = id instanceof String ? id : String.valueOf(id);
-                }
-                modelInfo.getIdFieldInfo().getWriteFieldInvoker().invoke(this.value, new Object[]{id});
+            //如果设置了id 则不在设置
+            if (idFieldInfo.getReadFieldInvoker().invoke(obj, null) != null) {
+                return false;
             }
+            if (idFieldInfo.getField().getType() == String.class) {
+                id = id instanceof String ? id : String.valueOf(id);
+            }
+            idFieldInfo.getWriteFieldInvoker().invoke(obj, new Object[]{id});
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+        return true;
+    }
+
+
+    @Override
+    public void setId(Object id) {
+        ModelInfo modelInfo = Models.get(this.value.getClass());
+        setId(this.value, modelInfo.getIdFieldInfo(), id);
     }
 }

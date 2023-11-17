@@ -45,14 +45,8 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
                         isNeedInsert = true;
                         IdentifierGenerator identifierGenerator = IdentifierGeneratorFactory.getIdentifierGenerator(tableId.generatorName());
                         Object id = identifierGenerator.nextId(tableInfo.getType());
-                        if (tableInfo.getIdFieldInfo().getField().getType() == String.class) {
-                            id = id instanceof String ? id : String.valueOf(id);
-                        }
-                        value = id;
-                        try {
-                            tableInfo.getIdFieldInfo().getWriteFieldInvoker().invoke(t, new Object[]{id});
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
+                        if (setId(t, item, id)) {
+                            value = id;
                         }
                     }
                 }
@@ -69,20 +63,25 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
         return insert;
     }
 
-    @Override
-    public void setId(Object id) {
+   private static boolean setId(Object obj, TableFieldInfo idFieldInfo, Object id) {
         try {
-            TableFieldInfo idFieldInfo = Tables.get(this.value.getClass()).getIdFieldInfo();
             //如果设置了id 则不在设置
-            if (idFieldInfo.getReadFieldInvoker().invoke(this, null) != null) {
-                return;
+            if (idFieldInfo.getReadFieldInvoker().invoke(obj, null) != null) {
+                return false;
             }
             if (idFieldInfo.getField().getType() == String.class) {
                 id = id instanceof String ? id : String.valueOf(id);
             }
-            idFieldInfo.getWriteFieldInvoker().invoke(this.value, new Object[]{id});
+            idFieldInfo.getWriteFieldInvoker().invoke(obj, new Object[]{id});
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+        return true;
+    }
+
+    @Override
+    public void setId(Object id) {
+        TableFieldInfo idFieldInfo = Tables.get(this.value.getClass()).getIdFieldInfo();
+        setId(this.value, idFieldInfo, id);
     }
 }

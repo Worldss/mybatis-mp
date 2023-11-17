@@ -341,7 +341,7 @@ public class StudentAchievementVo extends StudentVo {
             
 ```
 ## Service层 链路式 CRUD
-> 使用代码生成器时，可在 ServiceImplConfig 一项，即可生成 queryChain()等方法 和 Dao 层 链路式 CRUD 一样
+> 使用代码生成器时，可在 ServiceImplConfig injectMapper 一项设置为true，即可生成 queryChain()等方法 和 Dao 层 链路式 CRUD 一样
 > 
 
 <font color="red">建议在dao里操作</font>,如果还是想操作，参考 其他层 链路式 CRUD
@@ -391,6 +391,10 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### count查询
 
 > count(Query query) 动态count查询
+
+### exists查询
+
+> exists(Query query) 动态检测是否存在
 
 ### 删除
 
@@ -865,18 +869,19 @@ Integer count = sysUserMapper.get(new Query()
 #### 3.9 exists
 
 ```
-    List<SysUser> list = sysUserMapper.list(new Query() {{
-        select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
-                .from(SysUser.class)
-                .exists(new SubQuery()
+    List<SysUser> list = sysUserMapper.list(new Query()
+            .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+            .from(SysUser.class)
+            .connect(query -> {
+                query.exists(new SubQuery()
                         .select1()
                         .from(SysUser.class)
-                        .eq(SysUser::getId, $(SysUser::getId))
+                        .eq(SysUser::getId, query.$(SysUser::getId))
                         .isNotNull(SysUser::getPassword)
                         .limit(1)
                 );
-
-    }});
+            })
+    );
 ```
 
 ## 3.0 select 去重

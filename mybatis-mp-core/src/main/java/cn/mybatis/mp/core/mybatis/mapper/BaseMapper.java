@@ -22,6 +22,34 @@ import java.util.*;
 public interface BaseMapper<T> {
 
     /**
+     * 是否存在
+     *
+     * @param query
+     * @return
+     */
+    default boolean exists(BaseQuery query) {
+        return this.exists(query, true);
+    }
+
+    /**
+     * 是否存在
+     *
+     * @param query
+     * @param optimize 是否优化
+     * @return
+     */
+    default boolean exists(BaseQuery query, boolean optimize) {
+        if (query.getSelect() != null) {
+            query.getSelect().getSelectFiled().clear();
+        }
+        query.select1();
+        query.limit(1);
+        query.setReturnType(Integer.TYPE);
+        Integer obj = this.get(query, optimize);
+        return (obj == null || obj < 1) ? false : true;
+    }
+
+    /**
      * 动态查询 返回单个当前实体
      *
      * @param query
@@ -198,6 +226,7 @@ public interface BaseMapper<T> {
     default Integer count(BaseQuery query) {
         return this.$count(new SQLCmdCountQueryContext(query, false));
     }
+
 
     /**
      * 分页查询

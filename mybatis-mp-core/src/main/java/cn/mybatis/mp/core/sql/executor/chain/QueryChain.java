@@ -30,19 +30,89 @@ public class QueryChain extends BaseQuery<QueryChain> {
         }
     }
 
+    /**
+     * 获取单个对象
+     *
+     * @param <R>
+     * @return
+     */
     public <R> R get() {
-        return (R) mapper.get(this, true);
+        return this.get(true);
     }
 
+    /**
+     * 获取单个对象
+     *
+     * @param optimize 是否自动优化
+     * @param <R>
+     * @return
+     */
+    public <R> R get(boolean optimize) {
+        this.setDefault();
+        return (R) mapper.get(this, optimize);
+    }
+
+    /**
+     * 获取列表
+     *
+     * @param <R>
+     * @return
+     */
     public <R> List<R> list() {
-        return mapper.list(this, true);
+        return this.list(true);
     }
 
+    /**
+     * 获取列表
+     *
+     * @param optimize 是否自动优化
+     * @param <R>
+     * @return
+     */
+    public <R> List<R> list(boolean optimize) {
+        this.setDefault();
+        return mapper.list(this, optimize);
+    }
+
+    /**
+     * 获取条数
+     *
+     * @return
+     */
     public Integer count() {
+        this.setDefault();
         return mapper.count(this);
     }
 
+    /**
+     * 判断是否存在
+     *
+     * @return
+     */
+    public boolean exists() {
+        return this.exists(true);
+    }
+
+    /**
+     * 判断是否存在
+     *
+     * @param optimize 是否自动优化
+     * @return
+     */
+    public boolean exists(boolean optimize) {
+        this.setDefault();
+        return mapper.exists(this, optimize);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param pager
+     * @param <R>
+     * @return
+     */
     public <R> Pager<R> paging(Pager<R> pager) {
+        this.setDefault();
         return mapper.paging(this, pager);
     }
 }

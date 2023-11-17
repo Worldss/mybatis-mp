@@ -60,7 +60,7 @@ public class TableIdGeneratorWrapper {
             }
             //自己输入
             case NONE:
-                //自定义自增
+            //自定义自增
             case GENERATOR: {
                 keyGenerator = NoKeyGenerator.INSTANCE;
                 break;
@@ -78,16 +78,17 @@ public class TableIdGeneratorWrapper {
                         .build();
                 keyGenerator = new SelectKeyGenerator(selectKeyMappedStatement, true);
                 break;
-            }//自定义自增ID
+            }
             default: {
                 throw new RuntimeException("Not supported");
             }
         }
-        MetaObject msMetaObject = ms.getConfiguration().newMetaObject(ms);
-        msMetaObject.setValue("keyGenerator", keyGenerator);
-        msMetaObject.setValue("keyProperties", new String[]{"id"});
-        msMetaObject.setValue("keyColumns", new String[]{tableInfo.getIdFieldInfo().getColumnName()});
-
+        if (keyGenerator != NoKeyGenerator.INSTANCE) {
+            MetaObject msMetaObject = ms.getConfiguration().newMetaObject(ms);
+            msMetaObject.setValue("keyGenerator", keyGenerator);
+            msMetaObject.setValue("keyProperties", new String[]{"id"});
+            msMetaObject.setValue("keyColumns", new String[]{tableInfo.getIdFieldInfo().getColumnName()});
+        }
         ms.getConfiguration().addKeyGenerator(selectKeyId, keyGenerator);
     }
 }

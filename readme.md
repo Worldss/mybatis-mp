@@ -56,7 +56,7 @@
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-spring-boot-starter</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 </dependency>  
 ```
 
@@ -191,11 +191,11 @@ public class Student {
         <td>generatorName</td>
         <td>""</td>
         <td align="left">
-            <p>IdAutoType.GENERATOR生效</p>
-            <p>可取值：IdentifierGeneratorType.DEFAULT（推荐，可替换成自己的实现）：基于雪花算法</p>
-            <p>可取值：IdentifierGeneratorType.UUID: 基于UUID</p>
-            <p>可取值：IdentifierGeneratorType.mpNextId：基于雪花算法</p>
-            <p>可以自定义，只需要实现 IdentifierGenerator，并注册（项目启动时）ID生成器：IdentifierGeneratorFactory.register("名字"，生成器的实例)</p>        
+            <p>IdAutoType.GENERATOR生效;可取值：</p>
+            <p>IdentifierGeneratorType.DEFAULT（推荐，可替换成自己的实现）：基于雪花算法</p>
+            <p>IdentifierGeneratorType.UUID: 基于UUID</p>
+            <p>IdentifierGeneratorType.mpNextId：基于雪花算法</p>
+            <p>自定义：只需要实现 IdentifierGenerator，并注册（项目启动时）ID生成器：IdentifierGeneratorFactory.register("名字"，生成器的实例)</p>        
         </td>
     </tr>
 </table>
@@ -1118,7 +1118,7 @@ mybatis:
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-generator</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <scope>provided</scope>
 </dependency>
 ```

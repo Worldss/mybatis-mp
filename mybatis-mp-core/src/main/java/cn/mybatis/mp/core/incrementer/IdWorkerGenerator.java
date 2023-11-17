@@ -5,10 +5,8 @@ package cn.mybatis.mp.core.incrementer;
  */
 public class IdWorkerGenerator implements IdentifierGenerator<Long> {
 
-    private static final IdWorker idWorker = new IdWorker();
-
     @Override
     public Long nextId(Class<?> entity) {
-        return idWorker.nextId();
+        return IdWorker.INSTANCE.nextId();
     }
 }

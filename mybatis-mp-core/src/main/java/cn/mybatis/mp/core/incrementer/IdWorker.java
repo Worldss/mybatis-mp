@@ -9,6 +9,8 @@ import java.net.NetworkInterface;
  */
 public class IdWorker {
 
+    public static final IdWorker INSTANCE = new IdWorker();
+
     /**
      * 工作机器 ID 占用的位数（5bit）。
      */

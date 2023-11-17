@@ -175,9 +175,9 @@ public class Student {
             <p>IdAutoType.SQL: 结合@TableId.sql属性,实现自增；例如：SELECT LAST_INSERT_ID() 或 序列</p>
             <p>IdAutoType.NONE: 开发者自己set值</p>
             <p>IdAutoType.GENERATOR: 结合@TableId.generatorName属性,实现自定义自增；</p>
-            <p>可取值：cn.mybatis.mp.core.incrementer.DEFAULT（推荐）：基于雪花算法</p>
-            <p>可取值：cn.mybatis.mp.core.incrementer.UUID: 基于UUID</p>
-            <p>可取值：cn.mybatis.mp.core.incrementer.mpNextId：基于雪花算法</p>
+            <p>可取值：IdentifierGeneratorType.DEFAULT（推荐，可替换成自己的实现）：基于雪花算法</p>
+            <p>可取值：IdentifierGeneratorType.UUID: 基于UUID</p>
+            <p>可取值：IdentifierGeneratorType.mpNextId：基于雪花算法</p>
             <p>可以自定义，只需要实现 IdentifierGenerator，并注册（项目启动时）ID生成器：IdentifierGeneratorFactory.register("名字"，生成器的实例)</p>
         </td>
     </tr>

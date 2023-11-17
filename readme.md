@@ -172,13 +172,30 @@ public class Student {
         <td align="left">
             <p>IdAutoType.AUTO: 数据库自增</p>
             <p>IdAutoType.NONE: 开发者自己set值</p>
-            <p>IdAutoType.SQL: 结合@TableId.sql属性,实现自增；例如：SELECT LAST_INSERT_ID() 或 序列</p>
+            <p>IdAutoType.SQL: 结合@TableId.sql属性使用</p>
             <p>IdAutoType.NONE: 开发者自己set值</p>
             <p>IdAutoType.GENERATOR: 结合@TableId.generatorName属性,实现自定义自增；</p>
+        </td>
+    </tr>
+    <tr align="center">
+        <td>dbType</td>
+        <td>DbType.MYSQL</td>
+        <td align="left">设置数据库的类型，@TableId 可配置多个，以支持多数据库切换</td>
+    </tr>
+    <tr align="center">
+        <td>sql</td>
+        <td>""</td>
+        <td align="left">IdAutoType.SQL生效,实现数据库层自增；例如：SELECT LAST_INSERT_ID() 或 序列</td>
+    </tr>
+    <tr align="center">
+        <td>generatorName</td>
+        <td>""</td>
+        <td align="left">
+            <p>IdAutoType.GENERATOR生效</p>
             <p>可取值：IdentifierGeneratorType.DEFAULT（推荐，可替换成自己的实现）：基于雪花算法</p>
             <p>可取值：IdentifierGeneratorType.UUID: 基于UUID</p>
             <p>可取值：IdentifierGeneratorType.mpNextId：基于雪花算法</p>
-            <p>可以自定义，只需要实现 IdentifierGenerator，并注册（项目启动时）ID生成器：IdentifierGeneratorFactory.register("名字"，生成器的实例)</p>
+            <p>可以自定义，只需要实现 IdentifierGenerator，并注册（项目启动时）ID生成器：IdentifierGeneratorFactory.register("名字"，生成器的实例)</p>        
         </td>
     </tr>
 </table>

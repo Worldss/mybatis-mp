@@ -3,8 +3,6 @@ package cn.mybatis.mp.spring.boot.demo.service;
 import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.spring.boot.demo.DO.SysRole;
 
-import java.util.List;
-
 public interface SysRoleService {
 
     void save(SysRole sysRole);

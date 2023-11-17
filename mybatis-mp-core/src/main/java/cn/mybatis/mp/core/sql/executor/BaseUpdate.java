@@ -5,8 +5,8 @@ import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import db.sql.api.cmd.JoinMode;
-import db.sql.core.api.cmd.struct.On;
 import db.sql.core.api.cmd.executor.AbstractUpdate;
+import db.sql.core.api.cmd.struct.On;
 
 import java.util.function.Consumer;
 

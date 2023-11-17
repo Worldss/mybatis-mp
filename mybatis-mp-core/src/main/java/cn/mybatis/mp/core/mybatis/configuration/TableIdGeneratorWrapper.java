@@ -59,13 +59,14 @@ public class TableIdGeneratorWrapper {
                 break;
             }
             //自己输入
-            case NONE: {
+            case NONE:
+                //自定义自增
+            case GENERATOR: {
                 keyGenerator = NoKeyGenerator.INSTANCE;
                 break;
             }
             //序列
             case SQL: {
-
                 SqlSource sqlSource = new StaticSqlSource(ms.getConfiguration(), tableId.sql());
                 ResultMap selectKeyResultMap = new ResultMap.Builder(ms.getConfiguration(), selectKeyId, tableInfo.getIdFieldInfo().getField().getType(),
                         Collections.emptyList(), false).build();
@@ -75,17 +76,9 @@ public class TableIdGeneratorWrapper {
                         .keyGenerator(NoKeyGenerator.INSTANCE)
                         .useCache(false)
                         .build();
-                keyGenerator = new SelectKeyGenerator(selectKeyMappedStatement, tableId.executeBefore());
+                keyGenerator = new SelectKeyGenerator(selectKeyMappedStatement, true);
                 break;
-            }
-            case GENERATOR: {
-                try {
-                    keyGenerator = tableId.generator().newInstance();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            }
+            }//自定义自增ID
             default: {
                 throw new RuntimeException("Not supported");
             }

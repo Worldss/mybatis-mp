@@ -2,8 +2,6 @@ package cn.mybatis.mp.db.annotations;
 
 import cn.mybatis.mp.db.IdAutoType;
 import db.sql.api.DbType;
-import org.apache.ibatis.executor.keygen.KeyGenerator;
-import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 
 import java.lang.annotation.*;
 
@@ -31,11 +29,13 @@ public @interface TableId {
     DbType dbType() default DbType.MYSQL;
 
     /**
-     * value = IdIncrementType.GENERATOR 时 生效
+     * 自增器的名字
+     * 自定义生成器 需要 实现 cn.mybatis.mp.core.incrementer.IdentifierGenerator
+     * 然后 注册到ID生成器工厂 cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory.register(name,ID自增器实例)
      *
      * @return
      */
-    Class<? extends KeyGenerator> generator() default SelectKeyGenerator.class;
+    String generatorName() default "";
 
     /**
      * id 自增的sql语句
@@ -43,14 +43,6 @@ public @interface TableId {
      * @return
      */
     String sql() default "";
-
-    /**
-     * 是否在insert or  update 在之前执行
-     * 数据库自增 强制为 true
-     *
-     * @return
-     */
-    boolean executeBefore() default false;
 
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

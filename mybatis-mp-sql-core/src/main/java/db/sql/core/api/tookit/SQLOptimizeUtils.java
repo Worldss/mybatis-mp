@@ -1,23 +1,23 @@
 package db.sql.core.api.tookit;
 
-import db.sql.api.cmd.JoinMode;
-import db.sql.api.cmd.basic.UnionsCmdLists;
-import db.sql.api.cmd.struct.query.Union;
-import db.sql.api.*;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.Cmd;
+import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.basic.CmdList;
 import db.sql.api.cmd.basic.CountAll;
 import db.sql.api.cmd.basic.SQL1;
+import db.sql.api.cmd.basic.UnionsCmdLists;
 import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.struct.Joins;
+import db.sql.api.cmd.struct.query.Union;
 import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.tookit.CmdUtils;
-import db.sql.core.api.cmd.struct.query.GroupBy;
-import db.sql.core.api.cmd.struct.Join;
-import db.sql.core.api.cmd.struct.query.OrderBy;
-import db.sql.core.api.cmd.struct.query.Select;
 import db.sql.core.api.cmd.basic.Limit;
 import db.sql.core.api.cmd.fun.Count;
+import db.sql.core.api.cmd.struct.Join;
+import db.sql.core.api.cmd.struct.query.GroupBy;
+import db.sql.core.api.cmd.struct.query.OrderBy;
+import db.sql.core.api.cmd.struct.query.Select;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -153,7 +153,7 @@ public final class SQLOptimizeUtils {
                 List<Cmd> unionCmdList = union.getUnionQuery().cmds();
                 unionCmdList.stream().forEach(cmd -> unionCmdClassMap.put(cmd.getClass(), cmd));
                 optimizedCmdList(unionCmdClassMap, false, optimizeOrderBy, optimizeJoins, true);
-                unionCmdList = unionCmdClassMap.values().stream().sorted(union.getUnionQuery().comparator()).collect(Collectors.toList());
+                unionCmdList = (List<Cmd>) unionCmdClassMap.values().stream().sorted(union.getUnionQuery().comparator()).collect(Collectors.toList());
                 CmdList cmdList = new CmdList(union.getOperator(), unionCmdList);
                 cmdListList.add(cmdList);
             }
@@ -182,7 +182,7 @@ public final class SQLOptimizeUtils {
         List<Cmd> cmdList = query.cmds();
         cmdList.stream().forEach(cmd -> classCmdMap.put(cmd.getClass(), cmd));
         optimizedCmdList(classCmdMap, false, false, true, classCmdMap.containsKey(Unions.class));
-        cmdList = classCmdMap.entrySet().stream().map(Map.Entry::getValue).sorted(query.comparator()).collect(Collectors.toList());
+        cmdList = (List<Cmd>) classCmdMap.entrySet().stream().map(Map.Entry::getValue).sorted(query.comparator()).collect(Collectors.toList());
         return CmdUtils.join(context, sqlBuilder, cmdList);
     }
 
@@ -236,7 +236,7 @@ public final class SQLOptimizeUtils {
             }
             classCmdMap.put(Select.class, newSelect);
         }
-        cmdList = classCmdMap.values().stream().sorted(query.comparator()).collect(Collectors.toList());
+        cmdList = (List<Cmd>) classCmdMap.values().stream().sorted(query.comparator()).collect(Collectors.toList());
         if (needWarp) {
             return new StringBuilder("SELECT COUNT(*) FROM (").append(CmdUtils.join(null, context, sqlBuilder, cmdList)).append(") AS T");
         }

@@ -1,6 +1,5 @@
 package cn.mybatis.mp.spring.boot.demo.vo;
 
-import cn.mybatis.mp.db.annotations.NestedResultEntity;
 import cn.mybatis.mp.db.annotations.ResultEntity;
 import cn.mybatis.mp.db.annotations.ResultEntityField;
 import cn.mybatis.mp.db.annotations.ResultField;

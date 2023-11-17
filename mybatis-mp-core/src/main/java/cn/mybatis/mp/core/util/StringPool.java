@@ -8,4 +8,6 @@ public final class StringPool {
     public static final String EMPTY = "";
 
     public static final char UNDERLINE = '_';
+
+    public static final String DASH = "-";
 }

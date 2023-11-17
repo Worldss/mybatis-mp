@@ -1,6 +1,5 @@
 package cn.mybatis.mp.generator.database.meta;
 
-import cn.mybatis.mp.core.util.NamingUtil;
 import lombok.Data;
 
 import java.util.List;

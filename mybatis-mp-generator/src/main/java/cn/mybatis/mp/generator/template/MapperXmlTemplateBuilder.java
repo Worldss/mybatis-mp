@@ -2,7 +2,6 @@ package cn.mybatis.mp.generator.template;
 
 import cn.mybatis.mp.generator.config.GeneratorConfig;
 import cn.mybatis.mp.generator.database.meta.EntityInfo;
-import cn.mybatis.mp.generator.util.GeneratorUtil;
 
 import java.time.LocalDate;
 import java.util.HashMap;

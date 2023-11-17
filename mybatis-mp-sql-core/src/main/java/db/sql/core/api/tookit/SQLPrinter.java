@@ -1,9 +1,9 @@
 package db.sql.core.api.tookit;
 
-import db.sql.api.cmd.Cmd;
 import db.sql.api.DbType;
 import db.sql.api.SQLMode;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.Cmd;
 
 public class SQLPrinter {
     public static String sql(Cmd cmd) {

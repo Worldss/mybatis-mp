@@ -4,6 +4,8 @@ import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
+import cn.mybatis.mp.core.incrementer.IdentifierGenerator;
+import cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.annotations.TableField;
@@ -15,9 +17,8 @@ import db.sql.core.api.cmd.executor.Insert;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 
-public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> {
+public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> implements SetIdMethod {
 
     private final T value;
 
@@ -40,10 +41,19 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
                     isNeedInsert = true;
                 } else if (item.isTableId()) {
                     TableId tableId = TableIds.get(t.getClass());
-                    if (tableId.value() != IdAutoType.AUTO && tableId.executeBefore()) {
+                    if (tableId.value() == IdAutoType.GENERATOR) {
                         isNeedInsert = true;
-                        Supplier supplier = () -> item.getValue(t);
-                        value = supplier;
+                        IdentifierGenerator identifierGenerator = IdentifierGeneratorFactory.getIdentifierGenerator(tableId.generatorName());
+                        Object id = identifierGenerator.nextId(tableInfo.getType());
+                        if (tableInfo.getIdFieldInfo().getField().getType() == String.class) {
+                            id = id instanceof String ? id : String.valueOf(id);
+                        }
+                        value = id;
+                        try {
+                            tableInfo.getIdFieldInfo().getWriteFieldInvoker().invoke(t, new Object[]{id});
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
 
@@ -59,10 +69,18 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
         return insert;
     }
 
+    @Override
     public void setId(Object id) {
         try {
-            TableFieldInfo tableFieldInfo = Tables.get(this.value.getClass()).getIdFieldInfo();
-            tableFieldInfo.getWriteFieldInvoker().invoke(this.value, new Object[]{id});
+            TableFieldInfo idFieldInfo = Tables.get(this.value.getClass()).getIdFieldInfo();
+            //如果设置了id 则不在设置
+            if (idFieldInfo.getReadFieldInvoker().invoke(this, null) != null) {
+                return;
+            }
+            if (idFieldInfo.getField().getType() == String.class) {
+                id = id instanceof String ? id : String.valueOf(id);
+            }
+            idFieldInfo.getWriteFieldInvoker().invoke(this.value, new Object[]{id});
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

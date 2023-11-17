@@ -9,7 +9,6 @@ import cn.mybatis.mp.db.annotations.*;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;

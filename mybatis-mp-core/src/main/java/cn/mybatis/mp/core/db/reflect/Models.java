@@ -1,8 +1,5 @@
 package cn.mybatis.mp.core.db.reflect;
 
-import cn.mybatis.mp.db.Model;
-import cn.mybatis.mp.db.annotations.Table;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

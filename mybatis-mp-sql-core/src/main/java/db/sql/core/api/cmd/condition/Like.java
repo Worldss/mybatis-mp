@@ -1,9 +1,9 @@
 package db.sql.core.api.cmd.condition;
 
-import db.sql.api.cmd.Cmd;
 import db.sql.api.DbType;
-import db.sql.api.cmd.LikeMode;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.Cmd;
+import db.sql.api.cmd.LikeMode;
 import db.sql.core.api.tookit.SqlConst;
 
 public class Like extends BasicCondition {

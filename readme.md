@@ -160,6 +160,28 @@ public class Student {
 ```
 
 > @TableId 支持不同数据库自增或序列 以及 自定义SQL，默认是数据库自增
+<table>
+    <tr align="center">
+        <th>属性</th>
+        <th>默认</th>
+        <th align="left">说明</th>
+    </tr>
+    <tr align="center">
+        <td>value</td>
+        <td>IdAutoType.AUTO</td>
+        <td align="left">
+            <p>IdAutoType.AUTO: 数据库自增</p>
+            <p>IdAutoType.NONE: 开发者自己set值</p>
+            <p>IdAutoType.SQL: 结合@TableId.sql属性,实现自增；例如：SELECT LAST_INSERT_ID() 或 序列</p>
+            <p>IdAutoType.NONE: 开发者自己set值</p>
+            <p>IdAutoType.GENERATOR: 结合@TableId.generatorName属性,实现自定义自增；</p>
+            <p>可取值：cn.mybatis.mp.core.incrementer.DEFAULT（推荐）：基于雪花算法</p>
+            <p>可取值：cn.mybatis.mp.core.incrementer.UUID: 基于UUID</p>
+            <p>可取值：cn.mybatis.mp.core.incrementer.mpNextId：基于雪花算法</p>
+            <p>可以自定义，只需要实现 IdentifierGenerator，并注册（项目启动时）ID生成器：IdentifierGeneratorFactory.register("名字"，生成器的实例)</p>
+        </td>
+    </tr>
+</table>
 
 ### 3. @TableField 数据库字段注解
 
@@ -511,7 +533,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 ```agsl
     Student student = new Student();
-    //student.setId(11);
+    //student.setIdMethod(11);
     student.setName("哈哈");
     student.setExcellent(true);
     student.setCreateTime(LocalDateTime.now());
@@ -569,7 +591,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
     }
     
     StudentDTO studentDTO=new StudentDTO();
-    studentDTO.setId(1)
+    studentDTO.setIdMethod(1)
     studentDTO.setName("DTO Insert");
     studentMapper.update(studentDTO);
     

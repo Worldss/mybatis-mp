@@ -1,9 +1,9 @@
 package db.sql.core.api.cmd.executor;
 
-import db.sql.api.cmd.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.Cmd;
 import db.sql.api.cmd.executor.Insert;
-import db.sql.core.api.cmd.*;
+import db.sql.core.api.cmd.CmdFactory;
 import db.sql.core.api.cmd.basic.BasicValue;
 import db.sql.core.api.cmd.basic.Table;
 import db.sql.core.api.cmd.basic.TableField;

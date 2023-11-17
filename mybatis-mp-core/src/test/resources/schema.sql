@@ -36,3 +36,12 @@ values
 
 insert into sys_user_score
 values(2,3.2),(3,2.6);
+
+
+
+CREATE TABLE IF NOT EXISTS id_test
+(
+    id   BIGINT PRIMARY KEY auto_increment,
+    create_time  DATETIME NOT NULL DEFAULT NOW()
+);
+

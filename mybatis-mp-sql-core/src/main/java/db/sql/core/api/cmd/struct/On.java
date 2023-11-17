@@ -1,7 +1,7 @@
 package db.sql.core.api.cmd.struct;
 
-import db.sql.api.cmd.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.Cmd;
 import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.cmd.ConditionFaction;
 import db.sql.core.api.cmd.basic.Dataset;

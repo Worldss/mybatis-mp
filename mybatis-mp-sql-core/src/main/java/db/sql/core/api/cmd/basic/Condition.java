@@ -1,7 +1,6 @@
 package db.sql.core.api.cmd.basic;
 
 import db.sql.api.cmd.Cmd;
-import db.sql.core.api.cmd.basic.BasicValue;
 import db.sql.core.api.cmd.fun.Case;
 import db.sql.core.api.cmd.fun.If;
 

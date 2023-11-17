@@ -19,8 +19,7 @@ public enum IdAutoType {
     SQL,
 
     /**
-     * 自定义生成器
-     * 需要自行实现 {@link org.apache.ibatis.executor.keygen.KeyGenerator}
+     * ID生成器
      */
     GENERATOR
 

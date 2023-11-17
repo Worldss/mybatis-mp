@@ -26,7 +26,6 @@ public class PreparedParameterHandler implements ParameterHandler {
     }
 
     @Override
-    
     public void setParameters(PreparedStatement ps) throws SQLException {
         Object[] params = cmdContext.getSQLCmdParams();
         int length = params.length;

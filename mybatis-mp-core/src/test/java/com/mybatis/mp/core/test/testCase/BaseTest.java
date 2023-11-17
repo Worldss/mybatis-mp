@@ -1,6 +1,7 @@
 package com.mybatis.mp.core.test.testCase;
 
 import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
+import com.mybatis.mp.core.test.mapper.IdTestMapper;
 import com.mybatis.mp.core.test.mapper.SysRoleMapper;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.mapper.SysUserScoreMapper;
@@ -41,6 +42,7 @@ public class BaseTest {
         configuration.addMapper(SysUserMapper.class);
         configuration.addMapper(SysRoleMapper.class);
         configuration.addMapper(SysUserScoreMapper.class);
+        configuration.addMapper(IdTestMapper.class);
         configuration.setLogImpl(StdOutImpl.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     }

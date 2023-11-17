@@ -3,8 +3,6 @@ package cn.mybatis.mp.generator.template;
 import cn.mybatis.mp.generator.config.GeneratorConfig;
 import cn.mybatis.mp.generator.database.meta.EntityInfo;
 
-import java.util.Map;
-
 public abstract class AbstractTemplateBuilder implements ITemplateBuilder {
 
     protected final GeneratorConfig generatorConfig;

@@ -85,6 +85,13 @@ public interface FunctionInterface extends Cmd {
         return new ConcatAs(this, split, values);
     }
 
+    default IfNull ifNull(Object value) {
+        if (value instanceof Cmd) {
+            return new IfNull(this, (Cmd) value);
+        }
+        return new IfNull(this, new BasicValue(value));
+    }
+
     default Eq eq(Object value) {
         if (value instanceof Cmd) {
             return new Eq(this, (Cmd) value);

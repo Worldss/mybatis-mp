@@ -97,6 +97,8 @@ public class SqlConst {
 
     public static final String IF = " IF";
 
+    public static final String IFNULL = " IFNULL";
+
     public static final String CASE = " CASE ";
 
     public static final String WHEN = " WHEN ";

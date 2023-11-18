@@ -383,7 +383,7 @@ int updateCnt=UpdateChain.of(sysUserMapper)
 <font color="red">建议在dao里操作</font>,如果还是想操作，参考 其他层 链路式 CRUD
 ## 其他层 链路式 CRUD
 ```java
-   new QueryChain(mapper)
+    QueryChain.of(sysUserMapper)
         .select(SysUser.class)
         .select(SysRole.class)
         .select(SysUser::getName, c -> c.concat("").as("copy_name"))
@@ -393,7 +393,7 @@ int updateCnt=UpdateChain.of(sysUserMapper)
         .setReturnType(SysUserVo.class)
         .get(); 
         
-   new UpdateChain()
+   UpdateChain.of(sysUserMapper)
         .update(SysRole.class)
         .set(SysRole::getName,"test")
         .eq(SysRole::getId,1)

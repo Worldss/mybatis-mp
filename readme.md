@@ -52,7 +52,7 @@
 
 #### 1.1 maven 集成
 
-```
+```xml
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-spring-boot-starter</artifactId>
@@ -64,7 +64,7 @@
 
 配置spring boot配置文件
 
-```
+```yaml
 spring.datasource.url=jdbc:mysql://localhost/test
 spring.datasource.username=dbuser
 spring.datasource.password=dbpass
@@ -72,7 +72,7 @@ spring.datasource.password=dbpass
 
 或者 自己实例一个 DataSource 也可以
 
-```
+```java
 @Configuration(proxyBeanMethods = false)
 public class DatasourceConfig {
 
@@ -92,7 +92,7 @@ public class DatasourceConfig {
 
 #### 数据库命名规则配置(可不配置，在项目启动时配置)
 
-```
+```java
 @SpringBootApplication
 public class DemoApplication {
 
@@ -106,7 +106,7 @@ public class DemoApplication {
 
 #### 数据库类型配置(可不配置，默认MYSQL)
 
-```
+```yaml
 mybatis:
     configuration:
         databaseId: MYSQL
@@ -200,7 +200,7 @@ public class Student {
     </tr>
 </table>
 
-### 3. @TableField 数据库字段注解
+### 3. @TableField(可不配置) 数据库字段注解
 
 ```java
 
@@ -330,7 +330,7 @@ public class StudentAchievementVo extends StudentVo {
 > 
 ## Dao 层 链路式 CRUD
 > 继承 cn.mybatis.mp.core.mvc.Dao 接口 和 cn.mybatis.mp.core.mvc.impl.DaoImpl
-```
+```java
    queryChain()
         .select(SysUser.class)
         .select(SysRole.class)
@@ -354,7 +354,7 @@ public class StudentAchievementVo extends StudentVo {
 
 <font color="red">建议在dao里操作</font>,如果还是想操作，参考 其他层 链路式 CRUD
 ## 其他层 链路式 CRUD
-```
+```java
    new QueryChain(mapper)
         .select(SysUser.class)
         .select(SysRole.class)
@@ -474,7 +474,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 #### 1.3.1 基础用法
 
-```agsl
+```java
     List<Achievement> achievementList = achievementMapper.list(new Query()
             .select(Achievement.class)
             .select(Student::getName)
@@ -490,7 +490,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 > join 可结合 @ForeignKey使用 这样无需加 ON 条件
 
-```agsl
+```java
     List<Achievement> achievementList2 = achievementMapper.list(new Query()
             .select(Achievement.class)
             .select(Student::getName)
@@ -504,7 +504,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 #### 1.3.3 相同表 join
 
-```
+```java
     SysUser sysUser = sysUserMapper.get(new Query()
             .select(SysUser.class)
             .from(SysUser.class)
@@ -518,7 +518,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 #### 1.3.4 不同表join
 
-```
+```java
     List<SysUserAndRole> list = sysUserMapper.list(new Query()
             .select(SysUser.class)
             .select(SysRole.class)
@@ -532,7 +532,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 #### 1.3.5 join 子表
 
-```
+```java
     List<SysUser> list = sysUserMapper.list(new Query() {{
         select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                 .from(SysUser.class)
@@ -551,7 +551,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 > 这个方法的意义在于 拿到本身实例，从而更好的链式操作，例如下面的query.$(SysUser::getId)：
 > 
 > 这样可以使用query里方法，query.$(SysUser::getId) 就是从query里取得SysUser的id列，从而被 exists子查询引用。
-```
+```java
     List<SysUser> list = sysUserMapper.list(new Query()
             .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
             .from(SysUser.class)
@@ -569,7 +569,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 ### 1.4 删除
 
-```agsl
+```java
      studentMapper.deleteById(1);
      或
      studentMapper.delete(new Delete().from(Student.class).eq(Student::getId,1));
@@ -580,7 +580,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 ### 1.5 新增
 
-```agsl
+```java
     Student student = new Student();
     //student.setIdMethod(11);
     student.setName("哈哈");
@@ -620,7 +620,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 ### 1.6 更新
 
-```agsl
+```java
     Student student = new Student();
     student.setName("哈哈");
     student.setExcellent(true);
@@ -659,7 +659,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 ### 1.7 group by
 
-```
+```java
 List<Integer> counts = sysUserMapper.list(new Query()
         .select(SysUser::getId, c -> c.count())
         .from(SysUser.class)
@@ -670,7 +670,7 @@ List<Integer> counts = sysUserMapper.list(new Query()
 
 ### 1.8 order by
 
-```
+```java
 SysUser sysUser = sysUserMapper.get(new Query()
         .select(SysUser::getId, SysUser::getUserName,SysUser::getRole_id)
         .from(SysUser.class)
@@ -681,7 +681,7 @@ SysUser sysUser = sysUserMapper.get(new Query()
 
 ### 1.9 group by having
 
-```
+```java
 Integer count = sysUserMapper.get(new Query()
         .select(SysUser::getRole_id, FunctionInterface::count)
         .from(SysUser.class)
@@ -695,7 +695,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 2.1 and or 相互切换
 
-```
+```java
     sysUserMapper.get(new Query()
             .select(SysUser::getId)
             .from(SysUser.class)
@@ -710,7 +710,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 2.2 大于( gt() )
 
-```
+```java
     sysUserMapper.get(new Query()
             .select(SysUser::getId)
             .from(SysUser.class)
@@ -721,7 +721,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 2.3 大于等于( gte() )
 
-```
+```java
     sysUserMapper.get(new Query()
             .select(SysUser::getId)
             .from(SysUser.class)
@@ -732,7 +732,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 2.4 小于( lt() )
 
-```
+```java
     sysUserMapper.get(new Query()
             .select(SysUser::getId)
             .from(SysUser.class)
@@ -743,7 +743,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 2.5 小于等于( lte() )
 
-```
+```java
     sysUserMapper.get(new Query()
             .select(SysUser::getId)
             .from(SysUser.class)
@@ -754,7 +754,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 2.6 等于( eq() )
 
-```
+```java
     sysUserMapper.get(new Query()
             .select(SysUser::getId)
             .from(SysUser.class)
@@ -765,7 +765,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 2.7 不等于( ne() )
 
-```
+```java
     sysUserMapper.get(new Query()
             .select(SysUser::getId)
             .from(SysUser.class)
@@ -776,7 +776,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 2.8 is NULL
 
-```
+```java
     sysUserMapper.get(new Query()
             .select(SysUser::getId)
             .from(SysUser.class)
@@ -787,7 +787,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 2.9 is NOT NULL
 
-```
+```java
     sysUserMapper.get(new Query()
             .select(SysUser::getId)
             .from(SysUser.class)
@@ -798,7 +798,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 3.0 in
 
-```
+```java
     List<Integer> list = sysUserMapper.list(new Query().
             select(SysUser::getId).
             from(SysUser.class).
@@ -809,7 +809,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 3.1 like
 
-```
+```java
      SysUser sysUser = sysUserMapper.get(new Query() {{
         select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id);
         from(SysUser.class);
@@ -819,7 +819,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 3.2 left like
 
-```
+```java
      SysUser sysUser = sysUserMapper.get(new Query().
             select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id).
             from(SysUser.class).
@@ -830,7 +830,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 3.3 right like
 
-```
+```java
     Integer count = sysUserMapper.get(new Query().
             select(SysUser::getId, c -> c.count()).
             from(SysUser.class).
@@ -841,7 +841,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 3.4 not like
 
-```
+```java
      SysUser sysUser = sysUserMapper.get(new Query() {{
         select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id);
         from(SysUser.class);
@@ -851,7 +851,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 3.5 not left like
 
-```
+```java
      SysUser sysUser = sysUserMapper.get(new Query().
             select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id).
             from(SysUser.class).
@@ -862,7 +862,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 3.6 not right like
 
-```
+```java
     Integer count = sysUserMapper.get(new Query().
             select(SysUser::getId, c -> c.count()).
             from(SysUser.class).
@@ -873,7 +873,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 3.7 between
 
-```
+```java
     List<Integer> list = sysUserMapper.list(new Query().
             select(SysUser::getId).
             from(SysUser.class).
@@ -884,7 +884,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 3.8 not between
 
-```
+```java
     List<Integer> list = sysUserMapper.list(new Query().
             select(SysUser::getId).
             from(SysUser.class).
@@ -896,7 +896,7 @@ Integer count = sysUserMapper.get(new Query()
 
 #### 3.9 exists
 
-```
+```java
     List<SysUser> list = sysUserMapper.list(new Query()
             .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
             .from(SysUser.class)
@@ -914,7 +914,7 @@ Integer count = sysUserMapper.get(new Query()
 
 ## 3.0 select 去重
 
-```
+```java
 List<Integer> roleIds = sysUserMapper.list(new Query()
         .selectDistinct()
         .select(SysUser::getRole_id)
@@ -925,7 +925,7 @@ List<Integer> roleIds = sysUserMapper.list(new Query()
 
 ## 4.0 union 和 union all 查询
 
-```
+```java
     List<SysUser> list = sysUserMapper.list(new Query()
             .select(SysUser::getRole_id ,SysUser::getId)
             .from(SysUser.class)
@@ -938,7 +938,7 @@ List<Integer> roleIds = sysUserMapper.list(new Query()
     );
 ```
 
-```
+```java
     List<SysUser> list = sysUserMapper.list(new Query()
             .select(SysUser::getRole_id ,SysUser::getId)
             .from(SysUser.class)
@@ -955,7 +955,7 @@ List<Integer> roleIds = sysUserMapper.list(new Query()
 
 ### 1.1 聚合函数（min,count,max,avg）
 
-```
+```java
     Integer count = sysUserMapper.get(new Query().
             select(SysUser::getId, c -> c.count()).
             from(SysUser.class).
@@ -963,7 +963,7 @@ List<Integer> roleIds = sysUserMapper.list(new Query()
     );
 ```
 
-```
+```java
     select(SysUser::getId, c -> c.min())
     select(SysUser::getId, c -> c.max())
     select(SysUser::getId, c -> c.avg())
@@ -971,7 +971,7 @@ List<Integer> roleIds = sysUserMapper.list(new Query()
 
 ### 1.2 运算（加,减,乘,除）
 
-```
+```java
     select(SysUser::getId, c -> c.plus(1))
     select(SysUser::getId, c -> c.subtract(1))
     select(SysUser::getId, c -> c.multiply(1))
@@ -994,7 +994,7 @@ List<Integer> roleIds = sysUserMapper.list(new Query()
 
 ## exists
 
-```
+```java
     List<SysUser> list = sysUserMapper.list(new Query() {{
         select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                 .from(SysUser.class)
@@ -1011,7 +1011,7 @@ List<Integer> roleIds = sysUserMapper.list(new Query()
 
 ## in 一张表的数据
 
-``` 
+``` java
 List<SysUser> list = sysUserMapper.list(new Query() {{
     select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
             .from(SysUser.class)
@@ -1028,7 +1028,7 @@ List<SysUser> list = sysUserMapper.list(new Query() {{
 
 ## join 自己
 
-```
+```java
     Integer count = sysUserMapper.get(new Query()
             .select(SysUser::getId, FunctionInterface::count)
             .from(SysUser.class)
@@ -1039,7 +1039,7 @@ List<SysUser> list = sysUserMapper.list(new Query() {{
 
 ## join 子表
 
-```
+```java
      SubQuery subQuery = new SubQuery("sub")
             .select(SysRole.class)
             .from(SysRole.class)
@@ -1054,14 +1054,14 @@ List<SysUser> list = sysUserMapper.list(new Query() {{
 
 ## select 1 or  select *
 
-```
+```java
     new Query().select1();
     new Query().selectAll();
 ```
 
 ## select count(1) or select count(*)
 
-```
+```java
     new Query().selectCount1();
     new Query().selectCountAll();
 ```
@@ -1072,7 +1072,7 @@ List<SysUser> list = sysUserMapper.list(new Query() {{
 >
 >    可创建 条件，列，表，函数等等，例如
 
-```
+```java
     new Query().$().table(...) //创建表
     new Query().$().field(...) //创建表的列
     new Query().$().columnName(...) //获取数据库列名
@@ -1081,7 +1081,7 @@ List<SysUser> list = sysUserMapper.list(new Query() {{
 
     结合实际使用,例如：
 
-```
+```java
     new Query() {{
         select(SysUser::getRole_id)
         .from(SysUser.class)
@@ -1092,7 +1092,7 @@ List<SysUser> list = sysUserMapper.list(new Query() {{
 
     甚至 Query 也包含了部分创建 列 表的功能
 
-```
+```java
     new Query() {{
         select($(SysUser::getId))
         .from($(SysUser.class))
@@ -1104,7 +1104,7 @@ List<SysUser> list = sysUserMapper.list(new Query() {{
 
 ## 如何配置不同类型的数据库
 
-```
+```yaml
 mybatis:
   configuration:
     databaseId: MYSQL
@@ -1122,7 +1122,7 @@ mybatis:
 
 ## maven引入
 
-```
+```xml
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-generator</artifactId>
@@ -1133,7 +1133,7 @@ mybatis:
 
 ## 添加数据库驱动 例如：
 
-```
+```xml
 <dependency>
     <groupId>com.mysql</groupId>
     <artifactId>mysql-connector-j</artifactId>
@@ -1143,7 +1143,7 @@ mybatis:
 
 ## 然后，编写一个任意带有 main 方法的类，如下所示
 
-```
+```java
 // 根据数据库链接生成
 new FastGenerator(new GeneratorConfig(
     "jdbc:mysql://xxx.xx.x:3306/数据库名字",
@@ -1214,7 +1214,7 @@ new FastGenerator(new GeneratorConfig(
 
 ## 配置 TableConfig(表配置)
 
-```
+```java
 new GeneratorConfig(...).tableConfig(tableConfig->{
     tableConfig.includeTables("table1","table2");
 });
@@ -1244,7 +1244,7 @@ new GeneratorConfig(...).tableConfig(tableConfig->{
 
 ## 配置 ColumnConfig(列配置)
 
-```
+```java
 new GeneratorConfig(...).columnConfig(columnConfig->{
     columnConfig.excludeColumns("create_time","creater_id");
 });
@@ -1274,7 +1274,7 @@ new GeneratorConfig(...).columnConfig(columnConfig->{
 
 ## 配置 EntityConfig(实体类配置)
 
-```
+```java
 new GeneratorConfig(...).entityConfig(entityConfig->{
     entityConfig.lombok(true);
 });
@@ -1339,7 +1339,7 @@ new GeneratorConfig(...).entityConfig(entityConfig->{
 
 ## 配置 MapperConfig(mapper类配置)
 
-```
+```java
 new GeneratorConfig(...).mapperConfig(entityConfig->{
     mapperConfig.mapperAnnotation(true);
 });
@@ -1379,7 +1379,7 @@ new GeneratorConfig(...).mapperConfig(entityConfig->{
 
 ## 配置 MapperXmlConfig(mapper xml配置)
 
-```
+```java
 new GeneratorConfig(...).mapperXmlConfig(mapperXmlConfig->{
     mapperXmlConfig.enable(true);
 });
@@ -1419,7 +1419,7 @@ new GeneratorConfig(...).mapperXmlConfig(mapperXmlConfig->{
 
 ## 配置 DaoConfig(dao接口配置)
 
-```
+```java
 new GeneratorConfig(...).daoConfig(daoConfig->{
     daoConfig.enable(true);
 });
@@ -1459,7 +1459,7 @@ new GeneratorConfig(...).daoConfig(daoConfig->{
 
 ## 配置 DaoImplConfig(dao接口实现类的配置)
 
-```
+```java
 new GeneratorConfig(...).daoImplConfig(daoImplConfig->{
     daoImplConfig.enable(true);
 });
@@ -1494,7 +1494,7 @@ new GeneratorConfig(...).daoImplConfig(daoImplConfig->{
 
 ## 配置 ServiceConfig(service接口配置)
 
-```
+```java
 new GeneratorConfig(...).serviceConfig(serviceConfig->{
     serviceConfig.enable(true);
 });
@@ -1534,7 +1534,7 @@ new GeneratorConfig(...).serviceConfig(serviceConfig->{
 
 ## 配置 ServiceImplConfig(service接口实现类的配置)
 
-```
+```java
 new GeneratorConfig(...).serviceImplConfig(serviceImplConfig->{
     serviceImplConfig.injectDao(true);
 });
@@ -1579,7 +1579,7 @@ new GeneratorConfig(...).serviceImplConfig(serviceImplConfig->{
 
 ## 配置 ActionConfig(action实现类的配置)
 
-```
+```java
 new GeneratorConfig(...).actionConfig(actionConfig->{
     actionConfig.enable(true);
 });

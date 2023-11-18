@@ -488,6 +488,19 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 # CRUD 操作
 
+## CRUD 申明（一定要阅读）
+<font color="red">
+ 基础操作：用 dao/mapper 下的 save、update、delete、deleteById、getById 方法
+</font>
+
+> 
+
+<font color="red">
+ 动态/复杂操作 用 链式Chain类:QueryChain.of(mapper)..list()/UpdateChain.of(mapper)...execute() .....等
+<p>不需要 去 new Query()/new Update()等方式去 创建查询类 修改类等</p>
+原因：这样更简单、更一体化。
+</font>
+
 ### 1.1 单个查询
 
 ```java
@@ -1396,11 +1409,6 @@ new GeneratorConfig(...).mapperConfig(entityConfig->{
         <td>mapperAnnotation</td>
         <td>true</td>
         <td align="left">是否开启mybatis @Mapper注解，这样类上会生成<strong>@Mapper</strong></td>
-    </tr>
-    <tr align="center">
-        <td>schema</td>
-        <td>false</td>
-        <td align="left">注解上是否加上schema信息</td>
     </tr>
     <tr align="center">
         <td>packageName</td>

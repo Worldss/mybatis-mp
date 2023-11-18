@@ -323,13 +323,41 @@ public class StudentAchievementVo extends StudentVo {
 >
 >
 
-# 链路式 CRUD 操作
-> 为了增加CRUD一体式操作，增加了链路式类，分别为QueryChain,UpdateChain,InsertChain,DeleteChain
+# 链路式 CRUD 操作（强烈建议使用这种方式进行 数据库CRUD操作）
+> 为了增加CRUD一体式操作，增加了链路式类，分别为是:
+> QueryChain 包含 get(),list(),count(),exists(),paging()等查询方法；
+> 
+> UpdateChain 包含 execute();
+> 
+> InsertChain 包含 execute();
+> 
+> DeleteChain 包含 execute();
+> 
+## 如何简单创建 Chain
+> Chain类都包含一个of(MybatisMapper mapper)静态方法，直接调用即可
+> 
+例如：
+```java
+List<SysUser> list=QueryChain.of(sysUserMapper).select(...).list();
+```
+```java
+int updateCnt=UpdateChain.of(sysUserMapper)
+        .update(SysUser.class)
+        .set(SysUser::getName,"hi")
+        .eq(SysUser::getName,"haha")
+        .execute();
+```
 > 
 > dao 里自带 queryChain()、updateChain()等方法，可以直接获取链路式CRUD类
 > 
-## Dao 层 链路式 CRUD
+## Dao 层 CRUD
 > 继承 cn.mybatis.mp.core.mvc.Dao 接口 和 cn.mybatis.mp.core.mvc.impl.DaoImpl
+### save
+### update
+### getById
+### deleteById
+### 链式类的获取方法 queryChain()、updateChain()、insertChain()、deleteChain()
+使用方式
 ```java
    queryChain()
         .select(SysUser.class)

@@ -12,6 +12,10 @@ import java.util.List;
  */
 public class QueryChain extends BaseQuery<QueryChain> {
 
+    public static QueryChain of(MybatisMapper mapper){
+        return new QueryChain(mapper);
+    }
+
     public QueryChain(MybatisMapper mapper) {
         this.mapper = mapper;
         this.entityType = MapperEntitys.get(mapper.getClass());

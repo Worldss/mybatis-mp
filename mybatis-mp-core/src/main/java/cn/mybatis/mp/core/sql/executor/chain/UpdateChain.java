@@ -9,6 +9,10 @@ import cn.mybatis.mp.core.sql.executor.BaseUpdate;
  */
 public class UpdateChain extends BaseUpdate<UpdateChain> {
 
+    public static UpdateChain of(MybatisMapper mapper){
+        return new UpdateChain(mapper);
+    }
+
     public UpdateChain(MybatisMapper mapper) {
         this.mapper = mapper;
         this.entityType = MapperEntitys.get(mapper.getClass());

@@ -325,6 +325,7 @@ public class StudentAchievementVo extends StudentVo {
 
 # 链路式 CRUD 操作（强烈建议使用这种方式进行 数据库CRUD操作）
 > 为了增加CRUD一体式操作，增加了链路式类，分别为是:
+> 
 > QueryChain 包含 get(),list(),count(),exists(),paging()等查询方法；
 > 
 > UpdateChain 包含 execute();

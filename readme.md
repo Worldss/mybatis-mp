@@ -497,9 +497,10 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 <font color="red">
  动态/复杂操作 用 链式Chain类:QueryChain.of(mapper)..list()/UpdateChain.of(mapper)...execute() .....等
-<p>不需要 去 new Query()/new Update()等方式去 创建查询类 修改类等</p>
 原因：这样更简单、更一体化。
 </font>
+
+<p>不需要 去 new Query()/new Update()等方式去 创建查询类 修改类等</p>
 
 ### 1.1 单个查询
 

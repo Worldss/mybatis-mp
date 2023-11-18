@@ -334,7 +334,7 @@ public class StudentAchievementVo extends StudentVo {
 > 
 > DeleteChain 包含 execute();
 > 
-## 如何简单创建 Chain
+## 如何简单创建 CRUD Chain类
 > Chain类都包含一个of(MybatisMapper mapper)静态方法，直接调用即可
 > 
 例如：
@@ -357,7 +357,14 @@ int updateCnt=UpdateChain.of(sysUserMapper)
 ### update
 ### getById
 ### deleteById
-### 链式类的获取方法 queryChain()、updateChain()、insertChain()、deleteChain()
+### 链式类的获取方法 
+> queryChain()
+> 
+> updateChain()
+> 
+> insertChain()
+> 
+> deleteChain()
 使用方式
 ```java
    queryChain()
@@ -483,7 +490,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 ### 1.1 单个查询
 
-```agsl
+```java
      Student stu=studentMapper.getById(1);
      或
      Student stu2=studentMapper.get(new Query().from(Student.class).eq(Student::getId,1));
@@ -493,7 +500,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 ### 1.2 选择部分列
 
-```agsl
+```java
      Student stu3=studentMapper.get(new Query().select(Student::getName,Student::getCreateTime).from(Student.class).eq(Student::getId,1));
 ```
 
@@ -1008,7 +1015,7 @@ List<Integer> roleIds = sysUserMapper.list(new Query()
 ```
 
 ### 1.3 其他函数
-
+```java
     abs，
     pow，
     concat，
@@ -1018,6 +1025,7 @@ List<Integer> roleIds = sysUserMapper.list(new Query()
     case when
     比较函数
     gte,gt,lt,lte 等等还很多
+```
 
 # 复杂SQL示例
 

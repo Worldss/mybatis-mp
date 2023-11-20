@@ -29,7 +29,7 @@
     </licenses>
     <scm>
         <connection>https://gitee.com/mybatis-mp/mybatis-mp.git</connection>
-        <url>https://gitee.com/mybatis-mp/mybatis-mp</url>
+        <url>https://gitee.com/mybatis-mp</url>
     </scm>
     <developers>
         <developer>

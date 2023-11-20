@@ -639,13 +639,13 @@ public interface StudentMapper extends MybatisMapper<Student> {
         .select(SysUser::getId,SysUser::getUserName,SysUser::getRole_id)
         .from(SysUser.class)
         .connect(query->{
-        query.exists(SubQuery.create()
-        .select1()
-        .from(SysUser.class)
-        .eq(SysUser::getId,query.$(SysUser::getId))
-        .isNotNull(SysUser::getPassword)
-        .limit(1)
-        );
+            query.exists(SubQuery.create()
+                .select1()
+                .from(SysUser.class)
+                .eq(SysUser::getId,query.$(SysUser::getId))
+                .isNotNull(SysUser::getPassword)
+                .limit(1)
+                );
         })
         .list();
 
@@ -655,8 +655,10 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 ```java
      studentMapper.deleteById(1);
+
         或
-        DeleteChain.of(studentMapper).eq(Student::getId,1).execute();
+        
+     DeleteChain.of(studentMapper).eq(Student::getId,1).execute();
 ```
 
 > 能用前者优先前者，后者为单个动态删除
@@ -666,37 +668,37 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 ```java
     Student student=new Student();
-        //student.setIdMethod(11);
-        student.setName("哈哈");
-        student.setExcellent(true);
-        student.setCreateTime(LocalDateTime.now());
-        studentMapper.save(student);
+    //student.setIdMethod(11);
+    student.setName("哈哈");
+    student.setExcellent(true);
+    student.setCreateTime(LocalDateTime.now());
+    studentMapper.save(student);
 
         或者
 
-@Data
-public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
-
-    private Integer id;
-
-    private String name;
-
-    private LocalDateTime createTime;
-}
+    @Data
+    public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
+    
+        private Integer id;
+    
+        private String name;
+    
+        private LocalDateTime createTime;
+    }
 
     StudentDTO studentDTO = new StudentDTO();
     studentDTO.setName("DTO Insert");
-            studentDTO.setCreateTime(LocalDateTime.now());
-            studentMapper.save(studentDTO);
+    studentDTO.setCreateTime(LocalDateTime.now());
+    studentMapper.save(studentDTO);
 
             或者
-
-            InsertChain.of(studentMapper)
-            .insert(Student.class)
+            
+    InsertChain.of(studentMapper)
+        .insert(Student.class)
         .field(
-        Student::getName,
-        Student::getExcellent,
-        Student::getCreateTime
+            Student::getName,
+            Student::getExcellent,
+            Student::getCreateTime
         )
         .values(Arrays.asList("哈哈",true,LocalDateTime.now()))
         .execute();
@@ -717,25 +719,25 @@ public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
 
         或者
 
-@Data
-public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
-
-    private Integer id;
-
-    private String name;
-
-    private LocalDateTime createTime;
-}
+    @Data
+    public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
+    
+        private Integer id;
+        
+        private String name;
+        
+        private LocalDateTime createTime;
+    }
 
     StudentDTO studentDTO = new StudentDTO();
-    studentDTO.setIdMethod(1)
+            studentDTO.setId(1);
             studentDTO.setName("DTO Insert");
             studentMapper.update(studentDTO);
 
-            或者
+    或者
 
-            UpdateChain.of(studentMapper)
-            .update(Student.class)
+    UpdateChain.of(studentMapper)
+        .update(Student.class)
         .set(Student::getName,"嘿嘿")
         .eq(Student::getId,1)
         .execute();
@@ -1033,13 +1035,24 @@ List<SysUser> list = QueryChain.of(sysUserMapper)
         .lt(SysUser::getId, 3)
         .list();
 ```
-### 4.1 等于一个空字符串
+### 4.1 为空
 ```java
 Integer id = QueryChain.of(sysUserMapper)
         .select(SysUser::getId)
         .from(SysUser.class)
         .eq(SysUser::getId, 2)
         .empty(SysUser::getUserName)
+        .setReturnType(Integer.TYPE)
+        .get();
+```
+
+### 4.2 不为空
+```java
+Integer id = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .eq(SysUser::getId, 2)
+        .notEmpty(SysUser::getUserName)
         .setReturnType(Integer.TYPE)
         .get();
 ```

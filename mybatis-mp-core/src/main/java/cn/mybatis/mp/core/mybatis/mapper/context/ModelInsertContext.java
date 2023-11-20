@@ -9,6 +9,7 @@ import cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import cn.mybatis.mp.core.tenant.TenantContext;
 import cn.mybatis.mp.core.tenant.TenantInfo;
+import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.Model;
 import cn.mybatis.mp.db.annotations.TableField;
@@ -30,16 +31,17 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
         this.value = t;
     }
 
-    private static Insert createCmd(Object t) {
-        ModelInfo modelInfo = Models.get(t.getClass());
+    private static Insert createCmd(Model model) {
+        //设置租户ID
+        TenantUtil.setTenantId(model);
+        ModelInfo modelInfo = Models.get(model.getClass());
         Insert insert = new Insert() {{
             Table table = $.table(modelInfo.getTableInfo().getSchemaAndTableName());
             insert(table);
             List<Object> values = new ArrayList<>();
             modelInfo.getModelFieldInfos().stream().forEach(item -> {
                 boolean isNeedInsert = false;
-                Object value = item.getValue(t);
-
+                Object value = item.getValue(model);
                 if (Objects.nonNull(value)) {
                     isNeedInsert = true;
                 } else if (item.getTableFieldInfo().isVersion()) {
@@ -47,7 +49,7 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
                     try {
                         //乐观锁设置 默认值1
                         value = Integer.valueOf(1);
-                        item.getWriteFieldInvoker().invoke(t, new Object[]{value});
+                        item.getWriteFieldInvoker().invoke(model, new Object[]{value});
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
@@ -60,23 +62,8 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
                         if (modelInfo.getIdFieldInfo().getField().getType() == String.class) {
                             id = id instanceof String ? id : String.valueOf(id);
                         }
-                        if (setId(t, item, id)) {
+                        if (setId(model, item, id)) {
                             value = id;
-                        }
-                    }
-                } else if (item.getTableFieldInfo().isTenantId()) {
-                    //多租户设置
-                    TenantInfo tenantInfo = TenantContext.getTenantInfo();
-                    if (tenantInfo != null) {
-                        Object tenantId = tenantInfo.getTenantId();
-                        if (Objects.nonNull(tenantId)) {
-                            isNeedInsert = true;
-                            value = tenantId;
-                            try {
-                                item.getWriteFieldInvoker().invoke(t, new Object[]{tenantId});
-                            } catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
                         }
                     }
                 }

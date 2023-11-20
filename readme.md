@@ -53,6 +53,7 @@
 #### 1.1 maven 集成
 
 ```xml
+
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-spring-boot-starter</artifactId>
@@ -73,6 +74,7 @@ spring.datasource.password=dbpass
 或者 自己实例一个 DataSource 也可以
 
 ```java
+
 @Configuration(proxyBeanMethods = false)
 public class DatasourceConfig {
 
@@ -93,6 +95,7 @@ public class DatasourceConfig {
 #### 数据库命名规则配置(可不配置，在项目启动时配置)
 
 ```java
+
 @SpringBootApplication
 public class DemoApplication {
 
@@ -108,8 +111,8 @@ public class DemoApplication {
 
 ```yaml
 mybatis:
-    configuration:
-        databaseId: MYSQL
+  configuration:
+    databaseId: MYSQL
 ```
 
 > 更多数据库支持，请查看类：db.sql.api.DbType
@@ -160,6 +163,7 @@ public class Student {
 ```
 
 > @TableId 支持不同数据库自增或序列 以及 自定义SQL，默认是数据库自增
+
 <table>
     <tr align="center">
         <th>属性</th>
@@ -293,19 +297,26 @@ public class StudentAchievementVo extends StudentVo {
 > 返回列的映射（用于非实体类字段，可以设置列名、typeHandler、jdbcType）
 > 返回可以平级 或者 1级 2级 两层映射
 
-
 ### 7. @Version
+
 > 乐观锁，只能注解在Integer类型字段上
-> 
+>
 > 在save(实体类)、save(Model)、update(实体类)、update(Model);
 
 <font color="red">其他update地方操作 需要自己维护，进行version+1.</font>
 
+### 7. @TenantId 多租户ID
+
+> 多租户是围绕实体进行自动设置租户ID，通常在 from(实体类),join(实体类),delete(实体类),update(实体类)，
+
 # mybatis-mp mvc 架构理念
+
 > mybatis-mp 只设计到1层持久层，不过 mybatis-mp的理念，把持久层分2层，mapper层，dao层
+
 ## mapper层、dao层的区别
->区别在于 dao层是对mapper的扩展和限制
-> 
+
+> 区别在于 dao层是对mapper的扩展和限制
+>
 
 > 扩展：增加CRUD链式操作 增加 queryChain()、updateChain()、deleteChain()、insertChain()等方法，无需操作mapper接口；
 >
@@ -313,34 +324,41 @@ public class StudentAchievementVo extends StudentVo {
 > 限制：dao 只暴露 save(实体类|Model类)、update(实体类|Model类)、getById(ID)、deleteById(ID)、delete(实体类)等
 >
 > mapper层一般不增加代码，如果有无法的实现的数据库操作，则需要在 mapper类上添加方法
-> 
-<font color="red">如果不需要dao 可以直接使用mapper接口，进行CRUD；代码生成器有对应的关闭dao生成 和 service 注入mapper的开关</font>
+>
+<font color="red">如果不需要dao 可以直接使用mapper接口，进行CRUD；代码生成器有对应的关闭dao生成 和 service
+注入mapper的开关</font>
 
-## mybatis-mp service层的理解 
+## mybatis-mp service层的理解
+
 > service 不应该支持操作mapper,因为mapper包含丰富的api，这样不利于代码的维护性
-> 
+>
 > service 不应该使用Query等作为参数，dao层也不应该；让service更专注于业务
 >
 >
 
-# 链路式 CRUD 操作（强烈建议使用这种方式进行 数据库CRUD操作）
+# 链路式 CRUD 说明
+
 > 为了增加CRUD一体式操作，增加了链路式类，分别为是:
-> 
+>
 > QueryChain 包含 get(),list(),count(),exists(),paging()等查询方法；
-> 
+>
 > UpdateChain 包含 execute();
-> 
+>
 > InsertChain 包含 execute();
-> 
+>
 > DeleteChain 包含 execute();
-> 
+>
+
 ## 如何简单创建 CRUD Chain类
+
 > Chain类都包含一个of(MybatisMapper mapper)静态方法，直接调用即可
-> 
+>
 例如：
+
 ```java
 List<SysUser> list=QueryChain.of(sysUserMapper).select(...).list();
 ```
+
 ```java
 int updateCnt=UpdateChain.of(sysUserMapper)
         .update(SysUser.class)
@@ -348,59 +366,74 @@ int updateCnt=UpdateChain.of(sysUserMapper)
         .eq(SysUser::getName,"haha")
         .execute();
 ```
-> 
+
+>
 > dao 里自带 queryChain()、updateChain()等方法，可以直接获取链路式CRUD类
-> 
+>
+
 ## Dao 层 CRUD
+
 > 继承 cn.mybatis.mp.core.mvc.Dao 接口 和 cn.mybatis.mp.core.mvc.impl.DaoImpl
+
 ### save
+
 ### update
+
 ### getById
+
 ### deleteById
-### 链式类的获取方法 
+
+### 链式类的获取方法
+
 > queryChain()
-> 
+>
 > updateChain()
-> 
+>
 > insertChain()
-> 
+>
 > deleteChain()
-使用方式
+> 使用方式
+
 ```java
    queryChain()
         .select(SysUser.class)
         .select(SysRole.class)
-        .select(SysUser::getName, c -> c.concat("").as("copy_name"))
+        .select(SysUser::getName,c->c.concat("").as("copy_name"))
         .from(SysUser.class)
-        .join(SysUser.class, SysRole.class)
-        .eq(SysUser::getId, id)
+        .join(SysUser.class,SysRole.class)
+        .eq(SysUser::getId,id)
         .setReturnType(SysUserVo.class)
-        .get(); 
-        
-   updateChain()
+        .get();
+
+        updateChain()
         .update(SysRole.class)
         .set(SysRole::getName,"test")
         .eq(SysRole::getId,1)
         .execute();
-            
+
 ```
+
 ## Service层 链路式 CRUD
-> 使用代码生成器时，可在 ServiceImplConfig injectMapper 一项设置为true，即可生成 queryChain()等方法 和 Dao 层 链路式 CRUD 一样
-> 
+
+> 使用代码生成器时，可在 ServiceImplConfig injectMapper 一项设置为true，即可生成 queryChain()等方法 和 Dao 层 链路式 CRUD
+> 一样
+>
 
 <font color="red">建议在dao里操作</font>,如果还是想操作，参考 其他层 链路式 CRUD
+
 ## 其他层 链路式 CRUD
+
 ```java
     QueryChain.of(sysUserMapper)
         .select(SysUser.class)
         .select(SysRole.class)
-        .select(SysUser::getName, c -> c.concat("").as("copy_name"))
+        .select(SysUser::getName,c->c.concat("").as("copy_name"))
         .from(SysUser.class)
-        .join(SysUser.class, SysRole.class)
-        .eq(SysUser::getId, id)
+        .join(SysUser.class,SysRole.class)
+        .eq(SysUser::getId,id)
         .setReturnType(SysUserVo.class)
-        .get(); 
-        
+        .get();
+
    UpdateChain.of(sysUserMapper)
         .update(SysRole.class)
         .set(SysRole::getName,"test")
@@ -408,9 +441,8 @@ int updateCnt=UpdateChain.of(sysUserMapper)
         .execute();     
 ```
 
-# mybatis Mapper 实现
-
-> 需要继承 MybatisMapper
+# 开始CRUD（CRUD教程）
+> Mapper 需要继承 MybatisMapper
 
 ```java
 public interface StudentMapper extends MybatisMapper<Student> {
@@ -430,7 +462,6 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 > List<R> list(Query query) 列表动态查询（可自定返回类型）
 >
-> all(Query query) 全表查询
 
 ### count查询
 
@@ -486,27 +517,20 @@ public interface StudentMapper extends MybatisMapper<Student> {
 >
 > 优化union 查询 （优化 left join 和 order by,自动判断是否有效）
 
-# CRUD 操作
-
-## CRUD 申明（一定要阅读）
-<font color="red">
- 基础操作：用 dao/mapper 下的 save、update、delete、deleteById、getById 方法
-</font>
-
-> 
-
-<font color="red">
- 动态/复杂操作 用 链式Chain类:QueryChain.of(mapper)..list()/UpdateChain.of(mapper)...execute() .....等
-<p>不需要 去 new Query()/new Update()等方式去 创建查询类 修改类等</p>
-原因：这样更简单、更一体化。
-</font>
+## CRUD 操作
+> 文档为演示 所以是调用 QueryChain.of(mapper),实际使用 queryChain()方法，在dao层
+>
 
 ### 1.1 单个查询
 
 ```java
      Student stu=studentMapper.getById(1);
-     或
-     Student stu2=studentMapper.get(new Query().from(Student.class).eq(Student::getId,1));
+
+        或
+        
+     Student stu2=QueryChain.of(sysUserMapper)
+        .eq(Student::getId,1)
+        .get();
 ```
 
 > 能用前者优先前者，后者为单个动态查询
@@ -514,23 +538,26 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### 1.2 选择部分列
 
 ```java
-     Student stu3=studentMapper.get(new Query().select(Student::getName,Student::getCreateTime).from(Student.class).eq(Student::getId,1));
+     Student stu3=QueryChain.of(sysUserMapper)
+        .select(Student::getName,Student::getCreateTime)
+        .from(Student.class)
+        .eq(Student::getId,1)
+        .get();
 ```
-
->
 
 ### 1.3 join 连表查询
 
 #### 1.3.1 基础用法
 
 ```java
-    List<Achievement> achievementList = achievementMapper.list(new Query()
-            .select(Achievement.class)
-            .select(Student::getName)
-            .from(Achievement.class)
-            .join(Achievement.class, Student.class,on->on.eq(Achievement::getStudentId,Student::getId))
-            .eq(Achievement::getId, 1)
-    );
+    List<Achievement> achievementList=QueryChain.of(achievementMapper)
+        .select(Achievement.class)
+        .select(Student::getName)
+        .from(Achievement.class)
+        .join(Achievement.class,Student.class,on->on.eq(Achievement::getStudentId,Student::getId))
+        .eq(Achievement::getId,1)
+        .list();
+
 ```
 
 > 支持各种连接：INNER JOIN ,LEFT JOIN 等等
@@ -540,13 +567,13 @@ public interface StudentMapper extends MybatisMapper<Student> {
 > join 可结合 @ForeignKey使用 这样无需加 ON 条件
 
 ```java
-    List<Achievement> achievementList2 = achievementMapper.list(new Query()
-            .select(Achievement.class)
-            .select(Student::getName)
-            .from(Achievement.class)
-            .join(Achievement.class, Student.class)
-            .eq(Achievement::getId, 1)
-    );
+    List<Achievement> achievementList2=QueryChain.of(achievementMapper)
+        .select(Achievement.class)
+        .select(Student::getName)
+        .from(Achievement.class)
+        .join(Achievement.class,Student.class)
+        .eq(Achievement::getId,1)
+        .list();
 ```
 
 > 注意，假如自己拼接上了 on 条件 ，则 @ForeignKey 不生效，需要自己把条件书写完成！
@@ -554,11 +581,11 @@ public interface StudentMapper extends MybatisMapper<Student> {
 #### 1.3.3 相同表 join
 
 ```java
-    SysUser sysUser = sysUserMapper.get(new Query()
-            .select(SysUser.class)
-            .from(SysUser.class)
-            .join(JoinMode.INNER, SysUser.class, 1, SysUser.class, 2, on -> on.eq(SysUser::getId, 1, SysUser::getRole_id, 2))
-    );
+    List<SysUser> list=QueryChain.of(sysUserMapper)
+        .select(SysUser.class)
+        .from(SysUser.class)
+        .join(JoinMode.INNER,SysUser.class,1,SysUser.class,2,on->on.eq(SysUser::getId,1,SysUser::getRole_id,2))
+        .list();
 ```
 
 > 注意 select(SysUser.class) 只是返回前面那个表的数据，如需返回后面那个表，则需要 结合注解@ResultField(别名)
@@ -568,13 +595,13 @@ public interface StudentMapper extends MybatisMapper<Student> {
 #### 1.3.4 不同表join
 
 ```java
-    List<SysUserAndRole> list = sysUserMapper.list(new Query()
-            .select(SysUser.class)
-            .select(SysRole.class)
-            .from(SysUser.class)
-            .join(SysUser.class, SysRole.class,on -> on.eq(SysUser::getRole_id, SysRole::getId))
-            .setReturnType(SysUserAndRole.class)
-    );
+    List<SysUserAndRole> list=QueryChain.of(sysUserMapper)
+        .select(SysUser.class)
+        .select(SysRole.class)
+        .from(SysUser.class)
+        .join(SysUser.class,SysRole.class,on->on.eq(SysUser::getRole_id,SysRole::getId))
+        .setReturnType(SysUserAndRole.class)
+        .list();
 ```
 
 > SysUserAndRole 如何映射，请查看注解说明。
@@ -582,46 +609,47 @@ public interface StudentMapper extends MybatisMapper<Student> {
 #### 1.3.5 join 子表
 
 ```java
-    List<SysUser> list = sysUserMapper.list(new Query() {{
-        select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
-                .from(SysUser.class)
-                .in(SysUser::getId, new SubQuery()
-                        .select(SysUser::getId)
-                        .from(SysUser.class)
-                        .eq(SysUser::getId, $(SysUser::getId))
-                        .isNotNull(SysUser::getPassword)
-                        .limit(1)
-                );
+    SubQuery subQuery=SubQuery.create("sub")
+        .select(SysRole.class)
+        .from(SysRole.class)
+        .eq(SysRole::getId,1);
 
-    }});
+        List<SysUser> list=QueryChain.of(sysUserMapper)
+        .select(SysUser.class)
+        .from(SysUser.class)
+        .join(JoinMode.INNER,SysUser.class,subQuery,on->on.eq(SysUser::getRole_id,subQuery.$(subQuery,SysRole::getId)))
+        .list();
 ```
 
 #### 1.3.6 connect 更好的内联
+
 > 这个方法的意义在于 拿到本身实例，从而更好的链式操作，例如下面的query.$(SysUser::getId)：
-> 
+>
 > 这样可以使用query里方法，query.$(SysUser::getId) 就是从query里取得SysUser的id列，从而被 exists子查询引用。
+
 ```java
-    List<SysUser> list = sysUserMapper.list(new Query()
-            .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
-            .from(SysUser.class)
-            .connect(query -> {
-                query.exists(new SubQuery()
-                        .select1()
-                        .from(SysUser.class)
-                        .eq(SysUser::getId, query.$(SysUser::getId))
-                        .isNotNull(SysUser::getPassword)
-                        .limit(1)
-                );
-            })
-    );
+    List<SysUser> list=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId,SysUser::getUserName,SysUser::getRole_id)
+        .from(SysUser.class)
+        .connect(query->{
+        query.exists(SubQuery.create()
+        .select1()
+        .from(SysUser.class)
+        .eq(SysUser::getId,query.$(SysUser::getId))
+        .isNotNull(SysUser::getPassword)
+        .limit(1)
+        );
+        })
+        .list();
+
 ```
 
 ### 1.4 删除
 
 ```java
      studentMapper.deleteById(1);
-     或
-     studentMapper.delete(new Delete().from(Student.class).eq(Student::getId,1));
+        或
+        DeleteChain.of(studentMapper).eq(Student::getId,1).execute();
 ```
 
 > 能用前者优先前者，后者为单个动态删除
@@ -630,38 +658,42 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### 1.5 新增
 
 ```java
-    Student student = new Student();
-    //student.setIdMethod(11);
-    student.setName("哈哈");
-    student.setExcellent(true);
-    student.setCreateTime(LocalDateTime.now());
-    studentMapper.save(student);
-    
-    或者
-    
-    @Data
-    public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
-    
-        private Integer id;
-    
-        private String name;
-    
-        private LocalDateTime createTime;
-    }
-    
-    StudentDTO studentDTO=new StudentDTO();
+    Student student=new Student();
+        //student.setIdMethod(11);
+        student.setName("哈哈");
+        student.setExcellent(true);
+        student.setCreateTime(LocalDateTime.now());
+        studentMapper.save(student);
+
+        或者
+
+@Data
+public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
+
+    private Integer id;
+
+    private String name;
+
+    private LocalDateTime createTime;
+}
+
+    StudentDTO studentDTO = new StudentDTO();
     studentDTO.setName("DTO Insert");
-    studentDTO.setCreateTime(LocalDateTime.now());
-    studentMapper.save(studentDTO);
-    
-    或者
-    
-    studentMapper.save(new Insert().insert(Student.class).field(
-            Student::getName,
-            Student::getExcellent,
-            Student::getCreateTime
-    ).values(Arrays.asList("哈哈", true, LocalDateTime.now())));
-    
+            studentDTO.setCreateTime(LocalDateTime.now());
+            studentMapper.save(studentDTO);
+
+            或者
+
+            InsertChain.of(studentMapper)
+            .insert(Student.class)
+        .field(
+        Student::getName,
+        Student::getExcellent,
+        Student::getCreateTime
+        )
+        .values(Arrays.asList("哈哈",true,LocalDateTime.now()))
+        .execute();
+
 ```
 
 > 能用前者优先前者，后者为动态插入（可多个）
@@ -670,37 +702,36 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### 1.6 更新
 
 ```java
-    Student student = new Student();
-    student.setName("哈哈");
-    student.setExcellent(true);
-    student.setCreateTime(LocalDateTime.now());
-    studentMapper.update(student);
-    
-    或者
-    
-    @Data
-    public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
-    
-        private Integer id;
-    
-        private String name;
-    
-        private LocalDateTime createTime;
-    }
-    
-    StudentDTO studentDTO=new StudentDTO();
+    Student student=new Student();
+        student.setName("哈哈");
+        student.setExcellent(true);
+        student.setCreateTime(LocalDateTime.now());
+        studentMapper.update(student);
+
+        或者
+
+@Data
+public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
+
+    private Integer id;
+
+    private String name;
+
+    private LocalDateTime createTime;
+}
+
+    StudentDTO studentDTO = new StudentDTO();
     studentDTO.setIdMethod(1)
-    studentDTO.setName("DTO Insert");
-    studentMapper.update(studentDTO);
-    
-    或者
-    
-    studentMapper.update(new Update()
+            studentDTO.setName("DTO Insert");
+            studentMapper.update(studentDTO);
+
+            或者
+
+            UpdateChain.of(studentMapper)
             .update(Student.class)
-            .set(Student::getName, "嘿嘿")
-            .eq(Student::getId, 1)
-    );
-    
+        .set(Student::getName,"嘿嘿")
+        .eq(Student::getId,1)
+        .execute();
 ```
 
 > 能用前者优先前者，后者为动态更新
@@ -709,35 +740,35 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### 1.7 group by
 
 ```java
-List<Integer> counts = sysUserMapper.list(new Query()
-        .select(SysUser::getId, c -> c.count())
+List<Integer> counts=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId,c->c.count())
         .from(SysUser.class)
         .groupBy(SysUser::getRole_id)
         .setReturnType(Integer.TYPE)
-);
+        .list();
 ```
 
 ### 1.8 order by
 
 ```java
-SysUser sysUser = sysUserMapper.get(new Query()
-        .select(SysUser::getId, SysUser::getUserName,SysUser::getRole_id)
+SysUser sysUser=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId,SysUser::getUserName,SysUser::getRole_id)
         .from(SysUser.class)
         .orderBy(false,SysUser::getRole_id,SysUser::getId)
         .limit(1)
-);
+        .get();
 ```
 
 ### 1.9 group by having
 
 ```java
-Integer count = sysUserMapper.get(new Query()
-        .select(SysUser::getRole_id, FunctionInterface::count)
+Integer count=QueryChain.of(sysUserMapper)
+        .select(SysUser::getRole_id,FunctionInterface::count)
         .from(SysUser.class)
         .groupBy(SysUser::getRole_id)
-        .having(SysUser::getRole_id, c -> c.gt(0))
+        .having(SysUser::getRole_id,c->c.gt(0))
         .setReturnType(Integer.TYPE)
-);
+        .get();
 ```
 
 ### 2.0 条件
@@ -745,12 +776,12 @@ Integer count = sysUserMapper.get(new Query()
 #### 2.1 and or 相互切换
 
 ```java
-    sysUserMapper.get(new Query()
-            .select(SysUser::getId)
-            .from(SysUser.class)
-            .eq(SysUser::getId, 2).or().eq(SysUser::getId, 1)
-            .setReturnType(Integer.TYPE)
-    );
+    QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .eq(SysUser::getId,2).or().eq(SysUser::getId,1)
+        .setReturnType(Integer.TYPE)
+        .get();
 ```
 
 > 调用 and(),则后续操作默认都and操作
@@ -760,356 +791,351 @@ Integer count = sysUserMapper.get(new Query()
 #### 2.2 大于( gt() )
 
 ```java
-    sysUserMapper.get(new Query()
-            .select(SysUser::getId)
-            .from(SysUser.class)
-            .gt(SysUser::getId, 2)
-            .setReturnType(Integer.TYPE)
-    );
+Integer id=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .eq(SysUser::getId,2)
+        .setReturnType(Integer.TYPE)
+        .get();
 ```    
 
 #### 2.3 大于等于( gte() )
 
 ```java
-    sysUserMapper.get(new Query()
-            .select(SysUser::getId)
-            .from(SysUser.class)
-            .gte(SysUser::getId, 2)
-            .setReturnType(Integer.TYPE)
-    );
+Integer id=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .gte(SysUser::getId,2)
+        .limit(1)
+        .setReturnType(Integer.TYPE)
+        .get();
 ```   
 
 #### 2.4 小于( lt() )
 
 ```java
-    sysUserMapper.get(new Query()
-            .select(SysUser::getId)
-            .from(SysUser.class)
-            .lt(SysUser::getId, 2)
-            .setReturnType(Integer.TYPE)
-    );
+Integer id=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .lt(SysUser::getId,2)
+        .limit(1)
+        .setReturnType(Integer.TYPE)
+        .get();
 ```    
 
 #### 2.5 小于等于( lte() )
 
 ```java
-    sysUserMapper.get(new Query()
-            .select(SysUser::getId)
-            .from(SysUser.class)
-            .lte(SysUser::getId, 2)
-            .setReturnType(Integer.TYPE)
-    );
+Integer id=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .lte(SysUser::getId,1)
+        .limit(1)
+        .setReturnType(Integer.TYPE)
+        .get();
 ```   
 
 #### 2.6 等于( eq() )
 
 ```java
-    sysUserMapper.get(new Query()
-            .select(SysUser::getId)
-            .from(SysUser.class)
-            .lt(SysUser::getId, 2)
-            .setReturnType(Integer.TYPE)
-    );
+Integer id=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .eq(SysUser::getId,2)
+        .setReturnType(Integer.TYPE)
+        .get();
 ```    
 
 #### 2.7 不等于( ne() )
 
 ```java
-    sysUserMapper.get(new Query()
-            .select(SysUser::getId)
-            .from(SysUser.class)
-            .lte(SysUser::getId, 2)
-            .setReturnType(Integer.TYPE)
-    );
+Integer id=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .ne(SysUser::getId,2)
+        .like(SysUser::getUserName,"test")
+        .setReturnType(Integer.TYPE)
+        .count();
 ```  
 
 #### 2.8 is NULL
 
 ```java
-    sysUserMapper.get(new Query()
-            .select(SysUser::getId)
-            .from(SysUser.class)
-            .isNull(SysUser::getId)
-            .setReturnType(Integer.TYPE)
-    );
+SysUserMapper sysUserMapper=session.getMapper(SysUserMapper.class);
+        SysUser sysUser=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId,SysUser::getPassword,SysUser::getRole_id)
+        .from(SysUser.class)
+        .isNull(SysUser::getPassword)
+        .get();
 ```    
 
 #### 2.9 is NOT NULL
 
 ```java
-    sysUserMapper.get(new Query()
-            .select(SysUser::getId)
-            .from(SysUser.class)
-            .isNotNull(SysUser::getId)
-            .setReturnType(Integer.TYPE)
-    );
+SysUser sysUser=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId,SysUser::getPassword)
+        .from(SysUser.class)
+        .isNotNull(SysUser::getPassword)
+        .eq(SysUser::getId,3)
+        .setReturnType(Integer.TYPE)
+        .get();
 ```  
 
 #### 3.0 in
 
 ```java
-    List<Integer> list = sysUserMapper.list(new Query().
-            select(SysUser::getId).
-            from(SysUser.class).
-            in(SysUser::getId, 1, 2).
-            setReturnType(Integer.TYPE)
-    );
+List<Integer> list=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .in(SysUser::getId,1,2)
+        .setReturnType(Integer.TYPE)
+        .list();
 ```
 
 #### 3.1 like
 
 ```java
-     SysUser sysUser = sysUserMapper.get(new Query() {{
-        select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id);
-        from(SysUser.class);
-        like(SysUser::getUserName, "test1");
-    }});
+SysUser sysUser=QueryChain.of(sysUserMapper)
+        .select(SysUser::getId,SysUser::getPassword,SysUser::getRole_id)
+        .from(SysUser.class)
+        .like(SysUser::getUserName,"test1")
+        .get();
 ```
 
 #### 3.2 left like
 
 ```java
-     SysUser sysUser = sysUserMapper.get(new Query().
-            select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id).
-            from(SysUser.class).
-            like(SysUser::getUserName, "test1", LikeMode.LEFT)
-
-    );
+SysUser sysUser = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id)
+        .from(SysUser.class)
+        .like(SysUser::getUserName, "test1", LikeMode.LEFT)
+        .get();
 ```
 
 #### 3.3 right like
 
 ```java
-    Integer count = sysUserMapper.get(new Query().
-            select(SysUser::getId, c -> c.count()).
-            from(SysUser.class).
-            like(SysUser::getUserName, "test", LikeMode.RIGHT).
-            setReturnType(Integer.TYPE)
-    );
+Integer count = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId, c -> c.count())
+        .from(SysUser.class)
+        .like(SysUser::getUserName, "test", LikeMode.RIGHT)
+        .setReturnType(Integer.TYPE)
+        .count();
 ```
 
 #### 3.4 not like
 
 ```java
-     SysUser sysUser = sysUserMapper.get(new Query() {{
-        select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id);
-        from(SysUser.class);
-        notLike(SysUser::getUserName, "test1");
-    }});
+SysUser sysUser = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id)
+        .from(SysUser.class)
+        .notLike(SysUser::getUserName, "test1")
+        .like(SysUser::getUserName, "test")
+        .get();
 ```
 
 #### 3.5 not left like
 
 ```java
-     SysUser sysUser = sysUserMapper.get(new Query().
-            select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id).
-            from(SysUser.class).
-            notLike(SysUser::getUserName, "test1", LikeMode.LEFT)
-
-    );
+SysUser sysUser = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id)
+        .from(SysUser.class)
+        .notLike(SysUser::getUserName, "est1", LikeMode.LEFT)
+        .like(SysUser::getUserName, "test")
+        .get();
 ```
 
 #### 3.6 not right like
 
 ```java
-    Integer count = sysUserMapper.get(new Query().
-            select(SysUser::getId, c -> c.count()).
-            from(SysUser.class).
-            notLike(SysUser::getUserName, "test", LikeMode.RIGHT).
-            setReturnType(Integer.TYPE)
-    );
+SysUser sysUser = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId, SysUser::getPassword, SysUser::getRole_id)
+        .from(SysUser.class)
+        .notLike(SysUser::getUserName, "test2", LikeMode.RIGHT)
+        .like(SysUser::getUserName, "test")
+        .get();
 ```
 
 #### 3.7 between
 
 ```java
-    List<Integer> list = sysUserMapper.list(new Query().
-            select(SysUser::getId).
-            from(SysUser.class).
-            between(SysUser::getId, 1, 2).
-            setReturnType(Integer.TYPE)
-    );
+List<Integer> list = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .between(SysUser::getId, 1, 2)
+        .setReturnType(Integer.TYPE)
+        .list();
 ```
 
 #### 3.8 not between
 
 ```java
-    List<Integer> list = sysUserMapper.list(new Query().
-            select(SysUser::getId).
-            from(SysUser.class).
-            between(SysUser::getId, 1, 3).
-            notBetween(SysUser::getId, 1, 2).
-            setReturnType(Integer.TYPE)
-    );
+List<Integer> list = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .between(SysUser::getId, 1, 3)
+        .notBetween(SysUser::getId, 1, 2)
+        .setReturnType(Integer.TYPE)
+        .list();
 ```
 
 #### 3.9 exists
 
 ```java
-    List<SysUser> list = sysUserMapper.list(new Query()
-            .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
-            .from(SysUser.class)
-            .connect(query -> {
-                query.exists(new SubQuery()
-                        .select1()
-                        .from(SysUser.class)
-                        .eq(SysUser::getId, query.$(SysUser::getId))
-                        .isNotNull(SysUser::getPassword)
-                        .limit(1)
-                );
-            })
-    );
+boolean exists = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+        .from(SysUser.class)
+        .join(SysUser.class, SysRole.class)
+        .like(SysUser::getUserName, "test")
+        .exists();
 ```
 
-## 3.0 select 去重
+### 3.0 select 去重
 
 ```java
-List<Integer> roleIds = sysUserMapper.list(new Query()
+List<Integer> roleIds = QueryChain.of(sysUserMapper)
         .selectDistinct()
         .select(SysUser::getRole_id)
         .from(SysUser.class)
         .setReturnType(Integer.TYPE)
-);
+        .list();
 ```
 
-## 4.0 union 和 union all 查询
+### 4.0 union 和 union all 查询
 
 ```java
-    List<SysUser> list = sysUserMapper.list(new Query()
-            .select(SysUser::getRole_id ,SysUser::getId)
-            .from(SysUser.class)
-            .eq(SysUser::getId,1)
-            .union(new Query()
-                    .select(SysUser::getRole_id ,SysUser::getId)
-                    .from(SysUser.class)
-                    .lt(SysUser::getId,3)
-            )
-    );
+List<SysUser> list = QueryChain.of(sysUserMapper)
+        .select(SysUser::getRole_id, SysUser::getId)
+        .from(SysUser.class)
+        .eq(SysUser::getId, 1)
+        .union(Query.create()
+        .select(SysUser::getRole_id, SysUser::getId)
+        .from(SysUser.class)
+        .lt(SysUser::getId, 3)
+        .list();
 ```
 
 ```java
-    List<SysUser> list = sysUserMapper.list(new Query()
-            .select(SysUser::getRole_id ,SysUser::getId)
-            .from(SysUser.class)
-            .eq(SysUser::getId,1)
-            .unionAll(new Query()
-                    .select(SysUser::getRole_id ,SysUser::getId)
-                    .from(SysUser.class)
-                    .lt(SysUser::getId,3)
-            )
-    );
+List<SysUser> list = QueryChain.of(sysUserMapper)
+        .select(SysUser::getRole_id, SysUser::getId)
+        .from(SysUser.class)
+        .eq(SysUser::getId, 1)
+        .unionAll(Query.create()
+        .select(SysUser::getRole_id, SysUser::getId)
+        .from(SysUser.class)
+        .lt(SysUser::getId, 3)
+        .list();
 ```
 
-# 函数操作
+## 函数操作
 
 ### 1.1 聚合函数（min,count,max,avg）
 
 ```java
-    Integer count = sysUserMapper.get(new Query().
-            select(SysUser::getId, c -> c.count()).
-            from(SysUser.class).
-            setReturnType(Integer.TYPE)
-    );
+Integer count = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId, c -> c.count())
+        .from(SysUser.class)
+        .like(SysUser::getUserName, "test", LikeMode.RIGHT)
+        .setReturnType(Integer.TYPE)
+        .count();
 ```
 
 ```java
-    select(SysUser::getId, c -> c.min())
-    select(SysUser::getId, c -> c.max())
-    select(SysUser::getId, c -> c.avg())
+    select(SysUser::getId,c->c.min())
+    select(SysUser::getId,c->c.max())
+    select(SysUser::getId,c->c.avg())
 ```
 
 ### 1.2 运算（加,减,乘,除）
 
 ```java
-    select(SysUser::getId, c -> c.plus(1))
-    select(SysUser::getId, c -> c.subtract(1))
-    select(SysUser::getId, c -> c.multiply(1))
-    select(SysUser::getId, c -> c.divide(1))
+    select(SysUser::getId,c->c.plus(1))
+    select(SysUser::getId,c->c.subtract(1))
+    select(SysUser::getId,c->c.multiply(1))
+    select(SysUser::getId,c->c.divide(1))
 ```
 
 ### 1.3 其他函数
+
 ```java
     abs，
-    pow，
-    concat，
-    concatAs，
-    round，
-    if,
-    case when
-    比较函数
-    gte,gt,lt,lte 等等还很多
+        pow，
+        concat，
+        concatAs，
+        round，
+        if,
+        case when
+        比较函数
+        gte,gt,lt,lte 等等还很多
 ```
 
-# 复杂SQL示例
+## 复杂SQL示例
 
-## exists
+### exists
 
 ```java
-    List<SysUser> list = sysUserMapper.list(new Query() {{
-        select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
-                .from(SysUser.class)
-                .exists(new SubQuery()
-                        .select1()
-                        .from(SysUser.class)
-                        .eq(SysUser::getId, $(SysUser::getId))
-                        .isNotNull(SysUser::getPassword)
-                        .limit(1)
-                );
-
-    }});
+boolean exists = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+        .from(SysUser.class)
+        .join(SysUser.class, SysRole.class)
+        .like(SysUser::getUserName, "test")
+        .exists();
 ```
 
-## in 一张表的数据
+### in 一张表的数据
 
 ``` java
-List<SysUser> list = sysUserMapper.list(new Query() {{
-    select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
-            .from(SysUser.class)
-            .in(SysUser::getId,new SubQuery()
+List<SysUser> list = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+        .from(SysUser.class)
+        .connect(queryChain -> {
+            queryChain.in(SysUser::getId, new SubQuery()
                     .select(SysUser::getId)
                     .from(SysUser.class)
-                    .eq(SysUser::getId, $(SysUser::getId))
+                    .connect(subQuery -> {
+                        subQuery.eq(SysUser::getId, queryChain.$(SysUser::getId));
+                    })
                     .isNotNull(SysUser::getPassword)
                     .limit(1)
             );
-
-}});
+        })
+        .list();
 ```
 
-## join 自己
+### join 自己
 
 ```java
-    Integer count = sysUserMapper.get(new Query()
-            .select(SysUser::getId, FunctionInterface::count)
-            .from(SysUser.class)
-            .join(JoinMode.INNER, SysUser.class, 1, SysUser.class, 2, on -> on.eq(SysUser::getId, 1, SysUser::getRole_id, 2))
-            .setReturnType(Integer.TYPE)
-    );
+Integer count = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId, FunctionInterface::count)
+        .from(SysUser.class)
+        .join(JoinMode.INNER, SysUser.class, 1, SysUser.class, 2, on -> on.eq(SysUser::getId, 1, SysUser::getRole_id, 2))
+        .setReturnType(Integer.TYPE)
+        .get();
 ```
 
-## join 子表
+### join 子表
 
 ```java
-     SubQuery subQuery = new SubQuery("sub")
-            .select(SysRole.class)
-            .from(SysRole.class)
-            .eq(SysRole::getId, 1);
+SubQuery subQuery = SubQuery.create("sub")
+        .select(SysRole.class)
+        .from(SysRole.class)
+        .eq(SysRole::getId, 1);
 
-    List<SysUser> list = sysUserMapper.list(new Query()
-            .select(SysUser.class)
-            .from(SysUser.class)
-            .join(JoinMode.INNER, SysUser.class, subQuery, on -> on.eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId)))
-    );
+        List<SysUser> list = QueryChain.of(sysUserMapper)
+        .select(SysUser.class)
+        .from(SysUser.class)
+        .join(JoinMode.INNER, SysUser.class, subQuery, on -> on.eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId)))
+        .list();
 ```
 
-## select 1 or  select *
+### select 1 or  select *
 
 ```java
     new Query().select1();
     new Query().selectAll();
 ```
 
-## select count(1) or select count(*)
+### select count(1) or select count(*)
 
 ```java
     new Query().selectCount1();
@@ -1118,7 +1144,7 @@ List<SysUser> list = sysUserMapper.list(new Query() {{
 
 # 如何创建条件，列，表等
 
-> Query类中有个方法，专门提供创建sql的工厂类，new Query().$()
+> Query，QueryChain等中有个方法，专门提供创建sql的工厂类：$()
 >
 >    可创建 条件，列，表，函数等等，例如
 
@@ -1132,21 +1158,21 @@ List<SysUser> list = sysUserMapper.list(new Query() {{
     结合实际使用,例如：
 
 ```java
-    new Query() {{
+    new Query(){{
         select(SysUser::getRole_id)
         .from(SysUser.class)
-        .eq($().field(SysUser::getId), 1)
-        .gt($().table(SysUser.class).$("role_id"), 2);
+        .eq($().field(SysUser::getId),1)
+        .gt($().table(SysUser.class).$("role_id"),2);
     }};
 ```
 
     甚至 Query 也包含了部分创建 列 表的功能
 
 ```java
-    new Query() {{
+    new Query(){{
         select($(SysUser::getId))
         .from($(SysUser.class))
-        .eq($("id"), 1);
+        .eq($("id"),1);
     }};
 ```
 
@@ -1173,6 +1199,7 @@ mybatis:
 ## maven引入
 
 ```xml
+
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-generator</artifactId>
@@ -1184,6 +1211,7 @@ mybatis:
 ## 添加数据库驱动 例如：
 
 ```xml
+
 <dependency>
     <groupId>com.mysql</groupId>
     <artifactId>mysql-connector-j</artifactId>
@@ -1196,19 +1224,20 @@ mybatis:
 ```java
 // 根据数据库链接生成
 new FastGenerator(new GeneratorConfig(
-    "jdbc:mysql://xxx.xx.x:3306/数据库名字",
-    "用户名",
-    "密码")
-    .basePackage("com.test")//根包路径
-).create();
+        "jdbc:mysql://xxx.xx.x:3306/数据库名字",
+        "用户名",
+        "密码")
+        .basePackage("com.test")//根包路径
+        ).create();
 
-or
+        or
+        
 //根据数据源生成
 new FastGenerator(new GeneratorConfig(
-    DbType.H2,//数据库类型
-    dataSource)
-    .basePackage("com.test")//根包路径
-).create();
+        DbType.H2,//数据库类型
+        dataSource)
+        .basePackage("com.test")//根包路径
+        ).create();
 
 ```
 
@@ -1266,9 +1295,10 @@ new FastGenerator(new GeneratorConfig(
 
 ```java
 new GeneratorConfig(...).tableConfig(tableConfig->{
-    tableConfig.includeTables("table1","table2");
-});
+        tableConfig.includeTables("table1","table2");
+        });
 ```
+
 <table>
     <tr align="center">
         <th>属性</th>
@@ -1296,9 +1326,10 @@ new GeneratorConfig(...).tableConfig(tableConfig->{
 
 ```java
 new GeneratorConfig(...).columnConfig(columnConfig->{
-    columnConfig.excludeColumns("create_time","creater_id");
-});
+        columnConfig.excludeColumns("create_time","creater_id");
+        });
 ```
+
 <table>
     <tr align="center">
         <th>属性</th>
@@ -1326,9 +1357,10 @@ new GeneratorConfig(...).columnConfig(columnConfig->{
 
 ```java
 new GeneratorConfig(...).entityConfig(entityConfig->{
-    entityConfig.lombok(true);
-});
+        entityConfig.lombok(true);
+        });
 ```
+
 <table>
     <tr align="center">
         <th>属性</th>
@@ -1391,9 +1423,10 @@ new GeneratorConfig(...).entityConfig(entityConfig->{
 
 ```java
 new GeneratorConfig(...).mapperConfig(entityConfig->{
-    mapperConfig.mapperAnnotation(true);
-});
+        mapperConfig.mapperAnnotation(true);
+        });
 ```
+
 <table>
     <tr align="center">
         <th>属性</th>
@@ -1426,9 +1459,10 @@ new GeneratorConfig(...).mapperConfig(entityConfig->{
 
 ```java
 new GeneratorConfig(...).mapperXmlConfig(mapperXmlConfig->{
-    mapperXmlConfig.enable(true);
-});
+        mapperXmlConfig.enable(true);
+        });
 ```
+
 <table>
     <tr align="center">
         <th>属性</th>
@@ -1466,9 +1500,10 @@ new GeneratorConfig(...).mapperXmlConfig(mapperXmlConfig->{
 
 ```java
 new GeneratorConfig(...).daoConfig(daoConfig->{
-    daoConfig.enable(true);
-});
+        daoConfig.enable(true);
+        });
 ```
+
 <table>
     <tr align="center">
         <th>属性</th>
@@ -1506,9 +1541,10 @@ new GeneratorConfig(...).daoConfig(daoConfig->{
 
 ```java
 new GeneratorConfig(...).daoImplConfig(daoImplConfig->{
-    daoImplConfig.enable(true);
-});
+        daoImplConfig.enable(true);
+        });
 ```
+
 <table>
     <tr align="center">
         <th>属性</th>
@@ -1541,9 +1577,10 @@ new GeneratorConfig(...).daoImplConfig(daoImplConfig->{
 
 ```java
 new GeneratorConfig(...).serviceConfig(serviceConfig->{
-    serviceConfig.enable(true);
-});
+        serviceConfig.enable(true);
+        });
 ```
+
 <table>
     <tr align="center">
         <th>属性</th>
@@ -1581,9 +1618,10 @@ new GeneratorConfig(...).serviceConfig(serviceConfig->{
 
 ```java
 new GeneratorConfig(...).serviceImplConfig(serviceImplConfig->{
-    serviceImplConfig.injectDao(true);
-});
+        serviceImplConfig.injectDao(true);
+        });
 ```
+
 <table>
     <tr align="center">
         <th>属性</th>
@@ -1626,9 +1664,10 @@ new GeneratorConfig(...).serviceImplConfig(serviceImplConfig->{
 
 ```java
 new GeneratorConfig(...).actionConfig(actionConfig->{
-    actionConfig.enable(true);
-});
+        actionConfig.enable(true);
+        });
 ```
+
 <table>
     <tr align="center">
         <th>属性</th>

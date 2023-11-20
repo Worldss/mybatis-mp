@@ -37,6 +37,11 @@ public class ModelInfo {
      */
     private final ModelFieldInfo versionFieldInfo;
 
+    /**
+     * 多租户ID
+     */
+    private final ModelFieldInfo tenantIdFieldInfo;
+
 
     public ModelInfo(Class<?> model) {
         this.type = model;
@@ -55,6 +60,8 @@ public class ModelInfo {
 
         this.idFieldInfo = modelFieldInfos.stream().filter(item -> item.getTableFieldInfo().isTableId()).findFirst().orElse(null);
         this.versionFieldInfo = modelFieldInfos.stream().filter(item -> item.getTableFieldInfo().isVersion()).findFirst().orElse(null);
+        this.tenantIdFieldInfo = modelFieldInfos.stream().filter(item -> item.getTableFieldInfo().isTenantId()).findFirst().orElse(null);
+
         this.modelFieldInfos = Collections.unmodifiableList(modelFieldInfos);
     }
 
@@ -69,6 +76,14 @@ public class ModelInfo {
 
     public ModelFieldInfo getIdFieldInfo() {
         return idFieldInfo;
+    }
+
+    public ModelFieldInfo getVersionFieldInfo() {
+        return versionFieldInfo;
+    }
+
+    public ModelFieldInfo getTenantIdFieldInfo() {
+        return tenantIdFieldInfo;
     }
 
     public List<ModelFieldInfo> getModelFieldInfos() {

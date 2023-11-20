@@ -9,6 +9,7 @@ import cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import cn.mybatis.mp.core.tenant.TenantContext;
 import cn.mybatis.mp.core.tenant.TenantInfo;
+import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;
@@ -30,6 +31,9 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
     }
 
     private static Insert createCmd(Object t) {
+        //设置租户ID
+        TenantUtil.setTenantId(t);
+
         TableInfo tableInfo = Tables.get(t.getClass());
         Insert insert = new Insert() {{
             Table table = $.table(tableInfo.getSchemaAndTableName());
@@ -57,20 +61,6 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
                         Object id = identifierGenerator.nextId(tableInfo.getType());
                         if (setId(t, item, id)) {
                             value = id;
-                        }
-                    }
-                } else if (item.isTenantId()) {
-                    TenantInfo tenantInfo = TenantContext.getTenantInfo();
-                    if (tenantInfo != null) {
-                        Object tenantId = tenantInfo.getTenantId();
-                        if (Objects.nonNull(tenantId)) {
-                            isNeedInsert = true;
-                            value = tenantId;
-                            try {
-                                item.getWriteFieldInvoker().invoke(t, new Object[]{tenantId});
-                            } catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
                         }
                     }
                 }

@@ -402,21 +402,21 @@ int updateCnt=UpdateChain.of(sysUserMapper)
 > 使用方式
 
 ```java
-   queryChain()
-        .select(SysUser.class)
-        .select(SysRole.class)
-        .select(SysUser::getName,c->c.concat("").as("copy_name"))
-        .from(SysUser.class)
-        .join(SysUser.class,SysRole.class)
-        .eq(SysUser::getId,id)
-        .setReturnType(SysUserVo.class)
-        .get();
+queryChain()
+    .select(SysUser.class)
+    .select(SysRole.class)
+    .select(SysUser::getName,c->c.concat("").as("copy_name"))
+    .from(SysUser.class)
+    .join(SysUser.class,SysRole.class)
+    .eq(SysUser::getId,id)
+    .setReturnType(SysUserVo.class)
+    .get();
 
-        updateChain()
-        .update(SysRole.class)
-        .set(SysRole::getName,"test")
-        .eq(SysRole::getId,1)
-        .execute();
+updateChain()
+    .update(SysRole.class)
+    .set(SysRole::getName,"test")
+    .eq(SysRole::getId,1)
+    .execute();
 
 ```
 
@@ -431,21 +431,21 @@ int updateCnt=UpdateChain.of(sysUserMapper)
 ## 其他层 链路式 CRUD
 
 ```java
-    QueryChain.of(sysUserMapper)
-        .select(SysUser.class)
-        .select(SysRole.class)
-        .select(SysUser::getName,c->c.concat("").as("copy_name"))
-        .from(SysUser.class)
-        .join(SysUser.class,SysRole.class)
-        .eq(SysUser::getId,id)
-        .setReturnType(SysUserVo.class)
-        .get();
+QueryChain.of(sysUserMapper)
+    .select(SysUser.class)
+    .select(SysRole.class)
+    .select(SysUser::getName,c->c.concat("").as("copy_name"))
+    .from(SysUser.class)
+    .join(SysUser.class,SysRole.class)
+    .eq(SysUser::getId,id)
+    .setReturnType(SysUserVo.class)
+    .get();
 
-   UpdateChain.of(sysUserMapper)
-        .update(SysRole.class)
-        .set(SysRole::getName,"test")
-        .eq(SysRole::getId,1)
-        .execute();     
+UpdateChain.of(sysUserMapper)
+    .update(SysRole.class)
+    .set(SysRole::getName,"test")
+    .eq(SysRole::getId,1)
+    .execute();     
 ```
 
 # 开始CRUD（CRUD教程）
@@ -531,13 +531,13 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### 1.1 单个查询
 
 ```java
-     Student stu=studentMapper.getById(1);
+Student stu=studentMapper.getById(1);
 
-        或
-        
-     Student stu2=QueryChain.of(sysUserMapper)
-        .eq(Student::getId,1)
-        .get();
+或
+
+Student stu2=QueryChain.of(sysUserMapper)
+    .eq(Student::getId,1)
+    .get();
 ```
 
 > 能用前者优先前者，后者为单个动态查询
@@ -545,11 +545,11 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### 1.2 选择部分列
 
 ```java
-     Student stu3=QueryChain.of(sysUserMapper)
-        .select(Student::getName,Student::getCreateTime)
-        .from(Student.class)
-        .eq(Student::getId,1)
-        .get();
+Student stu3=QueryChain.of(sysUserMapper)
+    .select(Student::getName,Student::getCreateTime)
+    .from(Student.class)
+    .eq(Student::getId,1)
+    .get();
 ```
 
 ### 1.3 join 连表查询
@@ -557,13 +557,13 @@ public interface StudentMapper extends MybatisMapper<Student> {
 #### 1.3.1 基础用法
 
 ```java
-    List<Achievement> achievementList=QueryChain.of(achievementMapper)
-        .select(Achievement.class)
-        .select(Student::getName)
-        .from(Achievement.class)
-        .join(Achievement.class,Student.class,on->on.eq(Achievement::getStudentId,Student::getId))
-        .eq(Achievement::getId,1)
-        .list();
+List<Achievement> achievementList=QueryChain.of(achievementMapper)
+    .select(Achievement.class)
+    .select(Student::getName)
+    .from(Achievement.class)
+    .join(Achievement.class,Student.class,on->on.eq(Achievement::getStudentId,Student::getId))
+    .eq(Achievement::getId,1)
+    .list();
 
 ```
 
@@ -574,13 +574,13 @@ public interface StudentMapper extends MybatisMapper<Student> {
 > join 可结合 @ForeignKey使用 这样无需加 ON 条件
 
 ```java
-    List<Achievement> achievementList2=QueryChain.of(achievementMapper)
-        .select(Achievement.class)
-        .select(Student::getName)
-        .from(Achievement.class)
-        .join(Achievement.class,Student.class)
-        .eq(Achievement::getId,1)
-        .list();
+List<Achievement> achievementList2=QueryChain.of(achievementMapper)
+    .select(Achievement.class)
+    .select(Student::getName)
+    .from(Achievement.class)
+    .join(Achievement.class,Student.class)
+    .eq(Achievement::getId,1)
+    .list();
 ```
 
 > 注意，假如自己拼接上了 on 条件 ，则 @ForeignKey 不生效，需要自己把条件书写完成！
@@ -588,11 +588,11 @@ public interface StudentMapper extends MybatisMapper<Student> {
 #### 1.3.3 相同表 join
 
 ```java
-    List<SysUser> list=QueryChain.of(sysUserMapper)
-        .select(SysUser.class)
-        .from(SysUser.class)
-        .join(JoinMode.INNER,SysUser.class,1,SysUser.class,2,on->on.eq(SysUser::getId,1,SysUser::getRole_id,2))
-        .list();
+List<SysUser> list=QueryChain.of(sysUserMapper)
+    .select(SysUser.class)
+    .from(SysUser.class)
+    .join(JoinMode.INNER,SysUser.class,1,SysUser.class,2,on->on.eq(SysUser::getId,1,SysUser::getRole_id,2))
+    .list();
 ```
 
 > 注意 select(SysUser.class) 只是返回前面那个表的数据，如需返回后面那个表，则需要 结合注解@ResultField(别名)
@@ -602,13 +602,13 @@ public interface StudentMapper extends MybatisMapper<Student> {
 #### 1.3.4 不同表join
 
 ```java
-    List<SysUserAndRole> list=QueryChain.of(sysUserMapper)
-        .select(SysUser.class)
-        .select(SysRole.class)
-        .from(SysUser.class)
-        .join(SysUser.class,SysRole.class,on->on.eq(SysUser::getRole_id,SysRole::getId))
-        .setReturnType(SysUserAndRole.class)
-        .list();
+List<SysUserAndRole> list=QueryChain.of(sysUserMapper)
+    .select(SysUser.class)
+    .select(SysRole.class)
+    .from(SysUser.class)
+    .join(SysUser.class,SysRole.class,on->on.eq(SysUser::getRole_id,SysRole::getId))
+    .setReturnType(SysUserAndRole.class)
+    .list();
 ```
 
 > SysUserAndRole 如何映射，请查看注解说明。
@@ -616,16 +616,16 @@ public interface StudentMapper extends MybatisMapper<Student> {
 #### 1.3.5 join 子表
 
 ```java
-    SubQuery subQuery=SubQuery.create("sub")
-        .select(SysRole.class)
-        .from(SysRole.class)
-        .eq(SysRole::getId,1);
+SubQuery subQuery=SubQuery.create("sub")
+    .select(SysRole.class)
+    .from(SysRole.class)
+    .eq(SysRole::getId,1);
 
-        List<SysUser> list=QueryChain.of(sysUserMapper)
-        .select(SysUser.class)
-        .from(SysUser.class)
-        .join(JoinMode.INNER,SysUser.class,subQuery,on->on.eq(SysUser::getRole_id,subQuery.$(subQuery,SysRole::getId)))
-        .list();
+List<SysUser> list=QueryChain.of(sysUserMapper)
+    .select(SysUser.class)
+    .from(SysUser.class)
+    .join(JoinMode.INNER,SysUser.class,subQuery,on->on.eq(SysUser::getRole_id,subQuery.$(subQuery,SysRole::getId)))
+    .list();
 ```
 
 #### 1.3.6 connect 更好的内联
@@ -635,30 +635,30 @@ public interface StudentMapper extends MybatisMapper<Student> {
 > 这样可以使用query里方法，query.$(SysUser::getId) 就是从query里取得SysUser的id列，从而被 exists子查询引用。
 
 ```java
-    List<SysUser> list=QueryChain.of(sysUserMapper)
-        .select(SysUser::getId,SysUser::getUserName,SysUser::getRole_id)
-        .from(SysUser.class)
-        .connect(query->{
-            query.exists(SubQuery.create()
-                .select1()
-                .from(SysUser.class)
-                .eq(SysUser::getId,query.$(SysUser::getId))
-                .isNotNull(SysUser::getPassword)
-                .limit(1)
-                );
-        })
-        .list();
+List<SysUser> list=QueryChain.of(sysUserMapper)
+    .select(SysUser::getId,SysUser::getUserName,SysUser::getRole_id)
+    .from(SysUser.class)
+    .connect(query->{
+        query.exists(SubQuery.create()
+            .select1()
+            .from(SysUser.class)
+            .eq(SysUser::getId,query.$(SysUser::getId))
+            .isNotNull(SysUser::getPassword)
+            .limit(1)
+            );
+    })
+    .list();
 
 ```
 
 ### 1.4 删除
 
 ```java
-     studentMapper.deleteById(1);
+ studentMapper.deleteById(1);
 
-        或
-        
-     DeleteChain.of(studentMapper).eq(Student::getId,1).execute();
+    或
+    
+ DeleteChain.of(studentMapper).eq(Student::getId,1).execute();
 ```
 
 > 能用前者优先前者，后者为单个动态删除
@@ -667,41 +667,41 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### 1.5 新增
 
 ```java
-    Student student=new Student();
-    //student.setIdMethod(11);
-    student.setName("哈哈");
-    student.setExcellent(true);
-    student.setCreateTime(LocalDateTime.now());
-    studentMapper.save(student);
+Student student=new Student();
+//student.setIdMethod(11);
+student.setName("哈哈");
+student.setExcellent(true);
+student.setCreateTime(LocalDateTime.now());
+studentMapper.save(student);
+
+    或者
+
+@Data
+public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
+
+    private Integer id;
+
+    private String name;
+
+    private LocalDateTime createTime;
+}
+
+StudentDTO studentDTO = new StudentDTO();
+studentDTO.setName("DTO Insert");
+studentDTO.setCreateTime(LocalDateTime.now());
+studentMapper.save(studentDTO);
 
         或者
-
-    @Data
-    public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
-    
-        private Integer id;
-    
-        private String name;
-    
-        private LocalDateTime createTime;
-    }
-
-    StudentDTO studentDTO = new StudentDTO();
-    studentDTO.setName("DTO Insert");
-    studentDTO.setCreateTime(LocalDateTime.now());
-    studentMapper.save(studentDTO);
-
-            或者
-            
-    InsertChain.of(studentMapper)
-        .insert(Student.class)
-        .field(
-            Student::getName,
-            Student::getExcellent,
-            Student::getCreateTime
-        )
-        .values(Arrays.asList("哈哈",true,LocalDateTime.now()))
-        .execute();
+        
+InsertChain.of(studentMapper)
+    .insert(Student.class)
+    .field(
+        Student::getName,
+        Student::getExcellent,
+        Student::getCreateTime
+    )
+    .values(Arrays.asList("哈哈",true,LocalDateTime.now()))
+    .execute();
 
 ```
 
@@ -711,36 +711,36 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### 1.6 更新
 
 ```java
-    Student student=new Student();
-        student.setName("哈哈");
-        student.setExcellent(true);
-        student.setCreateTime(LocalDateTime.now());
-        studentMapper.update(student);
-
-        或者
-
-    @Data
-    public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
-    
-        private Integer id;
-        
-        private String name;
-        
-        private LocalDateTime createTime;
-    }
-
-    StudentDTO studentDTO = new StudentDTO();
-            studentDTO.setId(1);
-            studentDTO.setName("DTO Insert");
-            studentMapper.update(studentDTO);
+Student student=new Student();
+student.setName("哈哈");
+student.setExcellent(true);
+student.setCreateTime(LocalDateTime.now());
+studentMapper.update(student);
 
     或者
 
-    UpdateChain.of(studentMapper)
-        .update(Student.class)
-        .set(Student::getName,"嘿嘿")
-        .eq(Student::getId,1)
-        .execute();
+@Data
+public class StudentDTO implements cn.mybatis.mp.db.Model<Student> {
+
+    private Integer id;
+    
+    private String name;
+    
+    private LocalDateTime createTime;
+}
+
+StudentDTO studentDTO = new StudentDTO();
+studentDTO.setId(1);
+studentDTO.setName("DTO Insert");
+studentMapper.update(studentDTO);
+
+或者
+
+UpdateChain.of(studentMapper)
+    .update(Student.class)
+    .set(Student::getName,"嘿嘿")
+    .eq(Student::getId,1)
+    .execute();
 ```
 
 > 能用前者优先前者，后者为动态更新
@@ -785,12 +785,12 @@ Integer count=QueryChain.of(sysUserMapper)
 #### 2.1 and or 相互切换
 
 ```java
-    QueryChain.of(sysUserMapper)
-        .select(SysUser::getId)
-        .from(SysUser.class)
-        .eq(SysUser::getId,2).or().eq(SysUser::getId,1)
-        .setReturnType(Integer.TYPE)
-        .get();
+QueryChain.of(sysUserMapper)
+    .select(SysUser::getId)
+    .from(SysUser.class)
+    .eq(SysUser::getId,2).or().eq(SysUser::getId,1)
+    .setReturnType(Integer.TYPE)
+    .get();
 ```
 
 > 调用 and(),则后续操作默认都and操作
@@ -1079,24 +1079,24 @@ Integer count = QueryChain.of(sysUserMapper)
 ### 1.2 运算（加,减,乘,除）
 
 ```java
-    select(SysUser::getId,c->c.plus(1))
-    select(SysUser::getId,c->c.subtract(1))
-    select(SysUser::getId,c->c.multiply(1))
-    select(SysUser::getId,c->c.divide(1))
+select(SysUser::getId,c->c.plus(1))
+select(SysUser::getId,c->c.subtract(1))
+select(SysUser::getId,c->c.multiply(1))
+select(SysUser::getId,c->c.divide(1))
 ```
 
 ### 1.3 其他函数
 
 ```java
-    abs，
-        pow，
-        concat，
-        concatAs，
-        round，
-        if,
-        case when
-        比较函数
-        gte,gt,lt,lte 等等还很多
+abs，
+pow，
+concat，
+concatAs，
+round，
+if,
+case when
+比较函数
+gte,gt,lt,lte 等等还很多
 ```
 
 ## 复杂SQL示例
@@ -1161,15 +1161,15 @@ SubQuery subQuery = SubQuery.create("sub")
 ### select 1 or  select *
 
 ```java
-    new Query().select1();
-    new Query().selectAll();
+new Query().select1();
+new Query().selectAll();
 ```
 
 ### select count(1) or select count(*)
 
 ```java
-    new Query().selectCount1();
-    new Query().selectCountAll();
+new Query().selectCount1();
+new Query().selectCountAll();
 ```
 
 # 如何创建条件，列，表等
@@ -1179,31 +1179,31 @@ SubQuery subQuery = SubQuery.create("sub")
 >    可创建 条件，列，表，函数等等，例如
 
 ```java
-    new Query().$().table(...) //创建表
-    new Query().$().field(...) //创建表的列
-    new Query().$().columnName(...) //获取数据库列名
-    new Query().$().gt(...) //创建大于的条件
+new Query().$().table(...) //创建表
+new Query().$().field(...) //创建表的列
+new Query().$().columnName(...) //获取数据库列名
+new Query().$().gt(...) //创建大于的条件
 ```
 
     结合实际使用,例如：
 
 ```java
-    new Query(){{
-        select(SysUser::getRole_id)
-        .from(SysUser.class)
-        .eq($().field(SysUser::getId),1)
-        .gt($().table(SysUser.class).$("role_id"),2);
-    }};
+new Query(){{
+    select(SysUser::getRole_id)
+    .from(SysUser.class)
+    .eq($().field(SysUser::getId),1)
+    .gt($().table(SysUser.class).$("role_id"),2);
+}};
 ```
 
     甚至 Query 也包含了部分创建 列 表的功能
 
 ```java
-    new Query(){{
-        select($(SysUser::getId))
-        .from($(SysUser.class))
-        .eq($("id"),1);
-    }};
+new Query(){{
+    select($(SysUser::getId))
+    .from($(SysUser.class))
+    .eq($("id"),1);
+}};
 ```
 
 # 如何支持不同数据库
@@ -1325,8 +1325,8 @@ new FastGenerator(new GeneratorConfig(
 
 ```java
 new GeneratorConfig(...).tableConfig(tableConfig->{
-        tableConfig.includeTables("table1","table2");
-        });
+    tableConfig.includeTables("table1","table2");
+});
 ```
 
 <table>
@@ -1356,8 +1356,8 @@ new GeneratorConfig(...).tableConfig(tableConfig->{
 
 ```java
 new GeneratorConfig(...).columnConfig(columnConfig->{
-        columnConfig.excludeColumns("create_time","creater_id");
-        });
+    columnConfig.excludeColumns("create_time","creater_id");
+});
 ```
 
 <table>
@@ -1387,8 +1387,8 @@ new GeneratorConfig(...).columnConfig(columnConfig->{
 
 ```java
 new GeneratorConfig(...).entityConfig(entityConfig->{
-        entityConfig.lombok(true);
-        });
+    entityConfig.lombok(true);
+});
 ```
 
 <table>
@@ -1453,8 +1453,8 @@ new GeneratorConfig(...).entityConfig(entityConfig->{
 
 ```java
 new GeneratorConfig(...).mapperConfig(entityConfig->{
-        mapperConfig.mapperAnnotation(true);
-        });
+    mapperConfig.mapperAnnotation(true);
+});
 ```
 
 <table>
@@ -1489,8 +1489,8 @@ new GeneratorConfig(...).mapperConfig(entityConfig->{
 
 ```java
 new GeneratorConfig(...).mapperXmlConfig(mapperXmlConfig->{
-        mapperXmlConfig.enable(true);
-        });
+    mapperXmlConfig.enable(true);
+});
 ```
 
 <table>
@@ -1530,8 +1530,8 @@ new GeneratorConfig(...).mapperXmlConfig(mapperXmlConfig->{
 
 ```java
 new GeneratorConfig(...).daoConfig(daoConfig->{
-        daoConfig.enable(true);
-        });
+    daoConfig.enable(true);
+});
 ```
 
 <table>
@@ -1571,8 +1571,8 @@ new GeneratorConfig(...).daoConfig(daoConfig->{
 
 ```java
 new GeneratorConfig(...).daoImplConfig(daoImplConfig->{
-        daoImplConfig.enable(true);
-        });
+    daoImplConfig.enable(true);
+});
 ```
 
 <table>
@@ -1607,8 +1607,8 @@ new GeneratorConfig(...).daoImplConfig(daoImplConfig->{
 
 ```java
 new GeneratorConfig(...).serviceConfig(serviceConfig->{
-        serviceConfig.enable(true);
-        });
+    serviceConfig.enable(true);
+});
 ```
 
 <table>
@@ -1648,8 +1648,8 @@ new GeneratorConfig(...).serviceConfig(serviceConfig->{
 
 ```java
 new GeneratorConfig(...).serviceImplConfig(serviceImplConfig->{
-        serviceImplConfig.injectDao(true);
-        });
+    serviceImplConfig.injectDao(true);
+});
 ```
 
 <table>
@@ -1694,8 +1694,8 @@ new GeneratorConfig(...).serviceImplConfig(serviceImplConfig->{
 
 ```java
 new GeneratorConfig(...).actionConfig(actionConfig->{
-        actionConfig.enable(true);
-        });
+    actionConfig.enable(true);
+});
 ```
 
 <table>

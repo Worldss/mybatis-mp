@@ -1,10 +1,9 @@
 package com.mybatis.mp.core.test.testCase.query;
 
-import cn.mybatis.mp.core.sql.executor.Query;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
-import com.mybatis.mp.core.test.model.SysRole;
-import com.mybatis.mp.core.test.model.SysUser;
+import com.mybatis.mp.core.test.DO.SysRole;
+import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import com.mybatis.mp.core.test.vo.NestedSysRoleVo;
 import com.mybatis.mp.core.test.vo.SysUserRoleVo;

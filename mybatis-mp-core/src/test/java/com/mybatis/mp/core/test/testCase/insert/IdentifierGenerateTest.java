@@ -1,7 +1,7 @@
 package com.mybatis.mp.core.test.testCase.insert;
 
 import com.mybatis.mp.core.test.mapper.IdTestMapper;
-import com.mybatis.mp.core.test.model.IdTest;
+import com.mybatis.mp.core.test.DO.IdTest;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;

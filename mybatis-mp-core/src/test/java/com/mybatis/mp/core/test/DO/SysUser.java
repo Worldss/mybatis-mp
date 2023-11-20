@@ -1,4 +1,4 @@
-package com.mybatis.mp.core.test.model;
+package com.mybatis.mp.core.test.DO;
 
 import cn.mybatis.mp.db.annotations.ForeignKey;
 import cn.mybatis.mp.db.annotations.Table;

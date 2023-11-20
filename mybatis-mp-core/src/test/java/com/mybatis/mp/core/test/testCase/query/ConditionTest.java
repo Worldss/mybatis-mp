@@ -1,9 +1,8 @@
 package com.mybatis.mp.core.test.testCase.query;
 
-import cn.mybatis.mp.core.sql.executor.Query;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
-import com.mybatis.mp.core.test.model.SysUser;
+import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import db.sql.api.cmd.LikeMode;
 import junit.framework.Assert;

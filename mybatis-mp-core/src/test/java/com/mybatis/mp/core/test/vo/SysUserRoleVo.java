@@ -4,8 +4,8 @@ import cn.mybatis.mp.db.annotations.NestedResultEntity;
 import cn.mybatis.mp.db.annotations.ResultEntity;
 import cn.mybatis.mp.db.annotations.ResultEntityField;
 import cn.mybatis.mp.db.annotations.ResultField;
-import com.mybatis.mp.core.test.model.SysRole;
-import com.mybatis.mp.core.test.model.SysUser;
+import com.mybatis.mp.core.test.DO.SysRole;
+import com.mybatis.mp.core.test.DO.SysUser;
 import lombok.Data;
 
 @Data

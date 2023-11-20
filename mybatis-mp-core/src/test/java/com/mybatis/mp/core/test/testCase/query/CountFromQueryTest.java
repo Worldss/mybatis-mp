@@ -1,8 +1,8 @@
 package com.mybatis.mp.core.test.testCase.query;
 
 import cn.mybatis.mp.core.sql.executor.Query;
-import com.mybatis.mp.core.test.model.SysRole;
-import com.mybatis.mp.core.test.model.SysUser;
+import com.mybatis.mp.core.test.DO.SysRole;
+import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import db.sql.api.DbType;
 import db.sql.api.SQLMode;

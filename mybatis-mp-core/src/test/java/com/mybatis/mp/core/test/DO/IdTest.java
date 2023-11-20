@@ -1,4 +1,4 @@
-package com.mybatis.mp.core.test.model;
+package com.mybatis.mp.core.test.DO;
 
 import cn.mybatis.mp.core.incrementer.IdentifierGeneratorType;
 import cn.mybatis.mp.db.IdAutoType;

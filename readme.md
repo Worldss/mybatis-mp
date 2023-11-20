@@ -309,6 +309,13 @@ public class StudentAchievementVo extends StudentVo {
 
 > 多租户是围绕实体进行自动设置租户ID，通常在 from(实体类),join(实体类),delete(实体类),update(实体类)，
 
+> 另外设置租户ID的获取方法,示例是返回租户ID为2：
+```java
+TenantContext.registerTenantGetter(() -> {
+    return new TenantInfo(2);
+});
+```
+
 # mybatis-mp mvc 架构理念
 
 > mybatis-mp 只设计到1层持久层，不过 mybatis-mp的理念，把持久层分2层，mapper层，dao层

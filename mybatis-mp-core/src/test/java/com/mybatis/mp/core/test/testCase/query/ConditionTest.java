@@ -15,6 +15,22 @@ import java.util.List;
 public class ConditionTest extends BaseTest {
 
     @Test
+    public void empty() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            Integer id = QueryChain.of(sysUserMapper)
+                    .select(SysUser::getId)
+                    .from(SysUser.class)
+                    .eq(SysUser::getId, 2)
+                    .empty(SysUser::getUserName)
+                    .setReturnType(Integer.TYPE)
+                    .get();
+
+            Assert.assertEquals("eq", null, id);
+        }
+    }
+
+    @Test
     public void eq() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);

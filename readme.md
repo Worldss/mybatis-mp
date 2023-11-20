@@ -1033,6 +1033,16 @@ List<SysUser> list = QueryChain.of(sysUserMapper)
         .lt(SysUser::getId, 3)
         .list();
 ```
+### 4.1 等于一个空字符串
+```java
+Integer id = QueryChain.of(sysUserMapper)
+        .select(SysUser::getId)
+        .from(SysUser.class)
+        .eq(SysUser::getId, 2)
+        .empty(SysUser::getUserName)
+        .setReturnType(Integer.TYPE)
+        .get();
+```
 
 ## 函数操作
 

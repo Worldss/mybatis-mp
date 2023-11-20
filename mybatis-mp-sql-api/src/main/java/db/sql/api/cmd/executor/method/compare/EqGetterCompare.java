@@ -5,7 +5,7 @@ import db.sql.api.Getter;
 public interface EqGetterCompare<RV, V> {
 
     default <T> RV empty(Getter<T> column){
-        return this.empty(column,false);
+        return this.empty(column,true);
     }
 
     <T> RV empty(Getter<T> column, boolean when);

@@ -7,6 +7,7 @@ import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.method.compare.Compare;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.function.Consumer;
 
 
@@ -49,6 +50,18 @@ public interface ConditionChain<SELF extends ConditionChain, COLUMN, V> extends 
     }
 
     <T> SELF in(Getter<T> column, boolean when, Serializable... values);
+
+    default SELF in(COLUMN column, List<Object> values) {
+        return this.in(column, true, values);
+    }
+
+    SELF in(COLUMN column, boolean when, List<Object> values);
+
+    default <T> SELF in(Getter<T> column, List<Object> values) {
+        return this.in(column, true, values);
+    }
+
+    <T> SELF in(Getter<T> column, boolean when, List<Object> values);
 
     default SELF exists(Cmd existsCmd) {
         return this.exists(existsCmd, true);

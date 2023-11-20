@@ -6,6 +6,8 @@ import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.method.compare.Compare;
 
+import java.util.List;
+
 public class ConditionFaction implements Compare<Condition, Cmd, Object> {
 
     protected final CmdFactory cmdFactory;
@@ -92,99 +94,115 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
     }
 
     @Override
-    public Condition eq(Cmd cmd, Object value, boolean when) {
-        if (!isValid(when, cmd, true, value)) {
+    public Condition empty(Cmd column, boolean when) {
+        if (!when) {
             return null;
         }
-        return cmdFactory.eq(cmd, convert(value));
+        return cmdFactory.eq(column, cmdFactory.value(""));
     }
 
     @Override
-    public Condition ne(Cmd cmd, Object value, boolean when) {
-        if (!isValid(when, cmd, true, value)) {
+    public <T> Condition empty(Getter<T> column, boolean when) {
+        if (!when) {
             return null;
         }
-        return cmdFactory.ne(cmd, convert(value));
+        return empty(convert(column, 1), when);
     }
 
     @Override
-    public Condition gt(Cmd cmd, Object value, boolean when) {
-        if (!isValid(when, cmd, true, value)) {
+    public Condition eq(Cmd column, Object value, boolean when) {
+        if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.gt(cmd, convert(value));
+        return cmdFactory.eq(column, convert(value));
     }
 
     @Override
-    public Condition gte(Cmd cmd, Object value, boolean when) {
-        if (!isValid(when, cmd, true, value)) {
+    public Condition ne(Cmd column, Object value, boolean when) {
+        if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.gte(cmd, convert(value));
+        return cmdFactory.ne(column, convert(value));
     }
 
     @Override
-    public Condition lt(Cmd cmd, Object value, boolean when) {
-        if (!isValid(when, cmd, true, value)) {
+    public Condition gt(Cmd column, Object value, boolean when) {
+        if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.lt(cmd, convert(value));
+        return cmdFactory.gt(column, convert(value));
     }
 
     @Override
-    public Condition lte(Cmd cmd, Object value, boolean when) {
-        if (!isValid(when, cmd, true, value)) {
+    public Condition gte(Cmd column, Object value, boolean when) {
+        if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.lte(cmd, convert(value));
+        return cmdFactory.gte(column, convert(value));
     }
 
     @Override
-    public Condition like(Cmd cmd, Object value, LikeMode mode, boolean when) {
-        if (!isValid(when, cmd, true, value)) {
+    public Condition lt(Cmd column, Object value, boolean when) {
+        if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.like(cmd, convert(value), mode);
+        return cmdFactory.lt(column, convert(value));
     }
 
     @Override
-    public Condition notLike(Cmd cmd, Object value, LikeMode mode, boolean when) {
-        if (!isValid(when, cmd, true, value)) {
+    public Condition lte(Cmd column, Object value, boolean when) {
+        if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.notLike(cmd, convert(value), mode);
+        return cmdFactory.lte(column, convert(value));
     }
 
     @Override
-    public Condition between(Cmd cmd, Object value, Object value2, boolean when) {
-        if (!isValid(when, cmd, true, value)) {
+    public Condition like(Cmd column, Object value, LikeMode mode, boolean when) {
+        if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.between(cmd, convert(value), convert(value2));
+        return cmdFactory.like(column, convert(value), mode);
     }
 
     @Override
-    public Condition notBetween(Cmd cmd, Object value, Object value2, boolean when) {
-        if (!isValid(when, cmd, true, value)) {
+    public Condition notLike(Cmd column, Object value, LikeMode mode, boolean when) {
+        if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.notBetween(cmd, convert(value), convert(value2));
+        return cmdFactory.notLike(column, convert(value), mode);
     }
 
     @Override
-    public Condition isNull(Cmd cmd, boolean when) {
-        if (!isValid(when, cmd, true)) {
+    public Condition between(Cmd column, Object value, Object value2, boolean when) {
+        if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.isNull(cmd);
+        return cmdFactory.between(column, convert(value), convert(value2));
     }
 
     @Override
-    public Condition isNotNull(Cmd cmd, boolean when) {
-        if (!isValid(when, cmd, true)) {
+    public Condition notBetween(Cmd column, Object value, Object value2, boolean when) {
+        if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.isNotNull(cmd);
+        return cmdFactory.notBetween(column, convert(value), convert(value2));
+    }
+
+    @Override
+    public Condition isNull(Cmd column, boolean when) {
+        if (!isValid(when, column, true)) {
+            return null;
+        }
+        return cmdFactory.isNull(column);
+    }
+
+    @Override
+    public Condition isNotNull(Cmd column, boolean when) {
+        if (!isValid(when, column, true)) {
+            return null;
+        }
+        return cmdFactory.isNotNull(column);
     }
 
     @Override
@@ -347,8 +365,8 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         return cmdFactory.in(convert(column, 1)).add(cmds);
     }
 
-    public Condition in(Cmd cmd, Object[] values, boolean when) {
-        if (!isValid(when, cmd, false, values)) {
+    public Condition in(Cmd column, Object[] values, boolean when) {
+        if (!isValid(when, column, false, values)) {
             return null;
         }
         Cmd[] cmds = new Cmd[values.length];
@@ -359,7 +377,39 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
             }
             cmds[i++] = convert(value);
         }
-        return cmdFactory.in(cmd).add(cmds);
+        return cmdFactory.in(column).add(cmds);
+    }
+
+
+    public <T> Condition in(Getter<T> column, List<Object> values, boolean when) {
+        if (!isValid(when, false, values)) {
+            return null;
+        }
+
+        Cmd[] cmds = new Cmd[values.size()];
+        int i = 0;
+        for (Object value : values) {
+            if (!hasValue(value)) {
+                continue;
+            }
+            cmds[i++] = convert(value);
+        }
+        return cmdFactory.in(convert(column, 1)).add(cmds);
+    }
+
+    public Condition in(Cmd column, List<Object> values, boolean when) {
+        if (!isValid(when, column, false, values)) {
+            return null;
+        }
+        Cmd[] cmds = new Cmd[values.size()];
+        int i = 0;
+        for (Object value : values) {
+            if (!hasValue(value)) {
+                continue;
+            }
+            cmds[i++] = convert(value);
+        }
+        return cmdFactory.in(column).add(cmds);
     }
 
     public Condition exists(Cmd existsCmd) {

@@ -8,6 +8,7 @@ import db.sql.api.cmd.struct.ConditionChain;
 import db.sql.api.cmd.struct.Nested;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.function.Consumer;
 
 
@@ -106,6 +107,18 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
     @Override
     default SELF isNotNull(COLUMN column, boolean when) {
         conditionChain().isNotNull(column, when);
+        return (SELF) this;
+    }
+
+    @Override
+    default <T> SELF empty(Getter<T> column, boolean when) {
+        conditionChain().empty(column, when);
+        return (SELF) this;
+    }
+
+    @Override
+    default SELF empty(COLUMN column, boolean when) {
+        conditionChain().empty(column, when);
         return (SELF) this;
     }
 
@@ -232,6 +245,24 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
     }
 
     default <T> SELF in(Getter<T> column, boolean when, Serializable... values) {
+        conditionChain().in(column, when, values);
+        return (SELF) this;
+    }
+
+    default SELF in(COLUMN column, List<Object> values) {
+        return this.in(column, true, values);
+    }
+
+    default SELF in(COLUMN column, boolean when, List<Object> values) {
+        conditionChain().in(column, when, values);
+        return (SELF) this;
+    }
+
+    default <T> SELF in(Getter<T> column, List<Object> values) {
+        return this.in(column, true, values);
+    }
+
+    default <T> SELF in(Getter<T> column, boolean when, List<Object> values) {
         conditionChain().in(column, when, values);
         return (SELF) this;
     }

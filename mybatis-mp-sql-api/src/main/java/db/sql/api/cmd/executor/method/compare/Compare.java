@@ -1,5 +1,6 @@
 package db.sql.api.cmd.executor.method.compare;
 
+import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
 
 import java.io.Serializable;
@@ -25,6 +26,12 @@ public interface Compare<RV, COLUMN, V> extends
         IsNullGetterCompare<RV>,
         IsNotNullGetterCompare<RV>,
         Serializable {
+
+    default RV empty(COLUMN column) {
+        return this.empty(column, true);
+    }
+
+    RV empty(COLUMN column, boolean when);
 
     default RV eq(COLUMN column, V value) {
         return eq(column, value, true);

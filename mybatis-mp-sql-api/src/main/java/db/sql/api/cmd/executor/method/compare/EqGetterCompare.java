@@ -4,6 +4,12 @@ import db.sql.api.Getter;
 
 public interface EqGetterCompare<RV, V> {
 
+    default <T> RV empty(Getter<T> column){
+        return this.empty(column,false);
+    }
+
+    <T> RV empty(Getter<T> column, boolean when);
+
     default <T> RV eq(Getter<T> column, V value) {
         return eq(column, value, true);
     }

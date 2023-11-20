@@ -14,10 +14,14 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         this.cmdFactory = cmdFactory;
     }
 
+    protected boolean ignoreEmpty() {
+        return false;
+    }
+
     protected boolean hasValue(Object value) {
         if (value == null) {
             return false;
-        } else if (value instanceof String) {
+        } else if (ignoreEmpty() && value instanceof String) {
             String v = (String) value;
             return !v.trim().isEmpty();
         }

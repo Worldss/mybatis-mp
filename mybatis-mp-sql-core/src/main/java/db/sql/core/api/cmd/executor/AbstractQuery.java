@@ -27,22 +27,22 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         implements Query<SELF,
         Dataset,
         TableField,
-                Cmd,
-                Object,
-                ConditionChain,
-                Select,
-                From,
-                Join,
-                On,
+        Cmd,
+        Object,
+        ConditionChain,
+        Select,
+        From,
+        Join,
+        On,
         Joins<Join>,
-                Where,
-                GroupBy,
-                Having,
-                OrderBy,
+        Where,
+        GroupBy,
+        Having,
+        OrderBy,
         Limit,
-                Union,
+        Union,
         Unions<Union>
-                >, Cmd {
+        >, Cmd {
 
     protected Select select;
 
@@ -68,7 +68,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     public AbstractQuery(CMD_FACTORY $) {
         this.$ = $;
-        this.conditionFaction = new ConditionFaction($);
+        this.conditionFaction = new ConditionFaction($) {
+            @Override
+            protected boolean ignoreEmpty() {
+                return true;
+            }
+        };
     }
 
     @Override

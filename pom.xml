@@ -20,7 +20,10 @@
         <module>mybatis-mp-sql-core</module>
         <module>mybatis-mp-generator</module>
     </modules>
-
+    <issueManagement>
+        <system>Gitee Issue</system>
+        <url>https://gitee.com/mybatis-mp/mybatis-mp/issues</url>
+    </issueManagement>
     <licenses>
         <license>
             <name>Apache-2.0</name>
@@ -29,7 +32,7 @@
     </licenses>
     <scm>
         <connection>https://gitee.com/mybatis-mp/mybatis-mp.git</connection>
-        <url>https://gitee.com/mybatis-mp</url>
+        <url>https://gitee.com/mybatis-mp/mybatis-mp/tree/master</url>
     </scm>
     <developers>
         <developer>

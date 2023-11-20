@@ -52,3 +52,11 @@ CREATE TABLE IF NOT EXISTS version_test
     name VARCHAR(100) not null,
     create_time  DATETIME NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS tenant_test
+(
+    id   varchar(32) PRIMARY KEY,
+    tenant_id INT NOT NULL,
+    name VARCHAR(100) not null,
+    create_time  DATETIME NOT NULL DEFAULT NOW()
+);

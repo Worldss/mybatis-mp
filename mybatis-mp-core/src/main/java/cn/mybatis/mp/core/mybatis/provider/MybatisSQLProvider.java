@@ -26,7 +26,6 @@ public class MybatisSQLProvider {
     public static final String UPDATE_NAME = "update";
     public static final String DELETE_NAME = "delete";
     public static final String GET_BY_ID_NAME = "getById";
-    public static final String DELETE_BY_ID_NAME = "deleteById";
 
     private static final Map<String, String> SQL_CACHE_MAP = new ConcurrentHashMap<>();
 
@@ -72,23 +71,6 @@ public class MybatisSQLProvider {
             throw new RuntimeException("ID not found");
         }
         return getByIdSql(tableInfo);
-    }
-
-    public static String deleteById(Serializable id, ProviderContext context) {
-        TableInfo tableInfo = Tables.get(MapperEntitys.get(context.getMapperType()));
-        if (Objects.isNull(tableInfo.getIdFieldInfo())) {
-            throw new RuntimeException("ID not found");
-        }
-        return getDeleteByIdSql(tableInfo);
-    }
-
-    private static String getDeleteByIdSql(TableInfo tableInfo) {
-        return MapUtil.computeIfAbsent(SQL_CACHE_MAP, tableInfo.getSchemaAndTableName() + ".deleteById", (key) -> {
-            return new SQL() {{
-                DELETE_FROM(tableInfo.getSchemaAndTableName());
-                WHERE(tableInfo.getIdFieldInfo().getColumnName() + "=#{value}");
-            }}.toString();
-        });
     }
 
     private static void fill(SQLCmdQueryContext queryContext, ProviderContext providerContext) {

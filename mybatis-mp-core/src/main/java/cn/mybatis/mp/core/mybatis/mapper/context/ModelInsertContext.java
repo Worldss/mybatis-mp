@@ -7,6 +7,8 @@ import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.incrementer.IdentifierGenerator;
 import cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
+import cn.mybatis.mp.core.tenant.TenantContext;
+import cn.mybatis.mp.core.tenant.TenantInfo;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.Model;
 import cn.mybatis.mp.db.annotations.TableField;
@@ -60,6 +62,21 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
                         }
                         if (setId(t, item, id)) {
                             value = id;
+                        }
+                    }
+                } else if (item.getTableFieldInfo().isTenantId()) {
+                    //多租户设置
+                    TenantInfo tenantInfo = TenantContext.getTenantInfo();
+                    if (tenantInfo != null) {
+                        Object tenantId = tenantInfo.getTenantId();
+                        if (Objects.nonNull(tenantId)) {
+                            isNeedInsert = true;
+                            value = tenantId;
+                            try {
+                                item.getWriteFieldInvoker().invoke(t, new Object[]{tenantId});
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
                 }

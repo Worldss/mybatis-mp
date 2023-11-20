@@ -1,6 +1,7 @@
 package com.mybatis.mp.core.test.testCase.query;
 
 import cn.mybatis.mp.core.sql.executor.Query;
+import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.model.SysRole;
 import com.mybatis.mp.core.test.model.SysUser;
@@ -20,12 +21,12 @@ public class SelectAsTest extends BaseTest {
     public void simpleReturnAs() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            SysUserVo sysUser = sysUserMapper.get(new Query()
+            SysUserVo sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName)
                     .from(SysUser.class)
                     .eq(SysUser::getId, 1)
                     .setReturnType(SysUserVo.class)
-            );
+                    .get();
             SysUserVo eqSysUser = new SysUserVo();
             eqSysUser.setId(1);
             eqSysUser.setUserName("admin");
@@ -38,12 +39,12 @@ public class SelectAsTest extends BaseTest {
     public void simpleReturnResultEntityFieldAs() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            SysUserVo sysUser = sysUserMapper.get(new Query()
+            SysUserVo sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getPassword)
                     .from(SysUser.class)
                     .eq(SysUser::getId, 1)
                     .setReturnType(SysUserVo.class)
-            );
+                    .get();
             SysUserVo eqSysUser = new SysUserVo();
             eqSysUser.setId(1);
             eqSysUser.setUserName("admin");
@@ -56,13 +57,13 @@ public class SelectAsTest extends BaseTest {
     public void simpleReturnResultFieldAs() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            SysUserVo sysUser = sysUserMapper.get(new Query()
+            SysUserVo sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getPassword)
                     .select(SysUser::getId, c -> c.concat("kk").as("kk"))
                     .from(SysUser.class)
                     .eq(SysUser::getId, 1)
                     .setReturnType(SysUserVo.class)
-            );
+                    .get();
             SysUserVo eqSysUser = new SysUserVo();
             eqSysUser.setId(1);
             eqSysUser.setUserName("admin");
@@ -76,7 +77,8 @@ public class SelectAsTest extends BaseTest {
     public void nestedResultEntity() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            Query query = new Query()
+
+            QueryChain queryChain = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName)
                     .select(SysRole.class)
                     .from(SysUser.class)
@@ -84,7 +86,8 @@ public class SelectAsTest extends BaseTest {
                     .eq(SysUser::getId, 2)
                     .setReturnType(SysUserVo.class);
 
-            SysUserVo sysUser = sysUserMapper.get(query);
+            SysUserVo sysUser = queryChain
+                    .get();
 
             SysUserVo eqSysUser = new SysUserVo();
             eqSysUser.setId(2);
@@ -97,7 +100,7 @@ public class SelectAsTest extends BaseTest {
 
             Assert.assertEquals("@NestedResultEntity注解，返回实体类测试", eqSysUser, sysUser);
 
-            Assert.assertEquals("@NestedResultEntity注解，返回实体类测试", eqSysUser, sysUserMapper.list(query).get(0));
+            Assert.assertEquals("@NestedResultEntity注解，返回实体类测试", eqSysUser, queryChain.list().get(0));
         }
     }
 
@@ -105,14 +108,15 @@ public class SelectAsTest extends BaseTest {
     public void nestedResultEntity2() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            Query query = new Query()
+            QueryChain queryChain = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName)
                     .select(SysRole.class)
                     .from(SysUser.class)
                     .join(SysUser.class, SysRole.class)
                     .eq(SysUser::getId, 2)
-                    .setReturnType(SysUserRoleVo.class);
-            SysUserRoleVo sysUser = sysUserMapper.get(query);
+                    .setReturnType(SysUserRoleVo.class)
+                    ;
+            SysUserRoleVo sysUser = queryChain.get();
             SysUserRoleVo eqSysUser = new SysUserRoleVo();
             eqSysUser.setId(2);
             eqSysUser.setUserName("test1");
@@ -122,7 +126,7 @@ public class SelectAsTest extends BaseTest {
             sysRole.setXxName("测试");
             eqSysUser.setRole(sysRole);
             Assert.assertEquals("@NestedResultEntity注解，返回Vo测试", eqSysUser, sysUser);
-            Assert.assertEquals("@NestedResultEntity注解，返回Vo测试", eqSysUser, sysUserMapper.list(query).get(0));
+            Assert.assertEquals("@NestedResultEntity注解，返回Vo测试", eqSysUser, queryChain.list().get(0));
         }
     }
 
@@ -130,7 +134,7 @@ public class SelectAsTest extends BaseTest {
     public void nestedResultEntity3() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            SysUserRoleVo sysUser = sysUserMapper.get(new Query()
+            SysUserRoleVo sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName)
                     .select(SysUser::getUserName, c -> c.concat("aa").as("cc"))
                     .select(SysRole.class)
@@ -138,7 +142,7 @@ public class SelectAsTest extends BaseTest {
                     .join(SysUser.class, SysRole.class)
                     .eq(SysUser::getId, 2)
                     .setReturnType(SysUserRoleVo.class)
-            );
+                    .get();
             SysUserRoleVo eqSysUser = new SysUserRoleVo();
             eqSysUser.setId(2);
             eqSysUser.setUserName("test1");

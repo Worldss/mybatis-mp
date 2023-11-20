@@ -7,6 +7,8 @@ import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.incrementer.IdentifierGenerator;
 import cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
+import cn.mybatis.mp.core.tenant.TenantContext;
+import cn.mybatis.mp.core.tenant.TenantInfo;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;
@@ -36,7 +38,6 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
             tableInfo.getTableFieldInfos().stream().forEach(item -> {
                 boolean isNeedInsert = false;
                 Object value = item.getValue(t);
-
                 if (Objects.nonNull(value)) {
                     isNeedInsert = true;
                 } else if (item.isVersion()) {
@@ -56,6 +57,20 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
                         Object id = identifierGenerator.nextId(tableInfo.getType());
                         if (setId(t, item, id)) {
                             value = id;
+                        }
+                    }
+                } else if (item.isTenantId()) {
+                    TenantInfo tenantInfo = TenantContext.getTenantInfo();
+                    if (tenantInfo != null) {
+                        Object tenantId = tenantInfo.getTenantId();
+                        if (Objects.nonNull(tenantId)) {
+                            isNeedInsert = true;
+                            value = tenantId;
+                            try {
+                                item.getWriteFieldInvoker().invoke(t, new Object[]{tenantId});
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
                 }

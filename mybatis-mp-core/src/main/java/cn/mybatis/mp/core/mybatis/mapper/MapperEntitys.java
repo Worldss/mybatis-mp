@@ -16,7 +16,9 @@ public class MapperEntitys {
 
     private final static Map<String, Class> CACHE = new HashMap<>();
 
-    
+    private final static Map<MybatisMapper, Class> MAPPER_CLASS_MAP = new HashMap<>();
+
+
     public final static boolean add(Class mapper) {
         return GenericUtil.getGenericInterfaceClass(mapper).stream().filter(item -> {
             boolean isTableClass = item.isAnnotationPresent(Table.class);

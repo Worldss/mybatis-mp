@@ -42,6 +42,11 @@ public class TableInfo {
      * 乐观锁字段
      */
     private final TableFieldInfo versionFieldInfo;
+
+    /**
+     * 多租户字段
+     */
+    private final TableFieldInfo tenantIdFieldInfo;
     /**
      * 外键关系
      */
@@ -66,6 +71,8 @@ public class TableInfo {
 
         TableFieldInfo idFieldInfo = null;
         TableFieldInfo versionFieldInfo = null;
+        TableFieldInfo tenantIdFieldInfo = null;
+
         List<TableFieldInfo> tableFieldInfos = new ArrayList<>();
         Map<String, TableFieldInfo> tableFieldInfoMap = new HashMap<>();
         Map<Class, ForeignInfo> foreignInfoMap = new HashMap<>();
@@ -89,11 +96,18 @@ public class TableInfo {
                 }
                 versionFieldInfo = tableFieldInfo;
             }
+            if (tableFieldInfo.isTenantId()) {
+                if (tenantIdFieldInfo != null) {
+                    throw new RuntimeException(String.format("Entity %s has multi @TenantId", entity.getName()));
+                }
+                tenantIdFieldInfo = tableFieldInfo;
+            }
         }
 
         this.tableFieldInfos = Collections.unmodifiableList(tableFieldInfos);
         this.idFieldInfo = idFieldInfo;
         this.versionFieldInfo = versionFieldInfo;
+        this.tenantIdFieldInfo = tenantIdFieldInfo;
         this.tableFieldInfoMap = Collections.unmodifiableMap(tableFieldInfoMap);
         this.foreignInfoMap = Collections.unmodifiableMap(foreignInfoMap);
     }
@@ -151,4 +165,11 @@ public class TableInfo {
         return idFieldInfo;
     }
 
+    public TableFieldInfo getVersionFieldInfo() {
+        return versionFieldInfo;
+    }
+
+    public TableFieldInfo getTenantIdFieldInfo() {
+        return tenantIdFieldInfo;
+    }
 }

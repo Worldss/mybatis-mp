@@ -3,7 +3,10 @@ package cn.mybatis.mp.core.mybatis.configuration;
 
 import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.mybatis.mapper.MapperEntitys;
+import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
+import org.apache.ibatis.binding.BindingException;
+import org.apache.ibatis.binding.MapperProxyFactory;
 import org.apache.ibatis.executor.*;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
@@ -13,10 +16,7 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMapping;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
@@ -25,6 +25,7 @@ import org.apache.ibatis.type.UnknownTypeHandler;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
 import java.util.Objects;
 
 
@@ -71,7 +72,7 @@ public class MybatisConfiguration extends Configuration {
     }
 
     @Override
-    
+
     public <T> void addMapper(Class<T> type) {
         if (MapperEntitys.add(type)) {
             //提前缓存
@@ -82,7 +83,15 @@ public class MybatisConfiguration extends Configuration {
         super.addMapper(type);
     }
 
-    
+    @Override
+    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
+        T t = super.getMapper(type, sqlSession);
+        if (MybatisMapper.class.isAssignableFrom(type)) {
+            return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new MybatisMapperProxy<>(type, t));
+        }
+        return t;
+    }
+
     public ResultMapping buildResultMapping(Field property, String columnName, JdbcType jdbcType, Class<? extends TypeHandler<?>> typeHandlerClass) {
         return new ResultMapping.Builder(this, property.getName())
                 .column(columnName)
@@ -93,7 +102,6 @@ public class MybatisConfiguration extends Configuration {
     }
 
 
-    
     public TypeHandler buildTypeHandler(Class type, Class<? extends TypeHandler<?>> typeHandlerClass) {
         if (typeHandlerClass == UnknownTypeHandler.class) {
             TypeHandler typeHandler = this.getTypeHandlerRegistry().getTypeHandler(type);

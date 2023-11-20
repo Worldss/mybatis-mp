@@ -5,6 +5,8 @@ import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import cn.mybatis.mp.core.sql.executor.Update;
+import cn.mybatis.mp.core.tenant.TenantContext;
+import cn.mybatis.mp.core.tenant.TenantInfo;
 import cn.mybatis.mp.db.annotations.TableField;
 import db.sql.core.api.cmd.basic.Table;
 
@@ -37,6 +39,15 @@ public class EntityUpdateContext<T> extends SQLCmdUpdateContext {
                         throw new RuntimeException(item.getField().getName() + " can't be null");
                     }
                     eq($.field(table, item.getColumnName()), $.value(value));
+                } else if (item.isTenantId()) {
+                    //添加租户条件
+                    TenantInfo tenantInfo = TenantContext.getTenantInfo();
+                    if (tenantInfo != null) {
+                        Object tenantId = tenantInfo.getTenantId();
+                        if (Objects.nonNull(tenantId)) {
+                            eq($.field(table, item.getColumnName()), $.value(tenantId));
+                        }
+                    }
                 } else if (item.isVersion()) {
                     if (Objects.isNull(value)) {
                         throw new RuntimeException(item.getField().getName() + " is version filed, can't be null");

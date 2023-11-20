@@ -3,6 +3,7 @@ package com.mybatis.mp.core.test.testCase.query;
 import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.Query;
 import cn.mybatis.mp.core.sql.executor.SubQuery;
+import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.model.SysRole;
 import com.mybatis.mp.core.test.model.SysUser;
@@ -23,11 +24,11 @@ public class QueryTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
 
-            SysUser sysUser = sysUserMapper.get(new Query()
+            SysUser sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                     .from(SysUser.class)
                     .eq(SysUser::getId, 1)
-            );
+                    .get();
             SysUser eqSysUser = new SysUser();
             eqSysUser.setId(1);
             eqSysUser.setUserName("admin");
@@ -55,12 +56,12 @@ public class QueryTest extends BaseTest {
     public void innerJoinTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            SysUser sysUser = sysUserMapper.get(new Query() {{
-                select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id);
-                from(SysUser.class);
-                join(SysUser.class, SysRole.class);
-                eq(SysUser::getId, 2);
-            }});
+            SysUser sysUser = QueryChain.of(sysUserMapper)
+                    .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+                    .from(SysUser.class)
+                    .join(SysUser.class, SysRole.class)
+                    .eq(SysUser::getId, 2)
+                    .get();
 
             SysUser eqSysUser = new SysUser();
             eqSysUser.setId(2);
@@ -74,12 +75,12 @@ public class QueryTest extends BaseTest {
     public void groupByTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            List<Integer> counts = sysUserMapper.list(new Query()
+            List<Integer> counts = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, c -> c.count())
                     .from(SysUser.class)
                     .groupBy(SysUser::getRole_id)
                     .setReturnType(Integer.TYPE)
-            );
+                    .list();
 
             Assert.assertEquals("groupBy", counts.get(0), Integer.valueOf(1));
             Assert.assertEquals("groupBy", counts.get(1), Integer.valueOf(2));
@@ -90,12 +91,12 @@ public class QueryTest extends BaseTest {
     public void orderbyTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            SysUser sysUser = sysUserMapper.get(new Query()
+            SysUser sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                     .from(SysUser.class)
                     .orderBy(false, SysUser::getRole_id, SysUser::getId)
                     .limit(1)
-            );
+                    .get();
             SysUser eqSysUser = new SysUser();
             eqSysUser.setId(3);
             eqSysUser.setUserName("test2");
@@ -108,27 +109,15 @@ public class QueryTest extends BaseTest {
     public void havingTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            Integer count = sysUserMapper.get(new Query()
+            Integer count = QueryChain.of(sysUserMapper)
                     .select(SysUser::getRole_id, FunctionInterface::count)
                     .from(SysUser.class)
                     .groupBy(SysUser::getRole_id)
                     .having(SysUser::getRole_id, c -> c.gt(0))
                     .setReturnType(Integer.TYPE)
-            );
+                    .get();
 
             Assert.assertEquals("having", count, Integer.valueOf(2));
-            new Query() {{
-                select(SysUser::getRole_id)
-                        .from(SysUser.class)
-                        .eq($().field(SysUser::getId), 1)
-                        .gt($().table(SysUser.class).$("role_id"), 2);
-            }};
-
-            new Query() {{
-                select($(SysUser::getId))
-                        .from($(SysUser.class))
-                        .eq($(SysUser::getId), 1);
-            }};
         }
     }
 
@@ -136,10 +125,10 @@ public class QueryTest extends BaseTest {
     public void count1Test() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            Integer count = sysUserMapper.count(new Query()
+            Integer count = QueryChain.of(sysUserMapper)
                     .selectCount1()
                     .from(SysUser.class)
-            );
+                    .count();
             Assert.assertEquals("count1", count, Integer.valueOf(3));
         }
     }
@@ -148,10 +137,10 @@ public class QueryTest extends BaseTest {
     public void countAllTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            Integer count = sysUserMapper.count(new Query()
+            Integer count = QueryChain.of(sysUserMapper)
                     .selectCountAll()
                     .from(SysUser.class)
-            );
+                    .count();
             Assert.assertEquals("countAll", count, Integer.valueOf(3));
         }
     }
@@ -160,10 +149,11 @@ public class QueryTest extends BaseTest {
     public void pagingTestTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            Pager<SysUser> pager = sysUserMapper.paging(new Query()
-                            .select(SysUser.class)
-                            .from(SysUser.class)
-                    , new Pager<>(2));
+            Pager<SysUser> pager = QueryChain.of(sysUserMapper)
+                    .select(SysUser.class)
+                    .from(SysUser.class)
+                    .paging(new Pager<>(2));
+
             Assert.assertEquals("paging Total", pager.getTotal(), Integer.valueOf(3));
             Assert.assertEquals("paging Results size", pager.getResults().size(), 2);
             Assert.assertEquals("paging TotalPage", pager.getTotalPage(), Integer.valueOf(2));
@@ -174,11 +164,11 @@ public class QueryTest extends BaseTest {
     public void existsMethodTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            List<SysUser> list = sysUserMapper.list(new Query()
+            List<SysUser> list = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                     .from(SysUser.class)
                     .connect(query -> {
-                        query.exists(new SubQuery()
+                        query.exists(SubQuery.create()
                                 .select1()
                                 .from(SysUser.class)
                                 .eq(SysUser::getId, query.$(SysUser::getId))
@@ -186,7 +176,8 @@ public class QueryTest extends BaseTest {
                                 .limit(1)
                         );
                     })
-            );
+                    .list();
+
 
             Assert.assertEquals("exists size", list.size(), 2);
 
@@ -202,18 +193,22 @@ public class QueryTest extends BaseTest {
     public void inSubQueryTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            List<SysUser> list = sysUserMapper.list(new Query() {{
-                select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
-                        .from(SysUser.class)
-                        .in(SysUser::getId, new SubQuery()
+            List<SysUser> list = QueryChain.of(sysUserMapper)
+                    .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+                    .from(SysUser.class)
+                    .connect(queryChain -> {
+                        queryChain.in(SysUser::getId, new SubQuery()
                                 .select(SysUser::getId)
                                 .from(SysUser.class)
-                                .eq(SysUser::getId, $(SysUser::getId))
+                                .connect(subQuery -> {
+                                    subQuery.eq(SysUser::getId, queryChain.$(SysUser::getId));
+                                })
                                 .isNotNull(SysUser::getPassword)
                                 .limit(1)
                         );
+                    })
+                    .list();
 
-            }});
 
             Assert.assertEquals("inSubQuery size", list.size(), 2);
 
@@ -230,12 +225,12 @@ public class QueryTest extends BaseTest {
     public void selectDistinctTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            List<Integer> roleIds = sysUserMapper.list(new Query()
+            List<Integer> roleIds = QueryChain.of(sysUserMapper)
                     .selectDistinct()
                     .select(SysUser::getRole_id)
                     .from(SysUser.class)
                     .setReturnType(Integer.TYPE)
-            );
+                    .list();
             Assert.assertEquals("selectDistinct", roleIds.size(), 2);
             Assert.assertEquals("selectDistinct", roleIds.get(0), Integer.valueOf(0));
             Assert.assertEquals("selectDistinct", roleIds.get(1), Integer.valueOf(1));
@@ -246,12 +241,12 @@ public class QueryTest extends BaseTest {
     public void selectDistinctMutiTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            List<SysUser> list = sysUserMapper.list(new Query()
+            List<SysUser> list = QueryChain.of(sysUserMapper)
                     .selectDistinct()
                     .select(SysUser::getRole_id, c -> c.as("role_id"))
                     .select(SysUser::getId, c -> c.as("id"))
                     .from(SysUser.class)
-            );
+                    .list();
             Assert.assertEquals("selectDistinctMuti", list.size(), 3);
             {
                 SysUser eqSysUser = new SysUser();
@@ -266,7 +261,7 @@ public class QueryTest extends BaseTest {
     public void unionTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            List<SysUser> list = sysUserMapper.list(new Query()
+            List<SysUser> list = QueryChain.of(sysUserMapper)
                     .select(SysUser::getRole_id, SysUser::getId)
                     .from(SysUser.class)
                     .eq(SysUser::getId, 1)
@@ -275,7 +270,7 @@ public class QueryTest extends BaseTest {
                             .from(SysUser.class)
                             .lt(SysUser::getId, 3)
                     )
-            );
+                    .list();
             Assert.assertEquals("union", list.size(), 2);
             {
                 SysUser eqSysUser = new SysUser();
@@ -297,7 +292,7 @@ public class QueryTest extends BaseTest {
     public void unionAllTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            List<SysUser> list = sysUserMapper.list(new Query()
+            List<SysUser> list = QueryChain.of(sysUserMapper)
                     .select(SysUser::getRole_id, SysUser::getId)
                     .from(SysUser.class)
                     .eq(SysUser::getId, 1)
@@ -306,7 +301,8 @@ public class QueryTest extends BaseTest {
                             .from(SysUser.class)
                             .lt(SysUser::getId, 3)
                     )
-            );
+                    .list();
+
             Assert.assertEquals("unionAll", list.size(), 3);
             {
                 SysUser eqSysUser = new SysUser();
@@ -329,12 +325,12 @@ public class QueryTest extends BaseTest {
     public void existsTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            boolean exists = sysUserMapper.exists(new Query()
+            boolean exists = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                     .from(SysUser.class)
                     .join(SysUser.class, SysRole.class)
                     .like(SysUser::getUserName, "test")
-            );
+                    .exists();
             Assert.assertEquals("existsTest检测", true, exists);
         }
     }

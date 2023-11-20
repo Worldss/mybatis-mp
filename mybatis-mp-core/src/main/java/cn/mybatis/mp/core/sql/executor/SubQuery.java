@@ -20,6 +20,14 @@ public class SubQuery extends BaseQuery<SubQuery> implements Dataset<SubQuery> {
         this(null);
     }
 
+    public static final SubQuery create() {
+        return new SubQuery();
+    }
+
+    public static final SubQuery create(String alias) {
+        return new SubQuery(alias);
+    }
+
     public SubQuery(String alias) {
         super(new MybatisCmdFactory("st"));
         this.alias = alias;

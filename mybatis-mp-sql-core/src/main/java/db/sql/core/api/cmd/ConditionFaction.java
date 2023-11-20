@@ -102,11 +102,27 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
     }
 
     @Override
-    public <T> Condition empty(Getter<T> column, boolean when) {
+    public <T> Condition empty(Getter<T> column, int storey, boolean when) {
         if (!when) {
             return null;
         }
-        return empty(convert(column, 1), when);
+        return empty(convert(column, storey), when);
+    }
+
+    @Override
+    public Condition notEmpty(Cmd column, boolean when) {
+        if (!when) {
+            return null;
+        }
+        return cmdFactory.ne(column, cmdFactory.value(""));
+    }
+
+    @Override
+    public <T> Condition notEmpty(Getter<T> column, int storey, boolean when) {
+        if (!when) {
+            return null;
+        }
+        return notEmpty(convert(column, storey), when);
     }
 
     @Override

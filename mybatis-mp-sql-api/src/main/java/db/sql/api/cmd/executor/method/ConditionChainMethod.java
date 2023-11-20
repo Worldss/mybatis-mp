@@ -111,13 +111,25 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
     }
 
     @Override
-    default <T> SELF empty(Getter<T> column, boolean when) {
-        conditionChain().empty(column, when);
+    default <T> SELF empty(Getter<T> column, int storey, boolean when) {
+        conditionChain().empty(column,storey, when);
+        return (SELF) this;
+    }
+
+    @Override
+    default <T> SELF notEmpty(Getter<T> column, int storey, boolean when){
+        conditionChain().notEmpty(column,storey, when);
         return (SELF) this;
     }
 
     @Override
     default SELF empty(COLUMN column, boolean when) {
+        conditionChain().empty(column, when);
+        return (SELF) this;
+    }
+
+    @Override
+    default SELF notEmpty(COLUMN column, boolean when){
         conditionChain().empty(column, when);
         return (SELF) this;
     }

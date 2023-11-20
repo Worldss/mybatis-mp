@@ -31,6 +31,22 @@ public class ConditionTest extends BaseTest {
     }
 
     @Test
+    public void notEmpty() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            Integer id = QueryChain.of(sysUserMapper)
+                    .select(SysUser::getId)
+                    .from(SysUser.class)
+                    .eq(SysUser::getId, 2)
+                    .notEmpty(SysUser::getUserName)
+                    .setReturnType(Integer.TYPE)
+                    .get();
+
+            Assert.assertEquals("eq", Integer.valueOf(2), id);
+        }
+    }
+
+    @Test
     public void eq() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);

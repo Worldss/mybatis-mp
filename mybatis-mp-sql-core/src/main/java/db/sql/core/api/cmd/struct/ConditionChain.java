@@ -83,8 +83,8 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public <T> ConditionChain empty(Getter<T> column, boolean when) {
-        Condition condition = conditionFaction.empty(column, when);
+    public <T> ConditionChain empty(Getter<T> column, int storey, boolean when) {
+        Condition condition = conditionFaction.empty(column,storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -94,6 +94,24 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     @Override
     public ConditionChain empty(Cmd column, boolean when) {
         Condition condition = conditionFaction.empty(column, when);
+        if (condition != null) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
+    }
+
+    @Override
+    public <T> ConditionChain notEmpty(Getter<T> column, int storey, boolean when) {
+        Condition condition = conditionFaction.notEmpty(column,storey, when);
+        if (condition != null) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
+    }
+
+    @Override
+    public ConditionChain notEmpty(Cmd column, boolean when) {
+        Condition condition = conditionFaction.notEmpty(column, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }

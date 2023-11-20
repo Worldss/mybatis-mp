@@ -25,6 +25,8 @@ public interface Compare<RV, COLUMN, V> extends
         NotBetweenGetterCompare<RV, V>,
         IsNullGetterCompare<RV>,
         IsNotNullGetterCompare<RV>,
+        EmptyGetterCompare<RV>,
+        NotEmptyGetterCompare<RV>,
         Serializable {
 
     default RV empty(COLUMN column) {
@@ -32,6 +34,12 @@ public interface Compare<RV, COLUMN, V> extends
     }
 
     RV empty(COLUMN column, boolean when);
+
+    default RV notEmpty(COLUMN column) {
+        return this.notEmpty(column, true);
+    }
+
+    RV notEmpty(COLUMN column, boolean when);
 
     default RV eq(COLUMN column, V value) {
         return eq(column, value, true);

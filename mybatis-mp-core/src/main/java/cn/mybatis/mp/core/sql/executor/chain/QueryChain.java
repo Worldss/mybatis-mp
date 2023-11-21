@@ -5,6 +5,7 @@ import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.BaseQuery;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 查询链路
@@ -23,13 +24,13 @@ public class QueryChain extends BaseQuery<QueryChain> {
 
 
     private void setDefault() {
-        if (this.select == null) {
+        if (Objects.isNull(this.select)) {
             this.select(mapper.getEntityType());
         }
-        if (this.from == null) {
+        if (Objects.isNull(this.from)) {
             this.from(mapper.getEntityType());
         }
-        if (this.getReturnType() == null) {
+        if (Objects.isNull(this.returnType)) {
             this.setReturnType(mapper.getEntityType());
         }
     }

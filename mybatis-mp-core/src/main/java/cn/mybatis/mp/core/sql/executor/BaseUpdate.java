@@ -40,9 +40,11 @@ public class BaseUpdate<T extends BaseUpdate> extends AbstractUpdate<T, MybatisC
     public T join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
         this.addTenantCondition(secondTable, secondTableStorey);
         if (Objects.isNull(consumer)) {
-            //自动加上外键连接条件
-            consumer = ForeignKeyUtil.buildForeignKeyOnConsumer(this.$, mainTable, mainTableStorey, secondTable, secondTableStorey);
+            consumer = (on) -> {
+            };
         }
+        //自动加上外键连接条件
+        consumer = consumer.andThen(ForeignKeyUtil.buildForeignKeyOnConsumer(this.$, mainTable, mainTableStorey, secondTable, secondTableStorey));
         this.join(mode, $().table(mainTable, mainTableStorey), $().table(secondTable, secondTableStorey), consumer);
         return (T) this;
     }

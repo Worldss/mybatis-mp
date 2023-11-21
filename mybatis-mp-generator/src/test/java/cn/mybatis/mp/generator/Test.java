@@ -6,12 +6,14 @@ public class Test {
 
     public static void main(String[] args) {
         new FastGenerator(new GeneratorConfig(
-                "jdbc:mysql://test.qushiwan.cn:3306/casual_put",
+                "jdbc:mysql://xxxx:3306/casual_put",
                 "root",
                 "123456")
                 .basePackage("com.test")
                 .columnConfig(columnConfig -> {
                     columnConfig.disableUpdateColumns("create_time");
+                    columnConfig.versionColumn("phone");
+                    columnConfig.tenantIdColumn("state");
                 })
                 .entityConfig(entityConfig -> {
                     entityConfig.lombok(false);

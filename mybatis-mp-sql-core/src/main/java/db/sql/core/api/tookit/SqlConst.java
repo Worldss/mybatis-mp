@@ -38,6 +38,8 @@ public class SqlConst {
     public static final String ON = " ON ";
     public static final String WHERE = " WHERE ";
     public static final String EXISTS = " EXISTS ";
+
+    public static final String NOT_EXISTS = " NOT EXISTS ";
     public static final String AND = " AND ";
     public static final String IN = " IN ";
     public static final String OR = " OR ";
@@ -67,12 +69,22 @@ public class SqlConst {
     public static final String MIN = " MIN";
     public static final String AVG = " AVG";
     public static final String ABS = " ABS";
+    public static final String SUM = " SUM";
+    public static final String CEIL = " CEIL";
+    public static final String FLOOR = " FLOOR";
+    public static final String RAND = " RAND";
+    public static final String TRUNCATE = " TRUNCATE";
+    public static final String SQRT = " SQRT";
+    public static final String SIGN = " SIGN";
+    public static final String PI =" PI";
     public static final String DIVIDE = " / ";
     public static final String MULTIPLY = " * ";
     public static final String SUBTRACT = " - ";
     public static final String PLUS = " + ";
     public static final String ROUND = " ROUND";
     public static final String POW = " POW";
+
+    public static final String MOD = " MOD";
     public static final String COUNT = " COUNT";
     public static final String GROUP_BY = " GROUP BY ";
     public static final String HAVING = " HAVING ";

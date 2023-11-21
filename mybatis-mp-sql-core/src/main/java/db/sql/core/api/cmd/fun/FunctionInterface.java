@@ -2,164 +2,187 @@ package db.sql.core.api.cmd.fun;
 
 import db.sql.api.cmd.Cmd;
 import db.sql.api.cmd.LikeMode;
-import db.sql.core.api.cmd.basic.BasicValue;
+import db.sql.core.api.cmd.Methods;
 import db.sql.core.api.cmd.condition.*;
 
 import java.io.Serializable;
 
 public interface FunctionInterface extends Cmd {
 
+    default Sum sum() {
+        return Methods.sum(this);
+    }
+
     default Max max() {
-        return new Max(this);
+        return Methods.max(this);
     }
 
     default Min min() {
-        return new Min(this);
+        return Methods.min(this);
     }
 
     default Avg avg() {
-        return new Avg(this);
+        return Methods.avg(this);
     }
 
     default Abs abs() {
-        return new Abs(this);
+        return Methods.abs(this);
     }
 
     default Pow pow(int n) {
-        return new Pow(this, n);
+        return Methods.pow(this, n);
     }
 
     default Count count() {
-        return new Count(this);
+        return Methods.count(this);
+    }
+
+    default Round round() {
+        return this.round(0);
     }
 
     default Round round(int precision) {
-        return new Round(this, precision);
+        return Methods.round(this, precision);
+    }
+
+    default Ceil ceil() {
+        return Methods.ceil(this);
+    }
+
+    default Floor floor() {
+        return Methods.floor(this);
+    }
+
+    default Rand rand() {
+        return Methods.rand(this);
+    }
+
+    default Rand rand(Number max) {
+        return Methods.rand(this, max);
+    }
+
+    default Sign sign() {
+        return Methods.sign(this);
+    }
+
+    default Truncate truncate() {
+        return this.truncate(0);
+    }
+
+    default Truncate truncate(int precision) {
+        return Methods.truncate(this, precision);
+    }
+
+    default Sqrt sqrt() {
+        return Methods.sqrt(this);
+    }
+
+    default Mod mod(Number number) {
+        return Methods.mod(this, number);
     }
 
     default Multiply multiply(Number value) {
-        return new Multiply(this, value);
+        return Methods.multiply(this, value);
     }
 
     default Multiply multiply(Cmd value) {
-        return new Multiply(this, value);
+        return Methods.multiply(this, value);
     }
 
     default Divide divide(Number value) {
-        return new Divide(this, value);
+        return Methods.divide(this, value);
     }
 
     default Divide divide(Cmd value) {
-        return new Divide(this, value);
+        return Methods.divide(this, value);
     }
 
     default Subtract subtract(Number value) {
-        return new Subtract(this, value);
+        return Methods.subtract(this, value);
     }
 
     default Subtract subtract(Cmd value) {
-        return new Subtract(this, value);
+        return Methods.subtract(this, value);
     }
 
     default Plus plus(Number value) {
-        return new Plus(this, value);
+        return Methods.plus(this, value);
     }
 
     default Plus plus(Cmd value) {
-        return new Plus(this, value);
+        return Methods.plus(this, value);
     }
 
     default Concat concat(Serializable... values) {
-        return new Concat(this, values);
+        return Methods.concat(this, values);
     }
 
     default Concat concat(Cmd... values) {
-        return new Concat(this, values);
+        return Methods.concat(this, values);
     }
 
     default ConcatAs concatAs(String split, Serializable... values) {
-        return new ConcatAs(this, split, values);
+        return Methods.concatAs(this, split, values);
     }
 
     default ConcatAs concatAs(String split, Cmd... values) {
-        return new ConcatAs(this, split, values);
+        return Methods.concatAs(this, split, values);
     }
 
     default IfNull ifNull(Object value) {
-        if (value instanceof Cmd) {
-            return new IfNull(this, (Cmd) value);
-        }
-        return new IfNull(this, new BasicValue(value));
+        return Methods.ifNull(this, Methods.basicValue(value));
     }
 
     default Eq eq(Object value) {
-        if (value instanceof Cmd) {
-            return new Eq(this, (Cmd) value);
-        }
-        return new Eq(this, new BasicValue(value));
+        return Methods.eq(this, Methods.basicValue(value));
     }
 
     default Gt gt(Object value) {
-        if (value instanceof Cmd) {
-            return new Gt(this, (Cmd) value);
-        }
-        return new Gt(this, new BasicValue(value));
+        return Methods.gt(this, Methods.basicValue(value));
     }
 
     default Gte gte(Object value) {
-        if (value instanceof Cmd) {
-            return new Gte(this, (Cmd) value);
-        }
-        return new Gte(this, new BasicValue(value));
+        return Methods.gte(this, Methods.basicValue(value));
     }
 
     default Lt lt(Object value) {
-        if (value instanceof Cmd) {
-            return new Lt(this, (Cmd) value);
-        }
-        return new Lt(this, new BasicValue(value));
+        return Methods.lt(this, Methods.basicValue(value));
     }
 
     default Lte lte(Object value) {
-        if (value instanceof Cmd) {
-            return new Lte(this, (Cmd) value);
-        }
-        return new Lte(this, new BasicValue(value));
+        return Methods.lte(this, Methods.basicValue(value));
     }
 
     default Ne ne(Object value) {
-        if (value instanceof Cmd) {
-            return new Ne(this, (Cmd) value);
-        }
-        return new Ne(this, new BasicValue(value));
+        return Methods.ne(this, Methods.basicValue(value));
     }
 
     default Between between(Serializable value1, Serializable value2) {
-        return new Between(this, new BasicValue(value1), new BasicValue(value2));
+        return Methods.between(this, value1, value2);
     }
 
     default Between notBetween(Serializable value1, Serializable value2) {
-        return new NotBetween(this, new BasicValue(value1), new BasicValue(value2));
+        return Methods.notBetween(this, value1, value2);
     }
 
-    default Like like(Serializable value) {
+    default Like like(String value) {
         return like(value, LikeMode.DEFAULT);
     }
 
-    default Like like(Serializable value, LikeMode mode) {
-        return new Like(this, new BasicValue(value), mode);
+    default Like like(String value, LikeMode mode) {
+        return Methods.like(this, value, mode);
     }
 
-    default NotLike notLike(Serializable value) {
+    default NotLike notLike(String value) {
         return notLike(value, LikeMode.DEFAULT);
     }
 
-    default NotLike notLike(Serializable value, LikeMode mode) {
-        return new NotLike(this, new BasicValue(value), mode);
+    default NotLike notLike(String value, LikeMode mode) {
+        return Methods.notLike(this, value, mode);
     }
 
     default In in(Serializable... values) {
-        return new In(this).add(values);
+        return Methods.in(this).add(values);
     }
 
 }

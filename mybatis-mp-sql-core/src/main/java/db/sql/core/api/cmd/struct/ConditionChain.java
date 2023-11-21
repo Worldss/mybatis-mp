@@ -466,4 +466,13 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
         }
         return this;
     }
+
+    @Override
+    public ConditionChain notExists(Query query, boolean when) {
+        Condition condition = conditionFaction.notExists(query, when);
+        if (condition != null) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
+    }
 }

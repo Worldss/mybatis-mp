@@ -69,4 +69,11 @@ public interface ConditionChain<SELF extends ConditionChain, COLUMN, V> extends 
     }
 
     SELF exists(Query query, boolean when);
+
+    default SELF notExists(Query query) {
+        return this.notExists(query, true);
+    }
+
+    SELF notExists(Query query, boolean when);
+
 }

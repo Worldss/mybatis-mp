@@ -440,4 +440,15 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         }
         return cmdFactory.exists(query);
     }
+
+    public Condition notExists(Query query) {
+        return this.notExists(query, true);
+    }
+
+    public Condition notExists(Query query, boolean when) {
+        if (!when) {
+            return null;
+        }
+        return cmdFactory.notExists(query);
+    }
 }

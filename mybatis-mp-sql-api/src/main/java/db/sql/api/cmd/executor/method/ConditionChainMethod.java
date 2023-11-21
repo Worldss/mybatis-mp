@@ -289,4 +289,13 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
         return (SELF) this;
     }
 
+    default <T> SELF notExists(Query query) {
+        return this.notExists(query, true);
+    }
+
+    default <T> SELF notExists(Query query, boolean when) {
+        conditionChain().notExists(query, when);
+        return (SELF) this;
+    }
+
 }

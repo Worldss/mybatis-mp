@@ -3,6 +3,7 @@ package db.sql.core.api.cmd;
 import db.sql.api.cmd.Cmd;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.executor.Query;
+import db.sql.core.api.cmd.basic.BasicValue;
 import db.sql.core.api.cmd.basic.Condition;
 import db.sql.core.api.cmd.condition.*;
 import db.sql.core.api.cmd.fun.*;
@@ -15,6 +16,19 @@ import java.util.List;
  * 数据库方法集合
  */
 public class Methods {
+
+    /**
+     * value
+     *
+     * @param value
+     * @return
+     */
+    public static Cmd basicValue(Object value) {
+        if (value instanceof Cmd) {
+            return (Cmd) value;
+        }
+        return new BasicValue(value);
+    }
 
     /**
      * plus加法
@@ -115,6 +129,16 @@ public class Methods {
     }
 
     /**
+     * sum求和 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Sum sum(Cmd key) {
+        return new Sum(key);
+    }
+
+    /**
      * min最小 函数
      *
      * @param key
@@ -166,6 +190,16 @@ public class Methods {
     }
 
     /**
+     * round四舍五入 取整数位 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Round round(Cmd key) {
+        return round(key, 0);
+    }
+
+    /**
      * round四舍五入 函数
      *
      * @param key
@@ -174,6 +208,108 @@ public class Methods {
      */
     public static Round round(Cmd key, int precision) {
         return new Round(key, precision);
+    }
+
+
+    /**
+     * ceil返回大于或等于 x 的最小整数（向上取整） 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Ceil ceil(Cmd key) {
+        return new Ceil(key);
+    }
+
+    /**
+     * floor返回小于或等于 x 的最大整数（向下取整） 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Floor floor(Cmd key) {
+        return new Floor(key);
+    }
+
+    /**
+     * rand返回 0~1 的随机数 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Rand rand(Cmd key) {
+        return new Rand(key);
+    }
+
+    /**
+     * rand返回 0~max 的随机数 函数
+     *
+     * @param key
+     * @param max
+     * @return
+     */
+    public static Rand rand(Cmd key, Number max) {
+        return new Rand(key, max);
+    }
+
+    /**
+     * sign 返回 key 的符号，key 是负数、0、正数分别返回 -1、0、1 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Sign sign(Cmd key) {
+        return new Sign(key);
+    }
+
+    /**
+     * pi 返回圆周率 函数
+     *
+     * @return
+     */
+    public static Pi pi() {
+        return Pi.INSTANCE;
+    }
+
+    /**
+     * 返回数值 key 整数位 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Truncate truncate(Cmd key) {
+        return truncate(key, 0);
+    }
+
+    /**
+     * 返回数值 key 保留到小数点后 precision 位的值 函数
+     *
+     * @param key
+     * @param precision
+     * @return
+     */
+    public static Truncate truncate(Cmd key, int precision) {
+        return new Truncate(key, precision);
+    }
+
+    /**
+     * sqrt 平方根 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Sqrt sqrt(Cmd key) {
+        return new Sqrt(key);
+    }
+
+    /**
+     * mod 取模 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Mod mod(Cmd key, Number number) {
+        return new Mod(key, number);
     }
 
     /**
@@ -296,23 +432,23 @@ public class Methods {
     /**
      * IFNULL(条件,值1,值2) 函数
      *
-     * @param condition
+     * @param key
      * @param value
      * @return
      */
-    public static IfNull ifNull(Condition condition, Cmd value) {
-        return new IfNull(condition, value);
+    public static IfNull ifNull(Cmd key, Cmd value) {
+        return new IfNull(key, value);
     }
 
     /**
      * IFNULL(条件,值1,值2) 函数
      *
-     * @param condition
+     * @param key
      * @param value
      * @return
      */
-    public static IfNull ifNull(Condition condition, Serializable value) {
-        return new IfNull(condition, value);
+    public static IfNull ifNull(Cmd key, Serializable value) {
+        return new IfNull(key, value);
     }
 
     /**
@@ -509,6 +645,16 @@ public class Methods {
      */
     public static Exists exists(Query query) {
         return new Exists(query);
+    }
+
+    /**
+     * not exists 一个查询
+     *
+     * @param query
+     * @return
+     */
+    public static NotExists notExists(Query query) {
+        return new NotExists(query);
     }
 
     /**

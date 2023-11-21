@@ -12,7 +12,9 @@ import ${pkg};
  * @author ${author!}
  * @since ${date}
  */
-<#if entityConfig.isLombok()>@Data</#if>
+<#if entityConfig.isLombok()>
+    @Data
+</#if>
 @Table(value="${entityInfo.tableInfo.name}"<#if entityConfig.isSchema()>,schema="${entityInfo.tableInfo.schema!}"</#if>)
 public class ${entityInfo.name} ${superExtend}{
 

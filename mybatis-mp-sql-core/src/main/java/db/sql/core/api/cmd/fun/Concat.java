@@ -32,6 +32,23 @@ public class Concat extends BasicFunction<Concat> {
         this.values = values;
     }
 
+    public Concat(Cmd key, Object... values) {
+        super(CONCAT, key);
+        Cmd[] vs = new Cmd[values.length];
+        int i = 0;
+        for (Object value : values) {
+            if (value == null) {
+                continue;
+            }
+            if(value instanceof Cmd){
+                vs[i++]=(Cmd)value;
+            }else{
+                vs[i++] = new BasicValue(value);
+            }
+        }
+        this.values = vs;
+    }
+
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(this.operator).append(SqlConst.BRACKET_LEFT);

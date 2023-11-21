@@ -8,6 +8,7 @@ import db.sql.core.api.tookit.SqlConst;
 
 import java.io.Serializable;
 
+import static db.sql.core.api.tookit.SqlConst.CONCAT;
 import static db.sql.core.api.tookit.SqlConst.CONCAT_WS;
 
 public class ConcatAs extends BasicFunction<ConcatAs> {
@@ -34,6 +35,24 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
         super(CONCAT_WS, key);
         this.split = split;
         this.values = values;
+    }
+
+    public ConcatAs(Cmd key, String split, Object... values) {
+        super(CONCAT, key);
+        this.split = split;
+        Cmd[] vs = new Cmd[values.length];
+        int i = 0;
+        for (Object value : values) {
+            if (value == null) {
+                continue;
+            }
+            if(value instanceof Cmd){
+                vs[i++]=(Cmd)value;
+            }else{
+                vs[i++] = new BasicValue(value);
+            }
+        }
+        this.values = vs;
     }
 
     @Override

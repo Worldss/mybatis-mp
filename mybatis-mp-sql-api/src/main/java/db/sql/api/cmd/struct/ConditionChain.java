@@ -4,6 +4,7 @@ package db.sql.api.cmd.struct;
 import db.sql.api.Getter;
 import db.sql.api.cmd.Cmd;
 import db.sql.api.cmd.basic.Condition;
+import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.executor.method.compare.Compare;
 
 import java.io.Serializable;
@@ -63,9 +64,9 @@ public interface ConditionChain<SELF extends ConditionChain, COLUMN, V> extends 
 
     <T> SELF in(Getter<T> column, boolean when, List<Object> values);
 
-    default SELF exists(Cmd existsCmd) {
-        return this.exists(existsCmd, true);
+    default SELF exists(Query query) {
+        return this.exists(query, true);
     }
 
-    SELF exists(Cmd existsCmd, boolean when);
+    SELF exists(Query query, boolean when);
 }

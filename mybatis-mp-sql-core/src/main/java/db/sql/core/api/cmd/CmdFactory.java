@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 
-public class CmdFactory {
+public class CmdFactory extends Methods {
 
     private final String tableAsPrefix;
     protected Map<String, Table> tableCache = new HashMap<>();
@@ -123,108 +123,8 @@ public class CmdFactory {
         return new AllField(table);
     }
 
-    public Eq eq(Cmd key, Serializable value) {
-        return eq(key, value(value));
-    }
-
-    public Eq eq(Cmd key, Cmd value) {
-        return new Eq(key, value);
-    }
-
-    public Ne ne(Cmd key, Serializable value) {
-        return ne(key, value(value));
-    }
-
-    public Ne ne(Cmd key, Cmd value) {
-        return new Ne(key, value);
-    }
-
-    public IsNull isNull(Cmd key) {
-        return new IsNull(key);
-    }
-
-    public IsNotNull isNotNull(Cmd key) {
-        return new IsNotNull(key);
-    }
-
-    public Gt gt(Cmd key, Serializable value) {
-        return gt(key, value(value));
-    }
-
-    public Gt gt(Cmd key, Cmd value) {
-        return new Gt(key, value);
-    }
-
-    public Gte gte(Cmd key, Serializable value) {
-        return gte(key, value(value));
-    }
-
-    public Gte gte(Cmd key, Cmd value) {
-        return new Gte(key, value);
-    }
-
-    public Lt lt(Cmd key, Serializable value) {
-        return lt(key, value(value));
-    }
-
-    public Lt lt(Cmd key, Cmd value) {
-        return new Lt(key, value);
-    }
-
-    public Lte lte(Cmd key, Serializable value) {
-        return lte(key, value(value));
-    }
-
-    public Lte lte(Cmd key, Cmd value) {
-        return new Lte(key, value);
-    }
-
-    public Between between(Cmd key, Serializable value1, Serializable value2) {
-        return between(key, value(value1), value(value2));
-    }
-
-    public Between between(Cmd key, Cmd value1, Cmd value2) {
-        return new Between(key, value1, value2);
-    }
-
-    public NotBetween notBetween(Cmd key, Serializable value1, Serializable value2) {
-        return notBetween(key, value(value1), value(value2));
-    }
-
-    public NotBetween notBetween(Cmd key, Cmd value1, Cmd value2) {
-        return new NotBetween(key, value1, value2);
-    }
-
-    public Like like(Cmd key, Serializable value) {
-        return like(key, value(value), LikeMode.DEFAULT);
-    }
-
-    public Like like(Cmd key, Serializable value, LikeMode mode) {
-        return like(key, value(value), mode);
-    }
-
-    public Like like(Cmd key, Cmd value, LikeMode mode) {
-        return new Like(key, value, mode);
-    }
-
-    public NotLike notLike(Cmd key, Serializable value) {
-        return notLike(key, value(value), LikeMode.DEFAULT);
-    }
-
-    public NotLike notLike(Cmd key, Serializable value, LikeMode mode) {
-        return notLike(key, value(value), mode);
-    }
-
-    public NotLike notLike(Cmd key, Cmd value, LikeMode mode) {
-        return new NotLike(key, value, mode);
-    }
-
     public In in(Cmd main) {
         In in = new In(main);
         return in;
-    }
-
-    public Exists exists(Cmd existsCmd) {
-        return new Exists(existsCmd);
     }
 }

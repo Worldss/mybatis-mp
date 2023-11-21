@@ -4,8 +4,10 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.Cmd;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.Condition;
+import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.executor.method.compare.Compare;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class ConditionFaction implements Compare<Condition, Cmd, Object> {
@@ -174,35 +176,35 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
     }
 
     @Override
-    public Condition like(Cmd column, Object value, LikeMode mode, boolean when) {
+    public Condition like(Cmd column, String value, LikeMode mode, boolean when) {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.like(column, convert(value), mode);
+        return cmdFactory.like(column, value, mode);
     }
 
     @Override
-    public Condition notLike(Cmd column, Object value, LikeMode mode, boolean when) {
+    public Condition notLike(Cmd column, String value, LikeMode mode, boolean when) {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.notLike(column, convert(value), mode);
+        return cmdFactory.notLike(column, value, mode);
     }
 
     @Override
-    public Condition between(Cmd column, Object value, Object value2, boolean when) {
+    public Condition between(Cmd column, Serializable value, Serializable value2, boolean when) {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.between(column, convert(value), convert(value2));
+        return cmdFactory.between(column, value, value2);
     }
 
     @Override
-    public Condition notBetween(Cmd column, Object value, Object value2, boolean when) {
+    public Condition notBetween(Cmd column, Serializable value, Serializable value2, boolean when) {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.notBetween(column, convert(value), convert(value2));
+        return cmdFactory.notBetween(column, value, value2);
     }
 
     @Override
@@ -222,11 +224,11 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
     }
 
     @Override
-    public <T> Condition between(Getter<T> column, Object value, Object value2, int storey, boolean when) {
+    public <T> Condition between(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
         if (!isValid(when, true, value, value2)) {
             return null;
         }
-        return cmdFactory.between(convert(column, storey), convert(value), convert(value2));
+        return cmdFactory.between(convert(column, storey), value, value2);
     }
 
     @Override
@@ -278,11 +280,11 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
     }
 
     @Override
-    public <T> Condition like(Getter<T> column, Object value, LikeMode mode, int storey, boolean when) {
+    public <T> Condition like(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.like(convert(column, storey), convert(value), mode);
+        return cmdFactory.like(convert(column, storey), value, mode);
     }
 
     @Override
@@ -334,19 +336,19 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
     }
 
     @Override
-    public <T> Condition notBetween(Getter<T> column, Object value, Object value2, int storey, boolean when) {
+    public <T> Condition notBetween(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
         if (!isValid(when, true, value, value2)) {
             return null;
         }
-        return cmdFactory.notBetween(convert(column, storey), convert(value), convert(value2));
+        return cmdFactory.notBetween(convert(column, storey), value, value2);
     }
 
     @Override
-    public <T> Condition notLike(Getter<T> column, Object value, LikeMode mode, int storey, boolean when) {
+    public <T> Condition notLike(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.notLike(convert(column, storey), convert(value), mode);
+        return cmdFactory.notLike(convert(column, storey), value, mode);
     }
 
     @Override
@@ -428,14 +430,14 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         return cmdFactory.in(column).add(cmds);
     }
 
-    public Condition exists(Cmd existsCmd) {
-        return this.exists(existsCmd, true);
+    public Condition exists(Query query) {
+        return this.exists(query, true);
     }
 
-    public Condition exists(Cmd existsCmd, boolean when) {
+    public Condition exists(Query query, boolean when) {
         if (!when) {
             return null;
         }
-        return cmdFactory.exists(existsCmd);
+        return cmdFactory.exists(query);
     }
 }

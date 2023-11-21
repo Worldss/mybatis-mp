@@ -4,7 +4,10 @@ package db.sql.core.api.cmd.condition;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.Cmd;
 import db.sql.api.tookit.CmdUtils;
+import db.sql.core.api.cmd.basic.BasicValue;
 import db.sql.core.api.tookit.SqlConst;
+
+import java.io.Serializable;
 
 public class Between extends BaseCondition<Cmd, Cmd[]> {
 
@@ -20,6 +23,10 @@ public class Between extends BaseCondition<Cmd, Cmd[]> {
 
     public Between(Cmd key, Cmd value1, Cmd value2) {
         this(SqlConst.BETWEEN, key, value1, value2);
+    }
+
+    public Between(Cmd key, Serializable value1, Serializable value2) {
+        this(key, new BasicValue(value1), new BasicValue(value2));
     }
 
     @Override

@@ -19,10 +19,10 @@ public interface Compare<RV, COLUMN, V> extends
         GteGetterCompare<RV, V>,
         LtGetterCompare<RV, V>,
         LteGetterCompare<RV, V>,
-        LikeGetterCompare<RV, V>,
-        NotLikeGetterCompare<RV, V>,
-        BetweenGetterCompare<RV, V>,
-        NotBetweenGetterCompare<RV, V>,
+        LikeGetterCompare<RV>,
+        NotLikeGetterCompare<RV>,
+        BetweenGetterCompare<RV>,
+        NotBetweenGetterCompare<RV>,
         IsNullGetterCompare<RV>,
         IsNotNullGetterCompare<RV>,
         EmptyGetterCompare<RV>,
@@ -78,45 +78,45 @@ public interface Compare<RV, COLUMN, V> extends
     RV lte(COLUMN column, V value, boolean when);
 
 
-    default RV like(COLUMN column, V value) {
+    default RV like(COLUMN column, String value) {
         return this.like(column, value, true);
     }
 
-    default RV like(COLUMN column, V value, boolean when) {
+    default RV like(COLUMN column, String value, boolean when) {
         return this.like(column, value, LikeMode.DEFAULT, when);
     }
 
-    default RV like(COLUMN column, V value, LikeMode mode) {
+    default RV like(COLUMN column, String value, LikeMode mode) {
         return like(column, value, mode, true);
     }
 
-    RV like(COLUMN column, V value, LikeMode mode, boolean when);
+    RV like(COLUMN column, String value, LikeMode mode, boolean when);
 
-    default RV notLike(COLUMN column, V value) {
+    default RV notLike(COLUMN column, String value) {
         return notLike(column, value, true);
     }
 
-    default RV notLike(COLUMN column, V value, boolean when) {
+    default RV notLike(COLUMN column, String value, boolean when) {
         return notLike(column, value, LikeMode.DEFAULT, true);
     }
 
-    default RV notLike(COLUMN column, V value, LikeMode mode) {
+    default RV notLike(COLUMN column, String value, LikeMode mode) {
         return this.notLike(column, value, mode, true);
     }
 
-    RV notLike(COLUMN column, V value, LikeMode mode, boolean when);
+    RV notLike(COLUMN column, String value, LikeMode mode, boolean when);
 
-    default RV between(COLUMN column, V value, V value2) {
+    default RV between(COLUMN column, Serializable value, Serializable value2) {
         return between(column, value, value2, true);
     }
 
-    RV between(COLUMN column, V value, V value2, boolean when);
+    RV between(COLUMN column, Serializable value, Serializable value2, boolean when);
 
-    default RV notBetween(COLUMN column, V value, V value2) {
+    default RV notBetween(COLUMN column, Serializable value, Serializable value2) {
         return notBetween(column, value, value2, true);
     }
 
-    RV notBetween(COLUMN column, V value, V value2, boolean when);
+    RV notBetween(COLUMN column, Serializable value, Serializable value2, boolean when);
 
     default RV isNull(COLUMN column) {
         return isNull(column, true);

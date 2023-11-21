@@ -15,20 +15,24 @@ public class If extends BasicFunction<If> {
 
     private final Cmd value;
 
-    private final Cmd value2;
+    private final Cmd thenValue;
 
-    public If(Condition condition, Serializable value, Serializable value2) {
-        this(condition, new BasicValue(value), new BasicValue(value2));
+    public If(Condition condition, Serializable value, Serializable thenValue) {
+        this(condition, new BasicValue(value), new BasicValue(thenValue));
     }
 
-    public If(Condition condition, Cmd value, Serializable value2) {
-        this(condition, value, new BasicValue(value2));
+    public If(Condition condition, Cmd value, Serializable thenValue) {
+        this(condition, value, new BasicValue(thenValue));
     }
 
-    public If(Condition condition, Cmd value, Cmd value2) {
+    public If(Condition condition, Serializable value, Cmd thenValue) {
+        this(condition, new BasicValue(value), thenValue);
+    }
+
+    public If(Condition condition, Cmd value, Cmd thenValue) {
         super(IF, condition);
         this.value = value;
-        this.value2 = value2;
+        this.thenValue = thenValue;
     }
 
     @Override
@@ -38,7 +42,7 @@ public class If extends BasicFunction<If> {
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
         this.value.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        this.value2.sql(this, context, sqlBuilder);
+        this.thenValue.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         sqlBuilder = appendAlias(user, sqlBuilder);
         return sqlBuilder;
@@ -46,6 +50,6 @@ public class If extends BasicFunction<If> {
 
     @Override
     public boolean contain(Cmd cmd) {
-        return CmdUtils.contain(cmd, this.key, this.value, this.value2);
+        return CmdUtils.contain(cmd, this.key, this.value, this.thenValue);
     }
 }

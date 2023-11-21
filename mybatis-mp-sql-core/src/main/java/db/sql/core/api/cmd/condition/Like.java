@@ -4,7 +4,10 @@ import db.sql.api.DbType;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.Cmd;
 import db.sql.api.cmd.LikeMode;
+import db.sql.core.api.cmd.basic.BasicValue;
 import db.sql.core.api.tookit.SqlConst;
+
+import java.io.Serializable;
 
 public class Like extends BasicCondition {
     private final LikeMode mode;
@@ -18,8 +21,16 @@ public class Like extends BasicCondition {
         this(key, value, LikeMode.DEFAULT);
     }
 
+    public Like(Cmd key, String value) {
+        this(key, new BasicValue(value), LikeMode.DEFAULT);
+    }
+
     public Like(Cmd key, Cmd value, LikeMode mode) {
         this(SqlConst.LIKE, key, value, mode);
+    }
+
+    public Like(Cmd key, String value, LikeMode mode) {
+        this(SqlConst.LIKE, key, new BasicValue(value), mode);
     }
 
     @Override

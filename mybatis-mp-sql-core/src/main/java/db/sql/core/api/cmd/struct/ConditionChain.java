@@ -6,6 +6,7 @@ import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.Cmd;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.Condition;
+import db.sql.api.cmd.executor.Query;
 import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.cmd.ConditionFaction;
 import db.sql.core.api.cmd.basic.ConditionBlock;
@@ -171,7 +172,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain between(Cmd column, Object value, Object value2, boolean when) {
+    public ConditionChain between(Cmd column, Serializable value, Serializable value2, boolean when) {
         Condition condition = conditionFaction.between(column, value, value2, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
@@ -180,7 +181,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain notBetween(Cmd column, Object value, Object value2, boolean when) {
+    public ConditionChain notBetween(Cmd column, Serializable value, Serializable value2, boolean when) {
         Condition condition = conditionFaction.notBetween(column, value, value2, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
@@ -207,7 +208,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain like(Cmd column, Object value, LikeMode mode, boolean when) {
+    public ConditionChain like(Cmd column, String value, LikeMode mode, boolean when) {
         Condition condition = conditionFaction.like(column, value, mode, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
@@ -216,7 +217,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain notLike(Cmd column, Object value, LikeMode mode, boolean when) {
+    public ConditionChain notLike(Cmd column, String value, LikeMode mode, boolean when) {
         Condition condition = conditionFaction.notLike(column, value, mode, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
@@ -225,7 +226,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public <T> ConditionChain between(Getter<T> column, Object value, Object value2, int storey, boolean when) {
+    public <T> ConditionChain between(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
         Condition condition = conditionFaction.between(column, value, value2, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
@@ -288,7 +289,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public <T> ConditionChain like(Getter<T> column, Object value, LikeMode mode, int storey, boolean when) {
+    public <T> ConditionChain like(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
         Condition condition = conditionFaction.like(column, value, mode, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
@@ -351,7 +352,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public <T> ConditionChain notBetween(Getter<T> column, Object value, Object value2, int storey, boolean when) {
+    public <T> ConditionChain notBetween(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
         Condition condition = conditionFaction.notBetween(column, value, value2, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
@@ -360,7 +361,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public <T> ConditionChain notLike(Getter<T> column, Object value, LikeMode mode, int storey, boolean when) {
+    public <T> ConditionChain notLike(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
         Condition condition = conditionFaction.notLike(column, value, mode, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
@@ -458,8 +459,8 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain exists(Cmd existsCmd, boolean when) {
-        Condition condition = conditionFaction.exists(existsCmd, when);
+    public ConditionChain exists(Query query, boolean when) {
+        Condition condition = conditionFaction.exists(query, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }

@@ -159,11 +159,7 @@ public interface FunctionInterface extends Cmd {
     }
 
     default In in(Serializable... values) {
-        In in = new In(this).add();
-        for (Serializable value : values) {
-            in.add(new BasicValue(value));
-        }
-        return in;
+        return new In(this).add(values);
     }
 
 }

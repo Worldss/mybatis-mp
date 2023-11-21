@@ -3,7 +3,10 @@ package db.sql.core.api.cmd.fun;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.Cmd;
 import db.sql.api.tookit.CmdUtils;
+import db.sql.core.api.cmd.basic.BasicValue;
 import db.sql.core.api.tookit.SqlConst;
+
+import java.io.Serializable;
 
 import static db.sql.core.api.tookit.SqlConst.IFNULL;
 
@@ -14,6 +17,10 @@ public class IfNull extends BasicFunction<IfNull> {
     public IfNull(Cmd key, Cmd value) {
         super(IFNULL, key);
         this.value = value;
+    }
+
+    public IfNull(Cmd key, Serializable value) {
+        this(key,new BasicValue(value));
     }
 
     @Override

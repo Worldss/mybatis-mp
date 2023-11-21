@@ -26,6 +26,11 @@ public class ${entityInfo.name} ${superExtend}{
     ${field.buildTableIdCode()!}
     private ${field.typeName} ${field.name};
 <#else>
+<#if field.columnInfo.isVersion()>
+    @Version
+<#elseif  field.columnInfo.isTenantId()>
+    @TenantId
+</#if>
 <#if field.isNeedTableFiled()>
     ${field.buildTableField()}
     private ${field.typeName} ${field.name};

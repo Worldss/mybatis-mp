@@ -26,6 +26,10 @@ public class ColumnInfo {
 
     private int scale;
 
+    private boolean version;
+
+    private boolean tenantId;
+
     private JdbcType jdbcType;
 
     private String typeName;

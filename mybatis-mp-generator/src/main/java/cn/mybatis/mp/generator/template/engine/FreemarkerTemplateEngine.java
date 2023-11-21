@@ -1,6 +1,8 @@
 package cn.mybatis.mp.generator.template.engine;
 
 import cn.mybatis.mp.generator.template.ITemplateBuilder;
+import freemarker.core.PlainTextOutputFormat;
+import freemarker.core.XMLOutputFormat;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateModelException;
@@ -17,6 +19,8 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
     public FreemarkerTemplateEngine() {
         configuration = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
         configuration.setDefaultEncoding("UTF-8");
+
+        configuration.setOutputFormat(PlainTextOutputFormat.INSTANCE);
         configuration.setClassForTemplateLoading(FreemarkerTemplateEngine.class, "/");
         try {
             configuration.setSharedVariable("util", new EngineUtil());

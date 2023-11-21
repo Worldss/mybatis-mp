@@ -7,9 +7,7 @@ import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import cn.mybatis.mp.core.sql.executor.chain.UpdateChain;
 import cn.mybatis.mp.core.util.NamingUtil;
 import cn.mybatis.mp.db.IdAutoType;
-import cn.mybatis.mp.db.annotations.Table;
-import cn.mybatis.mp.db.annotations.TableField;
-import cn.mybatis.mp.db.annotations.TableId;
+import cn.mybatis.mp.db.annotations.*;
 import cn.mybatis.mp.generator.config.EntityConfig;
 import cn.mybatis.mp.generator.config.GeneratorConfig;
 import cn.mybatis.mp.generator.database.meta.ColumnInfo;
@@ -39,7 +37,7 @@ public class GeneratorUtil {
         EntityConfig entityConfig = generatorConfig.getEntityConfig();
         if (entityConfig.getNameConvert() == null) {
             entityConfig.nameConvert((table -> {
-                return NamingUtil.firstToUpperCase(NamingUtil.underlineToCamel(tableName));
+                return NamingUtil.firstToUpperCase(NamingUtil.underlineToCamel(table));
             }));
         }
         return entityConfig.getNameConvert().apply(tableName);
@@ -107,6 +105,7 @@ public class GeneratorUtil {
                 classList.add(IdAutoType.class.getName());
             }
         }
+
         if (generatorConfig.getEntityConfig().getSuperClass() != null) {
             classList.add(generatorConfig.getEntityConfig().getSuperClass());
         }
@@ -117,6 +116,11 @@ public class GeneratorUtil {
             classList.add(item.getType().getName());
             if (item.isNeedTableFiled()) {
                 classList.add(TableField.class.getName());
+            }
+            if (item.getColumnInfo().isVersion()) {
+                classList.add(Version.class.getName());
+            } else if (item.getColumnInfo().isTenantId()) {
+                classList.add(TenantId.class.getName());
             }
         });
         return buildImports(classList);

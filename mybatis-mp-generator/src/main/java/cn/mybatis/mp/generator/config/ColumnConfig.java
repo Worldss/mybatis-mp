@@ -28,6 +28,16 @@ public class ColumnConfig {
     private List<String> disableSelectColumns = new ArrayList<>();
 
     /**
+     * 乐观锁列名
+     */
+    private String versionColumn = "";
+
+    /**
+     * 租户ID列名
+     */
+    private String tenantIdColumn = "";
+
+    /**
      * 排除列
      */
     public ColumnConfig excludeColumns(String... columns) {
@@ -48,6 +58,28 @@ public class ColumnConfig {
      */
     public ColumnConfig disableSelectColumns(String... columns) {
         this.disableSelectColumns.addAll(Arrays.asList(columns));
+        return this;
+    }
+
+    /**
+     * 乐观锁列名
+     *
+     * @param versionColumn
+     * @return
+     */
+    public ColumnConfig versionColumn(String versionColumn) {
+        this.versionColumn = versionColumn;
+        return this;
+    }
+
+    /**
+     * 租户ID列名
+     *
+     * @param tenantIdColumn
+     * @return
+     */
+    public ColumnConfig tenantIdColumn(String tenantIdColumn) {
+        this.tenantIdColumn = tenantIdColumn;
         return this;
     }
 }

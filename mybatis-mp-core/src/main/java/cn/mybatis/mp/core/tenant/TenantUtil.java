@@ -4,7 +4,11 @@ import cn.mybatis.mp.core.db.reflect.ModelInfo;
 import cn.mybatis.mp.core.db.reflect.Models;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
+import cn.mybatis.mp.core.sql.executor.MybatisCmdFactory;
 import cn.mybatis.mp.db.Model;
+import db.sql.api.cmd.executor.method.compare.Compare;
+import db.sql.core.api.cmd.CmdFactory;
+import db.sql.core.api.cmd.executor.BaseExecutor;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -69,5 +73,27 @@ public class TenantUtil {
         }
     }
 
-
+    /**
+     * 添加租户条件
+     *
+     * @param compare
+     * @param mybatisCmdFactory
+     * @param entity
+     * @param storey
+     */
+    public static final void addTenantCondition(Compare compare, MybatisCmdFactory mybatisCmdFactory, Class entity, int storey) {
+        TenantInfo tenantInfo = TenantContext.getTenantInfo();
+        if (Objects.isNull(tenantInfo)) {
+            return;
+        }
+        Serializable tenantId = tenantInfo.getTenantId();
+        if (Objects.isNull(tenantId)) {
+            return;
+        }
+        TableInfo tableInfo = Tables.get(entity);
+        if (Objects.isNull(tableInfo.getTenantIdFieldInfo())) {
+            return;
+        }
+        compare.eq(mybatisCmdFactory.field(entity, tableInfo.getTenantIdFieldInfo().getField().getName(), storey), tenantId);
+    }
 }

@@ -18,13 +18,10 @@ import java.util.function.Function;
 
 public class CmdFactory {
 
-    protected Map<String, Table> tableCache = new HashMap<>();
-
-    protected Map<String, TableField> tableFieldCache = new HashMap<>();
-
-    protected int tableNums = 0;
-
     private final String tableAsPrefix;
+    protected Map<String, Table> tableCache = new HashMap<>();
+    protected Map<String, TableField> tableFieldCache = new HashMap<>();
+    protected int tableNums = 0;
 
     public CmdFactory() {
         this("t");

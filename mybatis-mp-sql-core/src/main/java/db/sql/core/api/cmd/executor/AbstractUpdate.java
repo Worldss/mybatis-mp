@@ -24,17 +24,12 @@ import java.util.function.Consumer;
 
 public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY> implements Update<SELF, Dataset, Cmd, Object, ConditionChain, UpdateTable, Join, On, Where> {
 
-    protected UpdateTable updateTable;
-
-    protected UpdateSets updateSets;
-
-    protected Where where;
-
-    protected Joins joins;
-
     protected final ConditionFaction conditionFaction;
-
     protected final CMD_FACTORY $;
+    protected UpdateTable updateTable;
+    protected UpdateSets updateSets;
+    protected Where where;
+    protected Joins joins;
 
     public AbstractUpdate(CMD_FACTORY $) {
         this.$ = $;

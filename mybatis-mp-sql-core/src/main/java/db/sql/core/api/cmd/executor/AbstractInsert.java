@@ -19,13 +19,10 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY> implements Insert<SELF, Table, TableField, Value, InsertTable, InsertFields, InsertValues> {
 
-    protected InsertTable insertTable;
-
-    protected InsertFields insertFields;
-
-    protected InsertValues insertValues;
-
     protected final CMD_FACTORY $;
+    protected InsertTable insertTable;
+    protected InsertFields insertFields;
+    protected InsertValues insertValues;
 
     public AbstractInsert(CMD_FACTORY $) {
         this.$ = $;

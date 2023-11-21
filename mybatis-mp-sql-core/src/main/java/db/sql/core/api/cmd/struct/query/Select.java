@@ -14,13 +14,12 @@ import java.util.List;
 public class Select implements db.sql.api.cmd.struct.query.Select<Select, Cmd>, Cmd {
 
     private final List<Cmd> selectFields = new ArrayList<>();
+    private boolean distinct = false;
 
     @Override
     public List<Cmd> getSelectFiled() {
         return selectFields;
     }
-
-    private boolean distinct = false;
 
     @Override
     public Select distinct() {

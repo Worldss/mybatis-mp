@@ -5,8 +5,8 @@ import db.sql.api.cmd.Cmd;
 import db.sql.api.tookit.CmdUtils;
 import db.sql.core.api.cmd.CmdFactory;
 import db.sql.core.api.cmd.basic.Condition;
-import db.sql.core.api.cmd.basic.Connector;
 import db.sql.core.api.cmd.basic.ConditionBlock;
+import db.sql.core.api.cmd.basic.Connector;
 import db.sql.core.api.cmd.struct.ConditionChain;
 import db.sql.core.api.tookit.SqlConst;
 

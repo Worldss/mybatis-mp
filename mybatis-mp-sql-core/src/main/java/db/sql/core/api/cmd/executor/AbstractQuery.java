@@ -44,27 +44,17 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         Unions<Union>
         >, Cmd {
 
-    protected Select select;
-
-    protected From from;
-
-    protected Where where;
-
-    protected Joins joins;
-
-    protected GroupBy groupBy;
-
-    protected Having having;
-
-    protected OrderBy orderBy;
-
-    protected Limit limit;
-
-    protected Unions unions;
-
     protected final ConditionFaction conditionFaction;
-
     protected final CMD_FACTORY $;
+    protected Select select;
+    protected From from;
+    protected Where where;
+    protected Joins joins;
+    protected GroupBy groupBy;
+    protected Having having;
+    protected OrderBy orderBy;
+    protected Limit limit;
+    protected Unions unions;
 
     public AbstractQuery(CMD_FACTORY $) {
         this.$ = $;

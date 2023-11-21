@@ -13,10 +13,6 @@ public class Table implements Dataset<Table> {
 
     protected String prefix;
 
-    public TableField $(String name) {
-        return new TableField(this, name);
-    }
-
     public Table(String name) {
         this.name = name;
     }
@@ -24,6 +20,10 @@ public class Table implements Dataset<Table> {
     public Table(String name, String alias) {
         this(name);
         this.alias = alias;
+    }
+
+    public TableField $(String name) {
+        return new TableField(this, name);
     }
 
     public String getName() {
@@ -34,13 +34,13 @@ public class Table implements Dataset<Table> {
         return alias;
     }
 
+    public Table setAlias(String alias) {
+        return as(alias);
+    }
+
     public Table as(String alias) {
         this.alias = alias;
         return this;
-    }
-
-    public Table setAlias(String alias) {
-        return as(alias);
     }
 
     @Override

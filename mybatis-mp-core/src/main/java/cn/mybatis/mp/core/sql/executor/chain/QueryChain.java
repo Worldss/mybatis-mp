@@ -1,6 +1,5 @@
 package cn.mybatis.mp.core.sql.executor.chain;
 
-import cn.mybatis.mp.core.mybatis.mapper.MapperEntitys;
 import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
 import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.BaseQuery;
@@ -29,6 +28,9 @@ public class QueryChain extends BaseQuery<QueryChain> {
         }
         if (this.from == null) {
             this.from(mapper.getEntityType());
+        }
+        if (this.getReturnType() == null) {
+            this.setReturnType(mapper.getEntityType());
         }
     }
 

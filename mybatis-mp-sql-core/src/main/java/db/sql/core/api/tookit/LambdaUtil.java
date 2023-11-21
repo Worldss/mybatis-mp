@@ -26,16 +26,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class LambdaUtil {
 
+    private static final Map<Serializable, SerializedLambda> SERIALIZED_LAMBDA_MAP = new ConcurrentHashMap<>();
+    private static final Map<Getter, String> LAMBDA_GETTER_FIELD_MAP = new ConcurrentHashMap<>();
+    private static final Map<Getter, Class<?>> LAMBDA_GETTER_CLASS_MAP = new ConcurrentHashMap<>();
+
     private LambdaUtil() {
 
     }
-
-    private static final Map<Serializable, SerializedLambda> SERIALIZED_LAMBDA_MAP = new ConcurrentHashMap<>();
-
-    private static final Map<Getter, String> LAMBDA_GETTER_FIELD_MAP = new ConcurrentHashMap<>();
-
-    private static final Map<Getter, Class<?>> LAMBDA_GETTER_CLASS_MAP = new ConcurrentHashMap<>();
-
 
     public static <T> String getName(Getter<T> getter) {
         return LAMBDA_GETTER_FIELD_MAP.computeIfAbsent(getter, (key) -> {

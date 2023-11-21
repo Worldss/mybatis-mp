@@ -18,17 +18,12 @@ import java.util.function.Consumer;
 
 public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY> implements Delete<SELF, Dataset, Cmd, Object, ConditionChain, DeleteTable, From, Join, On, Where> {
 
-    protected DeleteTable deleteTable;
-
-    protected From from;
-
-    protected Where where;
-
-    protected Joins joins;
-
     protected final ConditionFaction conditionFaction;
-
     protected final CMD_FACTORY $;
+    protected DeleteTable deleteTable;
+    protected From from;
+    protected Where where;
+    protected Joins joins;
 
     public AbstractDelete(CMD_FACTORY $) {
         this.$ = $;

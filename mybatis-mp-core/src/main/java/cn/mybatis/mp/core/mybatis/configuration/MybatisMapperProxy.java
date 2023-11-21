@@ -4,6 +4,7 @@ import cn.mybatis.mp.core.util.GenericUtil;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 public class MybatisMapperProxy<T> implements InvocationHandler {
 
@@ -29,6 +30,9 @@ public class MybatisMapperProxy<T> implements InvocationHandler {
             return this.entityType;
         } else if (method.getName().equals(MAPPER_TYPE_METHOD_NAME)) {
             return this.mapperInterface;
+        }
+        if (method.isDefault()) {
+            return Proxy.getInvocationHandler(mapperProxy).invoke(proxy, method, args);
         }
         return method.invoke(mapperProxy, args);
     }

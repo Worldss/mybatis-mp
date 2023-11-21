@@ -2,11 +2,10 @@ package cn.mybatis.mp.core.mybatis.configuration;
 
 
 import cn.mybatis.mp.core.db.reflect.TableIds;
-import cn.mybatis.mp.core.mybatis.mapper.MapperEntitys;
 import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
-import org.apache.ibatis.binding.BindingException;
-import org.apache.ibatis.binding.MapperProxyFactory;
+import cn.mybatis.mp.core.util.GenericUtil;
+import cn.mybatis.mp.db.annotations.Table;
 import org.apache.ibatis.executor.*;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
@@ -27,6 +26,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.util.Objects;
+import java.util.Optional;
 
 
 public class MybatisConfiguration extends Configuration {
@@ -74,11 +74,13 @@ public class MybatisConfiguration extends Configuration {
     @Override
 
     public <T> void addMapper(Class<T> type) {
-        if (MapperEntitys.add(type)) {
-            //提前缓存
-            Class entity = MapperEntitys.get(type);
-            ResultMapUtils.getResultMap(this, entity);
-            TableIds.get(this, entity);
+        if (MybatisMapper.class.isAssignableFrom(type)) {
+            Optional<Class> entityOptional = GenericUtil.getGenericInterfaceClass(type).stream().filter(item -> item.isAnnotationPresent(Table.class)).findFirst();
+            if (!entityOptional.isPresent()) {
+                throw new RuntimeException(type + " did not add a generic");
+            }
+            ResultMapUtils.getResultMap(this, entityOptional.get());
+            TableIds.get(this, entityOptional.get());
         }
         super.addMapper(type);
     }

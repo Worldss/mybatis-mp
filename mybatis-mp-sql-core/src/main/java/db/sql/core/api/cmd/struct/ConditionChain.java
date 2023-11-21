@@ -21,6 +21,8 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     private final ConditionFaction conditionFaction;
 
     private final ConditionChain parent;
+    private List<ConditionBlock> conditionBlocks;
+    private Connector connector = Connector.AND;
 
     public ConditionChain(ConditionFaction conditionFaction) {
         this(conditionFaction, null);
@@ -30,10 +32,6 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
         this.conditionFaction = conditionFaction;
         this.parent = parent;
     }
-
-    private List<ConditionBlock> conditionBlocks;
-
-    private Connector connector = Connector.AND;
 
     @Override
     public boolean hasContent() {
@@ -84,7 +82,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain empty(Getter<T> column, int storey, boolean when) {
-        Condition condition = conditionFaction.empty(column,storey, when);
+        Condition condition = conditionFaction.empty(column, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -102,7 +100,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain notEmpty(Getter<T> column, int storey, boolean when) {
-        Condition condition = conditionFaction.notEmpty(column,storey, when);
+        Condition condition = conditionFaction.notEmpty(column, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }

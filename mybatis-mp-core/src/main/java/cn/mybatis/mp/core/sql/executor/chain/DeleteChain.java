@@ -1,6 +1,5 @@
 package cn.mybatis.mp.core.sql.executor.chain;
 
-import cn.mybatis.mp.core.mybatis.mapper.MapperEntitys;
 import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
 import cn.mybatis.mp.core.sql.executor.BaseDelete;
 

@@ -10,4 +10,6 @@ public final class StringPool {
     public static final char UNDERLINE = '_';
 
     public static final String DASH = "-";
+
+    public static final String DOT = ".";
 }

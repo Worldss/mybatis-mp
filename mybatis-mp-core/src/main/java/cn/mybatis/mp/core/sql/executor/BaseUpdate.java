@@ -1,19 +1,11 @@
 package cn.mybatis.mp.core.sql.executor;
 
-import cn.mybatis.mp.core.db.reflect.ForeignInfo;
-import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
-import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.Tables;
-import cn.mybatis.mp.core.tenant.TenantContext;
-import cn.mybatis.mp.core.tenant.TenantInfo;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
 import db.sql.api.cmd.JoinMode;
-import db.sql.core.api.cmd.basic.Dataset;
 import db.sql.core.api.cmd.executor.AbstractUpdate;
 import db.sql.core.api.cmd.struct.On;
 
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.Consumer;
 

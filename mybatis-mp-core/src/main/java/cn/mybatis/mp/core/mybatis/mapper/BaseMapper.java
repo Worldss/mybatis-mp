@@ -305,8 +305,9 @@ public interface BaseMapper<T> {
      *
      * @param queryContext
      * @return
+     * @see MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
-    @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
+    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_NAME)
     <T> List<T> $list(SQLCmdQueryContext queryContext);
 
     /**
@@ -316,16 +317,16 @@ public interface BaseMapper<T> {
      * @return
      * @see MybatisSQLProvider#cmdCount(SQLCmdCountQueryContext, ProviderContext)
      */
-    @SelectProvider(type = MybatisSQLProvider.class, method = "cmdCount")
+    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.COUNT_NAME)
     Integer $count(SQLCmdCountQueryContext queryContext);
 
     /**
-     * count查询
+     * count查询 - 从query中
      *
      * @param queryContext
      * @return
      * @see MybatisSQLProvider#countFromQuery(SQLCmdCountFromQueryContext, ProviderContext)
      */
-    @SelectProvider(type = MybatisSQLProvider.class, method = "countFromQuery")
+    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_COUNT_NAME)
     Integer $countFromQuery(SQLCmdCountFromQueryContext queryContext);
 }

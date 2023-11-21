@@ -14,6 +14,9 @@ public class MybatisSQLProvider {
     public static final String SAVE_NAME = "save";
     public static final String UPDATE_NAME = "update";
     public static final String DELETE_NAME = "delete";
+    public static final String QUERY_NAME = "cmdQuery";
+    public static final String COUNT_NAME = "cmdCount";
+    public static final String QUERY_COUNT_NAME = "countFromQuery";
 
     private MybatisSQLProvider() {
 

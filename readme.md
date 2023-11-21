@@ -1367,6 +1367,16 @@ new GeneratorConfig(...).columnConfig(columnConfig->{
         <th align="left">说明</th>
     </tr>
     <tr align="center">
+        <td>versionColumn</td>
+        <td>空</td>
+        <td align="left">指定乐观锁列名</td>
+    </tr>
+    <tr align="center">
+        <td>tenantIdColumn</td>
+        <td>空</td>
+        <td align="left">指定租户ID列名</td>
+    </tr>
+    <tr align="center">
         <td>excludeColumns</td>
         <td>空</td>
         <td align="left">排除列，默认不排除<strong>（在有公共实体类的时候很实用）</strong></td>

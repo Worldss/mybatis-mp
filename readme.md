@@ -57,7 +57,7 @@
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-spring-boot-starter</artifactId>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
 </dependency>  
 ```
 
@@ -1535,7 +1535,7 @@ mybatis:
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-generator</artifactId>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
     <scope>provided</scope>
 </dependency>
 ```

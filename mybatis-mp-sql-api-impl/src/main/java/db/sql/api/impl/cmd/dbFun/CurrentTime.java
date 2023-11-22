@@ -4,16 +4,16 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.tookit.SqlConst;
 
-public class Pi implements Function, FunctionInterface {
+public class CurrentTime implements Function, FunctionInterface {
 
-    private Pi() {
-    }
+    private CurrentTime(){}
 
-    public static final Pi INSTANCE = new Pi();
+    public static final CurrentTime INSTANCE = new CurrentTime();
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.PI).append(SqlConst.BRACKET_LEFT);
+        sqlBuilder = sqlBuilder.append(SqlConst.CURRENT_TIME);
+        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         return sqlBuilder;
     }

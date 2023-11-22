@@ -5,7 +5,7 @@ import db.sql.api.impl.tookit.SqlConst;
 
 public class Sum extends BasicFunction<Sum> {
 
-    public Sum(Cmd value) {
-        super(SqlConst.SUM, value);
+    public Sum(Cmd key) {
+        super(SqlConst.SUM, key);
     }
 }

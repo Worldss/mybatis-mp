@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.impl.tookit.SqlConst;
 
 public class Count extends BasicFunction<Count> {
-    public Count(Cmd value) {
-        super(SqlConst.COUNT, value);
+    public Count(Cmd key) {
+        super(SqlConst.COUNT, key);
     }
 }

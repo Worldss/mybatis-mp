@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.impl.tookit.SqlConst;
 
 public class Log10 extends BasicFunction<Log10> {
-    public Log10(Cmd value) {
-        super(SqlConst.LOG10, value);
+    public Log10(Cmd key) {
+        super(SqlConst.LOG10, key);
     }
 }

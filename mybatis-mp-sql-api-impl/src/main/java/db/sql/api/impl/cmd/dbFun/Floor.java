@@ -5,7 +5,7 @@ import db.sql.api.impl.tookit.SqlConst;
 
 
 public class Floor extends BasicFunction<Floor> {
-    public Floor(Cmd value) {
-        super(SqlConst.FLOOR, value);
+    public Floor(Cmd key) {
+        super(SqlConst.FLOOR, key);
     }
 }

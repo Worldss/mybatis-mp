@@ -6,29 +6,21 @@ import db.sql.api.impl.cmd.basic.BasicValue;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class Rpad extends BasicFunction<Rpad> {
+public class FindInSet extends BasicFunction<FindInSet> {
 
-    private final int length;
+    private final Cmd match;
 
-    private final Cmd pad;
-
-    public Rpad(Cmd key, int length, String pad) {
-        this(key, length, new BasicValue(pad));
-    }
-
-    public Rpad(Cmd key, int length, Cmd pad) {
-        super(SqlConst.RPAD, key);
-        this.length = length;
-        this.pad = pad;
+    public FindInSet(Cmd key, String match) {
+        super(SqlConst.REPLACE, key);
+        this.match = new BasicValue(match);
     }
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
-        this.key.sql(this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER).append(this.length);
+        sqlBuilder = this.match.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        sqlBuilder = new BasicValue(this.pad).sql(user, context, sqlBuilder);
+        sqlBuilder = this.key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         sqlBuilder = appendAlias(user, sqlBuilder);
         return sqlBuilder;
@@ -36,6 +28,6 @@ public class Rpad extends BasicFunction<Rpad> {
 
     @Override
     public boolean contain(Cmd cmd) {
-        return CmdUtils.contain(cmd, this.key, this.pad);
+        return CmdUtils.contain(cmd, this.key,this.match);
     }
 }

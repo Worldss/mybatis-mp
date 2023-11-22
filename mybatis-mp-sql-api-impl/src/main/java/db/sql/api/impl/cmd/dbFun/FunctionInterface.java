@@ -6,6 +6,7 @@ import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.cmd.condition.*;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 public interface FunctionInterface extends Cmd {
 
@@ -157,7 +158,101 @@ public interface FunctionInterface extends Cmd {
         return Methods.rpad(this, length, pad);
     }
 
+    default Trim trim() {
+        return Methods.trim(this);
+    }
 
+    default Ltrim ltrim() {
+        return Methods.ltrim(this);
+    }
+
+    default Rtrim rtrim() {
+        return Methods.rtrim(this);
+    }
+
+    default Strcmp strcmp(String s) {
+        return Methods.strcmp(this, s);
+    }
+
+    default Repeat repeat(int n) {
+        return Methods.repeat(this, n);
+    }
+
+    default Replace replace(String target, String replacement) {
+        return Methods.replace(this, target, replacement);
+    }
+
+    default Reverse reverse() {
+        return Methods.reverse(this);
+    }
+
+    default FindInSet findInSet(String str) {
+        return Methods.findInSet(this, str);
+    }
+
+    default UnixTimestamp unixTimestamp() {
+        return Methods.unixTimestamp(this);
+    }
+
+    default FromUnixTime fromUnixTime() {
+        return Methods.fromUnixTime(this);
+    }
+
+    default Year year() {
+        return Methods.year(this);
+    }
+
+    default Month month() {
+        return Methods.month(this);
+    }
+
+    default Day day() {
+        return Methods.day(this);
+    }
+
+    default Date date() {
+        return Methods.date(this);
+    }
+
+    default Weekday weekday() {
+        return Methods.weekday(this);
+    }
+
+    default Hour hour() {
+        return Methods.hour(this);
+    }
+
+    default DateDiff dateDiff(Cmd another) {
+        return Methods.dateDiff(this, another);
+    }
+
+    default DateAdd dateAdd(int n) {
+        return this.dateAdd(n, TimeUnit.DAYS);
+    }
+
+    default DateAdd dateAdd(int n, TimeUnit timeUnit) {
+        return Methods.dateAdd(this, n, timeUnit);
+    }
+
+    default DateSub dateSub(int n) {
+        return this.dateSub(n, TimeUnit.DAYS);
+    }
+
+    default DateSub dateSub(int n, TimeUnit timeUnit) {
+        return Methods.dateSub(this, n, timeUnit);
+    }
+
+    default Md5 md5() {
+        return Methods.md5(this);
+    }
+
+    default InetAton inetAton() {
+        return Methods.inetAton(this);
+    }
+
+    default InetNtoa inetNtoa() {
+        return Methods.inetNtoa(this);
+    }
 
     default Multiply multiply(Number value) {
         return Methods.multiply(this, value);

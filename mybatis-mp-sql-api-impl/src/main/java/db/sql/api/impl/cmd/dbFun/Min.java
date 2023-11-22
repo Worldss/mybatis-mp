@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.impl.tookit.SqlConst;
 
 public class Min extends BasicFunction<Min> {
-    public Min(Cmd value) {
-        super(SqlConst.MIN, value);
+    public Min(Cmd key) {
+        super(SqlConst.MIN, key);
     }
 }

@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.impl.tookit.SqlConst;
 
 public class Sign extends BasicFunction<Sign> {
-    public Sign(Cmd value) {
-        super(SqlConst.SIGN, value);
+    public Sign(Cmd key) {
+        super(SqlConst.SIGN, key);
     }
 }

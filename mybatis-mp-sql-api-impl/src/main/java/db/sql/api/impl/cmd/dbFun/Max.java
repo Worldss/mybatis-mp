@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.impl.tookit.SqlConst;
 
 public class Max extends BasicFunction<Max> {
-    public Max(Cmd value) {
-        super(SqlConst.MAX, value);
+    public Max(Cmd key) {
+        super(SqlConst.MAX, key);
     }
 }

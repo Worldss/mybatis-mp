@@ -19,6 +19,8 @@ public class SqlConst {
     public static final String DOT = ".";
 
     public static final String DELIMITER = " , ";
+
+    public static final String INTERVAL = "INTERVAL ";
     public static final String AS = " AS ";
     public static final String IS = " IS ";
     public static final String IS_NOT = " IS NOT ";
@@ -106,6 +108,33 @@ public class SqlConst {
     public static final String RIGHT = " RIGHT";
     public static final String LPAD = " LPAD";
     public static final String RPAD = " RPAD";
+    public static final String TRIM = " TRIM";
+    public static final String LTRIM = " LTRIM";
+    public static final String RTRIM = " RTRIM";
+    public static final String REPEAT = " REPEAT";
+
+    public static final String REPLACE = " REPLACE";
+    public static final String REVERSE = " REVERSE";
+    public static final String INSTR = " INSTR";
+    public static final String STRCMP = " STRCMP";
+    public static final String FILED = " FILED";
+    public static final String CURRENT_DATE = " CURRENT_DATE";
+    public static final String CURRENT_TIME = " CURRENT_TIME";
+    public static final String UNIX_TIMESTAMP = " UNIX_TIMESTAMP";
+    public static final String FROM_UNIXTIME = " FROM_UNIXTIME";
+    public static final String YEAR = " YEAR";
+    public static final String MONTH = " MONTH";
+
+    public static final String DATE = " DATE";
+    public static final String DAY = " DAY";
+    public static final String WEEKDAY = " WEEKDAY";
+    public static final String HOUR = " HOUR";
+    public static final String DATE_DIFF = " DATEDIFF";
+    public static final String DATE_ADD = " DATE_ADD";
+    public static final String DATE_SUB = " DATE_SUB";
+    public static final String MD5 = " MD5";
+    public static final String INET_ATON = " INET_ATON";
+    public static final String INET_NTOA = " INET_NTOA";
     public static final String COUNT = " COUNT";
     public static final String GROUP_BY = " GROUP BY ";
     public static final String HAVING = " HAVING ";
@@ -114,6 +143,23 @@ public class SqlConst {
     public static final String DESC = " DESC ";
 
     public static final String SINGLE_QUOT(DbType dbType) {
+        switch (dbType){
+            case MYSQL:{
+                return "'";
+            }
+            case PGSQL:{
+                return "\"";
+            }
+        }
         return "'";
+    }
+
+    public static String CURRENT_DATE_TIME(DbType dbType) {
+//        switch (dbType){
+//            case MYSQL:{
+//                return " CURRENT_TIMESTAMP";
+//            }
+//        }
+        return " CURRENT_TIMESTAMP";
     }
 }

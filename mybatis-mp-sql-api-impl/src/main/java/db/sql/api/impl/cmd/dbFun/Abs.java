@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.impl.tookit.SqlConst;
 
 public class Abs extends BasicFunction<Abs> {
-    public Abs(Cmd value) {
-        super(SqlConst.ABS, value);
+    public Abs(Cmd key) {
+        super(SqlConst.ABS, key);
     }
 }

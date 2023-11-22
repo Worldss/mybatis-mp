@@ -11,6 +11,7 @@ import db.sql.api.impl.tookit.SqlConst;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 数据库方法集合
@@ -505,6 +506,311 @@ public class Methods {
      */
     public static Rpad rpad(Cmd key, int length, String pad) {
         return new Rpad(key, length, pad);
+    }
+
+    /**
+     * 删除两边空格
+     *
+     * @param key
+     * @return
+     */
+    public static Trim trim(Cmd key) {
+        return new Trim(key);
+    }
+
+    /**
+     * 删除左边空格
+     *
+     * @param key
+     * @return
+     */
+    public static Ltrim ltrim(Cmd key) {
+        return new Ltrim(key);
+    }
+
+    /**
+     * 删除右边空格
+     *
+     * @param key
+     * @return
+     */
+    public static Rtrim rtrim(Cmd key) {
+        return new Rtrim(key);
+    }
+
+    /**
+     * 字符串比较 函数
+     * 返回 -1 0 1
+     *
+     * @param key
+     * @param str
+     * @return
+     */
+    public static Strcmp strcmp(Cmd key, String str) {
+        return new Strcmp(key, str);
+    }
+
+    /**
+     * 将字符串  重复 n 次
+     *
+     * @param key
+     * @param n
+     * @return
+     */
+    public static Repeat repeat(Cmd key, int n) {
+        return new Repeat(key, n);
+    }
+
+
+    /**
+     * 替换 函数
+     *
+     * @param key
+     * @param target      匹配目标
+     * @param replacement 替换值
+     * @return
+     */
+    public static Replace replace(Cmd key, String target, String replacement) {
+        return new Replace(key, target, replacement);
+    }
+
+    /**
+     * 反转函数
+     *
+     * @param key
+     * @return
+     */
+    public static Reverse reverse(Cmd key) {
+        return new Reverse(key);
+    }
+
+    /**
+     * 匹配 macth 在 key里边的位置
+     * key 需要符合逗号分割规范
+     *
+     * @param key
+     * @param match
+     * @return
+     */
+    public static FindInSet findInSet(Cmd key, String match) {
+        return new FindInSet(key, match);
+    }
+
+    /**
+     * 匹配key 在values里的位置 从1 开始
+     *
+     * @param key
+     * @param values 数据
+     * @return
+     */
+    public static Filed filed(Cmd key, Serializable... values) {
+        return new Filed(key, values);
+    }
+
+    /**
+     * 当前日期
+     *
+     * @return
+     */
+    public static CurrentDate currentDate() {
+        return CurrentDate.INSTANCE;
+    }
+
+    /**
+     * 当前时间（不包含日期）
+     *
+     * @return
+     */
+    public static CurrentTime currentTime() {
+        return CurrentTime.INSTANCE;
+    }
+
+    /**
+     * 当前时间（包含日期）
+     *
+     * @return
+     */
+    public static CurrentDateTime currentDateTime() {
+        return CurrentDateTime.INSTANCE;
+    }
+
+    /**
+     * 以 UNIX 时间戳的形式返回当前时间(单位秒)
+     *
+     * @return
+     */
+    public static UnixTimestamp unixTimestamp() {
+        return UnixTimestamp.INSTANCE;
+    }
+
+    /**
+     * 指定时间key时间 以 UNIX 时间戳的形式返回(单位秒)
+     *
+     * @return
+     */
+    public static UnixTimestamp unixTimestamp(Cmd key) {
+        return new UnixTimestamp(key);
+    }
+
+    /**
+     * 将UNIX时间戳转成时间
+     *
+     * @param key
+     * @return
+     */
+    public static FromUnixTime fromUnixTime(Cmd key) {
+        return new FromUnixTime(key);
+    }
+
+    /**
+     * 获取年份
+     *
+     * @param key
+     * @return
+     */
+    public static Year year(Cmd key) {
+        return new Year(key);
+    }
+
+    /**
+     * 获取月份
+     *
+     * @param key
+     * @return
+     */
+    public static Month month(Cmd key) {
+        return new Month(key);
+    }
+
+    /**
+     * 获取日期部分，不包含时分秒
+     *
+     * @param key
+     * @return
+     */
+    public static Date date(Cmd key) {
+        return new Date(key);
+    }
+
+    /**
+     * 获取第几天
+     *
+     * @param key
+     * @return
+     */
+    public static Day day(Cmd key) {
+        return new Day(key);
+    }
+
+    /**
+     * 获取星期几
+     *
+     * @param key
+     * @return
+     */
+    public static Weekday weekday(Cmd key) {
+        return new Weekday(key);
+    }
+
+
+    /**
+     * 获取小时
+     *
+     * @param key
+     * @return
+     */
+    public static Hour hour(Cmd key) {
+        return new Hour(key);
+    }
+
+    /**
+     * 日期比较
+     *
+     * @param key
+     * @return
+     */
+    public static DateDiff dateDiff(Cmd key, Cmd another) {
+        return new DateDiff(key, another);
+    }
+
+    /**
+     * 日期增加
+     *
+     * @param key
+     * @return
+     */
+    public static DateAdd dateAdd(Cmd key, int n, TimeUnit timeUnit) {
+        return new DateAdd(key, n, timeUnit);
+    }
+
+    /**
+     * 日期减少
+     *
+     * @param key
+     * @return
+     */
+    public static DateSub dateSub(Cmd key, int n, TimeUnit timeUnit) {
+        return new DateSub(key, n, timeUnit);
+    }
+
+    /**
+     * md5
+     *
+     * @param str
+     * @return
+     */
+    public static Md5 md5(String str) {
+        return new Md5(str);
+    }
+
+    /**
+     * md5
+     *
+     * @param key
+     * @return
+     */
+    public static Md5 md5(Cmd key) {
+        return new Md5(key);
+    }
+
+    /**
+     * 将ip转成数字
+     *
+     * @param ip
+     * @return
+     */
+    public static InetAton inetAton(String ip) {
+        return new InetAton(ip);
+    }
+
+    /**
+     * 将ip转成数字
+     *
+     * @param key
+     * @return
+     */
+    public static InetAton inetAton(Cmd key) {
+        return new InetAton(key);
+    }
+
+    /**
+     * 将ip数字转成ip
+     *
+     * @param ipNumber
+     * @return
+     */
+    public static InetNtoa inetNtoa(Number ipNumber) {
+        return new InetNtoa(ipNumber);
+    }
+
+    /**
+     * 将ip数字转成ip
+     *
+     * @param key
+     * @return
+     */
+    public static InetNtoa inetNtoa(Cmd key) {
+        return new InetNtoa(key);
     }
 
     /**

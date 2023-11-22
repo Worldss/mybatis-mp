@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.impl.tookit.SqlConst;
 
 public class Atan extends BasicFunction<Atan> {
-    public Atan(Cmd value) {
-        super(SqlConst.ATAN, value);
+    public Atan(Cmd key) {
+        super(SqlConst.ATAN, key);
     }
 }

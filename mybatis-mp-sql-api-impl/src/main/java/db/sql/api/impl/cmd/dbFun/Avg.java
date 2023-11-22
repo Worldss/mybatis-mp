@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.impl.tookit.SqlConst;
 
 public class Avg extends BasicFunction<Avg> {
-    public Avg(Cmd value) {
-        super(SqlConst.AVG, value);
+    public Avg(Cmd key) {
+        super(SqlConst.AVG, key);
     }
 }

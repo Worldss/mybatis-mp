@@ -1,7 +1,6 @@
 package cn.mybatis.mp.core.mybatis.mapper.context;
 
 
-
 import cn.mybatis.mp.core.mybatis.provider.MybatisSqlBuilderContext;
 import db.sql.api.DbType;
 import db.sql.api.SQLMode;
@@ -16,6 +15,7 @@ public abstract class BaseSQLCmdContext<E extends Executor> implements SQLCmdCon
     private final boolean usePlaceholder;
 
     protected MybatisSqlBuilderContext sqlBuilderContext;
+    protected StringBuilder sql;
 
     public BaseSQLCmdContext(E execution) {
         this(execution, false);
@@ -30,8 +30,6 @@ public abstract class BaseSQLCmdContext<E extends Executor> implements SQLCmdCon
     public E getExecution() {
         return execution;
     }
-
-    protected StringBuilder sql;
 
     @Override
     public StringBuilder sql(String dbType) {

@@ -1,16 +1,15 @@
 package db.sql.api.impl.cmd.executor;
 
-import db.sql.api.Getter;
 import db.sql.api.Cmd;
+import db.sql.api.Getter;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.executor.Update;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.ConditionFaction;
-import db.sql.api.impl.cmd.basic.BasicValue;
+import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.TableField;
-import db.sql.api.impl.cmd.basic.Value;
 import db.sql.api.impl.cmd.struct.ConditionChain;
 import db.sql.api.impl.cmd.struct.Join;
 import db.sql.api.impl.cmd.struct.On;
@@ -71,12 +70,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     @Override
 
     public SELF set(Cmd field, Object value) {
-        Value v;
-        if (value instanceof Value) {
-            v = (Value) value;
-        } else {
-            v = new BasicValue(value);
-        }
+        Cmd v = Methods.convert(value);
         if (this.updateSets == null) {
             this.updateSets = new UpdateSets();
             this.append(this.updateSets);

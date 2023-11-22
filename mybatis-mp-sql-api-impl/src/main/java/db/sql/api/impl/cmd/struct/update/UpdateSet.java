@@ -1,20 +1,19 @@
 package db.sql.api.impl.cmd.struct.update;
 
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.basic.TableField;
-import db.sql.api.impl.cmd.basic.Value;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
-public class UpdateSet implements db.sql.api.cmd.struct.update.UpdateSet<TableField, Value>, Cmd {
+public class UpdateSet implements db.sql.api.cmd.struct.update.UpdateSet<TableField, Cmd>, Cmd {
 
     private final TableField field;
 
-    private final Value value;
+    private final Cmd value;
 
-    public UpdateSet(TableField field, Value value) {
+    public UpdateSet(TableField field, Cmd value) {
         this.field = field;
         this.value = value;
     }
@@ -25,7 +24,7 @@ public class UpdateSet implements db.sql.api.cmd.struct.update.UpdateSet<TableFi
     }
 
     @Override
-    public Value getValue() {
+    public Cmd getValue() {
         return this.value;
     }
 

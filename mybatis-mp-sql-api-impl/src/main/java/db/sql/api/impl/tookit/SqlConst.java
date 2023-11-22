@@ -78,7 +78,7 @@ public class SqlConst {
     public static final String TRUNCATE = " TRUNCATE";
     public static final String SQRT = " SQRT";
     public static final String SIGN = " SIGN";
-    public static final String PI =" PI";
+    public static final String PI = " PI";
     public static final String DIVIDE = " / ";
     public static final String MULTIPLY = " * ";
     public static final String SUBTRACT = " - ";
@@ -93,6 +93,9 @@ public class SqlConst {
     public static final String LOG2 = " LOG2";
 
     public static final String LOG10 = " LOG10";
+
+    public static final String RADIANS = " RADIANS";
+    public static final String DEGREES = " DEGREES";
     public static final String SIN = " SIN";
     public static final String ASIN = " ASIN";
     public static final String COS = " COS";
@@ -118,6 +121,7 @@ public class SqlConst {
     public static final String INSTR = " INSTR";
     public static final String STRCMP = " STRCMP";
     public static final String FILED = " FILED";
+    public static final String FIND_IN_SET = " FIND_IN_SET";
     public static final String CURRENT_DATE = " CURRENT_DATE";
     public static final String CURRENT_TIME = " CURRENT_TIME";
     public static final String UNIX_TIMESTAMP = " UNIX_TIMESTAMP";
@@ -143,11 +147,11 @@ public class SqlConst {
     public static final String DESC = " DESC ";
 
     public static final String SINGLE_QUOT(DbType dbType) {
-        switch (dbType){
-            case MYSQL:{
+        switch (dbType) {
+            case MYSQL: {
                 return "'";
             }
-            case PGSQL:{
+            case PGSQL: {
                 return "\"";
             }
         }

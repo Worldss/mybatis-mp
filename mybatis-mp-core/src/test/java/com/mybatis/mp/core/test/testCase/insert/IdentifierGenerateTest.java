@@ -1,7 +1,7 @@
 package com.mybatis.mp.core.test.testCase.insert;
 
-import com.mybatis.mp.core.test.mapper.IdTestMapper;
 import com.mybatis.mp.core.test.DO.IdTest;
+import com.mybatis.mp.core.test.mapper.IdTestMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
@@ -19,9 +19,9 @@ public class IdentifierGenerateTest extends BaseTest {
             idTest.setCreateTime(LocalDateTime.now());
             idTestMapper.save(idTest);
             System.out.println(idTest);
-            Assert.assertTrue(idTest.getId() != null);
+            Assert.assertNotNull(idTest.getId());
 
-            Assert.assertTrue(idTestMapper.getById(idTest.getId()) != null);
+            Assert.assertNotNull(idTestMapper.getById(idTest.getId()));
         }
     }
 
@@ -34,9 +34,9 @@ public class IdentifierGenerateTest extends BaseTest {
             idTest.setCreateTime(LocalDateTime.now());
             idTestMapper.save(idTest);
             System.out.println(idTest);
-            Assert.assertTrue(idTest.getId() == 1L);
+            Assert.assertEquals(1L, (long) idTest.getId());
 
-            Assert.assertTrue(idTestMapper.getById(idTest.getId()) != null);
+            Assert.assertNotNull(idTestMapper.getById(idTest.getId()));
         }
     }
 }

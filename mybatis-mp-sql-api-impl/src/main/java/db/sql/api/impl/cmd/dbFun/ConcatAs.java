@@ -1,10 +1,10 @@
 package db.sql.api.impl.cmd.dbFun;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
-import db.sql.api.impl.cmd.basic.BasicValue;
+import db.sql.api.SqlBuilderContext;
+import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
 
     private final Cmd[] values;
 
-    private final BasicValue split;
+    private final Cmd split;
 
     public ConcatAs(Cmd key, String split, Serializable... values) {
         super(CONCAT_WS, key);
@@ -25,21 +25,21 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
             if (value == null) {
                 continue;
             }
-            vs[i++] = new BasicValue(value);
+            vs[i++] = Methods.convert(value);
         }
-        this.split = new BasicValue(split);
+        this.split = Methods.convert(split);
         this.values = vs;
     }
 
     public ConcatAs(Cmd key, String split, Cmd... values) {
         super(CONCAT_WS, key);
-        this.split = new BasicValue(split);
+        this.split = Methods.convert(split);
         this.values = values;
     }
 
     public ConcatAs(Cmd key, String split, Object... values) {
         super(CONCAT, key);
-        this.split = new BasicValue(split);
+        this.split = Methods.convert(split);
         Cmd[] vs = new Cmd[values.length];
         int i = 0;
         for (Object value : values) {
@@ -49,7 +49,7 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
             if (value instanceof Cmd) {
                 vs[i++] = (Cmd) value;
             } else {
-                vs[i++] = new BasicValue(value);
+                vs[i++] = Methods.convert(value);
             }
         }
         this.values = vs;
@@ -58,7 +58,7 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(this.operator).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = this.split.sql(user, context, sqlBuilder);
+        sqlBuilder = this.split.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
         sqlBuilder = this.key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);

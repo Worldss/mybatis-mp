@@ -1,10 +1,10 @@
 package db.sql.api.impl.cmd.dbFun;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.basic.Condition;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 public class CaseWhen implements Cmd {
 
@@ -20,9 +20,9 @@ public class CaseWhen implements Cmd {
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.WHEN);
-        sqlBuilder = condition.sql(this, context, sqlBuilder);
+        sqlBuilder = condition.sql(user, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.THEN);
-        sqlBuilder = then.sql(this, context, sqlBuilder);
+        sqlBuilder = then.sql(user, context, sqlBuilder);
         return sqlBuilder;
     }
 

@@ -10,16 +10,15 @@ import java.util.Objects;
  */
 public class UpdateChain extends BaseUpdate<UpdateChain> {
 
-    public static UpdateChain of(MybatisMapper mapper) {
-        return new UpdateChain(mapper);
-    }
+    protected final MybatisMapper mapper;
 
     public UpdateChain(MybatisMapper mapper) {
         this.mapper = mapper;
     }
 
-    protected final MybatisMapper mapper;
-
+    public static UpdateChain of(MybatisMapper mapper) {
+        return new UpdateChain(mapper);
+    }
 
     private void setDefault() {
         if (Objects.isNull(this.getUpdateTable())) {

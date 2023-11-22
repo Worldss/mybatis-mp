@@ -61,7 +61,7 @@ public final class TableInfoUtil {
      * @param field
      * @return
      */
-    public final static TableField getTableFieldAnnotation(Field field) {
+    public static TableField getTableFieldAnnotation(Field field) {
         TableField tableFieldAnnotation = field.getAnnotation(TableField.class);
         if (Objects.isNull(tableFieldAnnotation)) {
             tableFieldAnnotation = Default.defaultTableFieldAnnotation();

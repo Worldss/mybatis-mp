@@ -8,15 +8,11 @@ import java.lang.reflect.Proxy;
 
 public class MybatisMapperProxy<T> implements InvocationHandler {
 
-    private final Object mapperProxy;
-
-    private final Class<T> mapperInterface;
-
-    private final Class<?> entityType;
-
     private final static String ENTITY_TYPE_METHOD_NAME = "getEntityType";
-
     private final static String MAPPER_TYPE_METHOD_NAME = "getMapperType";
+    private final Object mapperProxy;
+    private final Class<T> mapperInterface;
+    private final Class<?> entityType;
 
     public MybatisMapperProxy(Class<T> mapperInterface, Object mapperProxy) {
         this.mapperInterface = mapperInterface;

@@ -1,13 +1,12 @@
 package db.sql.api.impl.cmd.executor;
 
-import db.sql.api.Getter;
 import db.sql.api.Cmd;
+import db.sql.api.Getter;
 import db.sql.api.cmd.executor.Insert;
 import db.sql.api.impl.cmd.CmdFactory;
-import db.sql.api.impl.cmd.basic.BasicValue;
+import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.cmd.basic.TableField;
-import db.sql.api.impl.cmd.basic.Value;
 import db.sql.api.impl.cmd.struct.insert.InsertFields;
 import db.sql.api.impl.cmd.struct.insert.InsertTable;
 import db.sql.api.impl.cmd.struct.insert.InsertValues;
@@ -17,7 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY> implements Insert<SELF, Table, TableField, Value, InsertTable, InsertFields, InsertValues> {
+public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY> implements Insert<SELF, Table, TableField, Cmd, InsertTable, InsertFields, InsertValues> {
 
     protected final CMD_FACTORY $;
     protected InsertTable insertTable;
@@ -53,7 +52,7 @@ public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY ex
     }
 
     @Override
-    public InsertValues $values(List<Value> values) {
+    public InsertValues $values(List<Cmd> values) {
         if (this.insertValues == null) {
             this.insertValues = new InsertValues();
             this.append(this.insertValues);
@@ -82,10 +81,7 @@ public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY ex
 
     public SELF values(List<Object> values) {
         this.$values(values.stream().map(item -> {
-            if (item instanceof Value) {
-                return (Value) item;
-            }
-            return new BasicValue(item);
+            return Methods.convert(item);
         }).collect(Collectors.toList()));
         return (SELF) this;
     }

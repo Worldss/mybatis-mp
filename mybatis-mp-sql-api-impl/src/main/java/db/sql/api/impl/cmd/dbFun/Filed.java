@@ -2,7 +2,7 @@ package db.sql.api.impl.cmd.dbFun;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.impl.cmd.basic.BasicValue;
+import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
@@ -20,7 +20,7 @@ public class Filed extends BasicFunction<Filed> {
             if (value == null) {
                 continue;
             }
-            vs[i++] = new BasicValue(value);
+            vs[i++] = Methods.convert(value);
         }
         this.values = vs;
     }
@@ -41,7 +41,7 @@ public class Filed extends BasicFunction<Filed> {
             if(value instanceof Cmd){
                 vs[i++]=(Cmd)value;
             }else{
-                vs[i++] = new BasicValue(value);
+                vs[i++] = Methods.convert(value);
             }
         }
         this.values = vs;

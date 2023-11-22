@@ -1,8 +1,8 @@
 package db.sql.api.impl.cmd.dbFun;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
-import db.sql.api.impl.cmd.basic.BasicValue;
+import db.sql.api.SqlBuilderContext;
+import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
@@ -18,15 +18,15 @@ public class IfNull extends BasicFunction<IfNull> {
     }
 
     public IfNull(Cmd key, Serializable value) {
-        this(key,new BasicValue(value));
+        this(key, Methods.convert(value));
     }
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
-        this.key.sql(this, context, sqlBuilder);
+        sqlBuilder =this.key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        this.value.sql(this, context, sqlBuilder);
+        sqlBuilder =this.value.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         sqlBuilder = appendAlias(user, sqlBuilder);
         return sqlBuilder;

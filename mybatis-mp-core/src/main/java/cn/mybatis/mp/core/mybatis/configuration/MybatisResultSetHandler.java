@@ -16,6 +16,10 @@ import java.util.Objects;
 public class MybatisResultSetHandler extends DefaultResultSetHandler {
 
 
+    public MybatisResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler, ResultHandler<?> resultHandler, BoundSql boundSql, RowBounds rowBounds) {
+        super(executor, create(mappedStatement, boundSql), parameterHandler, resultHandler, boundSql, rowBounds);
+    }
+
     private static MappedStatement create(MappedStatement ms, BoundSql boundSql) {
         if (ms.getSqlCommandType() != SqlCommandType.SELECT) {
             return ms;
@@ -29,10 +33,5 @@ public class MybatisResultSetHandler extends DefaultResultSetHandler {
             return ms;
         }
         return DynamicsMappedStatement.create(queryContext.getExecution().getReturnType(), ms);
-    }
-
-
-    public MybatisResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler, ResultHandler<?> resultHandler, BoundSql boundSql, RowBounds rowBounds) {
-        super(executor, create(mappedStatement, boundSql), parameterHandler, resultHandler, boundSql, rowBounds);
     }
 }

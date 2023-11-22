@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Table
 public class IdTest {
 
-    @TableId(value = IdAutoType.GENERATOR,generatorName = IdentifierGeneratorType.DEFAULT)
+    @TableId(value = IdAutoType.GENERATOR, generatorName = IdentifierGeneratorType.DEFAULT)
     private Long id;
 
     private LocalDateTime createTime;

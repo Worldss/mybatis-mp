@@ -9,29 +9,27 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class MybatisMpConfig {
 
+    private static final Map<String, Object> CACHE = new ConcurrentHashMap<>();
+    private static final String COLUMN_UNDERLINE = "columnUnderline";
+    private static final String TABLE_UNDERLINE = "tableUnderline";
+
     private MybatisMpConfig() {
 
     }
 
-    private static final Map<String, Object> CACHE = new ConcurrentHashMap<>();
-
-    private static final String COLUMN_UNDERLINE = "columnUnderline";
-
-    private static final String TABLE_UNDERLINE = "tableUnderline";
-
-    public static final boolean isColumnUnderline() {
+    public static boolean isColumnUnderline() {
         return (boolean) CACHE.computeIfAbsent(COLUMN_UNDERLINE, key -> true);
     }
 
-    public static final void setColumnUnderline(boolean bool) {
+    public static void setColumnUnderline(boolean bool) {
         CACHE.computeIfAbsent(COLUMN_UNDERLINE, key -> bool);
     }
 
-    public static final boolean isTableUnderline() {
+    public static boolean isTableUnderline() {
         return (boolean) CACHE.computeIfAbsent(TABLE_UNDERLINE, key -> true);
     }
 
-    public static final void setTableUnderline(boolean bool) {
+    public static void setTableUnderline(boolean bool) {
         CACHE.computeIfAbsent(TABLE_UNDERLINE, key -> bool);
     }
 }

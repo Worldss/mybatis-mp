@@ -1,8 +1,8 @@
 package com.mybatis.mp.core.test.testCase.query;
 
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
-import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.DO.SysUser;
+import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import db.sql.api.cmd.LikeMode;
 import junit.framework.Assert;
@@ -26,7 +26,7 @@ public class ConditionTest extends BaseTest {
                     .setReturnType(Integer.TYPE)
                     .get();
 
-            Assert.assertEquals("eq", null, id);
+            Assert.assertNull("eq", id);
         }
     }
 

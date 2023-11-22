@@ -7,11 +7,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class Models {
 
+    private static final Map<Class, ModelInfo> CACHE = new ConcurrentHashMap<>();
+
     private Models() {
 
     }
-
-    private static final Map<Class, ModelInfo> CACHE = new ConcurrentHashMap<>();
 
     /**
      * 获取Model的信息

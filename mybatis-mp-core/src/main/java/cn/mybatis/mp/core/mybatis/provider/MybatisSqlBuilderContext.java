@@ -10,11 +10,11 @@ import java.util.List;
 
 public class MybatisSqlBuilderContext extends SqlBuilderContext {
 
+    private final List<Object> paramList = new ArrayList<>();
+
     public MybatisSqlBuilderContext(DbType dbType, SQLMode sqlMode) {
         super(dbType, sqlMode);
     }
-
-    private final List<Object> paramList = new ArrayList<>();
 
     @Override
     public String addParam(Object value) {

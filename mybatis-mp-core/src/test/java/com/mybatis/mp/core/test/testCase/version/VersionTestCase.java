@@ -1,8 +1,7 @@
 package com.mybatis.mp.core.test.testCase.version;
 
-import com.mybatis.mp.core.test.mapper.VersionTestMapper;
-
 import com.mybatis.mp.core.test.DO.VersionTest;
+import com.mybatis.mp.core.test.mapper.VersionTestMapper;
 import com.mybatis.mp.core.test.model.VersionModel;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import junit.framework.Assert;
@@ -22,8 +21,8 @@ public class VersionTestCase extends BaseTest {
             versionTest.setCreateTime(LocalDateTime.now());
             versionTestMapper.save(versionTest);
             System.out.println(versionTest);
-            Assert.assertTrue(versionTest.getId() != null);
-            Assert.assertTrue(versionTestMapper.getById(versionTest.getId()).getVersion() == 1);
+            Assert.assertNotNull(versionTest.getId());
+            Assert.assertEquals(1, (int) versionTestMapper.getById(versionTest.getId()).getVersion());
         }
     }
 
@@ -39,8 +38,8 @@ public class VersionTestCase extends BaseTest {
             versionTest.setName("我是2");
             versionTestMapper.update(versionTest);
             System.out.println(versionTest);
-            Assert.assertTrue(versionTest.getVersion() == 2);
-            Assert.assertTrue(versionTestMapper.getById(versionTest.getId()).getVersion() == 2);
+            Assert.assertEquals(2, (int) versionTest.getVersion());
+            Assert.assertEquals(2, (int) versionTestMapper.getById(versionTest.getId()).getVersion());
         }
     }
 
@@ -53,8 +52,8 @@ public class VersionTestCase extends BaseTest {
             versionTest.setCreateTime(LocalDateTime.now());
             versionTestMapper.save(versionTest);
             System.out.println(versionTest);
-            Assert.assertTrue(versionTest.getId() != null);
-            Assert.assertTrue(versionTestMapper.getById(versionTest.getId()).getVersion() == 1);
+            Assert.assertNotNull(versionTest.getId());
+            Assert.assertEquals(1, (int) versionTestMapper.getById(versionTest.getId()).getVersion());
         }
     }
 
@@ -70,8 +69,8 @@ public class VersionTestCase extends BaseTest {
             versionTest.setName("我是2");
             versionTestMapper.update(versionTest);
             System.out.println(versionTest);
-            Assert.assertTrue(versionTest.getVersion() == 2);
-            Assert.assertTrue(versionTestMapper.getById(versionTest.getId()).getVersion() == 2);
+            Assert.assertEquals(2, (int) versionTest.getVersion());
+            Assert.assertEquals(2, (int) versionTestMapper.getById(versionTest.getId()).getVersion());
         }
     }
 }

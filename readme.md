@@ -1205,6 +1205,308 @@ new Query(){{
     .eq($("id"),1);
 }};
 ```
+# 支持那些数据库函数方法
+## 函数说明
+<table>
+    <thead>
+    <tr align="left">
+        <th>支持的函数</th>
+        <th>函数说明</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>count</td>
+        <td>查询数据总量</td>
+    </tr>
+    <tr>
+        <td>sum</td>
+        <td>返回指定字段值的和</td>
+    </tr>
+    <tr>
+        <td>avg</td>
+        <td>返回指定列的平均值</td>
+    </tr>
+    <tr>
+        <td>min</td>
+        <td>返回指定列的最小值</td>
+    </tr>
+    <tr>
+        <td>max</td>
+        <td>返回指定列的最大值</td>
+    </tr>
+    <tr>
+        <td>abs</td>
+        <td>返回绝对值</td>
+    </tr>
+    <tr>
+        <td>ceil</td>
+        <td>返回大于或等于 x 的最小整数（向上取整）</td>
+    </tr>
+    <tr>
+        <td>floor</td>
+        <td>返回小于或等于 x 的最大整数（向下取整）</td>
+    </tr>
+    <tr>
+        <td>rand</td>
+        <td>返回 0~1 的随机数</td>
+    </tr>
+    <tr>
+        <td>sign</td>
+        <td>返回 x 的符号，x 是负数、0、正数分别返回 -1、0、1</td>
+    </tr>
+    <tr>
+        <td>pi</td>
+        <td>返回圆周率</td>
+    </tr>
+    <tr>
+        <td>truncate</td>
+        <td>返回数值 x 保留到小数点后 y 位的值</td>
+    </tr>
+    <tr>
+        <td>round</td>
+        <td>返回离 x 最近的整数（四舍五入）</td>
+    </tr>
+    <tr>
+        <td>pow</td>
+        <td>返回 x 的 y 次方</td>
+    </tr>
+    <tr>
+        <td>power</td>
+        <td>返回 x 的 y 次方</td>
+    </tr>
+    <tr>
+        <td>sqrt</td>
+        <td>返回 x 的平方根</td>
+    </tr>
+    <tr>
+        <td>exp</td>
+        <td>返回 e 的 x 次方</td>
+    </tr>
+    <tr>
+        <td>mod</td>
+        <td>取模</td>
+    </tr>
+    <tr>
+        <td>log</td>
+        <td>返回自然对数（以 e 为底的对数）</td>
+    </tr>
+    <tr>
+        <td>log2</td>
+        <td>返回以 2 为底的对数</td>
+    </tr>
+    <tr>
+        <td>log10</td>
+        <td>返回以 10 为底的对数</td>
+    </tr>
+    <tr>
+        <td>radians</td>
+        <td>将角度转换为弧度</td>
+    </tr>
+    <tr>
+        <td>degrees</td>
+        <td>将弧度转换为角度</td>
+    </tr>
+    <tr>
+        <td>sin</td>
+        <td>求正弦值</td>
+    </tr>
+    <tr>
+        <td>asin</td>
+        <td>求反正弦值</td>
+    </tr>
+    <tr>
+        <td>cos</td>
+        <td>求余弦值</td>
+    </tr>
+    <tr>
+        <td>acos</td>
+        <td>求反余弦值</td>
+    </tr>
+    <tr>
+        <td>tan</td>
+        <td>求正切值</td>
+    </tr>
+    <tr>
+        <td>atan</td>
+        <td>求反正切值</td>
+    </tr>
+    <tr>
+        <td>cot</td>
+        <td>求余切值</td>
+    </tr>
+    <tr>
+        <td>charLength</td>
+        <td>返回字符串 s 的字符数</td>
+    </tr>
+    <tr>
+        <td>length</td>
+        <td>返回字符串 s 的长度</td>
+    </tr>
+    <tr>
+        <td>concat</td>
+        <td>字符串拼接</td>
+    </tr>
+    <tr>
+        <td>concatWs</td>
+        <td>字符串拼接，需要指定分割符</td>
+    </tr>
+    <tr>
+        <td>upper</td>
+        <td>转大写</td>
+    </tr>
+    <tr>
+        <td>lower</td>
+        <td>转小写</td>
+    </tr>
+    <tr>
+        <td>left</td>
+        <td>左截取</td>
+    </tr>
+    <tr>
+        <td>right</td>
+        <td>截取</td>
+    </tr>
+    <tr>
+        <td>lpad</td>
+        <td>从左字符串 补全，需要补全的字符和长度</td>
+    </tr>
+    <tr>
+        <td>rpad</td>
+        <td>从右字符串 补全，需要补全的字符和长度</td>
+    </tr>
+    <tr>
+        <td>trim</td>
+        <td>去除两边的空格</td>
+    </tr>
+    <tr>
+        <td>ltrim</td>
+        <td>去除左边的空格</td>
+    </tr>
+    <tr>
+        <td>rtrim</td>
+        <td>去除右边的空格</td>
+    </tr>
+    <tr>
+        <td>repeat</td>
+        <td>将字符串 s 重复 n 次</td>
+    </tr>
+    <tr>
+        <td>replace</td>
+        <td>用字符串 s2 代替字符串 s 中的字符串 s1</td>
+    </tr>
+    <tr>
+        <td>strcmp</td>
+        <td>比较字符串 s1 和 s2</td>
+    </tr>
+    <tr>
+        <td>substring</td>
+        <td>获取从字符串 s 中的第 n 个位置开始长度为 len 的字符串</td>
+    </tr>
+    <tr>
+        <td>instr</td>
+        <td>从字符串 s 中获取 s1 的开始位置</td>
+    </tr>
+    <tr>
+        <td>reverse</td>
+        <td>将字符串 s 的顺序反过来</td>
+    </tr>
+    <tr>
+        <td>field</td>
+        <td>返回第一个与字符串 s 匹配的字符串的位置</td>
+    </tr>
+    <tr>
+        <td>findInSet</td>
+        <td>返回在字符串 s2 中与 s1 匹配的字符串的位置</td>
+    </tr>
+    <tr>
+        <td>currentDate</td>
+        <td>返回当前日期</td>
+    </tr>
+    <tr>
+        <td>currentTime</td>
+        <td>返回当前时间</td>
+    </tr>
+    <tr>
+        <td>currentDateTime</td>
+        <td>返回当前日期和时间</td>
+    </tr>
+    <tr>
+        <td>unixTimestamp</td>
+        <td>以 UNIX 时间戳的形式返回当前时间</td>
+    </tr>
+    <tr>
+        <td>fromUnixTime</td>
+        <td>把 UNIX 时间戳的时间转换为普通格式的时间</td>
+    </tr>
+    <tr>
+        <td>month</td>
+        <td>日期 d 中的月份值，范围是 1~12</td>
+    </tr>
+    <tr>
+        <td>weekday</td>
+        <td>日期星期几，0 表示星期一，1 表示星期二</td>
+    </tr>
+    <tr>
+        <td>year</td>
+        <td>返回年</td>
+    </tr>
+    <tr>
+        <td>day</td>
+        <td>返回日期的天数值</td>
+    </tr>
+    <tr>
+        <td>hour</td>
+        <td>返回时间 t 中的小时值</td>
+    </tr>
+    <tr>
+        <td>dateDiff</td>
+        <td>计算日期 d1 到 d2 之间相隔的天数</td>
+    </tr>
+    <tr>
+        <td>dateAdd</td>
+        <td>日期加操作</td>
+    </tr>
+    <tr>
+        <td>dateSub</td>
+        <td>日期减操作</td>
+    </tr>
+    <tr>
+        <td>md5</td>
+        <td>字符串md5 加密</td>
+    </tr>
+    <tr>
+        <td>inetAton</td>
+        <td>将 IP 地址转换为数字表示，IP 值需要加上引号</td>
+    </tr>
+    <tr>
+        <td>inetNtoa</td>
+        <td>将数字 n 转换成 IP 的形式</td>
+    </tr>
+    </tbody>
+</table>
+
+## 函数使用方法
+```java
+Integer id = QueryChain.of(sysUserMapper)
+    //方法 1    
+    .select(SysUser::getId, c -> c.md5())
+    .from(SysUser.class)
+    .eq(SysUser::getId, 2)
+    //方法 2
+    .and(queryChain -> {
+        return queryChain.$(SysUser::getCreate_time, c -> c.date().eq("2023-12-10"));
+    })
+    //方法 3
+    .and(queryChain -> {
+        return Methods.date(queryChain.$(SysUser::getCreate_time)).eq("2023-12-10");
+    })
+    .empty(SysUser::getUserName)
+    //方法 1     
+    .orderBy(SysUser::getId, c -> c.plus(1))
+    .setReturnType(Integer.TYPE)
+    .get();
+```
 
 # 如何支持不同数据库
 

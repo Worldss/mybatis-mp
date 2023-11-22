@@ -16,7 +16,7 @@ public class Repeat extends BasicFunction<Repeat> {
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
-        this.key.sql(this, context, sqlBuilder);
+        sqlBuilder = this.key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER).append(this.n);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         sqlBuilder = appendAlias(user, sqlBuilder);

@@ -4,12 +4,12 @@ import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
-import db.sql.api.Getter;
 import db.sql.api.Cmd;
+import db.sql.api.Getter;
 import db.sql.api.cmd.JoinMode;
-import db.sql.api.impl.cmd.executor.AbstractQuery;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.TableField;
+import db.sql.api.impl.cmd.executor.AbstractQuery;
 import db.sql.api.impl.cmd.struct.On;
 
 import java.util.Objects;
@@ -32,7 +32,7 @@ public class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, MybatisCmdF
     public Q select(Class entity, int storey) {
         TableInfo tableInfo = Tables.get(entity);
         if (tableInfo == null) {
-            return (Q) super.select(entity, storey);
+            return super.select(entity, storey);
         } else {
             tableInfo.getTableFieldInfos().stream().forEach(item -> {
                 if (item.getTableFieldAnnotation().select()) {

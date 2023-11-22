@@ -2,6 +2,7 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
+import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.executor.method.compare.Compare;
 import db.sql.api.cmd.struct.ConditionChain;
@@ -10,6 +11,7 @@ import db.sql.api.cmd.struct.Nested;
 import java.io.Serializable;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN, V, CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>> extends Compare<SELF, COLUMN, V>, Nested<SELF, CONDITION_CHAIN> {
@@ -23,6 +25,16 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
 
     default SELF or() {
         conditionChain().or();
+        return (SELF) this;
+    }
+
+    default SELF and(Function<SELF, Condition> function) {
+        conditionChain().and(function.apply((SELF) this), true);
+        return (SELF) this;
+    }
+
+    default SELF or(Function<SELF, Condition> function) {
+        conditionChain().or(function.apply((SELF) this), true);
         return (SELF) this;
     }
 
@@ -112,13 +124,13 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
 
     @Override
     default <T> SELF empty(Getter<T> column, int storey, boolean when) {
-        conditionChain().empty(column,storey, when);
+        conditionChain().empty(column, storey, when);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF notEmpty(Getter<T> column, int storey, boolean when){
-        conditionChain().notEmpty(column,storey, when);
+    default <T> SELF notEmpty(Getter<T> column, int storey, boolean when) {
+        conditionChain().notEmpty(column, storey, when);
         return (SELF) this;
     }
 
@@ -129,7 +141,7 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
     }
 
     @Override
-    default SELF notEmpty(COLUMN column, boolean when){
+    default SELF notEmpty(COLUMN column, boolean when) {
         conditionChain().empty(column, when);
         return (SELF) this;
     }

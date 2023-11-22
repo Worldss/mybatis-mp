@@ -1,7 +1,7 @@
 package cn.mybatis.mp.core.sql.executor;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.condition.Exists;
 import db.sql.api.impl.cmd.condition.In;
@@ -20,17 +20,17 @@ public class SubQuery extends BaseQuery<SubQuery> implements Dataset<SubQuery> {
         this(null);
     }
 
+    public SubQuery(String alias) {
+        super(new MybatisCmdFactory("st"));
+        this.alias = alias;
+    }
+
     public static final SubQuery create() {
         return new SubQuery();
     }
 
     public static final SubQuery create(String alias) {
         return new SubQuery(alias);
-    }
-
-    public SubQuery(String alias) {
-        super(new MybatisCmdFactory("st"));
-        this.alias = alias;
     }
 
     @Override

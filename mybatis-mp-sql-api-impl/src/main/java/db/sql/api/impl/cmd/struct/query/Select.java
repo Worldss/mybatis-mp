@@ -4,6 +4,7 @@ import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
 import db.sql.api.cmd.basic.Distinct;
 import db.sql.api.impl.cmd.dbFun.Count;
+import db.sql.api.impl.cmd.dbFun.Function;
 import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.tookit.Lists;
 import db.sql.api.impl.tookit.SqlConst;
@@ -52,7 +53,7 @@ public class Select implements db.sql.api.cmd.struct.query.Select<Select, Cmd>, 
 
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (!(user instanceof Count)) {
+        if (!(user instanceof Function) ) {
             sqlBuilder = sqlBuilder.append(SqlConst.SELECT);
         }
         if (distinct) {

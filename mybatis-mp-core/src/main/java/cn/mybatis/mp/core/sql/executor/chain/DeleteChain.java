@@ -8,15 +8,15 @@ import cn.mybatis.mp.core.sql.executor.BaseDelete;
  */
 public class DeleteChain extends BaseDelete<DeleteChain> {
 
-    public static DeleteChain of(MybatisMapper mapper) {
-        return new DeleteChain(mapper);
-    }
+    protected final MybatisMapper mapper;
 
     public DeleteChain(MybatisMapper mapper) {
         this.mapper = mapper;
     }
 
-    protected final MybatisMapper mapper;
+    public static DeleteChain of(MybatisMapper mapper) {
+        return new DeleteChain(mapper);
+    }
 
     private void setDefault() {
         if (this.getDeleteTable() == null && this.getFrom() == null) {

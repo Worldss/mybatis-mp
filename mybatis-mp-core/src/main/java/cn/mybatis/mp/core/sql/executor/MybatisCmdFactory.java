@@ -19,11 +19,11 @@ import java.util.Objects;
  */
 public class MybatisCmdFactory extends CmdFactory {
 
-    public MybatisCmdFactory(){
+    public MybatisCmdFactory() {
         super();
     }
 
-    public MybatisCmdFactory(String tableAsPrefix){
+    public MybatisCmdFactory(String tableAsPrefix) {
         super(tableAsPrefix);
     }
 

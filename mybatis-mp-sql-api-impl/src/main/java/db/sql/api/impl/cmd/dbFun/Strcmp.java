@@ -2,7 +2,7 @@ package db.sql.api.impl.cmd.dbFun;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.impl.cmd.basic.BasicValue;
+import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
@@ -12,7 +12,7 @@ public class Strcmp extends BasicFunction<Strcmp> {
 
     public Strcmp(Cmd key, String str) {
         super(SqlConst.STRCMP, key);
-        this.str = new BasicValue(str);
+        this.str = Methods.convert(str);
     }
 
     @Override

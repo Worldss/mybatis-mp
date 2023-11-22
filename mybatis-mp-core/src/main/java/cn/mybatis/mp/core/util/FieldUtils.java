@@ -21,10 +21,7 @@ public final class FieldUtils {
             return false;
         }
 
-        if (field.isAnnotationPresent(Ignore.class)) {
-            return false;
-        }
-        return true;
+        return !field.isAnnotationPresent(Ignore.class);
     }
 
     public static List<Field> getResultMappingFields(Class clazz) {

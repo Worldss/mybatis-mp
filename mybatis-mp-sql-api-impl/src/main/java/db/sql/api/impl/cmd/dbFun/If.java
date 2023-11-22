@@ -1,11 +1,11 @@
 package db.sql.api.impl.cmd.dbFun;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
-import db.sql.api.impl.cmd.basic.BasicValue;
+import db.sql.api.SqlBuilderContext;
+import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.cmd.basic.Condition;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 import java.io.Serializable;
 
@@ -18,15 +18,15 @@ public class If extends BasicFunction<If> {
     private final Cmd thenValue;
 
     public If(Condition condition, Serializable value, Serializable thenValue) {
-        this(condition, new BasicValue(value), new BasicValue(thenValue));
+        this(condition, Methods.convert(value), Methods.convert(thenValue));
     }
 
     public If(Condition condition, Cmd value, Serializable thenValue) {
-        this(condition, value, new BasicValue(thenValue));
+        this(condition, value, Methods.convert(thenValue));
     }
 
     public If(Condition condition, Serializable value, Cmd thenValue) {
-        this(condition, new BasicValue(value), thenValue);
+        this(condition, Methods.convert(value), thenValue);
     }
 
     public If(Condition condition, Cmd value, Cmd thenValue) {
@@ -38,11 +38,11 @@ public class If extends BasicFunction<If> {
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
-        this.key.sql(this, context, sqlBuilder);
+        sqlBuilder =this.key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        this.value.sql(this, context, sqlBuilder);
+        sqlBuilder =this.value.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        this.thenValue.sql(this, context, sqlBuilder);
+        sqlBuilder =this.thenValue.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         sqlBuilder = appendAlias(user, sqlBuilder);
         return sqlBuilder;

@@ -8,10 +8,6 @@ import java.util.Map;
  */
 public class IdentifierGeneratorFactory {
 
-    private IdentifierGeneratorFactory() {
-    }
-
-
     private static final Map<String, IdentifierGenerator<?>> IDENTIFIER_GENERATOR_MAP = new HashMap<>();
 
     static {
@@ -19,6 +15,9 @@ public class IdentifierGeneratorFactory {
         IDENTIFIER_GENERATOR_MAP.put(IdentifierGeneratorType.DEFAULT, idWorkerGenerator);
         IDENTIFIER_GENERATOR_MAP.put(IdentifierGeneratorType.UUID, new UUIDGenerator());
         IDENTIFIER_GENERATOR_MAP.put(IdentifierGeneratorType.mpNextId, idWorkerGenerator);
+    }
+
+    private IdentifierGeneratorFactory() {
     }
 
     /**

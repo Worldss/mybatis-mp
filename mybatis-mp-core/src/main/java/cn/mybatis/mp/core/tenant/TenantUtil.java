@@ -13,6 +13,14 @@ import java.util.Objects;
 
 public class TenantUtil {
 
+    public static final Serializable getTenantId() {
+        TenantInfo tenantInfo = TenantContext.getTenantInfo();
+        if (Objects.isNull(tenantInfo)) {
+            return null;
+        }
+        return tenantInfo.getTenantId();
+    }
+
     /**
      * 设置实体类的租户ID
      *
@@ -36,14 +44,6 @@ public class TenantUtil {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static final Serializable getTenantId() {
-        TenantInfo tenantInfo = TenantContext.getTenantInfo();
-        if (Objects.isNull(tenantInfo)) {
-            return null;
-        }
-        return tenantInfo.getTenantId();
     }
 
     /**

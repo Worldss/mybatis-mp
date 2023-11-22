@@ -98,6 +98,14 @@ public interface FunctionInterface extends Cmd {
         return Methods.log10(this);
     }
 
+    default Degrees degrees() {
+        return Methods.degrees(this);
+    }
+
+    default Radians radians() {
+        return Methods.radians(this);
+    }
+
     default Sin sin() {
         return Methods.sin(this);
     }
@@ -303,31 +311,31 @@ public interface FunctionInterface extends Cmd {
     }
 
     default IfNull ifNull(Object value) {
-        return Methods.ifNull(this, Methods.basicValue(value));
+        return Methods.ifNull(this, Methods.convert(value));
     }
 
     default Eq eq(Object value) {
-        return Methods.eq(this, Methods.basicValue(value));
+        return Methods.eq(this, Methods.convert(value));
     }
 
     default Gt gt(Object value) {
-        return Methods.gt(this, Methods.basicValue(value));
+        return Methods.gt(this, Methods.convert(value));
     }
 
     default Gte gte(Object value) {
-        return Methods.gte(this, Methods.basicValue(value));
+        return Methods.gte(this, Methods.convert(value));
     }
 
     default Lt lt(Object value) {
-        return Methods.lt(this, Methods.basicValue(value));
+        return Methods.lt(this, Methods.convert(value));
     }
 
     default Lte lte(Object value) {
-        return Methods.lte(this, Methods.basicValue(value));
+        return Methods.lte(this, Methods.convert(value));
     }
 
     default Ne ne(Object value) {
-        return Methods.ne(this, Methods.basicValue(value));
+        return Methods.ne(this, Methods.convert(value));
     }
 
     default Between between(Serializable value1, Serializable value2) {

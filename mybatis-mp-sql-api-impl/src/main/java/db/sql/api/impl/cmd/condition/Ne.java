@@ -1,7 +1,7 @@
 package db.sql.api.impl.cmd.condition;
 
 import db.sql.api.Cmd;
-import db.sql.api.impl.cmd.basic.BasicValue;
+import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.tookit.SqlConst;
 
 import java.io.Serializable;
@@ -13,6 +13,6 @@ public class Ne extends BasicCondition {
     }
 
     public Ne(Cmd key, Serializable value) {
-        this(key,new BasicValue(value));
+        this(key, Methods.convert(value));
     }
 }

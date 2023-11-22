@@ -15,12 +15,11 @@ import java.io.Serializable;
 public abstract class DaoImpl<T, K> implements Dao<T, K> {
 
     private final MybatisMapper<T> mapper;
+    private Class<K> idType;
 
     public DaoImpl(MybatisMapper<T> mapper) {
         this.mapper = mapper;
     }
-
-    private Class<K> idType;
 
     @Override
     public Class<K> getIdType() {

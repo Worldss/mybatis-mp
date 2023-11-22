@@ -46,7 +46,7 @@ public interface BaseMapper<T> {
         query.limit(1);
         query.setReturnType(Integer.TYPE);
         Integer obj = this.get(query, optimize);
-        return (obj == null || obj < 1) ? false : true;
+        return obj != null && obj >= 1;
     }
 
     /**

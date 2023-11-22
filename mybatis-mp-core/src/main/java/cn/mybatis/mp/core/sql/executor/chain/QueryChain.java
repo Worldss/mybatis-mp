@@ -12,16 +12,15 @@ import java.util.Objects;
  */
 public class QueryChain extends BaseQuery<QueryChain> {
 
-    public static QueryChain of(MybatisMapper mapper) {
-        return new QueryChain(mapper);
-    }
+    protected final MybatisMapper mapper;
 
     public QueryChain(MybatisMapper mapper) {
         this.mapper = mapper;
     }
 
-    protected final MybatisMapper mapper;
-
+    public static QueryChain of(MybatisMapper mapper) {
+        return new QueryChain(mapper);
+    }
 
     private void setDefault() {
         if (Objects.isNull(this.select)) {

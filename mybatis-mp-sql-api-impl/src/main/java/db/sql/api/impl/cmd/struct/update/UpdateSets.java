@@ -1,21 +1,20 @@
 package db.sql.api.impl.cmd.struct.update;
 
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.basic.TableField;
-import db.sql.api.impl.cmd.basic.Value;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateSets implements db.sql.api.cmd.struct.update.UpdateSets<TableField, Value, UpdateSet>, Cmd {
+public class UpdateSets implements db.sql.api.cmd.struct.update.UpdateSets<TableField, Cmd, UpdateSet>, Cmd {
 
     private List<UpdateSet> updateSets;
 
-    public UpdateSets set(TableField field, Value value) {
+    public UpdateSets set(TableField field, Cmd value) {
         if (this.updateSets == null) {
             this.updateSets = new ArrayList<>();
         }

@@ -6,7 +6,9 @@ import db.sql.api.impl.tookit.SqlConst;
 
 public class UnixTimestamp extends BasicFunction<UnixTimestamp> {
 
-    public static final UnixTimestamp INSTANCE=new UnixTimestamp(null);
+    public UnixTimestamp() {
+        this(null);
+    }
 
     public UnixTimestamp(Cmd key) {
         super(SqlConst.UNIX_TIMESTAMP, key);
@@ -16,7 +18,7 @@ public class UnixTimestamp extends BasicFunction<UnixTimestamp> {
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
         if (this.key != null) {
-            this.key.sql(this, context, sqlBuilder);
+            sqlBuilder = this.key.sql(this, context, sqlBuilder);
         }
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         sqlBuilder = appendAlias(user, sqlBuilder);

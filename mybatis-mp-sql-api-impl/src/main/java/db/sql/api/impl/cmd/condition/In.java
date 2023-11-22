@@ -1,11 +1,11 @@
 package db.sql.api.impl.cmd.condition;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
-import db.sql.api.impl.cmd.basic.BasicValue;
+import db.sql.api.SqlBuilderContext;
+import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.tookit.Lists;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class In extends BaseCondition<Cmd, List<Cmd>> {
             if (Objects.isNull(value)) {
                 continue;
             }
-            this.add(new BasicValue(value));
+            this.add(Methods.convert(value));
         }
         return this;
     }
@@ -58,7 +58,7 @@ public class In extends BaseCondition<Cmd, List<Cmd>> {
             if (Objects.isNull(value)) {
                 continue;
             }
-            this.add(new BasicValue(value));
+            this.add(Methods.convert(value));
         }
         return this;
     }

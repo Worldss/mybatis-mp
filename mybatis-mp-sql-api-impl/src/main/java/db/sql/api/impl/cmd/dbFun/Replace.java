@@ -2,7 +2,7 @@ package db.sql.api.impl.cmd.dbFun;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.impl.cmd.basic.BasicValue;
+import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
@@ -14,8 +14,8 @@ public class Replace extends BasicFunction<Replace> {
 
     public Replace(Cmd value, String target, String replacement) {
         super(SqlConst.REPLACE, value);
-        this.target = new BasicValue(target);
-        this.replacement = new BasicValue(replacement);
+        this.target = Methods.convert(target);
+        this.replacement = Methods.convert(replacement);
     }
 
     @Override
@@ -23,9 +23,9 @@ public class Replace extends BasicFunction<Replace> {
         sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
         sqlBuilder = this.key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        sqlBuilder = this.target.sql(user, context, sqlBuilder);
+        sqlBuilder = this.target.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        sqlBuilder = this.replacement.sql(user, context, sqlBuilder);
+        sqlBuilder = this.replacement.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         sqlBuilder = appendAlias(user, sqlBuilder);
         return sqlBuilder;

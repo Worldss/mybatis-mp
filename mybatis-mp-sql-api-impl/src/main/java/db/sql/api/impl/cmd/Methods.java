@@ -3,9 +3,9 @@ package db.sql.api.impl.cmd;
 import db.sql.api.Cmd;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.executor.Query;
-import db.sql.api.impl.cmd.condition.*;
 import db.sql.api.impl.cmd.basic.BasicValue;
 import db.sql.api.impl.cmd.basic.Condition;
+import db.sql.api.impl.cmd.condition.*;
 import db.sql.api.impl.cmd.dbFun.*;
 import db.sql.api.impl.tookit.SqlConst;
 
@@ -24,10 +24,20 @@ public class Methods {
      * @param value
      * @return
      */
-    public static Cmd basicValue(Object value) {
+    public static Cmd convert(Object value) {
         if (value instanceof Cmd) {
             return (Cmd) value;
         }
+        return new BasicValue(value);
+    }
+
+    /**
+     * value
+     *
+     * @param value
+     * @return
+     */
+    public static Cmd convert(Serializable value) {
         return new BasicValue(value);
     }
 
@@ -269,7 +279,7 @@ public class Methods {
      * @return
      */
     public static Pi pi() {
-        return Pi.INSTANCE;
+        return new Pi();
     }
 
     /**
@@ -352,6 +362,26 @@ public class Methods {
      */
     public static Log10 log10(Cmd key) {
         return new Log10(key);
+    }
+
+    /**
+     * 将弧度转换为角度 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Degrees degrees(Cmd key) {
+        return new Degrees(key);
+    }
+
+    /**
+     * 将角度转换为弧度 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Radians radians(Cmd key) {
+        return new Radians(key);
     }
 
     /**
@@ -613,7 +643,7 @@ public class Methods {
      * @return
      */
     public static CurrentDate currentDate() {
-        return CurrentDate.INSTANCE;
+        return new CurrentDate();
     }
 
     /**
@@ -622,7 +652,7 @@ public class Methods {
      * @return
      */
     public static CurrentTime currentTime() {
-        return CurrentTime.INSTANCE;
+        return new CurrentTime();
     }
 
     /**
@@ -631,7 +661,7 @@ public class Methods {
      * @return
      */
     public static CurrentDateTime currentDateTime() {
-        return CurrentDateTime.INSTANCE;
+        return new CurrentDateTime();
     }
 
     /**
@@ -640,7 +670,7 @@ public class Methods {
      * @return
      */
     public static UnixTimestamp unixTimestamp() {
-        return UnixTimestamp.INSTANCE;
+        return new UnixTimestamp();
     }
 
     /**

@@ -1,11 +1,11 @@
 package db.sql.api.impl.cmd.dbFun;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
-import db.sql.api.impl.cmd.basic.BasicValue;
+import db.sql.api.SqlBuilderContext;
+import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.cmd.basic.Condition;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class Case extends BasicFunction<Case> {
     }
 
     public Case when(Condition condition, Serializable then) {
-        return this.when(condition, new BasicValue(then));
+        return this.when(condition, Methods.convert(then));
     }
 
     public Case else_(Cmd then) {
@@ -36,7 +36,7 @@ public class Case extends BasicFunction<Case> {
     }
 
     public Case else_(Serializable then) {
-        return this.else_(new BasicValue(then));
+        return this.else_(Methods.convert(then));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class Case extends BasicFunction<Case> {
             if (!(item instanceof CaseWhen)) {
                 sqlBuilder = sqlBuilder.append(SqlConst.ELSE);
             }
-            item.sql(this, context, sqlBuilder);
+            sqlBuilder = item.sql(this, context, sqlBuilder);
         }
         sqlBuilder = sqlBuilder.append(SqlConst.END);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);

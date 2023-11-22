@@ -3,12 +3,13 @@ package com.mybatis.mp.core.test.testCase.query;
 import cn.mybatis.mp.core.sql.executor.MybatisCmdFactory;
 import cn.mybatis.mp.core.sql.executor.Query;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
-import com.mybatis.mp.core.test.mapper.SysUserMapper;
-import com.mybatis.mp.core.test.mapper.SysUserScoreMapper;
 import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.DO.SysUserScore;
+import com.mybatis.mp.core.test.mapper.SysUserMapper;
+import com.mybatis.mp.core.test.mapper.SysUserScoreMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import db.sql.api.cmd.LikeMode;
+import db.sql.api.impl.cmd.Methods;
 import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
@@ -234,7 +235,7 @@ public class FunTest extends BaseTest {
             String str = QueryChain.of(sysUserMapper)
                     .connect(self -> {
                         MybatisCmdFactory $ = self.$();
-                        self.select(SysUser::getId, c ->{
+                        self.select(SysUser::getId, c -> {
                             return c.eq(1).caseThen(1)
                                     .when(self.$(SysUser::getId, c2 -> c2.eq(1)), 3)
                                     .else_(4);
@@ -258,7 +259,7 @@ public class FunTest extends BaseTest {
                         self.select(SysUser::getId, c -> {
                             return c.eq(1)
                                     .caseThen(1)
-                                    .when($.eq($.field(SysUser::getId), 2), 3)
+                                    .when(Methods.eq($.field(SysUser::getId), 2), 3)
                                     .else_(4);
                         });
                     })

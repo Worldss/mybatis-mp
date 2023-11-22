@@ -3,7 +3,6 @@ package cn.mybatis.mp.core.incrementer;
 public interface IdentifierGenerator<T> {
 
 
-
     /**
      * 生成Id
      *

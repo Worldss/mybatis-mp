@@ -1,6 +1,5 @@
 package db.sql.api.cmd.executor.method.compare;
 
-import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
 
 import java.io.Serializable;

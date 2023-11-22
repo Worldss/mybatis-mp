@@ -9,6 +9,7 @@ public class CurrentTime extends BasicFunction<CurrentTime> {
     public CurrentTime() {
         super(null, null);
     }
+
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.CURRENT_TIME);

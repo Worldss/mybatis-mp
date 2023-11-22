@@ -1,8 +1,8 @@
 package db.sql.api.impl.cmd.executor;
 
 import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.cmd.CmdFactory;
+import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,7 +1,7 @@
 package db.sql.api.impl.cmd;
 
-import db.sql.api.Getter;
 import db.sql.api.Cmd;
+import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.Query;
@@ -100,7 +100,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!when) {
             return null;
         }
-        return cmdFactory.eq(column, cmdFactory.value(""));
+        return Methods.eq(column, cmdFactory.value(""));
     }
 
     @Override
@@ -116,7 +116,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!when) {
             return null;
         }
-        return cmdFactory.ne(column, cmdFactory.value(""));
+        return Methods.ne(column, cmdFactory.value(""));
     }
 
     @Override
@@ -132,7 +132,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.eq(column, convert(value));
+        return Methods.eq(column, convert(value));
     }
 
     @Override
@@ -140,7 +140,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.ne(column, convert(value));
+        return Methods.ne(column, convert(value));
     }
 
     @Override
@@ -148,7 +148,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.gt(column, convert(value));
+        return Methods.gt(column, convert(value));
     }
 
     @Override
@@ -156,7 +156,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.gte(column, convert(value));
+        return Methods.gte(column, convert(value));
     }
 
     @Override
@@ -164,7 +164,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.lt(column, convert(value));
+        return Methods.lt(column, convert(value));
     }
 
     @Override
@@ -172,7 +172,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.lte(column, convert(value));
+        return Methods.lte(column, convert(value));
     }
 
     @Override
@@ -180,7 +180,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.like(column, value, mode);
+        return Methods.like(column, value, mode);
     }
 
     @Override
@@ -188,7 +188,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.notLike(column, value, mode);
+        return Methods.notLike(column, value, mode);
     }
 
     @Override
@@ -196,7 +196,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.between(column, value, value2);
+        return Methods.between(column, value, value2);
     }
 
     @Override
@@ -204,7 +204,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true, value)) {
             return null;
         }
-        return cmdFactory.notBetween(column, value, value2);
+        return Methods.notBetween(column, value, value2);
     }
 
     @Override
@@ -212,7 +212,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true)) {
             return null;
         }
-        return cmdFactory.isNull(column);
+        return Methods.isNull(column);
     }
 
     @Override
@@ -220,7 +220,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, column, true)) {
             return null;
         }
-        return cmdFactory.isNotNull(column);
+        return Methods.isNotNull(column);
     }
 
     @Override
@@ -228,7 +228,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value, value2)) {
             return null;
         }
-        return cmdFactory.between(convert(column, storey), value, value2);
+        return Methods.between(convert(column, storey), value, value2);
     }
 
     @Override
@@ -236,7 +236,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.eq(convert(column, storey), convert(value));
+        return Methods.eq(convert(column, storey), convert(value));
     }
 
     @Override
@@ -244,7 +244,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.eq(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.eq(convert(column, columnStorey), convert(value, valueStorey));
     }
 
     @Override
@@ -252,7 +252,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.gt(convert(column, storey), convert(value));
+        return Methods.gt(convert(column, storey), convert(value));
     }
 
     @Override
@@ -260,7 +260,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.gt(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.gt(convert(column, columnStorey), convert(value, valueStorey));
     }
 
     @Override
@@ -268,7 +268,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.gte(convert(column, storey), convert(value));
+        return Methods.gte(convert(column, storey), convert(value));
     }
 
     @Override
@@ -276,7 +276,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.gte(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.gte(convert(column, columnStorey), convert(value, valueStorey));
     }
 
     @Override
@@ -284,7 +284,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.like(convert(column, storey), value, mode);
+        return Methods.like(convert(column, storey), value, mode);
     }
 
     @Override
@@ -292,7 +292,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.lt(convert(column, storey), convert(value));
+        return Methods.lt(convert(column, storey), convert(value));
     }
 
     @Override
@@ -300,7 +300,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.lt(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.lt(convert(column, columnStorey), convert(value, valueStorey));
     }
 
     @Override
@@ -308,7 +308,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.lte(convert(column, storey), convert(value));
+        return Methods.lte(convert(column, storey), convert(value));
     }
 
     @Override
@@ -316,7 +316,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.lte(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.lte(convert(column, columnStorey), convert(value, valueStorey));
     }
 
     @Override
@@ -324,7 +324,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.ne(convert(column, storey), convert(value));
+        return Methods.ne(convert(column, storey), convert(value));
     }
 
     @Override
@@ -332,7 +332,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.ne(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.ne(convert(column, columnStorey), convert(value, valueStorey));
     }
 
     @Override
@@ -340,7 +340,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value, value2)) {
             return null;
         }
-        return cmdFactory.notBetween(convert(column, storey), value, value2);
+        return Methods.notBetween(convert(column, storey), value, value2);
     }
 
     @Override
@@ -348,7 +348,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!isValid(when, true, value)) {
             return null;
         }
-        return cmdFactory.notLike(convert(column, storey), value, mode);
+        return Methods.notLike(convert(column, storey), value, mode);
     }
 
     @Override
@@ -356,7 +356,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!when) {
             return null;
         }
-        return cmdFactory.isNull(convert(column, storey));
+        return Methods.isNull(convert(column, storey));
     }
 
     @Override
@@ -364,7 +364,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!when) {
             return null;
         }
-        return cmdFactory.isNotNull(convert(column, storey));
+        return Methods.isNotNull(convert(column, storey));
     }
 
     public <T> Condition in(Getter<T> column, Object[] values, boolean when) {
@@ -438,7 +438,7 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!when) {
             return null;
         }
-        return cmdFactory.exists(query);
+        return Methods.exists(query);
     }
 
     public Condition notExists(Query query) {
@@ -449,6 +449,6 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         if (!when) {
             return null;
         }
-        return cmdFactory.notExists(query);
+        return Methods.notExists(query);
     }
 }

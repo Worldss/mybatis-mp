@@ -38,9 +38,9 @@ public class Filed extends BasicFunction<Filed> {
             if (value == null) {
                 continue;
             }
-            if(value instanceof Cmd){
-                vs[i++]=(Cmd)value;
-            }else{
+            if (value instanceof Cmd) {
+                vs[i++] = (Cmd) value;
+            } else {
                 vs[i++] = Methods.convert(value);
             }
         }

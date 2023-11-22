@@ -9,9 +9,9 @@ public class DateDiff extends BasicFunction<DateDiff> {
 
     private final Cmd another;
 
-    public DateDiff(Cmd key,Cmd another ) {
+    public DateDiff(Cmd key, Cmd another) {
         super(SqlConst.DATE_DIFF, key);
-        this.another=another;
+        this.another = another;
     }
 
     @Override
@@ -27,6 +27,6 @@ public class DateDiff extends BasicFunction<DateDiff> {
 
     @Override
     public boolean contain(Cmd cmd) {
-        return CmdUtils.contain(cmd, this.key,this.another);
+        return CmdUtils.contain(cmd, this.key, this.another);
     }
 }

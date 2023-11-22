@@ -8,6 +8,7 @@ public class InetNtoa extends BasicFunction<InetNtoa> {
     public InetNtoa(Number ipNumber) {
         this(Methods.convert(ipNumber));
     }
+
     public InetNtoa(Cmd key) {
         super(SqlConst.INET_NTOA, key);
     }

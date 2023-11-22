@@ -40,9 +40,9 @@ public class Concat extends BasicFunction<Concat> {
             if (value == null) {
                 continue;
             }
-            if(value instanceof Cmd){
-                vs[i++]=(Cmd)value;
-            }else{
+            if (value instanceof Cmd) {
+                vs[i++] = (Cmd) value;
+            } else {
                 vs[i++] = Methods.convert(value);
             }
         }

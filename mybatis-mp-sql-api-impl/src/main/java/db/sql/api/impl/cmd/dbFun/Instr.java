@@ -28,6 +28,6 @@ public class Instr extends BasicFunction<Instr> {
 
     @Override
     public boolean contain(Cmd cmd) {
-        return CmdUtils.contain(cmd, this.key,this.str);
+        return CmdUtils.contain(cmd, this.key, this.str);
     }
 }

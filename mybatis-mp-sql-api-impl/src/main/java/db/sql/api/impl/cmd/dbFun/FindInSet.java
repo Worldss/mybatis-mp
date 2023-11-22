@@ -28,6 +28,6 @@ public class FindInSet extends BasicFunction<FindInSet> {
 
     @Override
     public boolean contain(Cmd cmd) {
-        return CmdUtils.contain(cmd, this.key,this.match);
+        return CmdUtils.contain(cmd, this.key, this.match);
     }
 }

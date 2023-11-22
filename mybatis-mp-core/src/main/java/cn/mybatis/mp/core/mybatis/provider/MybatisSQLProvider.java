@@ -4,7 +4,7 @@ package cn.mybatis.mp.core.mybatis.provider;
 import cn.mybatis.mp.core.db.reflect.ResultClassEntityPrefixes;
 import cn.mybatis.mp.core.mybatis.mapper.context.*;
 import cn.mybatis.mp.core.sql.executor.BaseQuery;
-import db.sql.core.api.cmd.basic.Table;
+import db.sql.api.impl.cmd.basic.Table;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
 import java.util.Map;

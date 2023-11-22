@@ -4,7 +4,7 @@ import cn.mybatis.mp.core.mybatis.provider.MybatisSqlBuilderContext;
 import cn.mybatis.mp.core.sql.executor.BaseQuery;
 import db.sql.api.DbType;
 import db.sql.api.SQLMode;
-import db.sql.core.api.tookit.SQLOptimizeUtils;
+import db.sql.api.impl.tookit.SQLOptimizeUtils;
 
 import java.util.Objects;
 

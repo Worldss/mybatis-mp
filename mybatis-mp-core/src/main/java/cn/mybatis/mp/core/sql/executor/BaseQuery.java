@@ -5,17 +5,18 @@ import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
 import db.sql.api.Getter;
-import db.sql.api.cmd.Cmd;
+import db.sql.api.Cmd;
 import db.sql.api.cmd.JoinMode;
-import db.sql.core.api.cmd.basic.Dataset;
-import db.sql.core.api.cmd.basic.TableField;
-import db.sql.core.api.cmd.struct.On;
+import db.sql.api.impl.cmd.executor.AbstractQuery;
+import db.sql.api.impl.cmd.basic.Dataset;
+import db.sql.api.impl.cmd.basic.TableField;
+import db.sql.api.impl.cmd.struct.On;
 
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class BaseQuery<Q extends BaseQuery> extends db.sql.core.api.cmd.executor.AbstractQuery<Q, MybatisCmdFactory> {
+public class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, MybatisCmdFactory> {
 
     protected Class returnType;
 

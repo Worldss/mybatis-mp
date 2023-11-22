@@ -2,7 +2,6 @@ package db.sql.api.cmd.struct;
 
 
 import db.sql.api.Getter;
-import db.sql.api.cmd.Cmd;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.executor.method.compare.Compare;

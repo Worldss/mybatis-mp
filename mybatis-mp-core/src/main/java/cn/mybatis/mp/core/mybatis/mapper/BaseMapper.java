@@ -8,7 +8,7 @@ import cn.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import cn.mybatis.mp.core.sql.executor.*;
 import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
-import db.sql.core.api.tookit.LambdaUtil;
+import db.sql.api.impl.tookit.LambdaUtil;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;

@@ -8,7 +8,7 @@ import cn.mybatis.mp.core.sql.executor.Update;
 import cn.mybatis.mp.core.tenant.TenantContext;
 import cn.mybatis.mp.core.tenant.TenantInfo;
 import cn.mybatis.mp.db.annotations.TableField;
-import db.sql.core.api.cmd.basic.Table;
+import db.sql.api.impl.cmd.basic.Table;
 
 import java.util.Collections;
 import java.util.Objects;

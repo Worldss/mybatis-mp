@@ -3,9 +3,9 @@ package cn.mybatis.mp.core.sql.executor;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
 import db.sql.api.cmd.JoinMode;
-import db.sql.core.api.cmd.basic.Dataset;
-import db.sql.core.api.cmd.executor.AbstractDelete;
-import db.sql.core.api.cmd.struct.On;
+import db.sql.api.impl.cmd.basic.Dataset;
+import db.sql.api.impl.cmd.executor.AbstractDelete;
+import db.sql.api.impl.cmd.struct.On;
 
 import java.util.Objects;
 import java.util.function.Consumer;

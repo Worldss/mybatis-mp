@@ -5,7 +5,7 @@ package cn.mybatis.mp.core.mybatis.mapper.context;
 import cn.mybatis.mp.core.mybatis.provider.MybatisSqlBuilderContext;
 import db.sql.api.DbType;
 import db.sql.api.SQLMode;
-import db.sql.core.api.cmd.executor.Executor;
+import db.sql.api.impl.cmd.executor.Executor;
 
 import java.util.Objects;
 

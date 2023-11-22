@@ -1,7 +1,6 @@
 package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Getter;
-import db.sql.api.cmd.Cmd;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.executor.method.compare.Compare;

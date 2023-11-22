@@ -8,7 +8,7 @@ import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.DO.SysRole;
 import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.testCase.BaseTest;
-import db.sql.core.api.cmd.fun.FunctionInterface;
+import db.sql.api.impl.cmd.dbFun.FunctionInterface;
 import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;

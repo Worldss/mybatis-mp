@@ -20,7 +20,7 @@
 
         <dependency>
             <groupId>cn.mybatis-mp</groupId>
-            <artifactId>mybatis-mp-sql-core</artifactId>
+            <artifactId>mybatis-mp-sql-api-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
 

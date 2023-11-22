@@ -48,7 +48,8 @@ public class TableMetaDataQuery {
         try (ResultSet resultSet = metaData.getTables(databaseName, generatorConfig.getDataBaseConfig().getSchema(), null, types.toArray(new String[2]))) {
             TableInfo tableInfo;
             while (resultSet.next()) {
-                String tableName = resultSet.getString("TABLE_NAME");
+                String TABLE_NAME = resultSet.getString("TABLE_NAME");
+                String tableName = TABLE_NAME;
                 if (tableName.toUpperCase().equals(tableName)) {
                     tableName = tableName.toLowerCase();
                 }
@@ -59,7 +60,7 @@ public class TableMetaDataQuery {
                 tableInfo.setSchema(resultSet.getString("TABLE_SCHEM"));
                 tableInfo.setCatalog(resultSet.getString("TABLE_CAT"));
 
-                tableInfo.setColumnInfoList(getColumnInfo(tableInfo, resultSet.getString("TABLE_NAME")));
+                tableInfo.setColumnInfoList(getColumnInfo(tableInfo, TABLE_NAME));
                 List<ColumnInfo> idColumnInfoList = tableInfo.getColumnInfoList().stream().filter(item -> item.isPrimaryKey()).collect(Collectors.toList());
                 if (!idColumnInfoList.isEmpty()) {
                     tableInfo.setIdColumnInfo(idColumnInfoList.get(0));
@@ -112,6 +113,9 @@ public class TableMetaDataQuery {
                 columnInfo.setRemarks(resultSet.getString("REMARKS"));
                 columnInfo.setDefaultValue(resultSet.getString("COLUMN_DEF"));
                 columnInfo.setNullable(resultSet.getInt("NULLABLE") == DatabaseMetaData.columnNullable);
+
+                columnInfo.setVersion(columnName.equals(generatorConfig.getColumnConfig().getVersionColumn()));
+                columnInfo.setTenantId(columnName.equals(generatorConfig.getColumnConfig().getTenantIdColumn()));
                 try {
                     columnInfo.setAutoIncrement("YES".equals(resultSet.getString("IS_AUTOINCREMENT")));
                 } catch (SQLException e) {

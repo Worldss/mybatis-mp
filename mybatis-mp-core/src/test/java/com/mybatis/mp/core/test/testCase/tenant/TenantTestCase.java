@@ -3,8 +3,8 @@ package com.mybatis.mp.core.test.testCase.tenant;
 import cn.mybatis.mp.core.sql.executor.chain.DeleteChain;
 import cn.mybatis.mp.core.tenant.TenantContext;
 import cn.mybatis.mp.core.tenant.TenantInfo;
-import com.mybatis.mp.core.test.mapper.TenantTestMapper;
 import com.mybatis.mp.core.test.DO.TenantTest;
+import com.mybatis.mp.core.test.mapper.TenantTestMapper;
 import com.mybatis.mp.core.test.model.TenantModel;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import junit.framework.Assert;
@@ -32,8 +32,8 @@ public class TenantTestCase extends BaseTest {
             tenantTest.setCreateTime(LocalDateTime.now());
             tenantTestMapper.save(tenantTest);
             System.out.println(tenantTest);
-            Assert.assertTrue(tenantTest.getId() != null);
-            Assert.assertTrue(tenantTestMapper.getById(tenantTest.getId()).getTenantId() == 1);
+            Assert.assertNotNull(tenantTest.getId());
+            Assert.assertEquals(1, (int) tenantTestMapper.getById(tenantTest.getId()).getTenantId());
         }
     }
 
@@ -49,7 +49,7 @@ public class TenantTestCase extends BaseTest {
             tenantTest.setName("我是2");
             tenantTestMapper.update(tenantTest);
             System.out.println(tenantTest);
-            Assert.assertTrue(tenantTest.getTenantId() == 1);
+            Assert.assertEquals(1, (int) tenantTest.getTenantId());
 
 
             TenantContext.registerTenantGetter(() -> {
@@ -62,7 +62,6 @@ public class TenantTestCase extends BaseTest {
     }
 
 
-
     @Test
     public void insertWithModelTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
@@ -72,8 +71,8 @@ public class TenantTestCase extends BaseTest {
             tenantTest.setCreateTime(LocalDateTime.now());
             tenantTestMapper.save(tenantTest);
             System.out.println(tenantTest);
-            Assert.assertTrue(tenantTest.getId() != null);
-            Assert.assertTrue(tenantTestMapper.getById(tenantTest.getId()).getTenantId() == 1);
+            Assert.assertNotNull(tenantTest.getId());
+            Assert.assertEquals(1, (int) tenantTestMapper.getById(tenantTest.getId()).getTenantId());
         }
     }
 
@@ -89,7 +88,7 @@ public class TenantTestCase extends BaseTest {
             tenantTest.setName("我是2");
             tenantTestMapper.update(tenantTest);
             System.out.println(tenantTest);
-            Assert.assertTrue(tenantTest.getTenantId() == 1);
+            Assert.assertEquals(1, (int) tenantTest.getTenantId());
 
 
             TenantContext.registerTenantGetter(() -> {
@@ -112,12 +111,12 @@ public class TenantTestCase extends BaseTest {
             tenantTestMapper.save(tenantTest);
 
 
-            check("","delete t FROM tenant_test t WHERE  t.tenant_id = 1 AND  t.id = '"+tenantTest.getId()+"'",DeleteChain.of(tenantTestMapper).delete(TenantTest.class).from(TenantTest.class).eq(TenantTest::getId,tenantTest.getId()));
+            check("", "delete t FROM tenant_test t WHERE  t.tenant_id = 1 AND  t.id = '" + tenantTest.getId() + "'", DeleteChain.of(tenantTestMapper).delete(TenantTest.class).from(TenantTest.class).eq(TenantTest::getId, tenantTest.getId()));
 
             TenantContext.registerTenantGetter(() -> {
                 return new TenantInfo(2);
             });
-            check("","delete t FROM tenant_test t WHERE  t.tenant_id = 2 AND  t.id = '"+tenantTest.getId()+"'",DeleteChain.of(tenantTestMapper).delete(TenantTest.class).from(TenantTest.class).eq(TenantTest::getId,tenantTest.getId()));
+            check("", "delete t FROM tenant_test t WHERE  t.tenant_id = 2 AND  t.id = '" + tenantTest.getId() + "'", DeleteChain.of(tenantTestMapper).delete(TenantTest.class).from(TenantTest.class).eq(TenantTest::getId, tenantTest.getId()));
 
         }
     }

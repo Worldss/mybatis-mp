@@ -8,7 +8,7 @@ import cn.mybatis.mp.core.sql.executor.Update;
 import cn.mybatis.mp.core.tenant.TenantContext;
 import cn.mybatis.mp.core.tenant.TenantInfo;
 import cn.mybatis.mp.db.annotations.TableField;
-import db.sql.core.api.cmd.basic.Table;
+import db.sql.api.impl.cmd.basic.Table;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -66,7 +66,6 @@ public class EntityUpdateContext<T> extends SQLCmdUpdateContext {
                 } else if (forceUpdateFields.contains(item.getField().getName())) {
                     set($.field(table, item.getColumnName()), Objects.isNull(value) ? $.NULL() : $.value(value));
                 } else if (!item.getTableFieldAnnotation().update()) {
-                    return;
                 } else if (Objects.nonNull(value)) {
                     TableField tableField = item.getTableFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());

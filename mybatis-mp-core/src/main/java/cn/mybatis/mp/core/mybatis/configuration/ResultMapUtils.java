@@ -43,7 +43,7 @@ public final class ResultMapUtils {
         return resultMap;
     }
 
-    private static final List<ResultMapping> getEntityResultMappings(MybatisConfiguration configuration, Class entity) {
+    private static List<ResultMapping> getEntityResultMappings(MybatisConfiguration configuration, Class entity) {
         TableInfo tableInfo = Tables.get(entity);
         List<ResultMapping> resultMappings = tableInfo.getTableFieldInfos().stream().map(tableFieldInfo -> {
             return configuration.buildResultMapping(tableFieldInfo.getField(), tableFieldInfo.getColumnName(), tableFieldInfo.getTableFieldAnnotation().jdbcType(), tableFieldInfo.getTableFieldAnnotation().typeHandler());
@@ -51,7 +51,7 @@ public final class ResultMapUtils {
         return Collections.unmodifiableList(resultMappings);
     }
 
-    private static final List<ResultMapping> getResultEntityResultMappings(MybatisConfiguration configuration, Class clazz) {
+    private static List<ResultMapping> getResultEntityResultMappings(MybatisConfiguration configuration, Class clazz) {
         ResultEntity resultEntity = (ResultEntity) clazz.getAnnotation(ResultEntity.class);
         Map<Class, String> entitiesPrefixMap = ResultClassEntityPrefixes.getEntityPrefix(clazz);
         List<ResultMapping> resultMappings = FieldUtils.getResultMappingFields(clazz).stream().map(field -> {

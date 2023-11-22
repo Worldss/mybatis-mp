@@ -10,7 +10,7 @@ public final class Default {
     @TableField
     private int ___defaultField;
 
-    public static final TableField defaultTableFieldAnnotation() {
+    public static TableField defaultTableFieldAnnotation() {
         try {
             return Default.class.getDeclaredField("___defaultField").getAnnotation(TableField.class);
         } catch (NoSuchFieldException e) {

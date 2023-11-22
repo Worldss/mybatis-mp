@@ -8,8 +8,8 @@ import db.sql.api.DbType;
 import db.sql.api.SQLMode;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.JoinMode;
-import db.sql.core.api.tookit.SQLOptimizeUtils;
-import db.sql.core.api.tookit.SQLPrinter;
+import db.sql.api.impl.tookit.SQLOptimizeUtils;
+import db.sql.api.impl.tookit.SQLPrinter;
 import junit.framework.Assert;
 import org.junit.jupiter.api.Test;
 

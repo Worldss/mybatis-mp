@@ -1,9 +1,9 @@
 package com.mybatis.mp.core.test.testCase.query;
 
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
-import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.DO.SysRole;
 import com.mybatis.mp.core.test.DO.SysUser;
+import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import com.mybatis.mp.core.test.vo.NestedSysRoleVo;
 import com.mybatis.mp.core.test.vo.SysUserRoleVo;
@@ -113,8 +113,7 @@ public class SelectAsTest extends BaseTest {
                     .from(SysUser.class)
                     .join(SysUser.class, SysRole.class)
                     .eq(SysUser::getId, 2)
-                    .setReturnType(SysUserRoleVo.class)
-                    ;
+                    .setReturnType(SysUserRoleVo.class);
             SysUserRoleVo sysUser = queryChain.get();
             SysUserRoleVo eqSysUser = new SysUserRoleVo();
             eqSysUser.setId(2);

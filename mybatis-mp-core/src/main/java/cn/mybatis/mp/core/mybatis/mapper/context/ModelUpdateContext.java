@@ -9,7 +9,7 @@ import cn.mybatis.mp.core.tenant.TenantContext;
 import cn.mybatis.mp.core.tenant.TenantInfo;
 import cn.mybatis.mp.db.Model;
 import cn.mybatis.mp.db.annotations.TableField;
-import db.sql.core.api.cmd.basic.Table;
+import db.sql.api.impl.cmd.basic.Table;
 
 import java.text.MessageFormat;
 import java.util.Collections;

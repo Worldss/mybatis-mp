@@ -5,7 +5,7 @@ import com.mybatis.mp.core.test.DO.TenantTest;
 
 public interface TenantTestMapper extends MybatisMapper<TenantTest> {
 
-    default Class getType(){
+    default Class getType() {
         return getClass();
     }
 }

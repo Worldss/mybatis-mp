@@ -1,34 +1,36 @@
 package cn.mybatis.mp.core.sql.executor.chain;
 
-import cn.mybatis.mp.core.mybatis.mapper.MapperEntitys;
 import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
 import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.BaseQuery;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 查询链路
  */
 public class QueryChain extends BaseQuery<QueryChain> {
 
-    public static QueryChain of(MybatisMapper mapper) {
-        return new QueryChain(mapper);
-    }
+    protected final MybatisMapper mapper;
 
     public QueryChain(MybatisMapper mapper) {
         this.mapper = mapper;
     }
 
-    protected final MybatisMapper mapper;
-
+    public static QueryChain of(MybatisMapper mapper) {
+        return new QueryChain(mapper);
+    }
 
     private void setDefault() {
-        if (this.select == null) {
+        if (Objects.isNull(this.select)) {
             this.select(mapper.getEntityType());
         }
-        if (this.from == null) {
+        if (Objects.isNull(this.from)) {
             this.from(mapper.getEntityType());
+        }
+        if (Objects.isNull(this.returnType)) {
+            this.setReturnType(mapper.getEntityType());
         }
     }
 

@@ -19,7 +19,7 @@ public class ResultClassEntityPrefixes {
 
     }
 
-    
+
     public static Map<Class, String> getEntityPrefix(Class clazz) {
         if (!clazz.isAnnotationPresent(ResultEntity.class)) {
             return null;

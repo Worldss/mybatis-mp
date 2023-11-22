@@ -3,11 +3,8 @@ package cn.mybatis.mp.core.mybatis.mapper;
 
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
-import cn.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import cn.mybatis.mp.core.sql.executor.chain.DeleteChain;
-import org.apache.ibatis.annotations.DeleteProvider;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.builder.annotation.ProviderContext;
+import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -33,16 +30,21 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
      */
     Class<MybatisMapper<T>> getMapperType();
 
-
-    /**
-     * 根据id获取
-     *
-     * @param id
-     * @return
-     * @see MybatisSQLProvider#getById(Serializable, ProviderContext)
-     */
-    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.GET_BY_ID_NAME)
-    T getById(Serializable id);
+    default T getById(Serializable id) {
+        Class entityType = this.getEntityType();
+        TableInfo tableInfo = Tables.get(entityType);
+        if (tableInfo.getIdFieldInfo() == null) {
+            throw new RuntimeException("Not Supported");
+        }
+        return QueryChain.of(this)
+                .select(entityType)
+                .from(entityType)
+                .connect(self -> {
+                    self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id);
+                })
+                .setReturnType(entityType)
+                .get();
+    }
 
 
     /**
@@ -57,7 +59,6 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
             return 0;
         }
         TableInfo tableInfo = Tables.get(entity.getClass());
-
         if (tableInfo.getIdFieldInfo() == null) {
             throw new RuntimeException("Not Supported");
         }

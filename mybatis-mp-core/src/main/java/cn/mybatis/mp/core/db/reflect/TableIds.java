@@ -15,11 +15,11 @@ public final class TableIds {
 
     }
 
-    public final static TableId get(Class entity) {
+    public static TableId get(Class entity) {
         return CACHE.get(entity);
     }
 
-    public final static TableId get(Configuration configuration, Class entity) {
+    public static TableId get(Configuration configuration, Class entity) {
         return CACHE.computeIfAbsent(entity, key -> {
             TableFieldInfo tableFieldInfo = Tables.get(entity).getIdFieldInfo();
             return TableInfoUtil.getTableIdAnnotation(configuration, tableFieldInfo.getField());

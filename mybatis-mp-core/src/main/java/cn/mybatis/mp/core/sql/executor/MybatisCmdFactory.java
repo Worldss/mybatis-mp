@@ -4,10 +4,10 @@ import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import db.sql.api.Getter;
-import db.sql.core.api.cmd.CmdFactory;
-import db.sql.core.api.cmd.basic.Table;
-import db.sql.core.api.cmd.basic.TableField;
-import db.sql.core.api.tookit.LambdaUtil;
+import db.sql.api.impl.cmd.CmdFactory;
+import db.sql.api.impl.cmd.basic.Table;
+import db.sql.api.impl.cmd.basic.TableField;
+import db.sql.api.impl.tookit.LambdaUtil;
 import org.apache.ibatis.util.MapUtil;
 
 import java.util.Objects;
@@ -19,11 +19,11 @@ import java.util.Objects;
  */
 public class MybatisCmdFactory extends CmdFactory {
 
-    public MybatisCmdFactory(){
+    public MybatisCmdFactory() {
         super();
     }
 
-    public MybatisCmdFactory(String tableAsPrefix){
+    public MybatisCmdFactory(String tableAsPrefix) {
         super(tableAsPrefix);
     }
 

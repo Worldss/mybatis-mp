@@ -8,7 +8,7 @@ import cn.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import cn.mybatis.mp.core.sql.executor.*;
 import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
-import db.sql.core.api.tookit.LambdaUtil;
+import db.sql.api.impl.tookit.LambdaUtil;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
@@ -46,7 +46,7 @@ public interface BaseMapper<T> {
         query.limit(1);
         query.setReturnType(Integer.TYPE);
         Integer obj = this.get(query, optimize);
-        return (obj == null || obj < 1) ? false : true;
+        return obj != null && obj >= 1;
     }
 
     /**
@@ -305,8 +305,9 @@ public interface BaseMapper<T> {
      *
      * @param queryContext
      * @return
+     * @see MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
-    @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
+    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_NAME)
     <T> List<T> $list(SQLCmdQueryContext queryContext);
 
     /**
@@ -316,16 +317,16 @@ public interface BaseMapper<T> {
      * @return
      * @see MybatisSQLProvider#cmdCount(SQLCmdCountQueryContext, ProviderContext)
      */
-    @SelectProvider(type = MybatisSQLProvider.class, method = "cmdCount")
+    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.COUNT_NAME)
     Integer $count(SQLCmdCountQueryContext queryContext);
 
     /**
-     * count查询
+     * count查询 - 从query中
      *
      * @param queryContext
      * @return
      * @see MybatisSQLProvider#countFromQuery(SQLCmdCountFromQueryContext, ProviderContext)
      */
-    @SelectProvider(type = MybatisSQLProvider.class, method = "countFromQuery")
+    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_COUNT_NAME)
     Integer $countFromQuery(SQLCmdCountFromQueryContext queryContext);
 }

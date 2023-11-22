@@ -1,7 +1,7 @@
 package db.sql.api.cmd.struct.query;
 
+import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.cmd.Cmd;
 import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
@@ -20,12 +20,12 @@ public class Unions<UNION extends Union> implements Cmd {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (unions == null || unions.isEmpty()) {
             return sqlBuilder;
         }
         for (Union union : unions) {
-            sqlBuilder = union.sql(user, context, sqlBuilder);
+            sqlBuilder = union.sql(module, this, context, sqlBuilder);
         }
         return sqlBuilder;
     }

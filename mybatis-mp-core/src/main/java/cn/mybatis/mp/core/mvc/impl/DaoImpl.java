@@ -15,12 +15,11 @@ import java.io.Serializable;
 public abstract class DaoImpl<T, K> implements Dao<T, K> {
 
     private final MybatisMapper<T> mapper;
+    private Class<K> idType;
 
     public DaoImpl(MybatisMapper<T> mapper) {
         this.mapper = mapper;
     }
-
-    private Class<K> idType;
 
     @Override
     public Class<K> getIdType() {
@@ -31,19 +30,19 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     }
 
     protected QueryChain queryChain() {
-        return new QueryChain(mapper);
+        return QueryChain.of(mapper);
     }
 
     protected UpdateChain updateChain() {
-        return new UpdateChain(mapper);
+        return UpdateChain.of(mapper);
     }
 
     protected InsertChain insertChain() {
-        return new InsertChain(mapper);
+        return InsertChain.of(mapper);
     }
 
     protected DeleteChain deleteChain() {
-        return new DeleteChain(mapper);
+        return DeleteChain.of(mapper);
     }
 
     @Override
@@ -53,14 +52,17 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
         }
         return mapper.getById((Serializable) id);
     }
+
     @Override
     public void save(T entity) {
         mapper.save(entity);
     }
+
     @Override
     public void save(Model<T> model) {
         mapper.save(model);
     }
+
     @Override
     public void update(T entity) {
         if (getIdType() == Void.class) {
@@ -68,6 +70,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
         }
         mapper.update(entity);
     }
+
     @Override
     public int update(T entity, Getter<T>... forceUpdateFields) {
         if (getIdType() == Void.class) {
@@ -75,6 +78,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
         }
         return mapper.update(entity, forceUpdateFields);
     }
+
     @Override
     public int update(Model<T> model) {
         if (getIdType() == Void.class) {
@@ -82,10 +86,12 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
         }
         return mapper.update(model);
     }
+
     @Override
     public int update(Model<T> model, Getter<T>... forceUpdateFields) {
         return mapper.update(model, forceUpdateFields);
     }
+
     @Override
     public int delete(T entity) {
         if (getIdType() == Void.class) {
@@ -93,6 +99,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
         }
         return mapper.delete(entity);
     }
+
     @Override
     public int deleteById(K id) {
         if (id.getClass() == Void.class) {
@@ -100,6 +107,4 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
         }
         return mapper.deleteById((Serializable) id);
     }
-
-
 }

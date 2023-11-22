@@ -4,11 +4,11 @@ import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.Query;
 import cn.mybatis.mp.core.sql.executor.SubQuery;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
-import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.DO.SysRole;
 import com.mybatis.mp.core.test.DO.SysUser;
+import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
-import db.sql.core.api.cmd.fun.FunctionInterface;
+import db.sql.api.impl.cmd.dbFun.FunctionInterface;
 import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
@@ -331,7 +331,7 @@ public class QueryTest extends BaseTest {
                     .join(SysUser.class, SysRole.class)
                     .like(SysUser::getUserName, "test")
                     .exists();
-            Assert.assertEquals("existsTest检测", true, exists);
+            Assert.assertTrue("existsTest检测", exists);
         }
     }
 }

@@ -1,8 +1,9 @@
 package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Getter;
-import db.sql.api.cmd.Cmd;
 import db.sql.api.cmd.LikeMode;
+import db.sql.api.cmd.basic.Condition;
+import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.executor.method.compare.Compare;
 import db.sql.api.cmd.struct.ConditionChain;
 import db.sql.api.cmd.struct.Nested;
@@ -10,6 +11,7 @@ import db.sql.api.cmd.struct.Nested;
 import java.io.Serializable;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN, V, CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>> extends Compare<SELF, COLUMN, V>, Nested<SELF, CONDITION_CHAIN> {
@@ -23,6 +25,16 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
 
     default SELF or() {
         conditionChain().or();
+        return (SELF) this;
+    }
+
+    default SELF and(Function<SELF, Condition> function) {
+        conditionChain().and(function.apply((SELF) this), true);
+        return (SELF) this;
+    }
+
+    default SELF or(Function<SELF, Condition> function) {
+        conditionChain().or(function.apply((SELF) this), true);
         return (SELF) this;
     }
 
@@ -75,25 +87,25 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
     }
 
     @Override
-    default SELF between(COLUMN column, V value, V value2, boolean when) {
+    default SELF between(COLUMN column, Serializable value, Serializable value2, boolean when) {
         conditionChain().between(column, value, value2, when);
         return (SELF) this;
     }
 
     @Override
-    default SELF notBetween(COLUMN column, V value, V value2, boolean when) {
+    default SELF notBetween(COLUMN column, Serializable value, Serializable value2, boolean when) {
         conditionChain().notBetween(column, value, value2, when);
         return (SELF) this;
     }
 
     @Override
-    default SELF like(COLUMN column, V value, LikeMode mode, boolean when) {
+    default SELF like(COLUMN column, String value, LikeMode mode, boolean when) {
         conditionChain().like(column, value, mode, when);
         return (SELF) this;
     }
 
     @Override
-    default SELF notLike(COLUMN column, V value, LikeMode mode, boolean when) {
+    default SELF notLike(COLUMN column, String value, LikeMode mode, boolean when) {
         conditionChain().notLike(column, value, mode, when);
         return (SELF) this;
     }
@@ -112,13 +124,13 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
 
     @Override
     default <T> SELF empty(Getter<T> column, int storey, boolean when) {
-        conditionChain().empty(column,storey, when);
+        conditionChain().empty(column, storey, when);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF notEmpty(Getter<T> column, int storey, boolean when){
-        conditionChain().notEmpty(column,storey, when);
+    default <T> SELF notEmpty(Getter<T> column, int storey, boolean when) {
+        conditionChain().notEmpty(column, storey, when);
         return (SELF) this;
     }
 
@@ -129,7 +141,7 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
     }
 
     @Override
-    default SELF notEmpty(COLUMN column, boolean when){
+    default SELF notEmpty(COLUMN column, boolean when) {
         conditionChain().empty(column, when);
         return (SELF) this;
     }
@@ -208,25 +220,25 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
 
 
     @Override
-    default <T> SELF like(Getter<T> column, V value, LikeMode mode, int storey, boolean when) {
+    default <T> SELF like(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
         conditionChain().like(column, value, mode, storey, when);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF notLike(Getter<T> column, V value, LikeMode mode, int storey, boolean when) {
+    default <T> SELF notLike(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
         conditionChain().notLike(column, value, mode, storey, when);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF between(Getter<T> column, V value, V value2, int storey, boolean when) {
+    default <T> SELF between(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
         conditionChain().between(column, value, value2, storey, when);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF notBetween(Getter<T> column, V value, V value2, int storey, boolean when) {
+    default <T> SELF notBetween(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
         conditionChain().notBetween(column, value, value2, storey, when);
         return (SELF) this;
     }
@@ -279,12 +291,21 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
         return (SELF) this;
     }
 
-    default <T> SELF exists(Cmd existsCmd) {
-        return this.exists(existsCmd, true);
+    default <T> SELF exists(Query query) {
+        return this.exists(query, true);
     }
 
-    default <T> SELF exists(Cmd existsCmd, boolean when) {
-        conditionChain().exists(existsCmd, when);
+    default <T> SELF exists(Query query, boolean when) {
+        conditionChain().exists(query, when);
+        return (SELF) this;
+    }
+
+    default <T> SELF notExists(Query query) {
+        return this.notExists(query, true);
+    }
+
+    default <T> SELF notExists(Query query, boolean when) {
+        conditionChain().notExists(query, when);
         return (SELF) this;
     }
 

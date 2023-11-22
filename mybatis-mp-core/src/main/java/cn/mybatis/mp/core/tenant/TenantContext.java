@@ -8,10 +8,10 @@ import java.util.function.Supplier;
  */
 public class TenantContext {
 
+    private static Supplier<TenantInfo> tenantInfoGetter;
+
     private TenantContext() {
     }
-
-    private static Supplier<TenantInfo> tenantInfoGetter;
 
     /**
      * 注册多租户获取器

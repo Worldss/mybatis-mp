@@ -1,7 +1,7 @@
 package db.sql.api.cmd.executor.method;
 
+import db.sql.api.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.cmd.Cmd;
 
 import java.util.List;
 import java.util.function.Function;

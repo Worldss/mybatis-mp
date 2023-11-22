@@ -12,7 +12,9 @@ import ${pkg};
  * @author ${author!}
  * @since ${date}
  */
-<#if entityConfig.isLombok()>@Data</#if>
+<#if entityConfig.isLombok()>
+    @Data
+</#if>
 @Table(value="${entityInfo.tableInfo.name}"<#if entityConfig.isSchema()>,schema="${entityInfo.tableInfo.schema!}"</#if>)
 public class ${entityInfo.name} ${superExtend}{
 
@@ -26,6 +28,11 @@ public class ${entityInfo.name} ${superExtend}{
     ${field.buildTableIdCode()!}
     private ${field.typeName} ${field.name};
 <#else>
+<#if field.columnInfo.isVersion()>
+    @Version
+<#elseif  field.columnInfo.isTenantId()>
+    @TenantId
+</#if>
 <#if field.isNeedTableFiled()>
     ${field.buildTableField()}
     private ${field.typeName} ${field.name};

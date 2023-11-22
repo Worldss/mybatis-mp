@@ -24,7 +24,7 @@ public final class Tables {
      * @param entity
      * @return
      */
-    
+
     public static TableInfo get(Class entity) {
         if (!entity.isAnnotationPresent(Table.class)) {
             return null;

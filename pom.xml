@@ -10,17 +10,19 @@
     </description>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp</artifactId>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
     <packaging>pom</packaging>
     <modules>
         <module>mybatis-mp-annotation</module>
         <module>mybatis-mp-core</module>
-        <module>mybatis-mp-spring-boot-demo</module>
         <module>mybatis-mp-sql-api</module>
-        <module>mybatis-mp-sql-core</module>
+        <module>mybatis-mp-sql-api-impl</module>
         <module>mybatis-mp-generator</module>
     </modules>
-
+    <issueManagement>
+        <system>Gitee Issue</system>
+        <url>https://gitee.com/mybatis-mp/mybatis-mp/issues</url>
+    </issueManagement>
     <licenses>
         <license>
             <name>Apache-2.0</name>
@@ -29,7 +31,7 @@
     </licenses>
     <scm>
         <connection>https://gitee.com/mybatis-mp/mybatis-mp.git</connection>
-        <url>https://gitee.com/mybatis-mp</url>
+        <url>https://gitee.com/mybatis-mp/mybatis-mp/tree/master</url>
     </scm>
     <developers>
         <developer>
@@ -47,7 +49,7 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 
-        <mybatis-mp.version>1.1.3</mybatis-mp.version>
+        <mybatis-mp.version>1.1.4</mybatis-mp.version>
 
         <!-- spring version -->
         <spring-boot.version>2.7.16</spring-boot.version>

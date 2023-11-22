@@ -7,15 +7,13 @@ import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.incrementer.IdentifierGenerator;
 import cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory;
 import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
-import cn.mybatis.mp.core.tenant.TenantContext;
-import cn.mybatis.mp.core.tenant.TenantInfo;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;
-import db.sql.core.api.cmd.basic.Table;
-import db.sql.core.api.cmd.executor.AbstractInsert;
-import db.sql.core.api.cmd.executor.Insert;
+import db.sql.api.impl.cmd.basic.Table;
+import db.sql.api.impl.cmd.executor.AbstractInsert;
+import db.sql.api.impl.cmd.executor.Insert;
 
 import java.util.ArrayList;
 import java.util.List;

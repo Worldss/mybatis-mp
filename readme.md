@@ -1206,7 +1206,28 @@ new Query(){{
 }};
 ```
 # 支持那些数据库函数方法
-## 函数说明
+## 数据库函数使用方法
+```java
+Integer id = QueryChain.of(sysUserMapper)
+    //方法 1    
+    .select(SysUser::getId, c -> c.md5())
+    .from(SysUser.class)
+    .eq(SysUser::getId, 2)
+    //方法 2
+    .and(queryChain -> {
+        return queryChain.$(SysUser::getCreate_time, c -> c.date().eq("2023-12-10"));
+    })
+    //方法 3
+    .and(queryChain -> {
+        return Methods.date(queryChain.$(SysUser::getCreate_time)).eq("2023-12-10");
+    })
+    .empty(SysUser::getUserName)
+    //方法 1     
+    .orderBy(SysUser::getId, c -> c.plus(1))
+    .setReturnType(Integer.TYPE)
+    .get();
+```
+## 数据库函数说明
 <table>
     <thead>
     <tr align="left">
@@ -1485,28 +1506,6 @@ new Query(){{
     </tr>
     </tbody>
 </table>
-
-## 函数使用方法
-```java
-Integer id = QueryChain.of(sysUserMapper)
-    //方法 1    
-    .select(SysUser::getId, c -> c.md5())
-    .from(SysUser.class)
-    .eq(SysUser::getId, 2)
-    //方法 2
-    .and(queryChain -> {
-        return queryChain.$(SysUser::getCreate_time, c -> c.date().eq("2023-12-10"));
-    })
-    //方法 3
-    .and(queryChain -> {
-        return Methods.date(queryChain.$(SysUser::getCreate_time)).eq("2023-12-10");
-    })
-    .empty(SysUser::getUserName)
-    //方法 1     
-    .orderBy(SysUser::getId, c -> c.plus(1))
-    .setReturnType(Integer.TYPE)
-    .get();
-```
 
 # 如何支持不同数据库
 

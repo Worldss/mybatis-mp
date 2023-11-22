@@ -1210,7 +1210,7 @@ new Query(){{
 ```java
 Integer id = QueryChain.of(sysUserMapper)
     //方法 1    
-    .select(SysUser::getId, c -> c.md5())
+    .select(SysUser::getId, c -> c.sin().as("x_sin"))
     .from(SysUser.class)
     .eq(SysUser::getId, 2)
     //方法 2

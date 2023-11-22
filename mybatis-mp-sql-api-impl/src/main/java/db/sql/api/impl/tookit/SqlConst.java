@@ -83,8 +83,29 @@ public class SqlConst {
     public static final String PLUS = " + ";
     public static final String ROUND = " ROUND";
     public static final String POW = " POW";
-
     public static final String MOD = " MOD";
+    public static final String EXP = " EXP";
+
+    public static final String LOG = " LOG";
+
+    public static final String LOG2 = " LOG2";
+
+    public static final String LOG10 = " LOG10";
+    public static final String SIN = " SIN";
+    public static final String ASIN = " ASIN";
+    public static final String COS = " COS";
+    public static final String ACOS = " ACOS";
+    public static final String TAN = " TAN";
+    public static final String ATAN = " ATAN";
+    public static final String COT = " COT";
+    public static final String CHAR_LENGTH = " CHAR_LENGTH";
+    public static final String LENGTH = " LENGTH";
+    public static final String UPPER = " UPPER";
+    public static final String LOWER = " LOWER";
+    public static final String LEFT = " LEFT";
+    public static final String RIGHT = " RIGHT";
+    public static final String LPAD = " LPAD";
+    public static final String RPAD = " RPAD";
     public static final String COUNT = " COUNT";
     public static final String GROUP_BY = " GROUP BY ";
     public static final String HAVING = " HAVING ";

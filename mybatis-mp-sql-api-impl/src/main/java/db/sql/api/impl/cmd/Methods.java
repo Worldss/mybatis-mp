@@ -313,6 +313,201 @@ public class Methods {
     }
 
     /**
+     * 返回 e 的 key 次方 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Exp exp(Cmd key) {
+        return new Exp(key);
+    }
+
+
+    /**
+     * 返回自然对数（以 e 为底的对数） 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Log log(Cmd key) {
+        return new Log(key);
+    }
+
+    /**
+     * 返回以 2 为底的对数 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Log2 log2(Cmd key) {
+        return new Log2(key);
+    }
+
+    /**
+     * 返回以 10 为底的对数 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Log10 log10(Cmd key) {
+        return new Log10(key);
+    }
+
+    /**
+     * 求正弦值 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Sin sin(Cmd key) {
+        return new Sin(key);
+    }
+
+    /**
+     * 求反正弦值 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Asin asin(Cmd key) {
+        return new Asin(key);
+    }
+
+    /**
+     * 求余弦值 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Cos cos(Cmd key) {
+        return new Cos(key);
+    }
+
+    /**
+     * 求反余弦值 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Acos acos(Cmd key) {
+        return new Acos(key);
+    }
+
+    /**
+     * 求正切值 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Tan tan(Cmd key) {
+        return new Tan(key);
+    }
+
+    /**
+     * 求反正切值 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Atan atan(Cmd key) {
+        return new Atan(key);
+    }
+
+    /**
+     * 求余切值 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Cot cot(Cmd key) {
+        return new Cot(key);
+    }
+
+    /**
+     * 返回字符串的字符数
+     *
+     * @param key
+     * @return
+     */
+    public static CharLength charLength(Cmd key) {
+        return new CharLength(key);
+    }
+
+    /**
+     * 返回字符串的长度 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Length length(Cmd key) {
+        return new Length(key);
+    }
+
+    /**
+     * 转换成大写 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Upper upper(Cmd key) {
+        return new Upper(key);
+    }
+
+    /**
+     * 转换成小写 函数
+     *
+     * @param key
+     * @return
+     */
+    public static Lower lower(Cmd key) {
+        return new Lower(key);
+    }
+
+    /**
+     * 左边截取
+     *
+     * @param key
+     * @return
+     */
+    public static Left left(Cmd key, int length) {
+        return new Left(key, length);
+    }
+
+    /**
+     * 右边截取
+     *
+     * @param key
+     * @return
+     */
+    public static Right right(Cmd key, int length) {
+        return new Right(key, length);
+    }
+
+    /**
+     * 从左边开始填充
+     *
+     * @param key
+     * @param length
+     * @param pad
+     * @return
+     */
+    public static Lpad lpad(Cmd key, int length, String pad) {
+        return new Lpad(key, length, pad);
+    }
+
+    /**
+     * 从左边开始填充
+     *
+     * @param key
+     * @param length
+     * @param pad
+     * @return
+     */
+    public static Rpad rpad(Cmd key, int length, String pad) {
+        return new Rpad(key, length, pad);
+    }
+
+    /**
      * concat拼接 函数
      *
      * @param key

@@ -81,6 +81,84 @@ public interface FunctionInterface extends Cmd {
         return Methods.mod(this, number);
     }
 
+    default Exp exp() {
+        return Methods.exp(this);
+    }
+
+    default Log log() {
+        return Methods.log(this);
+    }
+
+    default Log2 log2() {
+        return Methods.log2(this);
+    }
+
+    default Log10 log10() {
+        return Methods.log10(this);
+    }
+
+    default Sin sin() {
+        return Methods.sin(this);
+    }
+
+    default Asin asin() {
+        return Methods.asin(this);
+    }
+
+    default Cos cos() {
+        return Methods.cos(this);
+    }
+
+    default Acos acos() {
+        return Methods.acos(this);
+    }
+
+    default Tan tan() {
+        return Methods.tan(this);
+    }
+
+    default Atan atan() {
+        return Methods.atan(this);
+    }
+
+    default Cot cot() {
+        return Methods.cot(this);
+    }
+
+    default CharLength charLength() {
+        return Methods.charLength(this);
+    }
+
+    default Length length() {
+        return Methods.length(this);
+    }
+
+    default Left left(int length) {
+        return Methods.left(this, length);
+    }
+
+    default Right right(int length) {
+        return Methods.right(this, length);
+    }
+
+    default Upper upper() {
+        return Methods.upper(this);
+    }
+
+    default Lower lower() {
+        return Methods.lower(this);
+    }
+
+    default Lpad lpad(int length, String pad) {
+        return Methods.lpad(this, length, pad);
+    }
+
+    default Rpad rpad(int length, String pad) {
+        return Methods.rpad(this, length, pad);
+    }
+
+
+
     default Multiply multiply(Number value) {
         return Methods.multiply(this, value);
     }

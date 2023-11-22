@@ -15,7 +15,7 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
 
     private final Cmd[] values;
 
-    private final String split;
+    private final BasicValue split;
 
     public ConcatAs(Cmd key, String split, Serializable... values) {
         super(CONCAT_WS, key);
@@ -27,28 +27,28 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
             }
             vs[i++] = new BasicValue(value);
         }
-        this.split = split;
+        this.split = new BasicValue(split);
         this.values = vs;
     }
 
     public ConcatAs(Cmd key, String split, Cmd... values) {
         super(CONCAT_WS, key);
-        this.split = split;
+        this.split = new BasicValue(split);
         this.values = values;
     }
 
     public ConcatAs(Cmd key, String split, Object... values) {
         super(CONCAT, key);
-        this.split = split;
+        this.split = new BasicValue(split);
         Cmd[] vs = new Cmd[values.length];
         int i = 0;
         for (Object value : values) {
             if (value == null) {
                 continue;
             }
-            if(value instanceof Cmd){
-                vs[i++]=(Cmd)value;
-            }else{
+            if (value instanceof Cmd) {
+                vs[i++] = (Cmd) value;
+            } else {
                 vs[i++] = new BasicValue(value);
             }
         }
@@ -58,7 +58,8 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
     @Override
     public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(this.operator).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = sqlBuilder.append(SqlConst.SINGLE_QUOT(context.getDbType())).append(this.split).append(SqlConst.SINGLE_QUOT(context.getDbType())).append(SqlConst.DELIMITER);
+        sqlBuilder = this.split.sql(user, context, sqlBuilder);
+        sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
         sqlBuilder = this.key.sql(this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
         sqlBuilder = CmdUtils.join(this, context, sqlBuilder, this.values, SqlConst.DELIMITER);

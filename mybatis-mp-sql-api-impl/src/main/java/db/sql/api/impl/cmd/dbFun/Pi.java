@@ -11,10 +11,10 @@ public class Pi extends BasicFunction {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.PI).append(SqlConst.BRACKET_LEFT);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(user, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, sqlBuilder);
         return sqlBuilder;
     }
 

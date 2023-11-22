@@ -32,8 +32,8 @@ public class Like extends BasicCondition {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = getField().sql(user, context, sqlBuilder);
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        sqlBuilder = getField().sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(getOperator());
         if (context.getDbType() == DbType.MYSQL) {
 
@@ -60,7 +60,7 @@ public class Like extends BasicCondition {
         if (before) {
             sqlBuilder = sqlBuilder.append(SqlConst.VAGUE_SYMBOL).append(SqlConst.DELIMITER);
         }
-        sqlBuilder = getValue().sql(user, context, sqlBuilder);
+        sqlBuilder = getValue().sql(module, this, context, sqlBuilder);
         if (after) {
             sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER).append(SqlConst.VAGUE_SYMBOL);
         }

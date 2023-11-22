@@ -1,17 +1,17 @@
 package db.sql.api.impl.cmd.struct;
 
 
+import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.Cmd;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.Query;
 import db.sql.api.impl.cmd.ConditionFaction;
-import db.sql.api.impl.cmd.basic.Connector;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.cmd.basic.ConditionBlock;
+import db.sql.api.impl.cmd.basic.Connector;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -369,41 +369,6 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
         return this;
     }
 
-
-    @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (conditionBlocks == null || conditionBlocks.isEmpty()) {
-            return sqlBuilder;
-        }
-        if (parent != null) {
-            sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(SqlConst.BRACKET_LEFT);
-        }
-        boolean isFirst = true;
-        for (ConditionBlock conditionBlock : this.conditionBlocks) {
-            if (conditionBlock.getCondition() instanceof ConditionChain) {
-                ConditionChain conditionChain = (ConditionChain) conditionBlock.getCondition();
-                if (!conditionChain.hasContent()) {
-                    continue;
-                }
-            }
-            if (!isFirst) {
-                sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(conditionBlock.getConnector()).append(SqlConst.BLANK);
-            }
-            conditionBlock.getCondition().sql(user, context, sqlBuilder);
-            isFirst = false;
-        }
-        if (parent != null) {
-            sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);
-        }
-
-        return sqlBuilder;
-    }
-
-    @Override
-    public boolean contain(Cmd cmd) {
-        return CmdUtils.contain(cmd, this.conditionBlocks);
-    }
-
     @Override
     public <T> ConditionChain isNotNull(Getter<T> column, int storey, boolean when) {
         Condition condition = conditionFaction.isNotNull(column, storey, when);
@@ -474,5 +439,39 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
         return this;
+    }
+
+    @Override
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        if (conditionBlocks == null || conditionBlocks.isEmpty()) {
+            return sqlBuilder;
+        }
+        if (module != null || this.parent != null) {
+            sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(SqlConst.BRACKET_LEFT);
+        }
+        boolean isFirst = true;
+        for (ConditionBlock conditionBlock : this.conditionBlocks) {
+            if (conditionBlock.getCondition() instanceof ConditionChain) {
+                ConditionChain conditionChain = (ConditionChain) conditionBlock.getCondition();
+                if (!conditionChain.hasContent()) {
+                    continue;
+                }
+            }
+            if (!isFirst) {
+                sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(conditionBlock.getConnector()).append(SqlConst.BLANK);
+            }
+            conditionBlock.getCondition().sql(module, this, context, sqlBuilder);
+            isFirst = false;
+        }
+        if (module != null || this.parent != null) {
+            sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);
+        }
+
+        return sqlBuilder;
+    }
+
+    @Override
+    public boolean contain(Cmd cmd) {
+        return CmdUtils.contain(cmd, this.conditionBlocks);
     }
 }

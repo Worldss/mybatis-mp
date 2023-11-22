@@ -1,10 +1,10 @@
 package db.sql.api.impl.cmd.basic;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.basic.Condition;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 public class ConditionBlock implements Cmd {
 
@@ -26,9 +26,9 @@ public class ConditionBlock implements Cmd {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(connector).append(SqlConst.BLANK);
-        sqlBuilder = this.condition.sql(user, context, sqlBuilder);
+        sqlBuilder = this.condition.sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

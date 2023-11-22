@@ -40,17 +40,17 @@ public class Case extends BasicFunction<Case> {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT).append(operator);
         for (Cmd item : values) {
             if (!(item instanceof CaseWhen)) {
                 sqlBuilder = sqlBuilder.append(SqlConst.ELSE);
             }
-            sqlBuilder = item.sql(this, context, sqlBuilder);
+            sqlBuilder = item.sql(module, this, context, sqlBuilder);
         }
         sqlBuilder = sqlBuilder.append(SqlConst.END);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(user, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, sqlBuilder);
         return sqlBuilder;
     }
 

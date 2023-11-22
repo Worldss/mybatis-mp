@@ -28,9 +28,9 @@ public class UpdateSets implements db.sql.api.cmd.struct.update.UpdateSets<Table
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.SET);
-        return CmdUtils.join(this, context, sqlBuilder, this.updateSets, SqlConst.DELIMITER);
+        return CmdUtils.join(module, this, context, sqlBuilder, this.updateSets, SqlConst.DELIMITER);
     }
 
     @Override

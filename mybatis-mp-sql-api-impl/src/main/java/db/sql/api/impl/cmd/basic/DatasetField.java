@@ -1,12 +1,13 @@
 package db.sql.api.impl.cmd.basic;
 
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
+import db.sql.api.SqlBuilderContext;
+import db.sql.api.impl.cmd.dbFun.Function;
 import db.sql.api.impl.cmd.struct.insert.InsertFields;
 import db.sql.api.impl.cmd.struct.query.Select;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 public class DatasetField<T extends DatasetField<T>> extends Field<T> {
 
@@ -28,9 +29,9 @@ public class DatasetField<T extends DatasetField<T>> extends Field<T> {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         // insert 直接名字
-        if (user instanceof InsertFields) {
+        if (parent instanceof InsertFields) {
             sqlBuilder = sqlBuilder.append(this.getName());
             return sqlBuilder;
         }
@@ -43,7 +44,7 @@ public class DatasetField<T extends DatasetField<T>> extends Field<T> {
         sqlBuilder = sqlBuilder.append(this.getName());
 
         //拼接 select 的别名
-        if (user instanceof Select) {
+        if (parent instanceof Select) {
             if (this.getAlias() != null || getTable().getPrefix() != null) {
                 sqlBuilder = sqlBuilder.append(SqlConst.AS);
                 if (getTable().getPrefix() != null) {

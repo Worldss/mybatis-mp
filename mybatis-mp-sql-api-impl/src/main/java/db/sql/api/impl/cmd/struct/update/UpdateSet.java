@@ -29,10 +29,10 @@ public class UpdateSet implements db.sql.api.cmd.struct.update.UpdateSet<TableFi
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = this.field.sql(this, context, sqlBuilder);
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        sqlBuilder = this.field.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.EQ);
-        sqlBuilder = this.value.sql(this, context, sqlBuilder);
+        sqlBuilder = this.value.sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

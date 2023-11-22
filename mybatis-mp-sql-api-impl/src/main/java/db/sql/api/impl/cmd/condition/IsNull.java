@@ -1,7 +1,7 @@
 package db.sql.api.impl.cmd.condition;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.basic.NULL;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
@@ -16,10 +16,10 @@ public class IsNull extends BaseCondition<Cmd, NULL> {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = field.sql(user, context, sqlBuilder);
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        sqlBuilder = field.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(getOperator());
-        sqlBuilder = NULL.NULL.sql(user, context, sqlBuilder);
+        sqlBuilder = NULL.NULL.sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

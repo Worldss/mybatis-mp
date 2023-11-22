@@ -1,8 +1,8 @@
 package db.sql.api.cmd.basic;
 
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.tookit.CmdUtils;
 
 import java.util.List;
@@ -16,8 +16,8 @@ public class UnionsCmdLists implements Cmd {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        return CmdUtils.join(user, context, sqlBuilder, cmdList);
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        return CmdUtils.join(module, this, context, sqlBuilder, cmdList);
     }
 
     @Override

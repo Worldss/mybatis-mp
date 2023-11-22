@@ -1,11 +1,11 @@
 package db.sql.api.impl.cmd.struct.insert;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.basic.TableField;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.tookit.Lists;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class InsertFields implements db.sql.api.cmd.struct.insert.InsertFields<T
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(SqlConst.BRACKET_LEFT);
         boolean isFirst = true;
         for (TableField tableField : this.tableFields) {

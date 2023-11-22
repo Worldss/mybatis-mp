@@ -30,12 +30,12 @@ public class Between extends BaseCondition<Cmd, Cmd[]> {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = field.sql(user, context, sqlBuilder);
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        sqlBuilder = field.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(getOperator());
-        sqlBuilder = value[0].sql(user, context, sqlBuilder);
+        sqlBuilder = value[0].sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.AND);
-        sqlBuilder = value[1].sql(user, context, sqlBuilder);
+        sqlBuilder = value[1].sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

@@ -1,8 +1,8 @@
 package db.sql.api.impl.cmd.condition;
 
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.tookit.CmdUtils;
 
 public abstract class BasicCondition extends BaseCondition<Cmd, Cmd> {
@@ -28,10 +28,10 @@ public abstract class BasicCondition extends BaseCondition<Cmd, Cmd> {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = field.sql(user, context, sqlBuilder);
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        sqlBuilder = field.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(getOperator());
-        sqlBuilder = value.sql(user, context, sqlBuilder);
+        sqlBuilder = value.sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

@@ -1,12 +1,12 @@
 package db.sql.api.impl.cmd.struct;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.impl.cmd.ConditionFaction;
 import db.sql.api.impl.cmd.basic.Dataset;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 public class Join implements db.sql.api.cmd.struct.Join<Join, Dataset, On>, Cmd {
 
@@ -46,10 +46,10 @@ public class Join implements db.sql.api.cmd.struct.Join<Join, Dataset, On>, Cmd 
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(this.mode.getSql());
-        sqlBuilder = getSecondTable().sql(this, context, sqlBuilder);
-        sqlBuilder = getOn().sql(this, context, sqlBuilder);
+        sqlBuilder = getSecondTable().sql(module, this, context, sqlBuilder);
+        sqlBuilder = getOn().sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

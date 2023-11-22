@@ -16,13 +16,13 @@ public class FindInSet extends BasicFunction<FindInSet> {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = this.match.sql(this, context, sqlBuilder);
+        sqlBuilder = this.match.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        sqlBuilder = this.key.sql(this, context, sqlBuilder);
+        sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(user, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, sqlBuilder);
         return sqlBuilder;
     }
 

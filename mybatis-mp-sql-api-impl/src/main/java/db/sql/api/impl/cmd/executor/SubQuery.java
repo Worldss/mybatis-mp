@@ -1,7 +1,7 @@
 package db.sql.api.impl.cmd.executor;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.condition.Exists;
@@ -43,12 +43,12 @@ public class SubQuery extends AbstractQuery<SubQuery, CmdFactory> implements Dat
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (user instanceof Exists) {
-            return super.sql(user, context, sqlBuilder);
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        if (parent instanceof Exists) {
+            return super.sql(module, this, context, sqlBuilder);
         }
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = super.sql(user, context, sqlBuilder);
+        sqlBuilder = super.sql(module, this, context, sqlBuilder);
         sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.AS).append(this.alias);
         return sqlBuilder;
     }

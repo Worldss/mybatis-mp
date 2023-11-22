@@ -1,12 +1,12 @@
 package db.sql.api.impl.cmd.basic;
 
 
+import db.sql.api.Cmd;
 import db.sql.api.SQLMode;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.cmd.struct.query.OrderBy;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 public class BasicValue extends Field<BasicValue> {
 
@@ -21,8 +21,8 @@ public class BasicValue extends Field<BasicValue> {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (context.getSqlMode() == SQLMode.PRINT || user instanceof OrderBy) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        if (context.getSqlMode() == SQLMode.PRINT || module instanceof OrderBy) {
             if (this.value instanceof Number) {
                 sqlBuilder = sqlBuilder.append(this.value);
             } else {

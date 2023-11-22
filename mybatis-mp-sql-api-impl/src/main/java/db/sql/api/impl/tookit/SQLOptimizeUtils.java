@@ -1,7 +1,7 @@
 package db.sql.api.impl.tookit;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.basic.CmdList;
 import db.sql.api.cmd.basic.CountAll;
@@ -11,13 +11,13 @@ import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.cmd.struct.query.Union;
 import db.sql.api.cmd.struct.query.Unions;
-import db.sql.api.impl.cmd.dbFun.Count;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.cmd.basic.Limit;
+import db.sql.api.impl.cmd.dbFun.Count;
 import db.sql.api.impl.cmd.struct.Join;
 import db.sql.api.impl.cmd.struct.query.GroupBy;
 import db.sql.api.impl.cmd.struct.query.OrderBy;
 import db.sql.api.impl.cmd.struct.query.Select;
+import db.sql.api.tookit.CmdUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -198,7 +198,7 @@ public final class SQLOptimizeUtils {
     public static StringBuilder getCountSqlFromQuery(Query query, SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize) {
         if (!optimize) {
             //不优化直接包裹一层
-            return new StringBuilder("SELECT COUNT(*) FROM (").append(CmdUtils.join(null, context, sqlBuilder, query.sortedCmds())).append(") AS T");
+            return new StringBuilder("SELECT COUNT(*) FROM (").append(CmdUtils.join(context, sqlBuilder, query.sortedCmds())).append(") AS T");
         }
         return getOptimizedCountSql(query, context, sqlBuilder);
     }
@@ -238,8 +238,8 @@ public final class SQLOptimizeUtils {
         }
         cmdList = (List<Cmd>) classCmdMap.values().stream().sorted(query.comparator()).collect(Collectors.toList());
         if (needWarp) {
-            return new StringBuilder("SELECT COUNT(*) FROM (").append(CmdUtils.join(null, context, sqlBuilder, cmdList)).append(") AS T");
+            return new StringBuilder("SELECT COUNT(*) FROM (").append(CmdUtils.join(context, sqlBuilder, cmdList)).append(") AS T");
         }
-        return CmdUtils.join(null, context, sqlBuilder, cmdList);
+        return CmdUtils.join(context, sqlBuilder, cmdList);
     }
 }

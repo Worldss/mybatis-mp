@@ -1,7 +1,7 @@
 package db.sql.api.impl.cmd.executor;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.executor.Delete;
 import db.sql.api.cmd.struct.Joins;
@@ -122,7 +122,7 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (this.deleteTable == null) {
             if (this.from != null && this.from.getTables() != null) {
                 this.from.getTables().stream().forEach(dataset -> {
@@ -132,7 +132,7 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
                 $delete();
             }
         }
-        return super.sql(user, context, sqlBuilder);
+        return super.sql(module, this, context, sqlBuilder);
     }
 
     public DeleteTable getDeleteTable() {

@@ -1,8 +1,8 @@
 package db.sql.api.impl.cmd.basic;
 
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.tookit.SqlConst;
 
 public class Table implements Dataset<Table> {
@@ -54,7 +54,7 @@ public class Table implements Dataset<Table> {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(getName());
         if (getAlias() != null) {
             sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(getAlias());

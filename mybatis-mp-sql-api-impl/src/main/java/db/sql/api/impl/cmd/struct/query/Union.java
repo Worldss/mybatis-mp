@@ -1,10 +1,10 @@
 package db.sql.api.impl.cmd.struct.query;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.executor.Query;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 public class Union implements db.sql.api.cmd.struct.query.Union {
 
@@ -22,9 +22,9 @@ public class Union implements db.sql.api.cmd.struct.query.Union {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(this.operator);
-        sqlBuilder = unionQuery.sql(user, context, sqlBuilder);
+        sqlBuilder = unionQuery.sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

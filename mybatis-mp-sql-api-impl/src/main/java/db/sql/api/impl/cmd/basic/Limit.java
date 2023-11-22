@@ -1,8 +1,8 @@
 package db.sql.api.impl.cmd.basic;
 
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 
 public class Limit implements Cmd {
 
@@ -20,7 +20,7 @@ public class Limit implements Cmd {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         return sqlBuilder.append(" limit ").append(this.limit).append(" offset ").append(this.offset);
     }
 

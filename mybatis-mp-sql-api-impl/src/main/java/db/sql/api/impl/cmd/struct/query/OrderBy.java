@@ -1,9 +1,9 @@
 package db.sql.api.impl.cmd.struct.query;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +23,12 @@ public class OrderBy implements db.sql.api.cmd.struct.query.OrderBy<OrderBy, Cmd
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (this.orderByValues == null || this.orderByValues.isEmpty()) {
             return sqlBuilder;
         }
         sqlBuilder = sqlBuilder.append(SqlConst.ORDER_BY);
-        sqlBuilder = CmdUtils.join(this, context, sqlBuilder, this.orderByValues, SqlConst.DELIMITER);
+        sqlBuilder = CmdUtils.join(this, this, context, sqlBuilder, this.orderByValues, SqlConst.DELIMITER);
         return sqlBuilder;
     }
 

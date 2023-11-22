@@ -1,14 +1,14 @@
 package db.sql.api.impl.cmd.struct.query;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
-import db.sql.api.impl.cmd.basic.Condition;
-import db.sql.api.impl.cmd.basic.Connector;
-import db.sql.api.tookit.CmdUtils;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.CmdFactory;
+import db.sql.api.impl.cmd.basic.Condition;
 import db.sql.api.impl.cmd.basic.ConditionBlock;
+import db.sql.api.impl.cmd.basic.Connector;
 import db.sql.api.impl.cmd.struct.ConditionChain;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ public class Having implements db.sql.api.cmd.struct.query.Having<Having>, Cmd {
 
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (conditionBlocks == null || conditionBlocks.isEmpty()) {
             return sqlBuilder;
         }
@@ -65,7 +65,7 @@ public class Having implements db.sql.api.cmd.struct.query.Having<Having>, Cmd {
             if (!isFirst) {
                 sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(conditionBlock.getConnector()).append(SqlConst.BLANK);
             }
-            conditionBlock.getCondition().sql(user, context, sqlBuilder);
+            conditionBlock.getCondition().sql(module, this, context, sqlBuilder);
             isFirst = false;
         }
         return sqlBuilder;

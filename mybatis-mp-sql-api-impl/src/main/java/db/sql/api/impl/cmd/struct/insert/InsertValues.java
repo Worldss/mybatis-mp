@@ -26,7 +26,7 @@ public class InsertValues implements db.sql.api.cmd.struct.insert.InsertValues<C
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.VALUES);
         boolean isFirstLine = true;
         for (List<Cmd> values : this.values) {
@@ -40,7 +40,7 @@ public class InsertValues implements db.sql.api.cmd.struct.insert.InsertValues<C
                 if (!isFirst) {
                     sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
                 }
-                sqlBuilder = value.sql(this, context, sqlBuilder);
+                sqlBuilder = value.sql(module, this, context, sqlBuilder);
                 isFirst = false;
             }
             sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);

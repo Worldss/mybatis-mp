@@ -1,9 +1,9 @@
 package db.sql.api.impl.cmd.struct.query;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 public class OrderByValue implements Cmd {
 
@@ -17,8 +17,8 @@ public class OrderByValue implements Cmd {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = key.sql(user, context, sqlBuilder);
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        sqlBuilder = key.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(asc ? SqlConst.ASC : SqlConst.DESC);
         return sqlBuilder;
     }

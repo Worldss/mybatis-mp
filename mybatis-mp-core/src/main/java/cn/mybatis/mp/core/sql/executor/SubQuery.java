@@ -55,12 +55,12 @@ public class SubQuery extends BaseQuery<SubQuery> implements Dataset<SubQuery> {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (user instanceof In || user instanceof Exists) {
-            return super.sql(user, context, sqlBuilder);
+    public StringBuilder sql(Cmd module,Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        if (parent instanceof In || parent instanceof Exists) {
+            return super.sql(module,this, context, sqlBuilder);
         }
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = super.sql(user, context, sqlBuilder);
+        sqlBuilder = super.sql(module,this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         if (this.alias != null) {
             sqlBuilder = sqlBuilder.append(SqlConst.AS).append(this.alias);

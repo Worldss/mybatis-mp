@@ -1,8 +1,8 @@
 package db.sql.api.cmd.struct;
 
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
@@ -26,8 +26,8 @@ public class Joins<JOIN extends Join> implements Cmd {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        return CmdUtils.join(user, context, sqlBuilder, this.joins);
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        return CmdUtils.join(module, this, context, sqlBuilder, this.joins);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package db.sql.api.cmd.executor;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.tookit.CmdUtils;
 
 import java.util.Comparator;
@@ -57,7 +57,7 @@ public interface Executor<T extends Executor> extends Cmd {
 
 
     @Override
-    default StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    default StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         return this.sql(context, sqlBuilder);
     }
 
@@ -73,6 +73,6 @@ public interface Executor<T extends Executor> extends Cmd {
         if (sortedCmds == null || sortedCmds.isEmpty()) {
             return sqlBuilder;
         }
-        return CmdUtils.join(null, context, sqlBuilder, sortedCmds);
+        return CmdUtils.join(null, null, context, sqlBuilder, sortedCmds);
     }
 }

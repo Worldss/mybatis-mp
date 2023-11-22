@@ -1,11 +1,11 @@
 package db.sql.api.impl.cmd.struct;
 
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.ConditionFaction;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 public class Where implements db.sql.api.cmd.struct.Where<Where, Cmd, Object, ConditionChain>, Cmd {
 
@@ -26,12 +26,12 @@ public class Where implements db.sql.api.cmd.struct.Where<Where, Cmd, Object, Co
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (this.conditionChain == null || !this.conditionChain.hasContent()) {
             return sqlBuilder;
         }
         sqlBuilder = sqlBuilder.append(SqlConst.WHERE);
-        this.conditionChain.sql(this, context, sqlBuilder);
+        this.conditionChain.sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

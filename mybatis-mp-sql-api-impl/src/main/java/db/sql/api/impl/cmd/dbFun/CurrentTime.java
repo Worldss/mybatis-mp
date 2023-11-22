@@ -10,11 +10,11 @@ public class CurrentTime extends BasicFunction<CurrentTime> {
         super(null, null);
     }
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.CURRENT_TIME);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(user, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, sqlBuilder);
         return sqlBuilder;
     }
 

@@ -1,10 +1,10 @@
 package db.sql.api.impl.cmd.struct.insert;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.basic.Table;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 public class InsertTable implements db.sql.api.cmd.struct.insert.InsertTable<Table>, Cmd {
 
@@ -20,7 +20,7 @@ public class InsertTable implements db.sql.api.cmd.struct.insert.InsertTable<Tab
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.INSERT_INTO);
         sqlBuilder = sqlBuilder.append(this.table.getName());
         return sqlBuilder;

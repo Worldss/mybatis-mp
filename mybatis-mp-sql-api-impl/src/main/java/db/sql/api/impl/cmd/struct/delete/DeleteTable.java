@@ -1,11 +1,11 @@
 package db.sql.api.impl.cmd.struct.delete;
 
-import db.sql.api.SqlBuilderContext;
 import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.Table;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.tookit.CmdUtils;
 
 public class DeleteTable implements db.sql.api.cmd.struct.delete.DeleteTable<Dataset>, Cmd {
 
@@ -21,7 +21,7 @@ public class DeleteTable implements db.sql.api.cmd.struct.delete.DeleteTable<Dat
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.DELETE);
         if (this.tables == null || this.tables.length < 1) {
             return sqlBuilder;

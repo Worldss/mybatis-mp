@@ -1,14 +1,14 @@
 package db.sql.api.impl.cmd.executor;
 
+import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.Cmd;
-import db.sql.api.tookit.CmdUtils;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.DatasetField;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.cmd.basic.TableField;
+import db.sql.api.tookit.CmdUtils;
 
 import java.util.List;
 import java.util.function.Function;
@@ -75,7 +75,7 @@ public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory>
     }
 
     @Override
-    default StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    default StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         return this.sql(context, sqlBuilder);
     }
 
@@ -86,6 +86,6 @@ public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory>
             return sqlBuilder;
         }
         cmdList = sortedCmds();
-        return CmdUtils.join(null, context, sqlBuilder, cmdList);
+        return CmdUtils.join(null, null, context, sqlBuilder, cmdList);
     }
 }

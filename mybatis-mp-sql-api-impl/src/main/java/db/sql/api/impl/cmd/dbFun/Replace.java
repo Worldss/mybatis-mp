@@ -19,15 +19,15 @@ public class Replace extends BasicFunction<Replace> {
     }
 
     @Override
-    public StringBuilder sql(Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = this.key.sql(this, context, sqlBuilder);
+        sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        sqlBuilder = this.target.sql(this, context, sqlBuilder);
+        sqlBuilder = this.target.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        sqlBuilder = this.replacement.sql(this, context, sqlBuilder);
+        sqlBuilder = this.replacement.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(user, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, sqlBuilder);
         return sqlBuilder;
     }
 

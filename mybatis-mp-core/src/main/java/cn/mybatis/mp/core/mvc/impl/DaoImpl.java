@@ -21,7 +21,8 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
         this.mapper = mapper;
     }
 
-    @Override    public Class<K> getIdType() {
+    @Override
+public Class<K> getIdType() {
         if (idType == null) {
             idType = (Class<K>) GenericUtil.getGenericInterfaceClass(this.getClass()).get(1);
         }
@@ -44,54 +45,63 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
         return DeleteChain.of(mapper);
     }
 
-    @Override    public T getById(K id) {
+    @Override
+public T getById(K id) {
         if (id.getClass() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
         return mapper.getById((Serializable) id);
     }
 
-    @Override    public void save(T entity) {
+    @Override
+public void save(T entity) {
         mapper.save(entity);
     }
 
-    @Override    public void save(Model<T> model) {
+    @Override
+public void save(Model<T> model) {
         mapper.save(model);
     }
 
-    @Override    public void update(T entity) {
+    @Override
+public void update(T entity) {
         if (getIdType() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
         mapper.update(entity);
     }
 
-    @Override    public int update(T entity, Getter<T>... forceUpdateFields) {
+    @Override
+public int update(T entity, Getter<T>... forceUpdateFields) {
         if (getIdType() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
         return mapper.update(entity, forceUpdateFields);
     }
 
-    @Override    public int update(Model<T> model) {
+    @Override
+public int update(Model<T> model) {
         if (getIdType() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
         return mapper.update(model);
     }
 
-    @Override    public int update(Model<T> model, Getter<T>... forceUpdateFields) {
+    @Override
+public int update(Model<T> model, Getter<T>... forceUpdateFields) {
         return mapper.update(model, forceUpdateFields);
     }
 
-    @Override    public int delete(T entity) {
+    @Override
+public int delete(T entity) {
         if (getIdType() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
         return mapper.delete(entity);
     }
 
-    @Override    public int deleteById(K id) {
+    @Override
+public int deleteById(K id) {
         if (id.getClass() == Void.class) {
             throw new RuntimeException("Not Supported");
         }

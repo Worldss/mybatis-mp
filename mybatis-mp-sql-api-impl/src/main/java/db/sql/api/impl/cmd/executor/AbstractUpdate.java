@@ -130,7 +130,6 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
         return this.updateSets;
     }
 
-
     public Joins getJoins() {
         return this.joins;
     }

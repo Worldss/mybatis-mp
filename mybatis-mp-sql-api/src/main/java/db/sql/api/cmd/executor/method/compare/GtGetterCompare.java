@@ -18,7 +18,6 @@ public interface GtGetterCompare<RV, V> {
 
     <T> RV gt(Getter<T> column, V value, int storey, boolean when);
 
-
     default <T, T2> RV gt(Getter<T> column, Getter<T2> value) {
         return gt(column, value, true);
     }

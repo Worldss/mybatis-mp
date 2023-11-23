@@ -4,7 +4,6 @@ import db.sql.api.Getter;
 
 public interface UpdateMethod<SELF extends UpdateMethod, TABLE, COLUMN, V> {
 
-
     SELF update(TABLE... tables);
 
     SELF update(Class... entities);

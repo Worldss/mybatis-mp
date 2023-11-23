@@ -15,7 +15,8 @@ public class BaseUpdate<T extends BaseUpdate> extends AbstractUpdate<T, MybatisC
         super(new MybatisCmdFactory());
     }
 
-    @Override    public T update(Class... entities) {
+    @Override
+public T update(Class... entities) {
         for (Class entity : entities) {
             this.addTenantCondition(entity, 1);
         }
@@ -27,7 +28,8 @@ public class BaseUpdate<T extends BaseUpdate> extends AbstractUpdate<T, MybatisC
     }
 
 
-    @Override    public T join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
+    @Override
+public T join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
         this.addTenantCondition(secondTable, secondTableStorey);
         if (Objects.isNull(consumer)) {
             consumer = (on) -> {

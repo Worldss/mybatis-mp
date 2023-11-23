@@ -14,11 +14,9 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, COLUMN> 
 
     SELF orderBy(COLUMN column, boolean asc);
 
-
     default SELF orderBy(COLUMN... columns) {
         return this.orderBy(true, columns);
     }
-
 
     default SELF orderBy(boolean asc, COLUMN... columns) {
         for (COLUMN column : columns) {
@@ -27,11 +25,9 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, COLUMN> 
         return (SELF) this;
     }
 
-
     default SELF orderBy(List<COLUMN> columns) {
         return this.orderBy(true, columns);
     }
-
 
     default SELF orderBy(boolean asc, List<COLUMN> columns) {
         for (COLUMN column : columns) {
@@ -70,16 +66,13 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, COLUMN> 
 
     <T> SELF orderBy(Getter<T> column, int storey, boolean asc, Function<TABLE_FIELD, Cmd> f);
 
-
     default <T> SELF orderBy(Getter<T>... columns) {
         return this.orderBy(true, columns);
     }
 
-
     default <T> SELF orderBy(boolean asc, Getter<T>... columns) {
         return this.orderBy(1, asc, columns);
     }
-
 
     default <T> SELF orderBy(int storey, boolean asc, Getter<T>... columns) {
         for (Getter<T> column : columns) {

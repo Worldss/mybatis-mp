@@ -39,7 +39,8 @@ public interface Update<SELF extends Update,
         return (SELF) this;
     }
 
-    @Override    default CONDITION_CHAIN conditionChain() {
+    @Override
+    default CONDITION_CHAIN conditionChain() {
         return $where().conditionChain();
     }
 }

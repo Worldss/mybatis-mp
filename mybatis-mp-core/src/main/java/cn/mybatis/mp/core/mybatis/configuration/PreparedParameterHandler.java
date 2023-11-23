@@ -20,11 +20,13 @@ public class PreparedParameterHandler implements ParameterHandler {
         this.configuration = configuration;
     }
 
-    @Override    public Object getParameterObject() {
+    @Override
+public Object getParameterObject() {
         return cmdContext;
     }
 
-    @Override    public void setParameters(PreparedStatement ps) throws SQLException {
+    @Override
+public void setParameters(PreparedStatement ps) throws SQLException {
         Object[] params = cmdContext.getSQLCmdParams();
         int length = params.length;
         for (int i = 0; i < length; i++) {

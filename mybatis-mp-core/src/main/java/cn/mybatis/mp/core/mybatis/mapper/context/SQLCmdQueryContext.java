@@ -17,7 +17,8 @@ public class SQLCmdQueryContext extends BaseSQLCmdContext<BaseQuery> {
         this.optimize = optimize;
     }
 
-    @Override    public StringBuilder sql(String dbType) {
+    @Override
+public StringBuilder sql(String dbType) {
         if (Objects.nonNull(sql)) {
             return sql;
         }

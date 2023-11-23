@@ -56,7 +56,8 @@ public interface Executor<T extends Executor> extends Cmd {
     }
 
 
-    @Override    default StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    @Override
+    default StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         return this.sql(context, sqlBuilder);
     }
 

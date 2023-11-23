@@ -25,16 +25,13 @@ public interface Delete<SELF extends Delete,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
         Executor<SELF> {
 
-
     DELETE_TABLE $delete(TABLE... tables);
-
 
     FROM $from(TABLE... tables);
 
     JOIN $join(JoinMode mode, TABLE mainTable, TABLE secondTable);
 
     WHERE $where();
-
 
     @Override
     default SELF delete(TABLE... tables) {
@@ -48,7 +45,8 @@ public interface Delete<SELF extends Delete,
         return (SELF) this;
     }
 
-    @Override    default CONDITION_CHAIN conditionChain() {
+    @Override
+    default CONDITION_CHAIN conditionChain() {
         return $where().conditionChain();
     }
 }

@@ -33,24 +33,29 @@ public class SubQuery extends BaseQuery<SubQuery> implements Dataset<SubQuery> {
         return new SubQuery(alias);
     }
 
-    @Override    public String getAlias() {
+    @Override
+public String getAlias() {
         return alias;
     }
 
-    @Override    public SubQuery as(String alias) {
+    @Override
+public SubQuery as(String alias) {
         throw new RuntimeException("not support");
     }
 
-    @Override    public String getPrefix() {
+    @Override
+public String getPrefix() {
         return prefix;
     }
 
-    @Override    public SubQuery setPrefix(String prefix) {
+    @Override
+public SubQuery setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
 
-    @Override    public StringBuilder sql(Cmd module,Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    @Override
+public StringBuilder sql(Cmd module,Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (parent instanceof In || parent instanceof Exists) {
             return super.sql(module,this, context, sqlBuilder);
         }

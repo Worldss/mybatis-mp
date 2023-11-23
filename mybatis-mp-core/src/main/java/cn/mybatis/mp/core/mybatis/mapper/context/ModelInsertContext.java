@@ -96,7 +96,8 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
     }
 
 
-    @Override    public void setId(Object id) {
+    @Override
+public void setId(Object id) {
         ModelInfo modelInfo = Models.get(this.value.getClass());
         setId(this.value, modelInfo.getIdFieldInfo(), id);
     }

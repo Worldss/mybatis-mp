@@ -53,51 +53,61 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
 
     FORUPDATE $forUpdate();
 
-    @Override    default SELF select(COLUMN column) {
+    @Override
+    default SELF select(COLUMN column) {
         $select().select(column);
         return (SELF) this;
     }
 
-    @Override    default SELF from(TABLE... tables) {
+    @Override
+    default SELF from(TABLE... tables) {
         $from(tables);
         return (SELF) this;
     }
 
-    @Override    default SELF groupBy(COLUMN column) {
+    @Override
+    default SELF groupBy(COLUMN column) {
         $groupBy().groupBy(column);
         return (SELF) this;
     }
 
-    @Override    default SELF having(Consumer<HAVING> consumer) {
+    @Override
+    default SELF having(Consumer<HAVING> consumer) {
         consumer.accept($having());
         return (SELF) this;
     }
 
-    @Override    default SELF havingAnd(Condition condition) {
+    @Override
+    default SELF havingAnd(Condition condition) {
         $having().and(condition);
         return (SELF) this;
     }
 
-    @Override    default SELF havingOr(Condition condition) {
+    @Override
+    default SELF havingOr(Condition condition) {
         $having().or(condition);
         return (SELF) this;
     }
 
-    @Override    default SELF orderBy(COLUMN column, boolean asc) {
+    @Override
+    default SELF orderBy(COLUMN column, boolean asc) {
         $orderBy().orderBy(column, asc);
         return (SELF) this;
     }
 
-    @Override    default SELF limit(int limit) {
+    @Override
+    default SELF limit(int limit) {
         return this.limit(0, limit);
     }
 
-    @Override    default SELF limit(int offset, int limit) {
+    @Override
+    default SELF limit(int offset, int limit) {
         $limit().set(offset, limit);
         return (SELF) this;
     }
 
-    @Override    default SELF forUpdate() {
+    @Override
+    default SELF forUpdate() {
         $forUpdate();
         return (SELF) this;
     }
@@ -120,7 +130,8 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
 
     UNIONS getUnions();
 
-    @Override    default CONDITION_CHAIN conditionChain() {
+    @Override
+    default CONDITION_CHAIN conditionChain() {
         return $where().conditionChain();
     }
 }

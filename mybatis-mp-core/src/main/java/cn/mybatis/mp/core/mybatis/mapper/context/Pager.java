@@ -88,7 +88,8 @@ public class Pager<T> {
         return this.total / this.size + (this.total % this.size == 0 ? 0 : 1);
     }
 
-    @Override    public String toString() {
+    @Override
+public String toString() {
         return "Pager{" +
                 "optimize=" + optimize +
                 ", executeCount=" + executeCount +

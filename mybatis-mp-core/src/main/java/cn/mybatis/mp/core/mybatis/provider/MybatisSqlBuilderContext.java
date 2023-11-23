@@ -16,7 +16,8 @@ public class MybatisSqlBuilderContext extends SqlBuilderContext {
         super(dbType, sqlMode);
     }
 
-    @Override    public String addParam(Object value) {
+    @Override
+public String addParam(Object value) {
         paramList.add(value);
         return "?";
     }

@@ -22,7 +22,7 @@ public class Limit implements Cmd {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (context.getDbType() == DbType.ORACLE) {
+        if (context.getDbType() == DbType.ORACLE || context.getDbType()==DbType.SQL_SERVER) {
             return sqlBuilder.append(" OFFSET ").append(this.offset).append(" ROWS FETCH NEXT ").append(this.limit).append(" ROWS ONLY");
         }
         return sqlBuilder.append(" LIMIT ").append(this.limit).append(" OFFSET ").append(this.offset);

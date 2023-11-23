@@ -29,8 +29,7 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         }
     }
 
-    @Override
-    public void render(ITemplateBuilder templateBuilder) {
+    @Override    public void render(ITemplateBuilder templateBuilder) {
         try {
             Template template = configuration.getTemplate(templateBuilder.templateFilePath() + ".ftl");
 

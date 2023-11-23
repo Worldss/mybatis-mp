@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<ConditionChain, Cmd, Object>, Condition, Cmd {
+public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<ConditionChain, Cmd, Object>, Condition {
 
     private final ConditionFaction conditionFaction;
 

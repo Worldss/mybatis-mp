@@ -14,23 +14,19 @@ public class DaoTemplateBuilder extends AbstractTemplateBuilder {
         super(generatorConfig, entityInfo);
     }
 
-    @Override
-    public boolean enable() {
+    @Override    public boolean enable() {
         return generatorConfig.getDaoConfig().isEnable();
     }
 
-    @Override
-    public String targetFilePath() {
+    @Override    public String targetFilePath() {
         return generatorConfig.getBaseFilePath() + "/" + (entityInfo.getDaoPackage() + "." + entityInfo.getDaoName()).replaceAll("\\.", "/") + ".java";
     }
 
-    @Override
-    public String templateFilePath() {
+    @Override    public String templateFilePath() {
         return generatorConfig.getTemplateRootPath() + "/dao";
     }
 
-    @Override
-    public Map<String, Object> contextData() {
+    @Override    public Map<String, Object> contextData() {
         Map<String, Object> data = new HashMap<>();
         data.put("imports", GeneratorUtil.buildDaoImports(generatorConfig, entityInfo));
         if (generatorConfig.getDaoConfig().getSuperClass() != null) {

@@ -6,7 +6,7 @@ import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class InsertTable implements db.sql.api.cmd.struct.insert.InsertTable<Table>, Cmd {
+public class InsertTable implements db.sql.api.cmd.struct.insert.InsertTable<Table> {
 
     protected final Table table;
 

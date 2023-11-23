@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class Having implements db.sql.api.cmd.struct.query.Having<Having>, Cmd {
+public class Having implements db.sql.api.cmd.struct.query.Having<Having> {
 
     private final CmdFactory cmdFactory;
 

@@ -7,7 +7,7 @@ import db.sql.api.impl.cmd.ConditionFaction;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class Where implements db.sql.api.cmd.struct.Where<Where, Cmd, Object, ConditionChain>, Cmd {
+public class Where implements db.sql.api.cmd.struct.Where<Where, Cmd, Object, ConditionChain> {
 
     private final ConditionFaction conditionFaction;
 

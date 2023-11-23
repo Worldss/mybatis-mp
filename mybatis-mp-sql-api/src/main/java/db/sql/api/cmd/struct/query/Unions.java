@@ -19,8 +19,7 @@ public class Unions<UNION extends Union> implements Cmd {
         unions.add(union);
     }
 
-    @Override
-    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    @Override    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (unions == null || unions.isEmpty()) {
             return sqlBuilder;
         }
@@ -30,8 +29,7 @@ public class Unions<UNION extends Union> implements Cmd {
         return sqlBuilder;
     }
 
-    @Override
-    public boolean contain(Cmd cmd) {
+    @Override    public boolean contain(Cmd cmd) {
         return CmdUtils.contain(cmd, this.unions);
     }
 

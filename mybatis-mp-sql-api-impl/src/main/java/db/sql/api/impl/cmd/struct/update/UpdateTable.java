@@ -7,7 +7,7 @@ import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class UpdateTable implements db.sql.api.cmd.struct.update.UpdateTable<Dataset>, Cmd {
+public class UpdateTable implements db.sql.api.cmd.struct.update.UpdateTable<Dataset> {
 
     private final Dataset[] tables;
 

@@ -5,7 +5,7 @@ import db.sql.api.Cmd;
 import db.sql.api.DbType;
 import db.sql.api.SqlBuilderContext;
 
-public class Limit implements db.sql.api.cmd.struct.Limit<Limit>, Cmd {
+public class Limit implements db.sql.api.cmd.struct.Limit<Limit> {
 
     private int offset;
 
@@ -16,10 +16,6 @@ public class Limit implements db.sql.api.cmd.struct.Limit<Limit>, Cmd {
         this.limit = limit;
     }
 
-    public Limit(int limit) {
-        this(0, limit);
-    }
-
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (context.getDbType() == DbType.ORACLE || context.getDbType() == DbType.SQL_SERVER) {
@@ -28,11 +24,7 @@ public class Limit implements db.sql.api.cmd.struct.Limit<Limit>, Cmd {
         return sqlBuilder.append(" LIMIT ").append(this.limit).append(" OFFSET ").append(this.offset);
     }
 
-    public Limit limit(int limit) {
-        return this.limit(0, limit);
-    }
-
-    public Limit limit(int offset, int limit) {
+    public Limit set(int offset, int limit) {
         this.offset = offset;
         this.limit = limit;
         return this;

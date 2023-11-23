@@ -26,13 +26,11 @@ public abstract class BaseSQLCmdContext<E extends Executor> implements SQLCmdCon
         this.usePlaceholder = usePlaceholder;
     }
 
-    @Override
-    public E getExecution() {
+    @Override    public E getExecution() {
         return execution;
     }
 
-    @Override
-    public StringBuilder sql(String dbType) {
+    @Override    public StringBuilder sql(String dbType) {
         if (Objects.nonNull(sql)) {
             return sql;
         }
@@ -41,8 +39,7 @@ public abstract class BaseSQLCmdContext<E extends Executor> implements SQLCmdCon
         return sql;
     }
 
-    @Override
-    public Object[] getSQLCmdParams() {
+    @Override    public Object[] getSQLCmdParams() {
         return sqlBuilderContext.getParams();
     }
 

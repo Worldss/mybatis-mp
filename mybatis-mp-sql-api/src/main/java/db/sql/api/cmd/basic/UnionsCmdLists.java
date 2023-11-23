@@ -15,13 +15,11 @@ public class UnionsCmdLists implements Cmd {
         this.cmdList = cmdList;
     }
 
-    @Override
-    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    @Override    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         return CmdUtils.join(module, this, context, sqlBuilder, cmdList);
     }
 
-    @Override
-    public boolean contain(Cmd cmd) {
+    @Override    public boolean contain(Cmd cmd) {
         return CmdUtils.contain(cmd, this.cmdList);
     }
 }

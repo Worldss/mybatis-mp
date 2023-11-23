@@ -1,7 +1,7 @@
 package db.sql.api.cmd.struct;
 
-import db.sql.api.cmd.executor.method.LimitMethod;
+import db.sql.api.Cmd;
 
-public interface Limit<SELF extends Limit> extends LimitMethod<SELF> {
-
+public interface Limit<SELF extends Limit> extends Cmd {
+    SELF set(int offset, int limit);
 }

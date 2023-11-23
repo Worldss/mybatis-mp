@@ -1,8 +1,10 @@
 package db.sql.api.cmd.struct.query;
 
+import db.sql.api.Cmd;
+
 import java.util.List;
 
-public interface OrderBy<SELF extends OrderBy, COLUMN> {
+public interface OrderBy<SELF extends OrderBy, COLUMN> extends Cmd {
 
     default SELF orderBy(COLUMN column) {
         return this.orderBy(column, true);

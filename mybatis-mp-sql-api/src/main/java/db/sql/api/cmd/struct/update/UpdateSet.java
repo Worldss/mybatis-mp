@@ -1,6 +1,8 @@
 package db.sql.api.cmd.struct.update;
 
-public interface UpdateSet<COLUMN, V> {
+import db.sql.api.Cmd;
+
+public interface UpdateSet<COLUMN, V> extends Cmd {
 
     COLUMN getField();
 

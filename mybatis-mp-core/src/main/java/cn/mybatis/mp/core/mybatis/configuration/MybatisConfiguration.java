@@ -50,29 +50,25 @@ public class MybatisConfiguration extends Configuration {
         }
     }
 
-    @Override
-    public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
+    @Override    public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
         if (parameterObject instanceof SQLCmdContext && !mappedStatement.getId().endsWith(SelectKeyGenerator.SELECT_KEY_SUFFIX)) {
             return (ParameterHandler) interceptorChain.pluginAll(new PreparedParameterHandler(this, (SQLCmdContext) parameterObject));
         }
         return super.newParameterHandler(mappedStatement, parameterObject, boundSql);
     }
 
-    @Override
-    public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds, ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
+    @Override    public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds, ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
         ResultSetHandler resultSetHandler = new MybatisResultSetHandler(executor, mappedStatement, parameterHandler, resultHandler, boundSql, rowBounds);
         return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
     }
 
-    @Override
-    public void addMappedStatement(MappedStatement ms) {
+    @Override    public void addMappedStatement(MappedStatement ms) {
         TableIdGeneratorWrapper.addEntityKeyGenerator(ms);
         ResultMapWrapper.replaceResultMap(ms);
         super.addMappedStatement(ms);
     }
 
     @Override
-
     public <T> void addMapper(Class<T> type) {
         if (MybatisMapper.class.isAssignableFrom(type)) {
             Optional<Class> entityOptional = GenericUtil.getGenericInterfaceClass(type).stream().filter(item -> item.isAnnotationPresent(Table.class)).findFirst();
@@ -85,8 +81,7 @@ public class MybatisConfiguration extends Configuration {
         super.addMapper(type);
     }
 
-    @Override
-    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
+    @Override    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
         T t = super.getMapper(type, sqlSession);
         if (MybatisMapper.class.isAssignableFrom(type)) {
             return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new MybatisMapperProxy<>(type, t));
@@ -121,8 +116,7 @@ public class MybatisConfiguration extends Configuration {
         return typeHandler;
     }
 
-    @Override
-    public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
+    @Override    public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
         executorType = executorType == null ? this.defaultExecutorType : executorType;
         Executor executor;
         if (ExecutorType.BATCH == executorType) {

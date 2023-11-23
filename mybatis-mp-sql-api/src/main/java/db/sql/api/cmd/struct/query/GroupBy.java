@@ -1,8 +1,10 @@
 package db.sql.api.cmd.struct.query;
 
+import db.sql.api.Cmd;
+
 import java.util.List;
 
-public interface GroupBy<SELF extends GroupBy, COLUMN> {
+public interface GroupBy<SELF extends GroupBy, COLUMN> extends Cmd {
 
     SELF groupBy(COLUMN column);
 

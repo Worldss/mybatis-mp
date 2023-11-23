@@ -10,7 +10,7 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class From implements db.sql.api.cmd.struct.From<Dataset>, Cmd {
+public class From implements db.sql.api.cmd.struct.From<Dataset> {
 
     private final List<Dataset> tables = new ArrayList<>();
 

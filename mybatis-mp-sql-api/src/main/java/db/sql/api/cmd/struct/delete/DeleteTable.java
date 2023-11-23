@@ -1,6 +1,8 @@
 package db.sql.api.cmd.struct.delete;
 
-public interface DeleteTable<TABLE> {
+import db.sql.api.Cmd;
+
+public interface DeleteTable<TABLE> extends Cmd {
 
     TABLE[] getTables();
 

@@ -7,7 +7,7 @@ import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class DeleteTable implements db.sql.api.cmd.struct.delete.DeleteTable<Dataset>, Cmd {
+public class DeleteTable implements db.sql.api.cmd.struct.delete.DeleteTable<Dataset> {
 
     private final Dataset[] tables;
 

@@ -25,13 +25,11 @@ public class Joins<JOIN extends Join> implements Cmd {
         this.joins.add(join);
     }
 
-    @Override
-    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    @Override    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         return CmdUtils.join(module, this, context, sqlBuilder, this.joins);
     }
 
-    @Override
-    public boolean contain(Cmd cmd) {
+    @Override    public boolean contain(Cmd cmd) {
         return CmdUtils.contain(cmd, this.joins);
     }
 

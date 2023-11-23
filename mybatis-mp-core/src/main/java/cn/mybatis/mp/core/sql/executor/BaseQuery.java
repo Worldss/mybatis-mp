@@ -28,8 +28,7 @@ public class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, MybatisCmdF
         super(mybatisCmdFactory);
     }
 
-    @Override
-    public Q select(Class entity, int storey) {
+    @Override    public Q select(Class entity, int storey) {
         TableInfo tableInfo = Tables.get(entity);
         if (tableInfo == null) {
             return super.select(entity, storey);
@@ -47,19 +46,16 @@ public class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, MybatisCmdF
         TenantUtil.addTenantCondition(this, this.$(), entity, storey);
     }
 
-    @Override
-    public Q from(Class entity, int storey, Consumer<Dataset> consumer) {
+    @Override    public Q from(Class entity, int storey, Consumer<Dataset> consumer) {
         this.addTenantCondition(entity, storey);
         return super.from(entity, storey, consumer);
     }
 
-    @Override
-    public <T> Q select(Getter<T> column, Function<TableField, Cmd> f) {
+    @Override    public <T> Q select(Getter<T> column, Function<TableField, Cmd> f) {
         return super.select(column, f);
     }
 
-    @Override
-    public Q join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
+    @Override    public Q join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
         this.addTenantCondition(secondTable, secondTableStorey);
         if (Objects.isNull(consumer)) {
             //自动加上外键连接条件

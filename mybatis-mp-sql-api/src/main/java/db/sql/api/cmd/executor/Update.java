@@ -34,14 +34,12 @@ public interface Update<SELF extends Update,
     WHERE $where();
 
     @Override
-
     default SELF update(TABLE... tables) {
         $update(tables);
         return (SELF) this;
     }
 
-    @Override
-    default CONDITION_CHAIN conditionChain() {
+    @Override    default CONDITION_CHAIN conditionChain() {
         return $where().conditionChain();
     }
 }

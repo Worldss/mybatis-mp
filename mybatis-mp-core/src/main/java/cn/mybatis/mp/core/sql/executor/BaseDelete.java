@@ -20,14 +20,12 @@ public class BaseDelete<T extends BaseDelete> extends AbstractDelete<T, MybatisC
         TenantUtil.addTenantCondition(this, this.$(), entity, storey);
     }
 
-    @Override
-    public T from(Class entity, int storey, Consumer<Dataset> consumer) {
+    @Override    public T from(Class entity, int storey, Consumer<Dataset> consumer) {
         this.addTenantCondition(entity, storey);
         return super.from(entity, storey, consumer);
     }
 
-    @Override
-    public T join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
+    @Override    public T join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
         this.addTenantCondition(secondTable, secondTableStorey);
         if (Objects.isNull(consumer)) {
             consumer = (on) -> {

@@ -10,7 +10,6 @@ import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.ConditionFaction;
 import db.sql.api.impl.cmd.basic.Dataset;
-import db.sql.api.impl.cmd.struct.Limit;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.cmd.struct.*;
@@ -46,16 +45,27 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         >, Cmd {
 
     protected final ConditionFaction conditionFaction;
+
     protected final CMD_FACTORY $;
+
     protected Select select;
+
     protected From from;
+
     protected Where where;
+
     protected Joins joins;
+
     protected GroupBy groupBy;
+
     protected Having having;
+
     protected OrderBy orderBy;
+
     protected Limit limit;
+
     protected ForUpdate forUpdate;
+
     protected Unions unions;
 
     public AbstractQuery(CMD_FACTORY $) {
@@ -198,7 +208,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-
     public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<On> consumer) {
         Join join = $join(mode, mainTable, secondTable);
         if (consumer != null) {
@@ -217,7 +226,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-
     public <T> SELF groupBy(Getter<T> column, int storey, Function<TableField, Cmd> f) {
         TableField tableField = $.field(column, storey);
         if (f != null) {
@@ -236,13 +244,11 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-
     public <T> SELF havingAnd(Getter<T> getter, Function<TableField, Condition> f) {
         return this.havingAnd(f.apply($.field(getter)));
     }
 
     @Override
-
     public <T> SELF havingOr(Getter<T> getter, Function<TableField, Condition> f) {
         return this.havingOr(f.apply($.field(getter)));
     }
@@ -275,7 +281,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-
     public <T> SELF orderBy(Getter<T> column, int storey, boolean asc, Function<TableField, Cmd> f) {
         TableField tableField = $.field(column, storey);
         if (f != null) {

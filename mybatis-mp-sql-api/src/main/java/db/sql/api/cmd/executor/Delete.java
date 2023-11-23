@@ -37,21 +37,18 @@ public interface Delete<SELF extends Delete,
 
 
     @Override
-
     default SELF delete(TABLE... tables) {
         $delete(tables);
         return (SELF) this;
     }
 
     @Override
-
     default SELF from(TABLE... tables) {
         $from(tables);
         return (SELF) this;
     }
 
-    @Override
-    default CONDITION_CHAIN conditionChain() {
+    @Override    default CONDITION_CHAIN conditionChain() {
         return $where().conditionChain();
     }
 }

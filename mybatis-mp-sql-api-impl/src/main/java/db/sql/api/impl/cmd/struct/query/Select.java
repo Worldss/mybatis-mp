@@ -11,7 +11,7 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Select implements db.sql.api.cmd.struct.query.Select<Select, Cmd>, Cmd {
+public class Select implements db.sql.api.cmd.struct.query.Select<Select, Cmd> {
 
     private final List<Cmd> selectFields = new ArrayList<>();
     private boolean distinct = false;

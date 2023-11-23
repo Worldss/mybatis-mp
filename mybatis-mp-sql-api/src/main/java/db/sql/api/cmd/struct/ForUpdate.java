@@ -1,4 +1,6 @@
 package db.sql.api.cmd.struct;
 
-public interface ForUpdate<SELF extends ForUpdate>  {
+import db.sql.api.Cmd;
+
+public interface ForUpdate<SELF extends ForUpdate> extends Cmd {
 }

@@ -10,7 +10,7 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InsertFields implements db.sql.api.cmd.struct.insert.InsertFields<TableField>, Cmd {
+public class InsertFields implements db.sql.api.cmd.struct.insert.InsertFields<TableField> {
 
     protected List<TableField> tableFields;
 

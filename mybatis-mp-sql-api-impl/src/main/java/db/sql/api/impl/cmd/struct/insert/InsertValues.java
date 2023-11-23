@@ -8,7 +8,7 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InsertValues implements db.sql.api.cmd.struct.insert.InsertValues<Cmd>, Cmd {
+public class InsertValues implements db.sql.api.cmd.struct.insert.InsertValues<Cmd> {
 
     protected List<List<Cmd>> values;
 

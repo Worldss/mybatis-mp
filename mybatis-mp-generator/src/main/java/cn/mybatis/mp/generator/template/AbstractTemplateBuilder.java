@@ -14,8 +14,7 @@ public abstract class AbstractTemplateBuilder implements ITemplateBuilder {
         this.entityInfo=entityInfo;
     }
 
-    @Override
-    public EntityInfo getEntityInfo() {
+    @Override    public EntityInfo getEntityInfo() {
         return entityInfo;
     }
 }

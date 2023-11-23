@@ -68,7 +68,6 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-
     public SELF set(Cmd field, Object value) {
         Cmd v = Methods.convert(value);
         if (this.updateSets == null) {
@@ -80,7 +79,6 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-
     public <T> SELF set(Getter<T> field, Object value) {
         return this.set($.field(field), value);
     }
@@ -97,13 +95,11 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
     }
 
     @Override
-
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<On> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), secondTable, consumer);
     }
@@ -118,7 +114,6 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-
     public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<On> consumer) {
         Join join = $join(mode, mainTable, secondTable);
         if (consumer != null) {

@@ -20,8 +20,7 @@ public class MybatisMapperProxy<T> implements InvocationHandler {
         this.entityType = GenericUtil.getGenericInterfaceClass(mapperInterface).get(0);
     }
 
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    @Override    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getName().equals(ENTITY_TYPE_METHOD_NAME)) {
             return this.entityType;
         } else if (method.getName().equals(MAPPER_TYPE_METHOD_NAME)) {

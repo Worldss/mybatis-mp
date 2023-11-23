@@ -8,7 +8,7 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupBy implements db.sql.api.cmd.struct.query.GroupBy<GroupBy, Cmd>, Cmd {
+public class GroupBy implements db.sql.api.cmd.struct.query.GroupBy<GroupBy, Cmd> {
 
     private final List<Cmd> groupByFields = new ArrayList<>();
 

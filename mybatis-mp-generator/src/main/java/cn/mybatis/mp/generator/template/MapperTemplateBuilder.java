@@ -14,18 +14,15 @@ public class MapperTemplateBuilder extends AbstractTemplateBuilder {
         super(generatorConfig, entityInfo);
     }
 
-    @Override
-    public String targetFilePath() {
+    @Override    public String targetFilePath() {
         return generatorConfig.getBaseFilePath() + "/" + (entityInfo.getMapperPackage() + "." + entityInfo.getMapperName()).replaceAll("\\.", "/") + ".java";
     }
 
-    @Override
-    public String templateFilePath() {
+    @Override    public String templateFilePath() {
         return generatorConfig.getTemplateRootPath() + "/mapper";
     }
 
-    @Override
-    public Map<String, Object> contextData() {
+    @Override    public Map<String, Object> contextData() {
         Map<String, Object> data = new HashMap<>();
         data.put("imports", GeneratorUtil.buildMapperImports(generatorConfig, entityInfo));
         if (generatorConfig.getMapperConfig().getSuperClass() != null) {

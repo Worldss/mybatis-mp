@@ -17,15 +17,13 @@ public class CmdList implements Cmd {
         this.cmdList = cmdList;
     }
 
-    @Override
-    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    @Override    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(this.operator);
         sqlBuilder = CmdUtils.join(module, this, context, sqlBuilder, this.cmdList);
         return sqlBuilder;
     }
 
-    @Override
-    public boolean contain(Cmd cmd) {
+    @Override    public boolean contain(Cmd cmd) {
         return CmdUtils.contain(cmd, this.cmdList);
     }
 }

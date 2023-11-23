@@ -8,7 +8,7 @@ import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class Join implements db.sql.api.cmd.struct.Join<Join, Dataset, On>, Cmd {
+public class Join implements db.sql.api.cmd.struct.Join<Join, Dataset, On> {
 
     private final Dataset mainTable;
 

@@ -7,7 +7,7 @@ import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class On implements db.sql.api.cmd.struct.On<On, Dataset, Cmd, Object, Join, ConditionChain>, Cmd {
+public class On implements db.sql.api.cmd.struct.On<On, Dataset, Cmd, Object, Join, ConditionChain> {
 
     private final ConditionFaction conditionFaction;
 

@@ -145,6 +145,7 @@ public class SqlConst {
     public static final String ORDER_BY = " ORDER BY ";
     public static final String ASC = " ASC ";
     public static final String DESC = " DESC ";
+    public static final String FOR_UPDATE = " FOR UPDATE";
 
     public static final String SINGLE_QUOT(DbType dbType) {
         switch (dbType) {

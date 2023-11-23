@@ -11,7 +11,7 @@ import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.cmd.struct.query.Union;
 import db.sql.api.cmd.struct.query.Unions;
-import db.sql.api.impl.cmd.basic.Limit;
+import db.sql.api.impl.cmd.struct.Limit;
 import db.sql.api.impl.cmd.dbFun.Count;
 import db.sql.api.impl.cmd.struct.Join;
 import db.sql.api.impl.cmd.struct.query.GroupBy;

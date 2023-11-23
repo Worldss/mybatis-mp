@@ -10,7 +10,7 @@ import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.ConditionFaction;
 import db.sql.api.impl.cmd.basic.Dataset;
-import db.sql.api.impl.cmd.basic.Limit;
+import db.sql.api.impl.cmd.struct.Limit;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.cmd.struct.*;
@@ -40,6 +40,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         Having,
         OrderBy,
         Limit,
+        ForUpdate,
         Union,
         Unions<Union>
         >, Cmd {
@@ -54,6 +55,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     protected Having having;
     protected OrderBy orderBy;
     protected Limit limit;
+    protected ForUpdate forUpdate;
     protected Unions unions;
 
     public AbstractQuery(CMD_FACTORY $) {
@@ -138,7 +140,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-
     public <T> SELF select(Getter<T> column, int storey, Function<TableField, Cmd> f) {
         TableField field = this.$.field(column, storey);
         if (f != null) {
@@ -255,12 +256,19 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public Limit $limit(int offset, int limit) {
+    public ForUpdate $forUpdate() {
+        if (forUpdate == null) {
+            forUpdate = new ForUpdate();
+            this.append(forUpdate);
+        }
+        return forUpdate;
+    }
+
+    @Override
+    public Limit $limit() {
         if (this.limit == null) {
-            this.limit = new Limit(offset, limit);
+            this.limit = new Limit(0, 0);
             this.append(this.limit);
-        } else {
-            this.limit.set(offset, limit);
         }
         return this.limit;
     }
@@ -315,16 +323,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return this.where;
     }
 
-
-    public SELF limit(int limit) {
-        return limit(0, limit);
-    }
-
-    @Override
-    public Limit getLimit() {
-        return this.limit;
-    }
-
     @Override
     public GroupBy getGroupBy() {
         return this.groupBy;
@@ -336,14 +334,18 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
+    public Limit getLimit() {
+        return this.limit;
+    }
+
+    @Override
     public Unions getUnions() {
         return this.unions;
     }
 
-
-    public SELF limit(int offset, int limit) {
-        this.$limit(offset, limit);
-        return (SELF) this;
+    @Override
+    public ForUpdate getForUpdate() {
+        return forUpdate;
     }
 }
 

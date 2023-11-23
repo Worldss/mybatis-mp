@@ -19,22 +19,23 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
         GROUPBY extends GroupBy<GROUPBY, COLUMN>,
         HAVING extends Having<HAVING>,
         ORDERBY extends OrderBy<ORDERBY, COLUMN>,
-        LIMIT,
+        LIMIT extends Limit<LIMIT>,
+        FORUPDATE extends ForUpdate<FORUPDATE>,
         UNION extends Union,
         UNIONS extends Unions<UNION>
         >
-
         extends SelectMethod<SELF, TABLE_FIELD, COLUMN>,
         FromMethod<SELF, TABLE>, JoinMethod<SELF, TABLE, ON>,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
         GroupByMethod<SELF, TABLE_FIELD, COLUMN>,
         HavingMethod<SELF, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN, HAVING>,
         OrderByMethod<SELF, TABLE_FIELD, COLUMN>,
+        LimitMethod<SELF>,
+        ForUpdateMethod<SELF>,
         UnionMethod<SELF>,
         Executor<SELF> {
 
     SELECT $select();
-
 
     FROM $from(TABLE... tables);
 
@@ -48,7 +49,9 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
 
     ORDERBY $orderBy();
 
-    LIMIT $limit(int offset, int limit);
+    LIMIT $limit();
+
+    FORUPDATE $forUpdate();
 
     @Override
     default SELF select(COLUMN column) {
@@ -57,44 +60,55 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
     }
 
     @Override
-
     default SELF from(TABLE... tables) {
         $from(tables);
         return (SELF) this;
     }
 
     @Override
-
     default SELF groupBy(COLUMN column) {
         $groupBy().groupBy(column);
         return (SELF) this;
     }
 
     @Override
-
     default SELF having(Consumer<HAVING> consumer) {
         consumer.accept($having());
         return (SELF) this;
     }
 
     @Override
-
     default SELF havingAnd(Condition condition) {
         $having().and(condition);
         return (SELF) this;
     }
 
     @Override
-
     default SELF havingOr(Condition condition) {
         $having().or(condition);
         return (SELF) this;
     }
 
     @Override
-
     default SELF orderBy(COLUMN column, boolean asc) {
         $orderBy().orderBy(column, asc);
+        return (SELF) this;
+    }
+
+    @Override
+    default SELF limit(int limit) {
+        return this.limit(0, limit);
+    }
+
+    @Override
+    default SELF limit(int offset, int limit) {
+        $limit().limit(offset, limit);
+        return (SELF) this;
+    }
+
+    @Override
+    default SELF forUpdate() {
+        $forUpdate();
         return (SELF) this;
     }
 
@@ -111,6 +125,8 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
     ORDERBY getOrderBy();
 
     LIMIT getLimit();
+
+    FORUPDATE getForUpdate();
 
     UNIONS getUnions();
 

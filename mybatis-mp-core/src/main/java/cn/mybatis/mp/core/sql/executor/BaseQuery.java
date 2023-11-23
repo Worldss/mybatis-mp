@@ -11,6 +11,8 @@ import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.cmd.executor.AbstractQuery;
 import db.sql.api.impl.cmd.struct.On;
+import db.sql.api.impl.cmd.struct.OnDataset;
+import db.sql.api.impl.cmd.struct.OnTable;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -29,7 +31,7 @@ public class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, MybatisCmdF
     }
 
     @Override
-public Q select(Class entity, int storey) {
+    public Q select(Class entity, int storey) {
         TableInfo tableInfo = Tables.get(entity);
         if (tableInfo == null) {
             return super.select(entity, storey);
@@ -48,18 +50,18 @@ public Q select(Class entity, int storey) {
     }
 
     @Override
-public Q from(Class entity, int storey, Consumer<Dataset> consumer) {
+    public Q from(Class entity, int storey, Consumer<Dataset> consumer) {
         this.addTenantCondition(entity, storey);
         return super.from(entity, storey, consumer);
     }
 
     @Override
-public <T> Q select(Getter<T> column, Function<TableField, Cmd> f) {
+    public <T> Q select(Getter<T> column, Function<TableField, Cmd> f) {
         return super.select(column, f);
     }
 
     @Override
-public Q join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
+    public Q join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<OnDataset> consumer) {
         this.addTenantCondition(secondTable, secondTableStorey);
         if (Objects.isNull(consumer)) {
             //自动加上外键连接条件

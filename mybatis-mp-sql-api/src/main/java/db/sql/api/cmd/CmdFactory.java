@@ -3,10 +3,9 @@ package db.sql.api.cmd;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface CmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASET_FIELD, ON> {
+public interface CmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASET_FIELD> {
 
     default TABLE table(Class entity) {
         return this.table(entity, 1);
@@ -72,30 +71,13 @@ public interface CmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASET
      */
     DATASET_FIELD field(DATASET dataset, String name);
 
-
     /**
-     * 根据实体类 构建新的 Consumer<ON>
+     * 所有列
      *
-     * @param mainTable   主表实体类
-     * @param secondTable 副表实体类
-     * @param consumer
+     * @param dataset
      * @return
      */
-    default Consumer<ON> buildOn(Class mainTable, Class secondTable, Consumer<ON> consumer) {
-        return this.buildOn(mainTable, 1, secondTable, 1, consumer);
-    }
-
-    /**
-     * 根据实体类 构建新的 Consumer<ON>
-     *
-     * @param mainTable         主表实体类
-     * @param mainTableStorey   主表实体类存储层级
-     * @param secondTable       副表实体类
-     * @param secondTableStorey 副表实体类存储层级
-     * @param consumer
-     * @return
-     */
-    Consumer<ON> buildOn(Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<ON> consumer);
+    DATASET_FIELD allField(DATASET dataset);
 
 
     /**

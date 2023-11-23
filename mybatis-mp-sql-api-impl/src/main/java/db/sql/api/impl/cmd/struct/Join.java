@@ -3,35 +3,37 @@ package db.sql.api.impl.cmd.struct;
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.JoinMode;
-import db.sql.api.impl.cmd.ConditionFaction;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class Join implements db.sql.api.cmd.struct.Join<Join, Dataset, On> {
+import java.util.function.Function;
 
-    private final Dataset mainTable;
+public abstract class Join<SELF extends Join<SELF, TABLE, ON>, TABLE extends Dataset, ON extends On<ON, TABLE, SELF>> implements db.sql.api.cmd.struct.Join<SELF, TABLE, ON> {
 
-    private final Dataset secondTable;
+    private final TABLE mainTable;
+
+    private final TABLE secondTable;
 
     private final JoinMode mode;
 
-    private final On on;
+    private final ON on;
 
-    public Join(ConditionFaction conditionFaction, JoinMode mode, Dataset mainTable, Dataset secondTable) {
+
+    public Join(JoinMode mode, TABLE mainTable, TABLE secondTable, Function<SELF, ON> onFunction) {
         this.mode = mode;
         this.mainTable = mainTable;
         this.secondTable = secondTable;
-        this.on = new On(conditionFaction, this);
+        this.on = onFunction.apply((SELF) this);
     }
 
     @Override
-    public Dataset getMainTable() {
+    public TABLE getMainTable() {
         return mainTable;
     }
 
     @Override
-    public Dataset getSecondTable() {
+    public TABLE getSecondTable() {
         return secondTable;
     }
 
@@ -41,7 +43,7 @@ public class Join implements db.sql.api.cmd.struct.Join<Join, Dataset, On> {
     }
 
     @Override
-    public On getOn() {
+    public ON getOn() {
         return on;
     }
 

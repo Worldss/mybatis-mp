@@ -5,6 +5,7 @@ import cn.mybatis.mp.core.util.ForeignKeyUtil;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.impl.cmd.executor.AbstractUpdate;
 import db.sql.api.impl.cmd.struct.On;
+import db.sql.api.impl.cmd.struct.OnTable;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -16,7 +17,7 @@ public class BaseUpdate<T extends BaseUpdate> extends AbstractUpdate<T, MybatisC
     }
 
     @Override
-public T update(Class... entities) {
+    public T update(Class... entities) {
         for (Class entity : entities) {
             this.addTenantCondition(entity, 1);
         }
@@ -29,7 +30,7 @@ public T update(Class... entities) {
 
 
     @Override
-public T join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
+    public T join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<OnTable> consumer) {
         this.addTenantCondition(secondTable, secondTableStorey);
         if (Objects.isNull(consumer)) {
             consumer = (on) -> {

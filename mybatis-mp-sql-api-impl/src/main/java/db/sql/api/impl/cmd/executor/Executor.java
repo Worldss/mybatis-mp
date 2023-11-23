@@ -13,30 +13,33 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.List;
 import java.util.function.Function;
 
-public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory> extends db.sql.api.cmd.executor.Executor<SELF> {
+public interface Executor<SELF extends Executor,
+        CMD_FACTORY extends CmdFactory
+        >
+        extends db.sql.api.cmd.executor.Executor<SELF, Table, Dataset, TableField, DatasetField> {
 
     CMD_FACTORY $();
 
     SELF append(Cmd cmd);
 
-    default Table $(Class entity) {
-        return this.$(entity, 1);
-    }
-
+    @Override
     default Table $(Class entity, int storey) {
         return $().table(entity, storey);
     }
 
-    default <T> TableField $(Getter<T> getter) {
-        return $().field(getter);
-    }
-
+    @Override
     default <T> DatasetField $(Dataset dataset, Getter<T> getter) {
         return $().field(dataset, getter);
     }
 
+    @Override
     default <T> TableField $(Getter<T> getter, int storey) {
         return $().field(getter, storey);
+    }
+
+    @Override
+    default DatasetField $(Dataset dataset, String columnName) {
+        return $().field(dataset, columnName);
     }
 
     /**

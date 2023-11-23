@@ -7,16 +7,16 @@ import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class DeleteTable implements db.sql.api.cmd.struct.delete.DeleteTable<Dataset> {
+public class DeleteTable implements db.sql.api.cmd.struct.delete.DeleteTable<Table> {
 
-    private final Dataset[] tables;
+    private final Table[] tables;
 
-    public DeleteTable(Dataset[] tables) {
+    public DeleteTable(Table[] tables) {
         this.tables = tables;
     }
 
     @Override
-    public Dataset[] getTables() {
+    public Table[] getTables() {
         return this.tables;
     }
 

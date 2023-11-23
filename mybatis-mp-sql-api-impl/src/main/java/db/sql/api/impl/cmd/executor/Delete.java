@@ -7,6 +7,4 @@ public class Delete extends AbstractDelete<Delete, CmdFactory> {
     public Delete() {
         super(new CmdFactory());
     }
-
-
 }

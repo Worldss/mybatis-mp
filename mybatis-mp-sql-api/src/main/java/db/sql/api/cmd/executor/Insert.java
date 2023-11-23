@@ -1,5 +1,6 @@
 package db.sql.api.cmd.executor;
 
+import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.struct.insert.InsertFields;
 import db.sql.api.cmd.struct.insert.InsertTable;
@@ -8,14 +9,17 @@ import db.sql.api.cmd.struct.insert.InsertValues;
 import java.util.List;
 
 public interface Insert<SELF extends Insert,
-        TABLE,
-        COLUMN,
+        TABLE extends DATASET,
+        DATASET extends Cmd,
+        TABLE_FIELD extends DATASET_FILED,
+        DATASET_FILED extends Cmd,
+        COLUMN extends Cmd,
         V,
         INSERT_TABLE extends InsertTable<TABLE>,
         INSERT_FIELD extends InsertFields<COLUMN>,
         INSERT_VALUE extends InsertValues<V>
         >
-        extends Executor<SELF> {
+        extends Executor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
 
 
     INSERT_TABLE $insert(TABLE table);

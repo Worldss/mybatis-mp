@@ -4,14 +4,11 @@ import java.util.function.Consumer;
 
 public interface FromMethod<SELF extends FromMethod, TABLE> {
 
-
     SELF from(TABLE... tables);
-
 
     default SELF from(Class... entities) {
         return this.from(1, entities);
     }
-
 
     default SELF from(int storey, Class... entities) {
         for (Class entity : entities) {

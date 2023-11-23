@@ -2,35 +2,50 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.basic.Count1;
+import db.sql.api.cmd.basic.CountAll;
+import db.sql.api.cmd.basic.SQL1;
+import db.sql.api.cmd.basic.SQLCmdAll;
 
 import java.util.List;
 import java.util.function.Function;
 
-public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, COLUMN> {
+public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD> {
 
 
-    SELF select(COLUMN column);
+    SELF select(Cmd column);
 
     SELF selectDistinct();
 
-    SELF select1();
+    default SELF select1() {
+        this.select(SQL1.INSTANCE);
+        return (SELF) this;
+    }
 
-    SELF selectAll();
+    default SELF selectAll() {
+        this.select(SQLCmdAll.INSTANCE);
+        return (SELF) this;
+    }
 
-    SELF selectCountAll();
+    default SELF selectCount1() {
+        this.select(Count1.INSTANCE);
+        return (SELF) this;
+    }
 
-    SELF selectCount1();
+    default SELF selectCountAll() {
+        this.select(CountAll.INSTANCE);
+        return (SELF) this;
+    }
 
-    default SELF select(COLUMN... columns) {
-        for (COLUMN column : columns) {
+    default SELF select(Cmd... columns) {
+        for (Cmd column : columns) {
             this.select(column);
         }
         return (SELF) this;
     }
 
-
-    default SELF select(List<COLUMN> columns) {
-        for (COLUMN column : columns) {
+    default SELF select(List<Cmd> columns) {
+        for (Cmd column : columns) {
             this.select(column);
         }
         return (SELF) this;

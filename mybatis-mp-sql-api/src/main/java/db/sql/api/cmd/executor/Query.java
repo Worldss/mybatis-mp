@@ -1,6 +1,9 @@
 package db.sql.api.cmd.executor;
 
 
+import db.sql.api.Cmd;
+import db.sql.api.Getter;
+import db.sql.api.cmd.CmdFactory;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.method.*;
@@ -8,24 +11,34 @@ import db.sql.api.cmd.struct.*;
 import db.sql.api.cmd.struct.query.*;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
+public interface Query<SELF extends Query,
+        TABLE extends DATASET,
+        DATASET extends Cmd,
+        TABLE_FIELD extends DATASET_FILED,
+        DATASET_FILED extends COLUMN,
+        COLUMN extends Cmd,
+        V,
+
+        CMD_FACTORY extends CmdFactory<TABLE, DATASET, TABLE_FIELD, DATASET_FILED>,
         CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>,
-        SELECT extends Select<SELECT, COLUMN>, FROM extends From<TABLE>,
-        JOIN extends Join<JOIN, TABLE, ON>,
-        ON extends On<ON, TABLE, COLUMN, V, JOIN, CONDITION_CHAIN>,
+        SELECT extends Select<SELECT>,
+        FROM extends From<DATASET>,
+        JOIN extends Join<JOIN, DATASET, ON>,
+        ON extends On<ON, DATASET, COLUMN, V, JOIN, CONDITION_CHAIN>,
         JOINS extends Joins<JOIN>,
         WHERE extends Where<WHERE, COLUMN, V, CONDITION_CHAIN>,
         GROUPBY extends GroupBy<GROUPBY, COLUMN>,
         HAVING extends Having<HAVING>,
-        ORDERBY extends OrderBy<ORDERBY, COLUMN>,
+        ORDERBY extends OrderBy<ORDERBY>,
         LIMIT extends Limit<LIMIT>,
         FORUPDATE extends ForUpdate<FORUPDATE>,
         UNION extends Union,
         UNIONS extends Unions<UNION>
         >
-        extends SelectMethod<SELF, TABLE_FIELD, COLUMN>,
-        FromMethod<SELF, TABLE>, JoinMethod<SELF, TABLE, ON>,
+        extends SelectMethod<SELF, TABLE_FIELD>,
+        FromMethod<SELF, DATASET>, JoinMethod<SELF, DATASET, ON>,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
         GroupByMethod<SELF, TABLE_FIELD, COLUMN>,
         HavingMethod<SELF, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN, HAVING>,
@@ -33,13 +46,15 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
         LimitMethod<SELF>,
         ForUpdateMethod<SELF>,
         UnionMethod<SELF>,
-        Executor<SELF> {
+        Executor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
+
+    CMD_FACTORY $();
 
     SELECT $select();
 
-    FROM $from(TABLE... tables);
+    FROM $from(DATASET... tables);
 
-    JOIN $join(JoinMode mode, TABLE mainTable, TABLE secondTable);
+    JOIN $join(JoinMode mode, DATASET mainTable, DATASET secondTable);
 
     WHERE $where();
 
@@ -54,13 +69,34 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
     FORUPDATE $forUpdate();
 
     @Override
-    default SELF select(COLUMN column) {
+    default SELF select(Cmd column) {
         $select().select(column);
         return (SELF) this;
     }
 
+    default SELF select(Class entity, int storey) {
+        return this.select($().allField($(entity, storey)));
+    }
+
+
     @Override
-    default SELF from(TABLE... tables) {
+    default SELF selectDistinct() {
+        $select().distinct();
+        return (SELF) this;
+    }
+
+    @Override
+    default <T> SELF select(Getter<T> column, int storey, Function<TABLE_FIELD, Cmd> f) {
+        TABLE_FIELD field = this.$().field(column, storey);
+        if (f != null) {
+            return this.select(f.apply(field));
+        } else {
+            return this.select(field);
+        }
+    }
+
+    @Override
+    default SELF from(DATASET... tables) {
         $from(tables);
         return (SELF) this;
     }
@@ -90,7 +126,7 @@ public interface Query<SELF extends Query, TABLE, TABLE_FIELD, COLUMN, V,
     }
 
     @Override
-    default SELF orderBy(COLUMN column, boolean asc) {
+    default SELF orderBy(Cmd column, boolean asc) {
         $orderBy().orderBy(column, asc);
         return (SELF) this;
     }

@@ -1,5 +1,6 @@
 package db.sql.api.cmd.executor;
 
+import db.sql.api.Cmd;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.executor.method.JoinMethod;
 import db.sql.api.cmd.executor.method.UpdateMethod;
@@ -11,8 +12,11 @@ import db.sql.api.cmd.struct.Where;
 import db.sql.api.cmd.struct.update.UpdateTable;
 
 public interface Update<SELF extends Update,
-        TABLE,
-        COLUMN,
+        TABLE extends DATASET,
+        DATASET extends Cmd,
+        TABLE_FIELD extends DATASET_FILED,
+        DATASET_FILED extends COLUMN,
+        COLUMN extends Cmd,
         V,
         CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>,
         UPDATE_TABLE extends UpdateTable<TABLE>,
@@ -24,7 +28,7 @@ public interface Update<SELF extends Update,
         extends UpdateMethod<SELF, TABLE, COLUMN, V>,
         JoinMethod<SELF, TABLE, ON>,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
-        Executor<SELF> {
+        Executor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
 
 
     UPDATE_TABLE $update(TABLE... tables);

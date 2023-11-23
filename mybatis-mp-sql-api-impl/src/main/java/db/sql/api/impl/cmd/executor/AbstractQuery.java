@@ -3,13 +3,15 @@ package db.sql.api.impl.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.JoinMode;
-import db.sql.api.cmd.basic.*;
+import db.sql.api.cmd.basic.Condition;
+import db.sql.api.cmd.basic.UnionsCmdLists;
 import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.ConditionFaction;
 import db.sql.api.impl.cmd.basic.Dataset;
+import db.sql.api.impl.cmd.basic.DatasetField;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.cmd.struct.*;
@@ -24,16 +26,19 @@ import java.util.function.Function;
 
 public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY>
         implements Query<SELF,
+        Table,
         Dataset,
         TableField,
+        DatasetField,
         Cmd,
         Object,
+        CMD_FACTORY,
         ConditionChain,
         Select,
-        From,
-        Join,
-        On,
-        Joins<Join>,
+        FromDataset,
+        JoinDataset,
+        OnDataset,
+        Joins<JoinDataset>,
         Where,
         GroupBy,
         Having,
@@ -50,7 +55,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     protected Select select;
 
-    protected From from;
+    protected FromDataset from;
 
     protected Where where;
 
@@ -83,7 +88,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return $;
     }
 
-
     @Override
     public List<Cmd> cmds() {
         return this.cmds;
@@ -93,7 +97,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     void initCmdSorts(Map<Class<? extends Cmd>, Integer> cmdSorts) {
         int i = 0;
         cmdSorts.put(Select.class, ++i);
-        cmdSorts.put(From.class, ++i);
+        cmdSorts.put(FromDataset.class, ++i);
         cmdSorts.put(Joins.class, ++i);
         cmdSorts.put(Where.class, ++i);
         cmdSorts.put(GroupBy.class, ++i);
@@ -116,54 +120,9 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF select(Class entity, int storey) {
-        return this.select(this.$.all(this.$.table(entity, storey)));
-    }
-
-    @Override
-    public SELF select1() {
-        $select().select(SQL1.INSTANCE);
-        return (SELF) this;
-    }
-
-    @Override
-    public SELF selectAll() {
-        $select().select(SQLCmdAll.INSTANCE);
-        return (SELF) this;
-    }
-
-    @Override
-    public SELF selectCount1() {
-        $select().select(Count1.INSTANCE);
-        return (SELF) this;
-    }
-
-    @Override
-    public SELF selectCountAll() {
-        $select().select(CountAll.INSTANCE);
-        return (SELF) this;
-    }
-
-    @Override
-    public SELF selectDistinct() {
-        $select().distinct();
-        return (SELF) this;
-    }
-
-    @Override
-    public <T> SELF select(Getter<T> column, int storey, Function<TableField, Cmd> f) {
-        TableField field = this.$.field(column, storey);
-        if (f != null) {
-            return this.select(f.apply(field));
-        } else {
-            return this.select(field);
-        }
-    }
-
-    @Override
-    public From $from(Dataset... tables) {
+    public FromDataset $from(Dataset... tables) {
         if (this.from == null) {
-            from = new From();
+            from = new FromDataset();
             this.append(from);
         }
         this.from.append(tables);
@@ -178,8 +137,10 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public Join $join(JoinMode mode, Dataset mainTable, Dataset secondTable) {
-        Join join = new Join(this.conditionFaction, mode, mainTable, secondTable);
+    public JoinDataset $join(JoinMode mode, Dataset mainTable, Dataset secondTable) {
+        JoinDataset join = new JoinDataset(mode, mainTable, secondTable, (joinDataset -> {
+            return new OnDataset(this.conditionFaction, joinDataset);
+        }));
         if (Objects.isNull(joins)) {
             joins = new Joins();
             this.append(joins);
@@ -189,12 +150,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
+    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<OnDataset> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
     }
 
     @Override
-    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<On> consumer) {
+    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<OnDataset> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), secondTable, consumer);
     }
 
@@ -208,8 +169,8 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<On> consumer) {
-        Join join = $join(mode, mainTable, secondTable);
+    public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<OnDataset> consumer) {
+        JoinDataset join = $join(mode, mainTable, secondTable);
         if (consumer != null) {
             consumer.accept(join.getOn());
         }
@@ -315,7 +276,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public From getFrom() {
+    public FromDataset getFrom() {
         return this.from;
     }
 

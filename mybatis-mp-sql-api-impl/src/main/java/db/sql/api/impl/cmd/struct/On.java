@@ -7,22 +7,22 @@ import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class On implements db.sql.api.cmd.struct.On<On, Dataset, Cmd, Object, Join, ConditionChain> {
+public class On<SELF extends On<SELF, TABLE, JOIN>, TABLE extends Dataset, JOIN extends Join<JOIN, TABLE, SELF>> implements db.sql.api.cmd.struct.On<SELF, TABLE, Cmd, Object, JOIN, ConditionChain> {
 
     private final ConditionFaction conditionFaction;
 
-    private final Join join;
+    private final JOIN join;
 
     private final ConditionChain conditionChain;
 
-    public On(ConditionFaction conditionFaction, Join join) {
+    public On(ConditionFaction conditionFaction, JOIN join) {
         this.conditionFaction = conditionFaction;
         this.join = join;
         conditionChain = new ConditionChain(conditionFaction);
     }
 
     @Override
-    public Join getJoin() {
+    public JOIN getJoin() {
         return join;
     }
 

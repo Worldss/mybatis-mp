@@ -90,6 +90,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         cmdSorts.put(Having.class, ++i);
         cmdSorts.put(OrderBy.class, ++i);
         cmdSorts.put(Limit.class, ++i);
+        cmdSorts.put(ForUpdate.class, ++i);
         cmdSorts.put(Unions.class, ++i);
         cmdSorts.put(UnionsCmdLists.class, ++i);
     }

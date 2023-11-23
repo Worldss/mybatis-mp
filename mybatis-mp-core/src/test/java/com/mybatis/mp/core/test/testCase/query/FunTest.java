@@ -73,7 +73,7 @@ public class FunTest extends BaseTest {
                     .eq(SysUser::getId, 1).or().eq(SysUser::getId, 3)
                     .setReturnType(BigDecimal.class)
                     .get();
-            Assert.assertEquals("avg", new BigDecimal("2"), avg);
+            Assert.assertTrue("avg", new BigDecimal("2").compareTo(avg)==0);
         }
     }
 

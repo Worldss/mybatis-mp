@@ -4,5 +4,5 @@ import cn.mybatis.mp.generator.template.ITemplateBuilder;
 
 public interface TemplateEngine {
 
-    public void render(ITemplateBuilder templateBuilder);
+    void render(ITemplateBuilder templateBuilder);
 }

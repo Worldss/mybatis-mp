@@ -91,7 +91,8 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
         return true;
     }
 
-    @Overridepublic void setId(Object id) {
+    @Override
+    public void setId(Object id) {
         TableFieldInfo idFieldInfo = Tables.get(this.value.getClass()).getIdFieldInfo();
         setId(this.value, idFieldInfo, id);
     }

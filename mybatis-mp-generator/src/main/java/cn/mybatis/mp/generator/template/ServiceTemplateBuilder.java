@@ -15,22 +15,22 @@ public class ServiceTemplateBuilder extends AbstractTemplateBuilder {
     }
 
     @Override
-public boolean enable() {
+    public boolean enable() {
         return generatorConfig.getServiceConfig().isEnable();
     }
 
     @Override
-public String targetFilePath() {
+    public String targetFilePath() {
         return generatorConfig.getBaseFilePath() + "/" + (entityInfo.getServicePackage() + "." + entityInfo.getServiceName()).replaceAll("\\.", "/") + ".java";
     }
 
     @Override
-public String templateFilePath() {
+    public String templateFilePath() {
         return generatorConfig.getTemplateRootPath() + "/service";
     }
 
     @Override
-public Map<String, Object> contextData() {
+    public Map<String, Object> contextData() {
         Map<String, Object> data = new HashMap<>();
         data.put("imports", GeneratorUtil.buildServiceImports(generatorConfig, entityInfo));
         if (generatorConfig.getServiceConfig().getSuperClass() != null) {

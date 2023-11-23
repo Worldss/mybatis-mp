@@ -15,17 +15,17 @@ public class EntityTemplateBuilder extends AbstractTemplateBuilder {
     }
 
     @Override
-public String targetFilePath() {
+    public String targetFilePath() {
         return generatorConfig.getBaseFilePath() + "/" + (entityInfo.getEntityPackage() + "." + entityInfo.getName()).replaceAll("\\.", "/") + ".java";
     }
 
     @Override
-public String templateFilePath() {
+    public String templateFilePath() {
         return generatorConfig.getTemplateRootPath() + "/entity";
     }
 
     @Override
-public Map<String, Object> contextData() {
+    public Map<String, Object> contextData() {
         Map<String, Object> data = new HashMap<>();
         data.put("imports", GeneratorUtil.buildEntityImports(generatorConfig, entityInfo));
         if (generatorConfig.getEntityConfig().getSuperClass() != null) {
@@ -40,9 +40,9 @@ public Map<String, Object> contextData() {
         } else {
             data.put("superExtend", "");
         }
-        data.put("package",entityInfo.getEntityPackage());
+        data.put("package", entityInfo.getEntityPackage());
         data.put("date", LocalDate.now().toString());
-        data.put("author",generatorConfig.getAuthor());
+        data.put("author", generatorConfig.getAuthor());
         data.put("entityInfo", entityInfo);
         data.put("entityConfig", generatorConfig.getEntityConfig());
         return data;

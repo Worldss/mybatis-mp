@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 
-public class CmdFactory extends Methods {
+public class CmdFactory extends Methods implements db.sql.api.cmd.CmdFactory<Table, Dataset, TableField, DatasetField, On> {
 
     private final String tableAsPrefix;
     protected Map<String, Table> tableCache = new HashMap<>();
@@ -43,10 +43,7 @@ public class CmdFactory extends Methods {
         return this.tableCache.get(String.format("%s.%s", entity.getName(), storey));
     }
 
-    public Table table(Class entity) {
-        return this.table(entity, 1);
-    }
-
+    @Override
     public Table table(Class entity, int storey) {
         return tableCache.computeIfAbsent(entity.getName(), key -> {
             Table table = new Table(entity.getSimpleName());
@@ -55,70 +52,61 @@ public class CmdFactory extends Methods {
         });
     }
 
-    public <R extends Cmd> R create(Class entity, Function<Table, R> RF) {
-        return RF.apply(this.table(entity));
+    @Override
+    public Table table(String tableName) {
+        return new Table(tableName);
     }
 
-    public <R extends Cmd> R create(Class entity, int storey, Function<Table, R> RF) {
-        return RF.apply(this.table(entity, storey));
-    }
-
+    @Override
     public <T> String columnName(Getter<T> getter) {
         return LambdaUtil.getName(getter);
     }
 
-    public <T, R extends Cmd> R create(Getter<T> getter, Function<TableField, R> RF) {
-        return RF.apply(this.field(getter));
+    @Override
+    public <T> TableField field(Getter<T> getter, int storey) {
+        Class entity = LambdaUtil.getClass(getter);
+        String filedName = LambdaUtil.getName(getter);
+        return this.field(entity, 1, filedName);
     }
 
-    public <T> TableField field(Getter<T> getter) {
-        return this.field(getter, 1);
+    @Override
+    public Consumer<On> buildOn(Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
+        return consumer;
     }
 
-    public <T, R> R create(Getter<T> getter, int storey, Function<TableField, R> RF) {
+    @Override
+    public <T> DatasetField field(Dataset dataset, Getter<T> getter) {
+        String filedName = LambdaUtil.getName(getter);
+        return new DatasetField<>(dataset, filedName);
+    }
+
+    public TableField field(Table table, String columnName) {
+        return new TableField(table, columnName);
+    }
+
+    @Override
+    public DatasetField field(Dataset dataset, String columnName) {
+        return new DatasetField(dataset, columnName);
+    }
+
+    @Override
+    public <T, R extends Cmd> R create(Getter<T> getter, int storey, Function<TableField, R> RF) {
         return RF.apply(this.field(getter, storey));
     }
 
-    public <T> TableField field(Getter<T> getter, int storey) {
-        Class clazz = LambdaUtil.getClass(getter);
-        String filedName = LambdaUtil.getName(getter);
-        return this.field(clazz, filedName, storey);
-    }
-
-    protected TableField field(Class clazz, String filedName, int storey) {
+    protected TableField field(Class clazz, int storey, String filedName) {
         return tableFieldCache.computeIfAbsent(String.format("%s.%s", clazz.getName(), filedName), key -> {
             Table table = table(clazz, storey);
             return new TableField(table, filedName);
         });
     }
 
-    public <T> DatasetField field(Dataset dataset, Getter<T> getter) {
-        String filedName = LambdaUtil.getName(getter);
-        return new DatasetField<>(dataset, filedName);
-    }
-
-    public Consumer<On> on(Class mainTable, Class secondTable, Consumer<On> consumer) {
-        return consumer;
-    }
-
-    public Table table(String name) {
-        return new Table(name);
-    }
-
     public BasicValue value(Object value) {
         return new BasicValue(value);
     }
 
-    public DatasetField field(Dataset table, String name) {
-        return new DatasetField(table, name);
-    }
-
-    public TableField field(Table table, String name) {
-        return new TableField(table, name);
-    }
-
-    public AllField all(Dataset table) {
-        return new AllField(table);
+    public AllField all(Dataset dataset) {
+        return new AllField(dataset);
     }
 
     public In in(Cmd main) {

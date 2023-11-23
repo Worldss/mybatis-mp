@@ -14,57 +14,79 @@ import java.util.function.Consumer;
 public class GeneratorConfig {
 
     private final DataBaseConfig dataBaseConfig;
-
-    public GeneratorConfig(String jdbcUrl, String username, String password) {
-        this.dataBaseConfig = new DataBaseConfig(jdbcUrl, username, password);
-    }
-
-    public GeneratorConfig(DbType dbType, DataSource dataSource) {
-        this.dataBaseConfig = new DataBaseConfig(dbType, dataSource);
-    }
-
+    /**
+     * 表配置
+     */
+    private final TableConfig tableConfig = new TableConfig();
+    /**
+     * mapper 配置
+     */
+    private final MapperConfig mapperConfig = new MapperConfig();
+    /**
+     * mapper xml 配置
+     */
+    private final MapperXmlConfig mapperXmlConfig = new MapperXmlConfig();
     /**
      * 是否忽略试图
      */
     private boolean ignoreView = false;
-
     /**
      * 忽略表
      */
-    private boolean ignoreTable = false;
-
+    private final boolean ignoreTable = false;
     /**
      * 完成后是否打开目录
      */
     private boolean finishOpen = false;
-
-
     /**
      * 根文件路径 默认取 System.getProperty("user.dir") +"/generate"
      */
     private String baseFilePath = System.getProperty("user.dir") + "/generate";
-
     /**
      * 根包路径
      */
     private String basePackage = "";
-
     /**
      * 模板根目录
      */
     private String templateRootPath = "templates";
-
     /**
      * 作者
      */
     private String author;
-
     /**
      * 模板引擎
      */
     private TemplateEngine templateEngine;
-
-    private List<Class<? extends ITemplateBuilder>> templateBuilders = new ArrayList<>();
+    private final List<Class<? extends ITemplateBuilder>> templateBuilders = new ArrayList<>();
+    /**
+     * 列配置
+     */
+    private final ColumnConfig columnConfig = new ColumnConfig();
+    /**
+     * 实体类配置
+     */
+    private final EntityConfig entityConfig = new EntityConfig();
+    /**
+     * Dao 配置
+     */
+    private final DaoConfig daoConfig = new DaoConfig();
+    /**
+     * Dao 实现类配置
+     */
+    private final DaoImplConfig daoImplConfig = new DaoImplConfig();
+    /**
+     * Service 配置
+     */
+    private final ServiceConfig serviceConfig = new ServiceConfig();
+    /**
+     * Service 实现类配置
+     */
+    private final ServiceImplConfig serviceImplConfig = new ServiceImplConfig();
+    /**
+     * Action 实现类配置
+     */
+    private final ActionConfig actionConfig = new ActionConfig();
 
     {
         templateBuilders.add(EntityTemplateBuilder.class);
@@ -77,55 +99,13 @@ public class GeneratorConfig {
         templateBuilders.add(ActionTemplateBuilder.class);
     }
 
-    /**
-     * 表配置
-     */
-    private final TableConfig tableConfig = new TableConfig();
+    public GeneratorConfig(String jdbcUrl, String username, String password) {
+        this.dataBaseConfig = new DataBaseConfig(jdbcUrl, username, password);
+    }
 
-    /**
-     * 列配置
-     */
-    private ColumnConfig columnConfig = new ColumnConfig();
-
-    /**
-     * 实体类配置
-     */
-    private EntityConfig entityConfig = new EntityConfig();
-
-    /**
-     * mapper 配置
-     */
-    private final MapperConfig mapperConfig = new MapperConfig();
-
-    /**
-     * mapper xml 配置
-     */
-    private final MapperXmlConfig mapperXmlConfig = new MapperXmlConfig();
-
-    /**
-     * Dao 配置
-     */
-    private DaoConfig daoConfig = new DaoConfig();
-
-    /**
-     * Dao 实现类配置
-     */
-    private DaoImplConfig daoImplConfig = new DaoImplConfig();
-
-    /**
-     * Service 配置
-     */
-    private ServiceConfig serviceConfig = new ServiceConfig();
-
-    /**
-     * Service 实现类配置
-     */
-    private ServiceImplConfig serviceImplConfig = new ServiceImplConfig();
-
-    /**
-     * Action 实现类配置
-     */
-    private ActionConfig actionConfig = new ActionConfig();
+    public GeneratorConfig(DbType dbType, DataSource dataSource) {
+        this.dataBaseConfig = new DataBaseConfig(dbType, dataSource);
+    }
 
     /**
      * 数据库配置

@@ -20,19 +20,11 @@ public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory>
     SELF append(Cmd cmd);
 
     default Table $(Class entity) {
-        return $().table(entity);
+        return this.$(entity, 1);
     }
 
     default Table $(Class entity, int storey) {
-        return $().table(entity);
-    }
-
-    default <T, R extends Cmd> R $(Class entity, Function<Table, R> RF) {
-        return $().create(entity, RF);
-    }
-
-    default <T, R extends Cmd> R $(Class entity, int storey, Function<Table, R> RF) {
-        return $().create(entity, storey, RF);
+        return $().table(entity, storey);
     }
 
     default <T> TableField $(Getter<T> getter) {
@@ -40,7 +32,7 @@ public interface Executor<SELF extends Executor, CMD_FACTORY extends CmdFactory>
     }
 
     default <T> DatasetField $(Dataset dataset, Getter<T> getter) {
-        return dataset.$($().columnName(getter));
+        return $().field(dataset, getter);
     }
 
     default <T> TableField $(Getter<T> getter, int storey) {

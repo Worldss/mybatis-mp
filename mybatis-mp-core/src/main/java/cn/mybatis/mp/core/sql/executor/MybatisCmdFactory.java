@@ -28,7 +28,7 @@ public class MybatisCmdFactory extends CmdFactory {
     }
 
     @Override
-public Table table(Class entity, int storey) {
+    public Table table(Class entity, int storey) {
         return MapUtil.computeIfAbsent(this.tableCache, String.format("%s.%s", entity.getName(), storey), key -> {
             TableInfo tableInfo = Tables.get(entity);
             tableNums++;
@@ -39,7 +39,7 @@ public Table table(Class entity, int storey) {
     }
 
     @Override
-public <T> TableField field(Getter<T> getter, int storey) {
+    public <T> TableField field(Getter<T> getter, int storey) {
         Class clazz = LambdaUtil.getClass(getter);
         String filedName = LambdaUtil.getName(getter);
         return this.field(clazz, filedName, storey);
@@ -47,7 +47,7 @@ public <T> TableField field(Getter<T> getter, int storey) {
 
 
     @Override
-public <T> String columnName(Getter<T> getter) {
+    public <T> String columnName(Getter<T> getter) {
         Class entity = LambdaUtil.getClass(getter);
         TableInfo tableInfo = Tables.get(entity);
         if (tableInfo == null) {

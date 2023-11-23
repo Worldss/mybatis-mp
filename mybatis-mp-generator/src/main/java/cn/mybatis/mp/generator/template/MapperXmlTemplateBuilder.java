@@ -14,25 +14,25 @@ public class MapperXmlTemplateBuilder extends AbstractTemplateBuilder {
     }
 
     @Override
-public boolean enable() {
+    public boolean enable() {
         return generatorConfig.getMapperXmlConfig().isEnable();
     }
 
     @Override
-public String targetFilePath() {
-        return generatorConfig.getBaseFilePath() + "/" + (generatorConfig.getMapperXmlConfig().getPackageName() + "." + entityInfo.getName()+generatorConfig.getMapperXmlConfig().getSuffix()).replaceAll("\\.", "/") + ".xml";
+    public String targetFilePath() {
+        return generatorConfig.getBaseFilePath() + "/" + (generatorConfig.getMapperXmlConfig().getPackageName() + "." + entityInfo.getName() + generatorConfig.getMapperXmlConfig().getSuffix()).replaceAll("\\.", "/") + ".xml";
     }
 
     @Override
-public String templateFilePath() {
+    public String templateFilePath() {
         return generatorConfig.getTemplateRootPath() + "/mapper.xml";
     }
 
     @Override
-public Map<String, Object> contextData() {
+    public Map<String, Object> contextData() {
         Map<String, Object> data = new HashMap<>();
         data.put("date", LocalDate.now().toString());
-        data.put("author",generatorConfig.getAuthor());
+        data.put("author", generatorConfig.getAuthor());
         data.put("entityInfo", entityInfo);
         data.put("mapperConfig", generatorConfig.getMapperConfig());
         data.put("mapperXmlConfig", generatorConfig.getMapperXmlConfig());

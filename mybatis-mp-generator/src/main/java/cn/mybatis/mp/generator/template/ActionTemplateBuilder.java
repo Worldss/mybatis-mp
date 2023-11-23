@@ -15,22 +15,22 @@ public class ActionTemplateBuilder extends AbstractTemplateBuilder {
     }
 
     @Override
-public boolean enable() {
+    public boolean enable() {
         return generatorConfig.getActionConfig().isEnable();
     }
 
     @Override
-public String targetFilePath() {
+    public String targetFilePath() {
         return generatorConfig.getBaseFilePath() + "/" + (entityInfo.getActionPackage() + "." + entityInfo.getActionName()).replaceAll("\\.", "/") + ".java";
     }
 
     @Override
-public String templateFilePath() {
+    public String templateFilePath() {
         return generatorConfig.getTemplateRootPath() + "/action";
     }
 
     @Override
-public Map<String, Object> contextData() {
+    public Map<String, Object> contextData() {
         Map<String, Object> data = new HashMap<>();
         data.put("imports", GeneratorUtil.buildActionImports(generatorConfig, entityInfo));
         if (generatorConfig.getActionConfig().getSuperClass() != null) {

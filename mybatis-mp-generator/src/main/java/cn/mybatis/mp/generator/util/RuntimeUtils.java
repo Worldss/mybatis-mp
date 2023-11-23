@@ -1,4 +1,3 @@
-
 package cn.mybatis.mp.generator.util;
 
 import java.io.IOException;

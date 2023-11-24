@@ -25,7 +25,7 @@ public interface Compare<RV, COLUMN, V> extends
         IsNullGetterCompare<RV>,
         IsNotNullGetterCompare<RV>,
         EmptyGetterCompare<RV>,
-        NotEmptyGetterCompare<RV>{
+        NotEmptyGetterCompare<RV> {
 
     default RV empty(COLUMN column) {
         return this.empty(column, true);

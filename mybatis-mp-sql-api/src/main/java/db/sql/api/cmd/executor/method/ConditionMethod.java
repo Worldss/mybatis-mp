@@ -263,49 +263,49 @@ public interface ConditionMethod<SELF extends ConditionMethod,
 
     @Override
     default SELF in(COLUMN column, boolean when, Query query) {
-        conditionChain().in(column,when,query);
+        conditionChain().in(column, when, query);
         return (SELF) this;
     }
 
     @Override
     default SELF in(COLUMN column, boolean when, Serializable... values) {
-        conditionChain().in(column,when,values);
+        conditionChain().in(column, when, values);
         return (SELF) this;
     }
 
     @Override
     default SELF in(COLUMN column, boolean when, List<Serializable> values) {
-        conditionChain().in(column,when,values);
+        conditionChain().in(column, when, values);
         return (SELF) this;
     }
 
     @Override
     default <T> SELF in(Getter<T> column, int storey, boolean when, Query query) {
-        conditionChain().in(column,storey,when,query);
+        conditionChain().in(column, storey, when, query);
         return (SELF) this;
     }
 
     @Override
     default <T> SELF in(Getter<T> column, int storey, boolean when, Serializable... values) {
-        conditionChain().in(column,storey,when,values);
+        conditionChain().in(column, storey, when, values);
         return (SELF) this;
     }
 
     @Override
     default <T> SELF in(Getter<T> column, int storey, boolean when, List<Serializable> values) {
-        conditionChain().in(column,storey,when,values);
+        conditionChain().in(column, storey, when, values);
         return (SELF) this;
     }
 
     @Override
     default SELF exists(boolean when, Query query) {
-        conditionChain().exists(when,query);
+        conditionChain().exists(when, query);
         return (SELF) this;
     }
 
     @Override
     default SELF notExists(boolean when, Query query) {
-        conditionChain().notExists(when,query);
+        conditionChain().notExists(when, query);
         return (SELF) this;
     }
 }

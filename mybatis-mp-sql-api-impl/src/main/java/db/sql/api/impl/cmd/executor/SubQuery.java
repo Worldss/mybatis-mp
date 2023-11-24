@@ -4,6 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.basic.Dataset;
+import db.sql.api.impl.cmd.basic.DatasetField;
 import db.sql.api.impl.cmd.condition.Exists;
 import db.sql.api.impl.cmd.condition.In;
 import db.sql.api.impl.tookit.SqlConst;
@@ -11,7 +12,7 @@ import db.sql.api.impl.tookit.SqlConst;
 /**
  * 子查询
  */
-public class SubQuery extends AbstractSubQuery<SubQuery, CmdFactory> implements Dataset<SubQuery> {
+public class SubQuery extends AbstractSubQuery<SubQuery, CmdFactory> implements Dataset<SubQuery, DatasetField> {
 
     private final String alias;
 
@@ -30,17 +31,6 @@ public class SubQuery extends AbstractSubQuery<SubQuery, CmdFactory> implements 
     @Override
     public SubQuery as(String alias) {
         throw new RuntimeException("not support");
-    }
-
-    @Override
-    public String getPrefix() {
-        return prefix;
-    }
-
-    @Override
-    public SubQuery setPrefix(String prefix) {
-        this.prefix = prefix;
-        return this;
     }
 
     @Override

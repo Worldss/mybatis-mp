@@ -26,4 +26,14 @@ public interface FromMethod<SELF extends FromMethod, TABLE> {
     }
 
     SELF from(Class entity, int storey, Consumer<TABLE> consumer);
+
+    /**
+     * 实体类拦截
+     *
+     * @param entity
+     * @param storey
+     */
+    default void fromEntityIntercept(Class entity, int storey) {
+
+    }
 }

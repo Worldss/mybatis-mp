@@ -88,6 +88,7 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
 
     @Override
     public SELF from(Class entity, int storey, Consumer<Table> consumer) {
+        this.fromEntityIntercept(entity, storey);
         Table table = this.$.table(entity, storey);
         this.from(table);
         return (SELF) this;
@@ -108,6 +109,7 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
 
     @Override
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<OnTable> consumer) {
+        consumer = this.joinEntityIntercept(mainTable, mainTableStorey, secondTable, secondTableStorey, consumer);
         return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
     }
 

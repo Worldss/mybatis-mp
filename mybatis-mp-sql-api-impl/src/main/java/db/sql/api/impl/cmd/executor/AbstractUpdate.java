@@ -80,7 +80,9 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
     public SELF update(Class... entities) {
         Table[] tables = new Table[entities.length];
         for (int i = 0; i < entities.length; i++) {
-            tables[i] = $.table(entities[i]);
+            Class entity = entities[i];
+            this.updateEntityIntercept(entity);
+            tables[i] = $.table(entity);
         }
         return this.update(tables);
     }
@@ -116,6 +118,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
 
     @Override
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<OnTable> consumer) {
+        consumer = this.joinEntityIntercept(mainTable, mainTableStorey, secondTable, secondTableStorey, consumer);
         return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
     }
 

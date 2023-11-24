@@ -35,20 +35,10 @@ public abstract class AbstractSubQuery<SELF extends AbstractSubQuery, CMD_FACTOR
         ForUpdate,
         Union,
         Unions<Union>
-        >, Dataset<SELF> {
-
+        > {
     public AbstractSubQuery(CMD_FACTORY $) {
         super($);
     }
 
-    @Override
-    public String getPrefix() {
-        return null;
-    }
-
-    @Override
-    public SELF setPrefix(String prefix) {
-        throw new RuntimeException("not support");
-    }
 }
 

@@ -27,37 +27,9 @@ public class GeneratorConfig {
      */
     private final MapperXmlConfig mapperXmlConfig = new MapperXmlConfig();
     /**
-     * 是否忽略试图
-     */
-    private boolean ignoreView = false;
-    /**
      * 忽略表
      */
     private final boolean ignoreTable = false;
-    /**
-     * 完成后是否打开目录
-     */
-    private boolean finishOpen = false;
-    /**
-     * 根文件路径 默认取 System.getProperty("user.dir") +"/generate"
-     */
-    private String baseFilePath = System.getProperty("user.dir") + "/generate";
-    /**
-     * 根包路径
-     */
-    private String basePackage = "";
-    /**
-     * 模板根目录
-     */
-    private String templateRootPath = "templates";
-    /**
-     * 作者
-     */
-    private String author;
-    /**
-     * 模板引擎
-     */
-    private TemplateEngine templateEngine;
     private final List<Class<? extends ITemplateBuilder>> templateBuilders = new ArrayList<>();
     /**
      * 列配置
@@ -87,6 +59,34 @@ public class GeneratorConfig {
      * Action 实现类配置
      */
     private final ActionConfig actionConfig = new ActionConfig();
+    /**
+     * 是否忽略试图
+     */
+    private boolean ignoreView = false;
+    /**
+     * 完成后是否打开目录
+     */
+    private boolean finishOpen = false;
+    /**
+     * 根文件路径 默认取 System.getProperty("user.dir") +"/generate"
+     */
+    private String baseFilePath = System.getProperty("user.dir") + "/generate";
+    /**
+     * 根包路径
+     */
+    private String basePackage = "";
+    /**
+     * 模板根目录
+     */
+    private String templateRootPath = "templates";
+    /**
+     * 作者
+     */
+    private String author;
+    /**
+     * 模板引擎
+     */
+    private TemplateEngine templateEngine;
 
     {
         templateBuilders.add(EntityTemplateBuilder.class);

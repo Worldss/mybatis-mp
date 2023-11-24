@@ -11,4 +11,13 @@ public interface UpdateMethod<SELF extends UpdateMethod, TABLE, COLUMN, V> {
     SELF set(COLUMN field, V value);
 
     <T> SELF set(Getter<T> field, V value);
+
+    /**
+     * 实体类修改拦截
+     *
+     * @param entity
+     */
+    default void updateEntityIntercept(Class entity) {
+
+    }
 }

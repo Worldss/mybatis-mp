@@ -1,8 +1,8 @@
 package db.sql.api.cmd.executor;
 
 import db.sql.api.Cmd;
-import db.sql.api.cmd.basic.Alias;
 import db.sql.api.cmd.CmdFactory;
+import db.sql.api.cmd.basic.Dataset;
 import db.sql.api.cmd.struct.*;
 import db.sql.api.cmd.struct.query.*;
 
@@ -78,7 +78,7 @@ public interface SubQuery<SELF extends SubQuery,
         FORUPDATE,
         UNION,
         UNIONS
-        >, Alias<SELF> {
+        >, Dataset<SELF, DATASET_FILED> {
 
 
 }

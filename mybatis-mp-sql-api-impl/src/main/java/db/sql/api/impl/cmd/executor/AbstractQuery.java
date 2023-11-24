@@ -131,7 +131,8 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     @Override
     public SELF from(Class entity, int storey, Consumer<Dataset> consumer) {
-        Table table = this.$.table(entity, storey);
+        this.fromEntityIntercept(entity, storey);
+        Table table = $(entity, storey);
         this.from(table);
         return (SELF) this;
     }
@@ -151,12 +152,13 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     @Override
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<OnDataset> consumer) {
-        return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
+        consumer = this.joinEntityIntercept(mainTable, mainTableStorey, secondTable, secondTableStorey, consumer);
+        return this.join(mode, $(mainTable, mainTableStorey), $(secondTable, secondTableStorey), consumer);
     }
 
     @Override
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<OnDataset> consumer) {
-        return this.join(mode, this.$.table(mainTable, mainTableStorey), secondTable, consumer);
+        return this.join(mode, $(mainTable, mainTableStorey), secondTable, consumer);
     }
 
     @Override

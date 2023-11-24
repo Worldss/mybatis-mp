@@ -44,8 +44,15 @@ public class DatasetField<T extends DatasetField<T>> extends Field<T> {
 
         //拼接 select 的别名
         if (parent instanceof Select) {
-            if (this.getAlias() != null ) {
+            String prefix = null;
+            if (getTable() instanceof Table) {
+                prefix = ((Table) getTable()).getPrefix();
+            }
+            if (this.getAlias() != null || prefix != null) {
                 sqlBuilder = sqlBuilder.append(SqlConst.AS);
+                if (prefix != null) {
+                    sqlBuilder = sqlBuilder.append(prefix);
+                }
                 if (this.getAlias() != null) {
                     sqlBuilder = sqlBuilder.append(this.getAlias());
                 } else {

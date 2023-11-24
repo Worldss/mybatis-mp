@@ -5,7 +5,7 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.tookit.SqlConst;
 
-public class Table implements Dataset<Table> {
+public class Table implements Dataset<Table,TableField> {
 
     private final String name;
 
@@ -22,6 +22,7 @@ public class Table implements Dataset<Table> {
         this.alias = alias;
     }
 
+    @Override
     public TableField $(String name) {
         return new TableField(this, name);
     }
@@ -30,6 +31,7 @@ public class Table implements Dataset<Table> {
         return name;
     }
 
+    @Override
     public String getAlias() {
         return alias;
     }
@@ -43,7 +45,6 @@ public class Table implements Dataset<Table> {
         return this;
     }
 
-    @Override
     public String getPrefix() {
         return prefix;
     }

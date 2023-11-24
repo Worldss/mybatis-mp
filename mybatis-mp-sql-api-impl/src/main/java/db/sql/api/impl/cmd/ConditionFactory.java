@@ -5,17 +5,17 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.Query;
-import db.sql.api.cmd.executor.method.condition.ConditionMethods;
+import db.sql.api.cmd.executor.method.ConditionMethods;
 
 
 import java.io.Serializable;
 import java.util.List;
 
-public class ConditionFaction implements ConditionMethods<Condition, Cmd, Object> {
+public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object> {
 
     protected final CmdFactory cmdFactory;
 
-    public ConditionFaction(CmdFactory cmdFactory) {
+    public ConditionFactory(CmdFactory cmdFactory) {
         this.cmdFactory = cmdFactory;
     }
 
@@ -416,22 +416,17 @@ public class ConditionFaction implements ConditionMethods<Condition, Cmd, Object
         return Methods.in(convert(column, storey), values);
     }
 
-    public Condition exists(Query query) {
-        return this.exists(query, true);
-    }
-
-    public Condition exists(Query query, boolean when) {
+    @Override
+    public Condition exists(boolean when, Query query) {
         if (!when) {
             return null;
         }
         return Methods.exists(query);
     }
 
-    public Condition notExists(Query query) {
-        return this.notExists(query, true);
-    }
 
-    public Condition notExists(Query query, boolean when) {
+    @Override
+    public Condition notExists(boolean when, Query query) {
         if (!when) {
             return null;
         }

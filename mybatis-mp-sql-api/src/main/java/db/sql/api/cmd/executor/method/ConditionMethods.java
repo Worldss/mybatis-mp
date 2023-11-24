@@ -1,5 +1,7 @@
-package db.sql.api.cmd.executor.method.condition;
+package db.sql.api.cmd.executor.method;
 
+import db.sql.api.cmd.executor.method.condition.ExistsMethod;
+import db.sql.api.cmd.executor.method.condition.InMethod;
 import db.sql.api.cmd.executor.method.condition.compare.Compare;
 
 /**
@@ -10,5 +12,6 @@ import db.sql.api.cmd.executor.method.condition.compare.Compare;
  * @param <V>
  */
 public interface ConditionMethods<RV, COLUMN, V> extends Compare<RV, COLUMN, V>,
-        InConditionMethod<RV, COLUMN> {
+        InMethod<RV, COLUMN>,
+        ExistsMethod<RV> {
 }

@@ -2,23 +2,23 @@ package db.sql.api.impl.cmd.struct;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.impl.cmd.ConditionFaction;
+import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
 public class On<SELF extends On<SELF, TABLE, JOIN>, TABLE extends Dataset, JOIN extends Join<JOIN, TABLE, SELF>> implements db.sql.api.cmd.struct.On<SELF, TABLE, Cmd, Object, JOIN, ConditionChain> {
 
-    private final ConditionFaction conditionFaction;
+    private final ConditionFactory conditionFactory;
 
     private final JOIN join;
 
     private final ConditionChain conditionChain;
 
-    public On(ConditionFaction conditionFaction, JOIN join) {
-        this.conditionFaction = conditionFaction;
+    public On(ConditionFactory conditionFactory, JOIN join) {
+        this.conditionFactory = conditionFactory;
         this.join = join;
-        conditionChain = new ConditionChain(conditionFaction);
+        conditionChain = new ConditionChain(conditionFactory);
     }
 
     @Override

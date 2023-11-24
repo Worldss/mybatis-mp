@@ -6,7 +6,7 @@ import db.sql.api.cmd.executor.Query;
 import java.io.Serializable;
 import java.util.List;
 
-public interface InConditionMethod<RV, COLUMN> {
+public interface InMethod<RV, COLUMN> {
 
     default RV in(COLUMN column, Query query) {
         return this.in(column, true, query);

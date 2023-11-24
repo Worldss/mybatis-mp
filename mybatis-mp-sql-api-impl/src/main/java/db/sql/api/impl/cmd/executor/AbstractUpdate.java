@@ -6,7 +6,7 @@ import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.executor.Update;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.impl.cmd.CmdFactory;
-import db.sql.api.impl.cmd.ConditionFaction;
+import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.DatasetField;
@@ -41,7 +41,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
         Where
         > {
 
-    protected final ConditionFaction conditionFaction;
+    protected final ConditionFactory conditionFactory;
     protected final CMD_FACTORY $;
     protected UpdateTable updateTable;
     protected UpdateSets updateSets;
@@ -50,7 +50,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
 
     public AbstractUpdate(CMD_FACTORY $) {
         this.$ = $;
-        this.conditionFaction = new ConditionFaction($);
+        this.conditionFactory = new ConditionFactory($);
     }
 
     @Override
@@ -104,7 +104,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
     @Override
     public JoinTable $join(JoinMode mode, Table mainTable, Table secondTable) {
         JoinTable join = new JoinTable(mode, mainTable, secondTable, joinTable -> {
-            return new OnTable(this.conditionFaction, joinTable);
+            return new OnTable(this.conditionFactory, joinTable);
         });
         if (Objects.isNull(joins)) {
             joins = new Joins();
@@ -127,7 +127,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
     @Override
     public Where $where() {
         if (where == null) {
-            where = new Where(this.conditionFaction);
+            where = new Where(this.conditionFactory);
             this.append(where);
         }
         return where;

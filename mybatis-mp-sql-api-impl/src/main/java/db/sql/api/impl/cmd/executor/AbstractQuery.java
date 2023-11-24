@@ -9,7 +9,7 @@ import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.impl.cmd.CmdFactory;
-import db.sql.api.impl.cmd.ConditionFaction;
+import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.DatasetField;
 import db.sql.api.impl.cmd.basic.Table;
@@ -49,7 +49,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         Unions<Union>
         >, Cmd {
 
-    protected final ConditionFaction conditionFaction;
+    protected final ConditionFactory conditionFactory;
 
     protected final CMD_FACTORY $;
 
@@ -75,7 +75,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     public AbstractQuery(CMD_FACTORY $) {
         this.$ = $;
-        this.conditionFaction = new ConditionFaction($) {
+        this.conditionFactory = new ConditionFactory($) {
             @Override
             protected boolean ignoreEmpty() {
                 return true;
@@ -139,7 +139,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     @Override
     public JoinDataset $join(JoinMode mode, Dataset mainTable, Dataset secondTable) {
         JoinDataset join = new JoinDataset(mode, mainTable, secondTable, (joinDataset -> {
-            return new OnDataset(this.conditionFaction, joinDataset);
+            return new OnDataset(this.conditionFactory, joinDataset);
         }));
         if (Objects.isNull(joins)) {
             joins = new Joins();
@@ -162,7 +162,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     @Override
     public Where $where() {
         if (where == null) {
-            where = new Where(this.conditionFaction);
+            where = new Where(this.conditionFactory);
             this.append(where);
         }
         return where;

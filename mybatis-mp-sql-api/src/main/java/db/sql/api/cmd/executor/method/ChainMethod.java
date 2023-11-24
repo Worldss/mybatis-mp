@@ -4,9 +4,6 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.Query;
-import db.sql.api.cmd.executor.method.condition.ConditionMethods;
-import db.sql.api.cmd.executor.method.condition.InConditionMethod;
-import db.sql.api.cmd.executor.method.condition.compare.Compare;
 import db.sql.api.cmd.struct.ConditionChain;
 import db.sql.api.cmd.struct.Nested;
 
@@ -16,7 +13,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 
-public interface ConditionChainMethod<SELF extends ConditionChainMethod,
+public interface ChainMethod<SELF extends ChainMethod,
         COLUMN,
         V,
         CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>
@@ -299,22 +296,15 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod,
         return (SELF) this;
     }
 
-    default <T> SELF exists(Query query) {
-        return this.exists(query, true);
-    }
-
-    default <T> SELF exists(Query query, boolean when) {
-        conditionChain().exists(query, when);
+    @Override
+    default SELF exists(boolean when, Query query) {
+        conditionChain().exists(when,query);
         return (SELF) this;
     }
 
-    default <T> SELF notExists(Query query) {
-        return this.notExists(query, true);
-    }
-
-    default <T> SELF notExists(Query query, boolean when) {
-        conditionChain().notExists(query, when);
+    @Override
+    default SELF notExists(boolean when, Query query) {
+        conditionChain().notExists(when,query);
         return (SELF) this;
     }
-
 }

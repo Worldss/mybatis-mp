@@ -46,19 +46,6 @@ public interface Executor<SELF extends Executor,
      * 万能创建SQL命令方法
      *
      * @param getter 列
-     * @param RF     返回函数
-     * @param <T>    实体类型
-     * @param <R>    返回命令
-     * @return
-     */
-    default <T, R extends Cmd> R $(Getter<T> getter, Function<TableField, R> RF) {
-        return $().create(getter, RF);
-    }
-
-    /**
-     * 万能创建SQL命令方法
-     *
-     * @param getter 列
      * @param storey 缓存区
      * @param RF     返回函数
      * @param <T>    实体类型

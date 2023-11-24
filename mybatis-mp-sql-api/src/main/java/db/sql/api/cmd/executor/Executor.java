@@ -50,7 +50,9 @@ public interface Executor<T extends Executor,
      * @param <R>    返回命令
      * @return
      */
-    <T, R extends Cmd> R $(Getter<T> getter, Function<TABLE_FIELD, R> RF);
+    default <T, R extends Cmd> R $(Getter<T> getter, Function<TABLE_FIELD, R> RF) {
+        return this.$(getter, 1, RF);
+    }
 
     /**
      * 万能创建SQL命令方法

@@ -6,14 +6,12 @@ import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.basic.UnionsCmdLists;
 import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.executor.SubQuery;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.ConditionFactory;
-import db.sql.api.impl.cmd.basic.Dataset;
-import db.sql.api.impl.cmd.basic.DatasetField;
-import db.sql.api.impl.cmd.basic.Table;
-import db.sql.api.impl.cmd.basic.TableField;
+import db.sql.api.impl.cmd.basic.*;
 import db.sql.api.impl.cmd.struct.*;
 import db.sql.api.impl.cmd.struct.query.*;
 import db.sql.api.impl.tookit.SqlConst;
@@ -117,6 +115,31 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
             this.append(select);
         }
         return select;
+    }
+
+    /**
+     * select 子查询
+     *
+     * @param subQuery
+     * @param column
+     * @param <T>
+     * @return
+     */
+    public <T> SELF select(db.sql.api.cmd.executor.SubQuery subQuery, Getter<T> column, Function<SubQueryTableField, Cmd> f) {
+        return this.select(subQuery, column, 1, f);
+    }
+
+    /**
+     * select 子查询
+     *
+     * @param subQuery
+     * @param column
+     * @param <T>
+     * @return
+     */
+    public <T> SELF select(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Cmd> f) {
+        this.select(f.apply(new SubQueryTableField(subQuery, (TableField) subQuery.$(column, storey))));
+        return (SELF) this;
     }
 
     @Override

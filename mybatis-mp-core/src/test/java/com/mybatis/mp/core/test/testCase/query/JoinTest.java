@@ -129,6 +129,7 @@ public class JoinTest extends BaseTest {
                     .eq(SysRole::getId, 1);
 
             List<SysUser> list = QueryChain.of(sysUserMapper)
+                    .select(subQuery,SysRole::getId,c->c.as("xx"))
                     .select(SysUser.class)
                     .from(SysUser.class)
                     .join(JoinMode.INNER, SysUser.class, subQuery, on -> on.eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId)))

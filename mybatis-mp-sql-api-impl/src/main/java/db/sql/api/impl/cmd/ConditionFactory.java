@@ -5,8 +5,7 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.Query;
-import db.sql.api.cmd.executor.method.ConditionMethods;
-
+import db.sql.api.cmd.executor.method.condition.ConditionMethods;
 
 import java.io.Serializable;
 import java.util.List;

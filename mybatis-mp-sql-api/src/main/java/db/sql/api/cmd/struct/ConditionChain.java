@@ -2,8 +2,7 @@ package db.sql.api.cmd.struct;
 
 
 import db.sql.api.cmd.basic.Condition;
-import db.sql.api.cmd.executor.Query;
-import db.sql.api.cmd.executor.method.ConditionMethods;
+import db.sql.api.cmd.executor.method.condition.ConditionMethods;
 
 import java.util.function.Consumer;
 

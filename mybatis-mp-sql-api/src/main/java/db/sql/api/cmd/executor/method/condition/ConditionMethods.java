@@ -1,7 +1,5 @@
-package db.sql.api.cmd.executor.method;
+package db.sql.api.cmd.executor.method.condition;
 
-import db.sql.api.cmd.executor.method.condition.ExistsMethod;
-import db.sql.api.cmd.executor.method.condition.InMethod;
 import db.sql.api.cmd.executor.method.condition.compare.Compare;
 
 /**

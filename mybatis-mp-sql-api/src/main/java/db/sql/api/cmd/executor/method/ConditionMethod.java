@@ -4,6 +4,7 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.executor.method.condition.ConditionMethods;
 import db.sql.api.cmd.struct.ConditionChain;
 import db.sql.api.cmd.struct.Nested;
 
@@ -13,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 
-public interface ChainMethod<SELF extends ChainMethod,
+public interface ConditionMethod<SELF extends ConditionMethod,
         COLUMN,
         V,
         CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>

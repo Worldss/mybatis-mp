@@ -5,10 +5,7 @@ import db.sql.api.cmd.executor.SubQuery;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.impl.cmd.CmdFactory;
-import db.sql.api.impl.cmd.basic.Dataset;
-import db.sql.api.impl.cmd.basic.DatasetField;
-import db.sql.api.impl.cmd.basic.Table;
-import db.sql.api.impl.cmd.basic.TableField;
+import db.sql.api.impl.cmd.basic.*;
 import db.sql.api.impl.cmd.struct.*;
 import db.sql.api.impl.cmd.struct.query.*;
 
@@ -18,6 +15,7 @@ public abstract class AbstractSubQuery<SELF extends AbstractSubQuery, CMD_FACTOR
         Dataset,
         TableField,
         DatasetField,
+        SubQueryTableField,
         Cmd,
         Object,
         CMD_FACTORY,

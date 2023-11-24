@@ -28,6 +28,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         Dataset,
         TableField,
         DatasetField,
+        SubQueryTableField,
         Cmd,
         Object,
         CMD_FACTORY,
@@ -117,28 +118,23 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return select;
     }
 
-    /**
-     * select 子查询
-     *
-     * @param subQuery
-     * @param column
-     * @param <T>
-     * @return
-     */
-    public <T> SELF select(db.sql.api.cmd.executor.SubQuery subQuery, Getter<T> column, Function<SubQueryTableField, Cmd> f) {
-        return this.select(subQuery, column, 1, f);
-    }
 
     /**
-     * select 子查询
+     * select 子查询 列
      *
      * @param subQuery
      * @param column
      * @param <T>
      * @return
      */
+    @Override
     public <T> SELF select(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Cmd> f) {
-        this.select(f.apply(new SubQueryTableField(subQuery, (TableField) subQuery.$(column, storey))));
+        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(column, storey));
+        if (Objects.nonNull(f)) {
+            this.select(f.apply(subQueryTableField));
+        } else {
+            this.select(subQueryTableField);
+        }
         return (SELF) this;
     }
 
@@ -220,6 +216,27 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return this.groupBy(tableField);
     }
 
+    /**
+     * groupBy 子查询 列
+     *
+     * @param subQuery
+     * @param column
+     * @param storey
+     * @param f
+     * @param <T>
+     * @return
+     */
+    @Override
+    public <T> SELF groupBy(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Cmd> f) {
+        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(column, storey));
+        if (Objects.nonNull(f)) {
+            this.groupBy(f.apply(subQueryTableField));
+        } else {
+            this.groupBy(subQueryTableField);
+        }
+        return (SELF) this;
+    }
+
     @Override
     public Having $having() {
         if (having == null) {
@@ -230,13 +247,25 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF havingAnd(Getter<T> getter, Function<TableField, Condition> f) {
-        return this.havingAnd(f.apply($.field(getter)));
+    public <T> SELF havingAnd(Getter<T> getter, int storey, Function<TableField, Condition> f) {
+        return this.havingAnd(f.apply($(getter, storey)));
     }
 
     @Override
-    public <T> SELF havingOr(Getter<T> getter, Function<TableField, Condition> f) {
-        return this.havingOr(f.apply($.field(getter)));
+    public <T> SELF havingOr(Getter<T> getter, int storey, Function<TableField, Condition> f) {
+        return this.havingOr(f.apply($(getter, storey)));
+    }
+
+    @Override
+    public <T> SELF havingAnd(SubQuery subQuery, Getter<T> getter, int storey, Function<SubQueryTableField, Condition> f) {
+        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(getter, storey));
+        return this.havingAnd(f.apply(subQueryTableField));
+    }
+
+    @Override
+    public <T> SELF havingOr(SubQuery subQuery, Getter<T> getter, int storey, Function<SubQueryTableField, Condition> f) {
+        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(getter, storey));
+        return this.havingOr(f.apply(subQueryTableField));
     }
 
     @Override
@@ -247,6 +276,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         }
         return orderBy;
     }
+
 
     @Override
     public ForUpdate $forUpdate() {
@@ -273,6 +303,28 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
             return this.orderBy(f.apply(tableField), asc);
         }
         return this.orderBy(tableField, asc);
+    }
+
+    /**
+     * orderBy 子查询 列
+     *
+     * @param subQuery
+     * @param column
+     * @param storey
+     * @param asc
+     * @param f
+     * @param <T>
+     * @return
+     */
+    @Override
+    public <T> SELF orderBy(SubQuery subQuery, Getter<T> column, int storey, boolean asc, Function<SubQueryTableField, Cmd> f) {
+        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(column, storey));
+        if (Objects.nonNull(f)) {
+            this.orderBy(f.apply(subQueryTableField), asc);
+        } else {
+            this.orderBy(subQueryTableField, asc);
+        }
+        return (SELF) this;
     }
 
     public Unions $unions() {

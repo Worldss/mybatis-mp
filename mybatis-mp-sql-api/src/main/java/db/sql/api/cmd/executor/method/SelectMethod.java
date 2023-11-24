@@ -6,11 +6,12 @@ import db.sql.api.cmd.basic.Count1;
 import db.sql.api.cmd.basic.CountAll;
 import db.sql.api.cmd.basic.SQL1;
 import db.sql.api.cmd.basic.SQLCmdAll;
+import db.sql.api.cmd.executor.SubQuery;
 
 import java.util.List;
 import java.util.function.Function;
 
-public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD> {
+public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, SUB_QUERY_TABLE_FILED> {
 
     SELF select(Cmd column);
 
@@ -92,6 +93,54 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD> {
         return (SELF) this;
     }
 
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param column
+     * @param <T>
+     * @return
+     */
+    default <T> SELF select(SubQuery subQuery, Getter<T> column) {
+        return this.select(subQuery, column, 1);
+    }
 
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param column
+     * @param storey
+     * @param <T>
+     * @return
+     */
+    default <T> SELF select(SubQuery subQuery, Getter<T> column, int storey) {
+        return this.select(subQuery, column, storey, null);
+    }
+
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param column
+     * @param f
+     * @param <T>
+     * @return
+     */
+    default <T> SELF select(SubQuery subQuery, Getter<T> column, Function<SUB_QUERY_TABLE_FILED, Cmd> f) {
+        return this.select(subQuery, column, 1, f);
+    }
+
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param column
+     * @param storey
+     * @param f
+     * @param <T>
+     * @return
+     */
+    <T> SELF select(SubQuery subQuery, Getter<T> column, int storey, Function<SUB_QUERY_TABLE_FILED, Cmd> f);
 
 }

@@ -4,7 +4,7 @@ import cn.mybatis.mp.core.util.NamingUtil;
 
 public class EngineUtil {
 
-    public   String firstToLower(String str){
+    public String firstToLower(String str) {
         return NamingUtil.firstToLower(str);
     }
 }

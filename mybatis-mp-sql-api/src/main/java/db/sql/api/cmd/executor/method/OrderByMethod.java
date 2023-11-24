@@ -2,11 +2,12 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.executor.SubQuery;
 
 import java.util.List;
 import java.util.function.Function;
 
-public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, COLUMN> {
+public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, SUB_QUERY_TABLE_FILED, COLUMN> {
 
     default SELF orderBy(COLUMN column) {
         return this.orderBy(column, true);
@@ -14,11 +15,9 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, COLUMN> 
 
     SELF orderBy(COLUMN column, boolean asc);
 
-
     default SELF orderBy(COLUMN... columns) {
         return this.orderBy(true, columns);
     }
-
 
     default SELF orderBy(boolean asc, COLUMN... columns) {
         for (COLUMN column : columns) {
@@ -27,11 +26,9 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, COLUMN> 
         return (SELF) this;
     }
 
-
     default SELF orderBy(List<COLUMN> columns) {
         return this.orderBy(true, columns);
     }
-
 
     default SELF orderBy(boolean asc, List<COLUMN> columns) {
         for (COLUMN column : columns) {
@@ -70,20 +67,62 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, COLUMN> 
 
     <T> SELF orderBy(Getter<T> column, int storey, boolean asc, Function<TABLE_FIELD, Cmd> f);
 
-
     default <T> SELF orderBy(Getter<T>... columns) {
         return this.orderBy(true, columns);
     }
-
 
     default <T> SELF orderBy(boolean asc, Getter<T>... columns) {
         return this.orderBy(1, asc, columns);
     }
 
-
     default <T> SELF orderBy(int storey, boolean asc, Getter<T>... columns) {
         for (Getter<T> column : columns) {
             this.orderBy(column, storey, asc);
+        }
+        return (SELF) this;
+    }
+
+    default <T> SELF orderBy(SubQuery subQuery, Getter<T> column) {
+        return this.orderBy(subQuery, column, true);
+    }
+
+    default <T> SELF orderBy(SubQuery subQuery, Getter<T> column, boolean asc) {
+        return this.orderBy(subQuery, column, 1, asc);
+    }
+
+    default <T> SELF orderBy(SubQuery subQuery, Getter<T> column, Function<SUB_QUERY_TABLE_FILED, Cmd> f) {
+        return this.orderBy(subQuery, column, true, f);
+    }
+
+    default <T> SELF orderBy(SubQuery subQuery, Getter<T> column, boolean asc, Function<SUB_QUERY_TABLE_FILED, Cmd> f) {
+        return this.orderBy(subQuery, column, 1, asc, f);
+    }
+
+    default <T> SELF orderBy(SubQuery subQuery, Getter<T> column, int storey) {
+        return this.orderBy(subQuery, column, storey, null);
+    }
+
+    default <T> SELF orderBy(SubQuery subQuery, Getter<T> column, int storey, boolean asc) {
+        return this.orderBy(subQuery, column, storey, asc, null);
+    }
+
+    default <T> SELF orderBy(SubQuery subQuery, Getter<T> column, int storey, Function<SUB_QUERY_TABLE_FILED, Cmd> f) {
+        return this.orderBy(subQuery, column, storey, true, f);
+    }
+
+    <T> SELF orderBy(SubQuery subQuery, Getter<T> column, int storey, boolean asc, Function<SUB_QUERY_TABLE_FILED, Cmd> f);
+
+    default <T> SELF orderBy(SubQuery subQuery, Getter<T>... columns) {
+        return this.orderBy(subQuery, true, columns);
+    }
+
+    default <T> SELF orderBy(SubQuery subQuery, boolean asc, Getter<T>... columns) {
+        return this.orderBy(subQuery, 1, asc, columns);
+    }
+
+    default <T> SELF orderBy(SubQuery subQuery, int storey, boolean asc, Getter<T>... columns) {
+        for (Getter<T> column : columns) {
+            this.orderBy(subQuery, column, storey, asc);
         }
         return (SELF) this;
     }

@@ -1,24 +1,17 @@
 package db.sql.api.impl.cmd.basic;
 
-import db.sql.api.Cmd;
-
 /**
  * 数据集 可能是一个table 也可以能是一个子查询 等
  */
-public interface Dataset<T extends Dataset> extends Cmd, Alias<T> {
-
-    String getPrefix();
-
-    T setPrefix(String prefix);
-
+public interface Dataset<T extends Dataset, FIELD extends DatasetField> extends db.sql.api.cmd.basic.Dataset<T, FIELD> {
     /**
      * 创建列字段
      *
      * @param name
      * @return
      */
-    default DatasetField $(String name) {
-        return new DatasetField(this, name);
+    default FIELD $(String name) {
+        return (FIELD) new DatasetField(this, name);
     }
 
     /**

@@ -41,7 +41,7 @@ public class MapperTemplateBuilder extends AbstractTemplateBuilder {
             data.put("superExtend", "");
         }
         data.put("date", LocalDate.now().toString());
-        data.put("author",generatorConfig.getAuthor());
+        data.put("author", generatorConfig.getAuthor());
         data.put("entityInfo", entityInfo);
         data.put("mapperConfig", generatorConfig.getMapperConfig());
         return data;

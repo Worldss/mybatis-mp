@@ -54,7 +54,7 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
      * @return
      */
     @Override
-    default int delete(T entity) {
+default int delete(T entity) {
         if (Objects.isNull(entity)) {
             return 0;
         }

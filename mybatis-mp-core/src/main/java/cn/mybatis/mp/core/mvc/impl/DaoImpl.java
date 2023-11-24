@@ -22,7 +22,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     }
 
     @Override
-    public Class<K> getIdType() {
+public Class<K> getIdType() {
         if (idType == null) {
             idType = (Class<K>) GenericUtil.getGenericInterfaceClass(this.getClass()).get(1);
         }
@@ -46,7 +46,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     }
 
     @Override
-    public T getById(K id) {
+public T getById(K id) {
         if (id.getClass() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
@@ -54,17 +54,17 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     }
 
     @Override
-    public void save(T entity) {
+public void save(T entity) {
         mapper.save(entity);
     }
 
     @Override
-    public void save(Model<T> model) {
+public void save(Model<T> model) {
         mapper.save(model);
     }
 
     @Override
-    public void update(T entity) {
+public void update(T entity) {
         if (getIdType() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
@@ -72,7 +72,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     }
 
     @Override
-    public int update(T entity, Getter<T>... forceUpdateFields) {
+public int update(T entity, Getter<T>... forceUpdateFields) {
         if (getIdType() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
@@ -80,7 +80,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     }
 
     @Override
-    public int update(Model<T> model) {
+public int update(Model<T> model) {
         if (getIdType() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
@@ -88,12 +88,12 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     }
 
     @Override
-    public int update(Model<T> model, Getter<T>... forceUpdateFields) {
+public int update(Model<T> model, Getter<T>... forceUpdateFields) {
         return mapper.update(model, forceUpdateFields);
     }
 
     @Override
-    public int delete(T entity) {
+public int delete(T entity) {
         if (getIdType() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
@@ -101,7 +101,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     }
 
     @Override
-    public int deleteById(K id) {
+public int deleteById(K id) {
         if (id.getClass() == Void.class) {
             throw new RuntimeException("Not Supported");
         }

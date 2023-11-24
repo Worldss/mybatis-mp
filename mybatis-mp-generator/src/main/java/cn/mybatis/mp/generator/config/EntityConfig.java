@@ -19,55 +19,45 @@ import java.util.function.Function;
 public class EntityConfig {
 
     /**
+     * 数据库类型的java映射
+     */
+    private final Map<JdbcType, Class<?>> typeMapping = new HashMap<>();
+    /**
      * 实体类父类
      */
     private String superClass;
-
     /**
      * 是否使用 lombok
      */
     private boolean lombok = true;
-
     /**
      * 注解上是否加上schema
      */
     private boolean schema = false;
-
     /**
      * 默认TableId代码，数据库非自增时生效
      */
     private String defaultTableIdCode;
-
     /**
      * 实体类包名
      */
     private String packageName = "DO";
-
     /**
      * 实体类名字转换器
      */
     private Function<String, String> nameConvert;
-
-
     /**
      * 字段名策略
      */
     private NamingStrategy fieldNamingStrategy = NamingStrategy.UNDERLINE_TO_CAMEL;
-
     /**
      * 字段名转换器
      */
     private Function<ColumnInfo, String> fieldNameConverter;
-
     /**
      * 备注转换器
      */
     private Function<ColumnInfo, String> remarksConverter;
-
-    /**
-     * 数据库类型的java映射
-     */
-    private final Map<JdbcType, Class<?>> typeMapping = new HashMap<>();
 
     {
         typeMapping.put(JdbcType.BIT, Boolean.class);

@@ -5,6 +5,8 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.executor.Insert;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.Methods;
+import db.sql.api.impl.cmd.basic.Dataset;
+import db.sql.api.impl.cmd.basic.DatasetField;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.cmd.struct.insert.InsertFields;
@@ -16,7 +18,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY> implements Insert<SELF, Table, TableField, Cmd, InsertTable, InsertFields, InsertValues> {
+public abstract class AbstractInsert<SELF extends AbstractInsert,
+        CMD_FACTORY extends CmdFactory
+        >
+        extends BaseExecutor<SELF, CMD_FACTORY>
+        implements Insert<SELF,
+        Table,
+        Dataset,
+        TableField,
+        DatasetField,
+        TableField,
+        Cmd,
+        InsertTable,
+        InsertFields,
+        InsertValues
+        > {
 
     protected final CMD_FACTORY $;
     protected InsertTable insertTable;
@@ -57,7 +73,6 @@ public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY ex
             this.insertValues = new InsertValues();
             this.append(this.insertValues);
         }
-
         this.insertValues.add(values);
         return this.insertValues;
     }
@@ -68,7 +83,6 @@ public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY ex
     }
 
     @Override
-
     public <T> SELF field(Getter<T>... fields) {
         TableField[] tableField = new TableField[fields.length];
         for (int i = 0; i < fields.length; i++) {
@@ -78,7 +92,6 @@ public abstract class AbstractInsert<SELF extends AbstractInsert, CMD_FACTORY ex
     }
 
     @Override
-
     public SELF values(List<Object> values) {
         this.$values(values.stream().map(item -> {
             return Methods.convert(item);

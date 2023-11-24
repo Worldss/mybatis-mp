@@ -6,13 +6,15 @@ import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.executor.Update;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.impl.cmd.CmdFactory;
-import db.sql.api.impl.cmd.ConditionFaction;
+import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.cmd.basic.Dataset;
+import db.sql.api.impl.cmd.basic.DatasetField;
+import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.cmd.struct.ConditionChain;
-import db.sql.api.impl.cmd.struct.Join;
-import db.sql.api.impl.cmd.struct.On;
+import db.sql.api.impl.cmd.struct.JoinTable;
+import db.sql.api.impl.cmd.struct.OnTable;
 import db.sql.api.impl.cmd.struct.Where;
 import db.sql.api.impl.cmd.struct.update.UpdateSets;
 import db.sql.api.impl.cmd.struct.update.UpdateTable;
@@ -21,9 +23,25 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY> implements Update<SELF, Dataset, Cmd, Object, ConditionChain, UpdateTable, Join, On, Where> {
+public abstract class AbstractUpdate<SELF extends AbstractUpdate,
+        CMD_FACTORY extends CmdFactory
+        >
+        extends BaseExecutor<SELF, CMD_FACTORY>
+        implements Update<SELF,
+        Table,
+        Dataset,
+        TableField,
+        DatasetField,
+        Cmd,
+        Object,
+        ConditionChain,
+        UpdateTable,
+        JoinTable,
+        OnTable,
+        Where
+        > {
 
-    protected final ConditionFaction conditionFaction;
+    protected final ConditionFactory conditionFactory;
     protected final CMD_FACTORY $;
     protected UpdateTable updateTable;
     protected UpdateSets updateSets;
@@ -32,7 +50,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
 
     public AbstractUpdate(CMD_FACTORY $) {
         this.$ = $;
-        this.conditionFaction = new ConditionFaction($);
+        this.conditionFactory = new ConditionFactory($);
     }
 
     @Override
@@ -50,7 +68,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-    public UpdateTable $update(Dataset... tables) {
+    public UpdateTable $update(Table... tables) {
         if (this.updateTable == null) {
             this.updateTable = new UpdateTable(tables);
             this.append(this.updateTable);
@@ -60,15 +78,16 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
 
     @Override
     public SELF update(Class... entities) {
-        Dataset[] tables = new Dataset[entities.length];
+        Table[] tables = new Table[entities.length];
         for (int i = 0; i < entities.length; i++) {
-            tables[i] = $.table(entities[i]);
+            Class entity = entities[i];
+            this.updateEntityIntercept(entity);
+            tables[i] = $.table(entity);
         }
         return this.update(tables);
     }
 
     @Override
-
     public SELF set(Cmd field, Object value) {
         Cmd v = Methods.convert(value);
         if (this.updateSets == null) {
@@ -80,14 +99,15 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-
     public <T> SELF set(Getter<T> field, Object value) {
         return this.set($.field(field), value);
     }
 
     @Override
-    public Join $join(JoinMode mode, Dataset mainTable, Dataset secondTable) {
-        Join join = new Join(this.conditionFaction, mode, mainTable, secondTable);
+    public JoinTable $join(JoinMode mode, Table mainTable, Table secondTable) {
+        JoinTable join = new JoinTable(mode, mainTable, secondTable, joinTable -> {
+            return new OnTable(this.conditionFactory, joinTable);
+        });
         if (Objects.isNull(joins)) {
             joins = new Joins();
             this.append(joins);
@@ -97,30 +117,28 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     }
 
     @Override
-
-    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
+    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<OnTable> consumer) {
+        consumer = this.joinEntityIntercept(mainTable, mainTableStorey, secondTable, secondTableStorey, consumer);
         return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
     }
 
     @Override
-
-    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<On> consumer) {
+    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Table secondTable, Consumer<OnTable> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), secondTable, consumer);
     }
 
     @Override
     public Where $where() {
         if (where == null) {
-            where = new Where(this.conditionFaction);
+            where = new Where(this.conditionFactory);
             this.append(where);
         }
         return where;
     }
 
     @Override
-
-    public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<On> consumer) {
-        Join join = $join(mode, mainTable, secondTable);
+    public SELF join(JoinMode mode, Table mainTable, Table secondTable, Consumer<OnTable> consumer) {
+        JoinTable join = $join(mode, mainTable, secondTable);
         if (consumer != null) {
             consumer.accept(join.getOn());
         }
@@ -134,7 +152,6 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate, CMD_FACTORY ex
     public UpdateSets getUpdateSets() {
         return this.updateSets;
     }
-
 
     public Joins getJoins() {
         return this.joins;

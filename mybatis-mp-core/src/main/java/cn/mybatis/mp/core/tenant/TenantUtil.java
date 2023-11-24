@@ -6,7 +6,7 @@ import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.sql.executor.MybatisCmdFactory;
 import cn.mybatis.mp.db.Model;
-import db.sql.api.cmd.executor.method.compare.Compare;
+import db.sql.api.cmd.executor.method.condition.compare.Compare;
 
 import java.io.Serializable;
 import java.util.Objects;

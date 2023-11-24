@@ -1,6 +1,8 @@
 package db.sql.api.cmd.struct.insert;
 
-public interface InsertTable<TABLE> {
+import db.sql.api.Cmd;
+
+public interface InsertTable<TABLE> extends Cmd {
 
     TABLE getTable();
 }

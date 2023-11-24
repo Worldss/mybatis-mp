@@ -57,7 +57,7 @@
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-spring-boot-starter</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
 </dependency>  
 ```
 
@@ -1517,10 +1517,10 @@ mybatis:
     databaseId: MYSQL
 ```
 
-## 目前支持的类型
+## 目前数据库支持的类型
 
 >
-> H2，MYSQL，SQL_SERVER，PGSQL，ORACLE
+> H2，MYSQL，SQL_SERVER（SQL Server2012及以上），PGSQL，ORACLE（12c及以上）
 >
 > 其实也支持其他数据库，只是作者没有放开，如有需要，可联系作者放开！
 >
@@ -1534,7 +1534,7 @@ mybatis:
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-generator</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
     <scope>provided</scope>
 </dependency>
 ```

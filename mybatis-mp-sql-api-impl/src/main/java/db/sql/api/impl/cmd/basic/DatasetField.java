@@ -8,18 +8,18 @@ import db.sql.api.impl.cmd.struct.query.Select;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class DatasetField<T extends DatasetField<T>> extends Field<T> {
+public class DatasetField<T extends DatasetField<T, DATASET>, DATASET extends Dataset> extends Field<T> {
 
-    private final Dataset table;
+    private final DATASET table;
 
     private final String name;
 
-    public DatasetField(Dataset table, String name) {
+    public DatasetField(DATASET table, String name) {
         this.table = table;
         this.name = name;
     }
 
-    public Dataset getTable() {
+    public DATASET getTable() {
         return table;
     }
 
@@ -44,10 +44,14 @@ public class DatasetField<T extends DatasetField<T>> extends Field<T> {
 
         //拼接 select 的别名
         if (parent instanceof Select) {
-            if (this.getAlias() != null || getTable().getPrefix() != null) {
+            String prefix = null;
+            if (getTable() instanceof Table) {
+                prefix = ((Table) getTable()).getPrefix();
+            }
+            if (this.getAlias() != null || prefix != null) {
                 sqlBuilder = sqlBuilder.append(SqlConst.AS);
-                if (getTable().getPrefix() != null) {
-                    sqlBuilder = sqlBuilder.append(getTable().getPrefix());
+                if (prefix != null) {
+                    sqlBuilder = sqlBuilder.append(prefix);
                 }
                 if (this.getAlias() != null) {
                     sqlBuilder = sqlBuilder.append(this.getAlias());

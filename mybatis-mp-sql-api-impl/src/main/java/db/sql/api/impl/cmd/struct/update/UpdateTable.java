@@ -7,35 +7,38 @@ import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class UpdateTable implements db.sql.api.cmd.struct.update.UpdateTable<Dataset>, Cmd {
+public class UpdateTable implements db.sql.api.cmd.struct.update.UpdateTable<Table> {
 
-    private final Dataset[] tables;
+    private final Table[] tables;
 
-    public UpdateTable(Dataset[] tables) {
+    public UpdateTable(Table[] tables) {
         this.tables = tables;
     }
 
     @Override
-    public Dataset[] getTables() {
+    public Table[] getTables() {
         return tables;
     }
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        if (this.tables == null || this.tables.length < 1) {
+            return sqlBuilder;
+        }
         sqlBuilder = sqlBuilder.append(SqlConst.UPDATE);
-        boolean isFirst = true;
-        for (Dataset table : this.tables) {
-            if (!isFirst) {
+        int length = this.tables.length;
+        for (int i = 0; i < length; i++) {
+            Table table = this.tables[i];
+            if (i != 0) {
                 sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
             }
             if (table instanceof Table) {
-                sqlBuilder = sqlBuilder.append(((Table) table).getName());
+                sqlBuilder = sqlBuilder.append(table.getName());
                 sqlBuilder.append(SqlConst.BLANK);
             }
             if (table.getAlias() != null) {
                 sqlBuilder = sqlBuilder.append(table.getAlias());
             }
-            isFirst = false;
         }
         return sqlBuilder;
     }

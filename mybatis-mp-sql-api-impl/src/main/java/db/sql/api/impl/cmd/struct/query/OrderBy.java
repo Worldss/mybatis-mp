@@ -8,7 +8,7 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderBy implements db.sql.api.cmd.struct.query.OrderBy<OrderBy, Cmd>, Cmd {
+public class OrderBy implements db.sql.api.cmd.struct.query.OrderBy<OrderBy> {
 
     private final List<OrderByValue> orderByValues = new ArrayList<>();
 

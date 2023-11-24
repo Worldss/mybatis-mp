@@ -56,7 +56,7 @@ public class ${entityInfo.name} ${superExtend}{
 </#if>
 <#if !entityConfig.isLombok()>
     @Override
-    public String toString() {
+public String toString() {
         return "${entityInfo.name}{" +
     <#list entityInfo.fieldInfoList as field>
         <#if field_index==0>

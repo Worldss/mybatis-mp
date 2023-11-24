@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class Rand extends BasicFunction<Rand> {
 
-    private Number max;
+    private final Number max;
 
     public Rand(Cmd value) {
         this(value, null);
@@ -16,6 +16,7 @@ public class Rand extends BasicFunction<Rand> {
 
     public Rand(Cmd value, Number max) {
         super(SqlConst.RAND, value);
+        this.max=max;
     }
 
     @Override

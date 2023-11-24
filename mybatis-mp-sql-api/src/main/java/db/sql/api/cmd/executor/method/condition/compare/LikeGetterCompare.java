@@ -1,4 +1,4 @@
-package db.sql.api.cmd.executor.method.compare;
+package db.sql.api.cmd.executor.method.condition.compare;
 
 import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;

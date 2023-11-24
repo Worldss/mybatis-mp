@@ -1,5 +1,6 @@
 package db.sql.api.cmd.executor;
 
+import db.sql.api.Cmd;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.executor.method.DeleteMethod;
 import db.sql.api.cmd.executor.method.FromMethod;
@@ -9,8 +10,11 @@ import db.sql.api.cmd.struct.*;
 import db.sql.api.cmd.struct.delete.DeleteTable;
 
 public interface Delete<SELF extends Delete,
-        TABLE,
-        COLUMN,
+        TABLE extends DATASET,
+        DATASET extends Cmd,
+        TABLE_FIELD extends DATASET_FILED,
+        DATASET_FILED extends COLUMN,
+        COLUMN extends Cmd,
         V,
         CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>,
         DELETE_TABLE extends DeleteTable<TABLE>,
@@ -23,11 +27,9 @@ public interface Delete<SELF extends Delete,
         FromMethod<SELF, TABLE>,
         JoinMethod<SELF, TABLE, ON>,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
-        Executor<SELF> {
-
+        Executor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
 
     DELETE_TABLE $delete(TABLE... tables);
-
 
     FROM $from(TABLE... tables);
 
@@ -35,16 +37,13 @@ public interface Delete<SELF extends Delete,
 
     WHERE $where();
 
-
     @Override
-
     default SELF delete(TABLE... tables) {
         $delete(tables);
         return (SELF) this;
     }
 
     @Override
-
     default SELF from(TABLE... tables) {
         $from(tables);
         return (SELF) this;

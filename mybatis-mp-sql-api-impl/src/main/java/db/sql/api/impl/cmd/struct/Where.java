@@ -3,24 +3,24 @@ package db.sql.api.impl.cmd.struct;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.impl.cmd.ConditionFaction;
+import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class Where implements db.sql.api.cmd.struct.Where<Where, Cmd, Object, ConditionChain>, Cmd {
+public class Where implements db.sql.api.cmd.struct.Where<Where, Cmd, Object, ConditionChain> {
 
-    private final ConditionFaction conditionFaction;
+    private final ConditionFactory conditionFactory;
 
     private ConditionChain conditionChain;
 
-    public Where(ConditionFaction conditionFaction) {
-        this.conditionFaction = conditionFaction;
+    public Where(ConditionFactory conditionFactory) {
+        this.conditionFactory = conditionFactory;
     }
 
     @Override
     public ConditionChain conditionChain() {
         if (this.conditionChain == null) {
-            this.conditionChain = new ConditionChain(conditionFaction);
+            this.conditionChain = new ConditionChain(conditionFactory);
         }
         return conditionChain;
     }

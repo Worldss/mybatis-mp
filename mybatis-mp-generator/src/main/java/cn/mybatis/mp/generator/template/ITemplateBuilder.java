@@ -6,15 +6,15 @@ import java.util.Map;
 
 public interface ITemplateBuilder {
 
-    default boolean enable(){
+    default boolean enable() {
         return true;
     }
 
     EntityInfo getEntityInfo();
 
-    public String targetFilePath();
+    String targetFilePath();
 
-    public String templateFilePath();
+    String templateFilePath();
 
     Map<String, Object> contextData();
 

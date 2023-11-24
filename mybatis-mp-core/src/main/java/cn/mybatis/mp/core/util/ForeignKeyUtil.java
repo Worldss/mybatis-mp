@@ -28,7 +28,7 @@ public class ForeignKeyUtil {
      * @param secondTableStorey
      * @return
      */
-    public static final Consumer<On> buildForeignKeyOnConsumer(MybatisCmdFactory mybatisCmdFactory, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey) {
+    public static final <ON extends On> Consumer<ON> buildForeignKeyOnConsumer(MybatisCmdFactory mybatisCmdFactory, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey) {
         return (on) -> {
             TableInfo mainTableInfo = Tables.get(mainTable);
             TableInfo secondTableInfo = Tables.get(secondTable);

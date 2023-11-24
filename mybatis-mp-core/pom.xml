@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.mybatis-mp</groupId>
         <artifactId>mybatis-mp</artifactId>
-        <version>1.1.4</version>
+        <version>1.1.5</version>
     </parent>
 
     <artifactId>mybatis-mp-core</artifactId>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.199</version>
+            <version>2.2.224</version>
             <scope>test</scope>
         </dependency>
 

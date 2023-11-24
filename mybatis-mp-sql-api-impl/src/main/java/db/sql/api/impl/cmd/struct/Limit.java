@@ -1,10 +1,11 @@
-package db.sql.api.impl.cmd.basic;
+package db.sql.api.impl.cmd.struct;
 
 
 import db.sql.api.Cmd;
+import db.sql.api.DbType;
 import db.sql.api.SqlBuilderContext;
 
-public class Limit implements Cmd {
+public class Limit implements db.sql.api.cmd.struct.Limit<Limit> {
 
     private int offset;
 
@@ -15,18 +16,18 @@ public class Limit implements Cmd {
         this.limit = limit;
     }
 
-    public Limit(int limit) {
-        this(0, limit);
-    }
-
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        return sqlBuilder.append(" limit ").append(this.limit).append(" offset ").append(this.offset);
+        if (context.getDbType() == DbType.ORACLE || context.getDbType() == DbType.SQL_SERVER) {
+            return sqlBuilder.append(" OFFSET ").append(this.offset).append(" ROWS FETCH NEXT ").append(this.limit).append(" ROWS ONLY");
+        }
+        return sqlBuilder.append(" LIMIT ").append(this.limit).append(" OFFSET ").append(this.offset);
     }
 
-    public void set(int offset, int limit) {
+    public Limit set(int offset, int limit) {
         this.offset = offset;
         this.limit = limit;
+        return this;
     }
 
     public int getOffset() {

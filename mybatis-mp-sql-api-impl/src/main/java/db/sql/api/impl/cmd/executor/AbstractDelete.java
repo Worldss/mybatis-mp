@@ -6,9 +6,11 @@ import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.executor.Delete;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.impl.cmd.CmdFactory;
-import db.sql.api.impl.cmd.ConditionFaction;
+import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.cmd.basic.Dataset;
+import db.sql.api.impl.cmd.basic.DatasetField;
 import db.sql.api.impl.cmd.basic.Table;
+import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.cmd.struct.*;
 import db.sql.api.impl.cmd.struct.delete.DeleteTable;
 
@@ -16,18 +18,29 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY> implements Delete<SELF, Dataset, Cmd, Object, ConditionChain, DeleteTable, From, Join, On, Where> {
+public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY extends CmdFactory>
+        extends BaseExecutor<SELF, CMD_FACTORY>
+        implements Delete<SELF,
+        Table,
+        Dataset,
+        TableField,
+        DatasetField,
+        Cmd,
+        Object,
+        ConditionChain,
+        DeleteTable,
+        FromTable, JoinTable, OnTable, Where> {
 
-    protected final ConditionFaction conditionFaction;
+    protected final ConditionFactory conditionFactory;
     protected final CMD_FACTORY $;
     protected DeleteTable deleteTable;
-    protected From from;
+    protected FromTable from;
     protected Where where;
     protected Joins joins;
 
     public AbstractDelete(CMD_FACTORY $) {
         this.$ = $;
-        this.conditionFaction = new ConditionFaction($);
+        this.conditionFactory = new ConditionFactory($);
     }
 
     @Override
@@ -38,13 +51,13 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
     void initCmdSorts(Map<Class<? extends Cmd>, Integer> cmdSorts) {
         int i = 0;
         cmdSorts.put(DeleteTable.class, ++i);
-        cmdSorts.put(From.class, ++i);
+        cmdSorts.put(FromTable.class, ++i);
         cmdSorts.put(Joins.class, ++i);
         cmdSorts.put(Where.class, ++i);
     }
 
     @Override
-    public DeleteTable $delete(Dataset... tables) {
+    public DeleteTable $delete(Table... tables) {
         if (this.deleteTable == null) {
             this.deleteTable = new DeleteTable(tables);
         }
@@ -64,9 +77,9 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
     }
 
     @Override
-    public From $from(Dataset... tables) {
+    public FromTable $from(Table... tables) {
         if (this.from == null) {
-            from = new From();
+            from = new FromTable();
             this.append(from);
         }
         this.from.append(tables);
@@ -74,16 +87,18 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
     }
 
     @Override
-
-    public SELF from(Class entity, int storey, Consumer<Dataset> consumer) {
+    public SELF from(Class entity, int storey, Consumer<Table> consumer) {
+        this.fromEntityIntercept(entity, storey);
         Table table = this.$.table(entity, storey);
         this.from(table);
         return (SELF) this;
     }
 
     @Override
-    public Join $join(JoinMode mode, Dataset mainTable, Dataset secondTable) {
-        Join join = new Join(this.conditionFaction, mode, mainTable, secondTable);
+    public JoinTable $join(JoinMode mode, Table mainTable, Table secondTable) {
+        JoinTable join = new JoinTable(mode, mainTable, secondTable, (joinTable) -> {
+            return new OnTable(conditionFactory, joinTable);
+        });
         if (Objects.isNull(joins)) {
             joins = new Joins();
             this.append(joins);
@@ -93,30 +108,28 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
     }
 
     @Override
-
-    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
+    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<OnTable> consumer) {
+        consumer = this.joinEntityIntercept(mainTable, mainTableStorey, secondTable, secondTableStorey, consumer);
         return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
     }
 
     @Override
-
-    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<On> consumer) {
+    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Table secondTable, Consumer<OnTable> consumer) {
         return this.join(mode, this.$.table(mainTable, mainTableStorey), secondTable, consumer);
     }
 
     @Override
     public Where $where() {
         if (where == null) {
-            where = new Where(this.conditionFaction);
+            where = new Where(this.conditionFactory);
             this.append(where);
         }
         return where;
     }
 
     @Override
-
-    public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<On> consumer) {
-        Join join = $join(mode, mainTable, secondTable);
+    public SELF join(JoinMode mode, Table mainTable, Table secondTable, Consumer<OnTable> consumer) {
+        JoinTable join = $join(mode, mainTable, secondTable);
         consumer.accept(join.getOn());
         return (SELF) this;
     }

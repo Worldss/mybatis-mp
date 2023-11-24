@@ -7,7 +7,7 @@ import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class UpdateSet implements db.sql.api.cmd.struct.update.UpdateSet<TableField, Cmd>, Cmd {
+public class UpdateSet implements db.sql.api.cmd.struct.update.UpdateSet<TableField, Cmd> {
 
     private final TableField field;
 

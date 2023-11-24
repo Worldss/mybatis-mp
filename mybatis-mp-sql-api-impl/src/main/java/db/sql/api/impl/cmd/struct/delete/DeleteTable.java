@@ -7,16 +7,16 @@ import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class DeleteTable implements db.sql.api.cmd.struct.delete.DeleteTable<Dataset>, Cmd {
+public class DeleteTable implements db.sql.api.cmd.struct.delete.DeleteTable<Table> {
 
-    private final Dataset[] tables;
+    private final Table[] tables;
 
-    public DeleteTable(Dataset[] tables) {
+    public DeleteTable(Table[] tables) {
         this.tables = tables;
     }
 
     @Override
-    public Dataset[] getTables() {
+    public Table[] getTables() {
         return this.tables;
     }
 
@@ -26,17 +26,17 @@ public class DeleteTable implements db.sql.api.cmd.struct.delete.DeleteTable<Dat
         if (this.tables == null || this.tables.length < 1) {
             return sqlBuilder;
         }
-        boolean isFirst = true;
-        for (Dataset table : this.tables) {
-            if (!isFirst) {
+        int length = this.tables.length;
+        for (int i = 0; i < length; i++) {
+            Table table = this.tables[i];
+            if (i != 0) {
                 sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
             }
             if (table.getAlias() != null) {
                 sqlBuilder = sqlBuilder.append(table.getAlias());
             } else if (table instanceof Table) {
-                sqlBuilder = sqlBuilder.append(((Table) table).getName());
+                sqlBuilder = sqlBuilder.append(table.getName());
             }
-            isFirst = false;
         }
         return sqlBuilder;
     }

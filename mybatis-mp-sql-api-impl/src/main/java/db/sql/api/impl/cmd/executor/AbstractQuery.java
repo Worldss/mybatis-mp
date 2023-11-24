@@ -3,16 +3,15 @@ package db.sql.api.impl.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.JoinMode;
-import db.sql.api.cmd.basic.*;
+import db.sql.api.cmd.basic.Condition;
+import db.sql.api.cmd.basic.UnionsCmdLists;
 import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.executor.SubQuery;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.impl.cmd.CmdFactory;
-import db.sql.api.impl.cmd.ConditionFaction;
-import db.sql.api.impl.cmd.basic.Dataset;
-import db.sql.api.impl.cmd.basic.Limit;
-import db.sql.api.impl.cmd.basic.Table;
-import db.sql.api.impl.cmd.basic.TableField;
+import db.sql.api.impl.cmd.ConditionFactory;
+import db.sql.api.impl.cmd.basic.*;
 import db.sql.api.impl.cmd.struct.*;
 import db.sql.api.impl.cmd.struct.query.*;
 import db.sql.api.impl.tookit.SqlConst;
@@ -25,40 +24,57 @@ import java.util.function.Function;
 
 public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY>
         implements Query<SELF,
+        Table,
         Dataset,
         TableField,
+        DatasetField,
+        SubQueryTableField,
         Cmd,
         Object,
+        CMD_FACTORY,
         ConditionChain,
         Select,
-        From,
-        Join,
-        On,
-        Joins<Join>,
+        FromDataset,
+        JoinDataset,
+        OnDataset,
+        Joins<JoinDataset>,
         Where,
         GroupBy,
         Having,
         OrderBy,
         Limit,
+        ForUpdate,
         Union,
         Unions<Union>
         >, Cmd {
 
-    protected final ConditionFaction conditionFaction;
+    protected final ConditionFactory conditionFactory;
+
     protected final CMD_FACTORY $;
+
     protected Select select;
-    protected From from;
+
+    protected FromDataset from;
+
     protected Where where;
+
     protected Joins joins;
+
     protected GroupBy groupBy;
+
     protected Having having;
+
     protected OrderBy orderBy;
+
     protected Limit limit;
+
+    protected ForUpdate forUpdate;
+
     protected Unions unions;
 
     public AbstractQuery(CMD_FACTORY $) {
         this.$ = $;
-        this.conditionFaction = new ConditionFaction($) {
+        this.conditionFactory = new ConditionFactory($) {
             @Override
             protected boolean ignoreEmpty() {
                 return true;
@@ -71,7 +87,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return $;
     }
 
-
     @Override
     public List<Cmd> cmds() {
         return this.cmds;
@@ -81,13 +96,14 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     void initCmdSorts(Map<Class<? extends Cmd>, Integer> cmdSorts) {
         int i = 0;
         cmdSorts.put(Select.class, ++i);
-        cmdSorts.put(From.class, ++i);
+        cmdSorts.put(FromDataset.class, ++i);
         cmdSorts.put(Joins.class, ++i);
         cmdSorts.put(Where.class, ++i);
         cmdSorts.put(GroupBy.class, ++i);
         cmdSorts.put(Having.class, ++i);
         cmdSorts.put(OrderBy.class, ++i);
         cmdSorts.put(Limit.class, ++i);
+        cmdSorts.put(ForUpdate.class, ++i);
         cmdSorts.put(Unions.class, ++i);
         cmdSorts.put(UnionsCmdLists.class, ++i);
     }
@@ -102,56 +118,30 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return select;
     }
 
-    @Override
-    public SELF select(Class entity, int storey) {
-        return this.select(this.$.all(this.$.table(entity, storey)));
-    }
 
+    /**
+     * select 子查询 列
+     *
+     * @param subQuery
+     * @param column
+     * @param <T>
+     * @return
+     */
     @Override
-    public SELF select1() {
-        $select().select(SQL1.INSTANCE);
-        return (SELF) this;
-    }
-
-    @Override
-    public SELF selectAll() {
-        $select().select(SQLCmdAll.INSTANCE);
-        return (SELF) this;
-    }
-
-    @Override
-    public SELF selectCount1() {
-        $select().select(Count1.INSTANCE);
-        return (SELF) this;
-    }
-
-    @Override
-    public SELF selectCountAll() {
-        $select().select(CountAll.INSTANCE);
-        return (SELF) this;
-    }
-
-    @Override
-    public SELF selectDistinct() {
-        $select().distinct();
-        return (SELF) this;
-    }
-
-    @Override
-
-    public <T> SELF select(Getter<T> column, int storey, Function<TableField, Cmd> f) {
-        TableField field = this.$.field(column, storey);
-        if (f != null) {
-            return this.select(f.apply(field));
+    public <T> SELF select(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Cmd> f) {
+        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(column, storey));
+        if (Objects.nonNull(f)) {
+            this.select(f.apply(subQueryTableField));
         } else {
-            return this.select(field);
+            this.select(subQueryTableField);
         }
+        return (SELF) this;
     }
 
     @Override
-    public From $from(Dataset... tables) {
+    public FromDataset $from(Dataset... tables) {
         if (this.from == null) {
-            from = new From();
+            from = new FromDataset();
             this.append(from);
         }
         this.from.append(tables);
@@ -160,14 +150,17 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     @Override
     public SELF from(Class entity, int storey, Consumer<Dataset> consumer) {
-        Table table = this.$.table(entity, storey);
+        this.fromEntityIntercept(entity, storey);
+        Table table = $(entity, storey);
         this.from(table);
         return (SELF) this;
     }
 
     @Override
-    public Join $join(JoinMode mode, Dataset mainTable, Dataset secondTable) {
-        Join join = new Join(this.conditionFaction, mode, mainTable, secondTable);
+    public JoinDataset $join(JoinMode mode, Dataset mainTable, Dataset secondTable) {
+        JoinDataset join = new JoinDataset(mode, mainTable, secondTable, (joinDataset -> {
+            return new OnDataset(this.conditionFactory, joinDataset);
+        }));
         if (Objects.isNull(joins)) {
             joins = new Joins();
             this.append(joins);
@@ -177,28 +170,28 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
-        return this.join(mode, this.$.table(mainTable, mainTableStorey), this.$.table(secondTable, secondTableStorey), consumer);
+    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<OnDataset> consumer) {
+        consumer = this.joinEntityIntercept(mainTable, mainTableStorey, secondTable, secondTableStorey, consumer);
+        return this.join(mode, $(mainTable, mainTableStorey), $(secondTable, secondTableStorey), consumer);
     }
 
     @Override
-    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<On> consumer) {
-        return this.join(mode, this.$.table(mainTable, mainTableStorey), secondTable, consumer);
+    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Dataset secondTable, Consumer<OnDataset> consumer) {
+        return this.join(mode, $(mainTable, mainTableStorey), secondTable, consumer);
     }
 
     @Override
     public Where $where() {
         if (where == null) {
-            where = new Where(this.conditionFaction);
+            where = new Where(this.conditionFactory);
             this.append(where);
         }
         return where;
     }
 
     @Override
-
-    public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<On> consumer) {
-        Join join = $join(mode, mainTable, secondTable);
+    public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<OnDataset> consumer) {
+        JoinDataset join = $join(mode, mainTable, secondTable);
         if (consumer != null) {
             consumer.accept(join.getOn());
         }
@@ -215,13 +208,33 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-
     public <T> SELF groupBy(Getter<T> column, int storey, Function<TableField, Cmd> f) {
         TableField tableField = $.field(column, storey);
         if (f != null) {
             return this.groupBy(f.apply(tableField));
         }
         return this.groupBy(tableField);
+    }
+
+    /**
+     * groupBy 子查询 列
+     *
+     * @param subQuery
+     * @param column
+     * @param storey
+     * @param f
+     * @param <T>
+     * @return
+     */
+    @Override
+    public <T> SELF groupBy(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Cmd> f) {
+        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(column, storey));
+        if (Objects.nonNull(f)) {
+            this.groupBy(f.apply(subQueryTableField));
+        } else {
+            this.groupBy(subQueryTableField);
+        }
+        return (SELF) this;
     }
 
     @Override
@@ -234,15 +247,25 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-
-    public <T> SELF havingAnd(Getter<T> getter, Function<TableField, Condition> f) {
-        return this.havingAnd(f.apply($.field(getter)));
+    public <T> SELF havingAnd(Getter<T> getter, int storey, Function<TableField, Condition> f) {
+        return this.havingAnd(f.apply($(getter, storey)));
     }
 
     @Override
+    public <T> SELF havingOr(Getter<T> getter, int storey, Function<TableField, Condition> f) {
+        return this.havingOr(f.apply($(getter, storey)));
+    }
 
-    public <T> SELF havingOr(Getter<T> getter, Function<TableField, Condition> f) {
-        return this.havingOr(f.apply($.field(getter)));
+    @Override
+    public <T> SELF havingAnd(SubQuery subQuery, Getter<T> getter, int storey, Function<SubQueryTableField, Condition> f) {
+        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(getter, storey));
+        return this.havingAnd(f.apply(subQueryTableField));
+    }
+
+    @Override
+    public <T> SELF havingOr(SubQuery subQuery, Getter<T> getter, int storey, Function<SubQueryTableField, Condition> f) {
+        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(getter, storey));
+        return this.havingOr(f.apply(subQueryTableField));
     }
 
     @Override
@@ -254,25 +277,54 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return orderBy;
     }
 
+
     @Override
-    public Limit $limit(int offset, int limit) {
+    public ForUpdate $forUpdate() {
+        if (forUpdate == null) {
+            forUpdate = new ForUpdate();
+            this.append(forUpdate);
+        }
+        return forUpdate;
+    }
+
+    @Override
+    public Limit $limit() {
         if (this.limit == null) {
-            this.limit = new Limit(offset, limit);
+            this.limit = new Limit(0, 0);
             this.append(this.limit);
-        } else {
-            this.limit.set(offset, limit);
         }
         return this.limit;
     }
 
     @Override
-
     public <T> SELF orderBy(Getter<T> column, int storey, boolean asc, Function<TableField, Cmd> f) {
         TableField tableField = $.field(column, storey);
         if (f != null) {
             return this.orderBy(f.apply(tableField), asc);
         }
         return this.orderBy(tableField, asc);
+    }
+
+    /**
+     * orderBy 子查询 列
+     *
+     * @param subQuery
+     * @param column
+     * @param storey
+     * @param asc
+     * @param f
+     * @param <T>
+     * @return
+     */
+    @Override
+    public <T> SELF orderBy(SubQuery subQuery, Getter<T> column, int storey, boolean asc, Function<SubQueryTableField, Cmd> f) {
+        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(column, storey));
+        if (Objects.nonNull(f)) {
+            this.orderBy(f.apply(subQueryTableField), asc);
+        } else {
+            this.orderBy(subQueryTableField, asc);
+        }
+        return (SELF) this;
     }
 
     public Unions $unions() {
@@ -301,7 +353,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public From getFrom() {
+    public FromDataset getFrom() {
         return this.from;
     }
 
@@ -315,16 +367,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return this.where;
     }
 
-
-    public SELF limit(int limit) {
-        return limit(0, limit);
-    }
-
-    @Override
-    public Limit getLimit() {
-        return this.limit;
-    }
-
     @Override
     public GroupBy getGroupBy() {
         return this.groupBy;
@@ -336,14 +378,18 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
+    public Limit getLimit() {
+        return this.limit;
+    }
+
+    @Override
     public Unions getUnions() {
         return this.unions;
     }
 
-
-    public SELF limit(int offset, int limit) {
-        this.$limit(offset, limit);
-        return (SELF) this;
+    @Override
+    public ForUpdate getForUpdate() {
+        return forUpdate;
     }
 }
 

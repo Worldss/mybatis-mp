@@ -10,7 +10,7 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateSets implements db.sql.api.cmd.struct.update.UpdateSets<TableField, Cmd, UpdateSet>, Cmd {
+public class UpdateSets implements db.sql.api.cmd.struct.update.UpdateSets<TableField, Cmd, UpdateSet> {
 
     private List<UpdateSet> updateSets;
 

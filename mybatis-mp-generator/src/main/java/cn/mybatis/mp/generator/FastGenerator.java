@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class FastGenerator {
 
-    private GeneratorConfig generatorConfig;
+    private final GeneratorConfig generatorConfig;
 
     public FastGenerator(GeneratorConfig generatorConfig) {
         this.generatorConfig = generatorConfig;

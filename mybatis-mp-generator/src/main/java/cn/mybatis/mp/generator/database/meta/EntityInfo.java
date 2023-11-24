@@ -13,44 +13,25 @@ import java.util.stream.Collectors;
 @ToString
 public class EntityInfo {
 
-    private final TableInfo tableInfo;
-
-    private final String name;
-
-    private final String remarks;
-
-    private final EntityFieldInfo idFieldInfo;
-
-    private final List<EntityFieldInfo> fieldInfoList;
-
-    private final List<EntityFieldInfo> excludeFieldInfoList;
-
-    private final String entityPackage;
-
-    private final String mapperName;
-
-    private final String mapperPackage;
-
-    private final String daoName;
-
-    private final String daoPackage;
-
-    private final String daoImplName;
-
-    private final String daoImplPackage;
-
     public final String serviceName;
-
     public final String servicePackage;
-
     public final String serviceImplName;
-
     public final String serviceImplPackage;
-
     public final String actionName;
-
     public final String actionPackage;
-
+    private final TableInfo tableInfo;
+    private final String name;
+    private final String remarks;
+    private final EntityFieldInfo idFieldInfo;
+    private final List<EntityFieldInfo> fieldInfoList;
+    private final List<EntityFieldInfo> excludeFieldInfoList;
+    private final String entityPackage;
+    private final String mapperName;
+    private final String mapperPackage;
+    private final String daoName;
+    private final String daoPackage;
+    private final String daoImplName;
+    private final String daoImplPackage;
     private boolean hasIgnoreTablePrefix = false;
 
     public EntityInfo(GeneratorConfig generatorConfig, TableInfo tableInfo) {

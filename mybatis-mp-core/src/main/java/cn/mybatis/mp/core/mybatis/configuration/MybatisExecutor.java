@@ -25,17 +25,17 @@ public class MybatisExecutor implements Executor {
     }
 
     @Override
-    public int update(MappedStatement ms, Object parameter) throws SQLException {
+public int update(MappedStatement ms, Object parameter) throws SQLException {
         return this.delegate.update(ms, parameter);
     }
 
     @Override
-    public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) throws SQLException {
+public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) throws SQLException {
         return this.delegate.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
     }
 
     @Override
-    public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
+public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
         if (parameter instanceof SQLCmdQueryContext) {
             BoundSql boundSql = ms.getBoundSql(parameter);
             CacheKey key = this.createCacheKey(ms, parameter, rowBounds, boundSql);
@@ -45,27 +45,27 @@ public class MybatisExecutor implements Executor {
     }
 
     @Override
-    public <E> Cursor<E> queryCursor(MappedStatement ms, Object parameter, RowBounds rowBounds) throws SQLException {
+public <E> Cursor<E> queryCursor(MappedStatement ms, Object parameter, RowBounds rowBounds) throws SQLException {
         return this.delegate.queryCursor(ms, parameter, rowBounds);
     }
 
     @Override
-    public List<BatchResult> flushStatements() throws SQLException {
+public List<BatchResult> flushStatements() throws SQLException {
         return this.delegate.flushStatements();
     }
 
     @Override
-    public void commit(boolean required) throws SQLException {
+public void commit(boolean required) throws SQLException {
         this.delegate.commit(required);
     }
 
     @Override
-    public void rollback(boolean required) throws SQLException {
+public void rollback(boolean required) throws SQLException {
         this.delegate.rollback(required);
     }
 
     @Override
-    public CacheKey createCacheKey(MappedStatement ms, Object parameterObject, RowBounds rowBounds, BoundSql boundSql) {
+public CacheKey createCacheKey(MappedStatement ms, Object parameterObject, RowBounds rowBounds, BoundSql boundSql) {
         CacheKey cacheKey = this.delegate.createCacheKey(ms, parameterObject, rowBounds, boundSql);
         if (parameterObject instanceof SQLCmdQueryContext) {
             cacheKey.updateAll(((SQLCmdQueryContext) parameterObject).getSQLCmdParams());
@@ -74,37 +74,37 @@ public class MybatisExecutor implements Executor {
     }
 
     @Override
-    public boolean isCached(MappedStatement ms, CacheKey key) {
+public boolean isCached(MappedStatement ms, CacheKey key) {
         return this.delegate.isCached(ms, key);
     }
 
     @Override
-    public void clearLocalCache() {
+public void clearLocalCache() {
         this.delegate.clearLocalCache();
     }
 
     @Override
-    public void deferLoad(MappedStatement ms, MetaObject resultObject, String property, CacheKey key, Class<?> targetType) {
+public void deferLoad(MappedStatement ms, MetaObject resultObject, String property, CacheKey key, Class<?> targetType) {
         this.delegate.deferLoad(ms, resultObject, property, key, targetType);
     }
 
     @Override
-    public Transaction getTransaction() {
+public Transaction getTransaction() {
         return this.delegate.getTransaction();
     }
 
     @Override
-    public void close(boolean forceRollback) {
+public void close(boolean forceRollback) {
         this.delegate.close(forceRollback);
     }
 
     @Override
-    public boolean isClosed() {
+public boolean isClosed() {
         return this.delegate.isClosed();
     }
 
     @Override
-    public void setExecutorWrapper(Executor executor) {
+public void setExecutorWrapper(Executor executor) {
         this.delegate.setExecutorWrapper(executor);
     }
 }

@@ -15,17 +15,17 @@ public class ColumnConfig {
     /**
      * 排除列
      */
-    private List<String> excludeColumns = new ArrayList<>();
+    private final List<String> excludeColumns = new ArrayList<>();
 
     /**
      * 禁止修改的列
      */
-    private List<String> disableUpdateColumns = new ArrayList<>();
+    private final List<String> disableUpdateColumns = new ArrayList<>();
 
     /**
      * 禁止查询列
      */
-    private List<String> disableSelectColumns = new ArrayList<>();
+    private final List<String> disableSelectColumns = new ArrayList<>();
 
     /**
      * 乐观锁列名

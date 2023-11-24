@@ -10,17 +10,17 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class From implements db.sql.api.cmd.struct.From<Dataset>, Cmd {
+public abstract class From<TABLE extends Dataset> implements db.sql.api.cmd.struct.From<TABLE> {
 
-    private final List<Dataset> tables = new ArrayList<>();
+    private final List<TABLE> tables = new ArrayList<>();
 
-    public From append(Dataset... tables) {
+    public From append(TABLE... tables) {
         Lists.merge(this.tables, tables);
         return this;
     }
 
     @Override
-    public List<Dataset> getTables() {
+    public List<TABLE> getTables() {
         return tables;
     }
 

@@ -9,9 +9,9 @@ public abstract class AbstractTemplateBuilder implements ITemplateBuilder {
 
     protected final EntityInfo entityInfo;
 
-    public AbstractTemplateBuilder(GeneratorConfig generatorConfig, EntityInfo entityInfo){
-        this.generatorConfig=generatorConfig;
-        this.entityInfo=entityInfo;
+    public AbstractTemplateBuilder(GeneratorConfig generatorConfig, EntityInfo entityInfo) {
+        this.generatorConfig = generatorConfig;
+        this.entityInfo = entityInfo;
     }
 
     @Override

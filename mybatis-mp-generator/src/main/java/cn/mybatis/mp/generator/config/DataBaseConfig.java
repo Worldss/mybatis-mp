@@ -13,19 +13,13 @@ import java.util.Properties;
 @Getter
 public class DataBaseConfig {
 
-    private String schema;
-
-    private String databaseName;
-
     private final DbType dbType;
-
     private final DataSource dataSource;
-
     private final String url;
-
     private final String username;
-
     private final String password;
+    private String schema;
+    private String databaseName;
 
     public DataBaseConfig(DbType dbType, DataSource dataSource) {
         this.dataSource = dataSource;
@@ -44,28 +38,6 @@ public class DataBaseConfig {
         this.password = password;
 
         this.dataSource = null;
-    }
-
-    public DataBaseConfig schema(String schema) {
-        this.schema = schema;
-        return this;
-    }
-
-    public DataBaseConfig databaseName(String databaseName) {
-        this.databaseName = databaseName;
-        return this;
-    }
-
-    public Connection getConnection() {
-        try {
-            if (this.dataSource != null) {
-                return this.getDataSource().getConnection();
-            } else {
-                return getConnection(this.url, this.username, this.password);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static Connection getConnection(String url, String username, String password) {
@@ -105,9 +77,31 @@ public class DataBaseConfig {
                 properties.put("remarks", "true");
                 properties.put("remarksReporting", "true");
                 break;
-            default:{
+            default: {
 
             }
+        }
+    }
+
+    public DataBaseConfig schema(String schema) {
+        this.schema = schema;
+        return this;
+    }
+
+    public DataBaseConfig databaseName(String databaseName) {
+        this.databaseName = databaseName;
+        return this;
+    }
+
+    public Connection getConnection() {
+        try {
+            if (this.dataSource != null) {
+                return this.getDataSource().getConnection();
+            } else {
+                return getConnection(this.url, this.username, this.password);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

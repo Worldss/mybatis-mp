@@ -14,17 +14,17 @@ public class TableConfig {
     /**
      * 需要生成的表名
      */
-    private List<String> tablePrefixs = new ArrayList<>();
+    private final List<String> tablePrefixs = new ArrayList<>();
 
     /**
      * 需要生成的表名
      */
-    private List<String> includeTables = new ArrayList<>();
+    private final List<String> includeTables = new ArrayList<>();
 
     /**
      * 需要排除的表名
      */
-    private List<String> excludeTables = new ArrayList<>();
+    private final List<String> excludeTables = new ArrayList<>();
 
 
     /**

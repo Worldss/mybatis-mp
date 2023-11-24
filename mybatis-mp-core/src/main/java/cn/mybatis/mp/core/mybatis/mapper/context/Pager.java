@@ -89,7 +89,7 @@ public class Pager<T> {
     }
 
     @Override
-    public String toString() {
+public String toString() {
         return "Pager{" +
                 "optimize=" + optimize +
                 ", executeCount=" + executeCount +

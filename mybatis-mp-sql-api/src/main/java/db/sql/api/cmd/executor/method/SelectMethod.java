@@ -2,64 +2,62 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.basic.Count1;
+import db.sql.api.cmd.basic.CountAll;
+import db.sql.api.cmd.basic.SQL1;
+import db.sql.api.cmd.basic.SQLCmdAll;
+import db.sql.api.cmd.executor.SubQuery;
 
 import java.util.List;
 import java.util.function.Function;
 
-public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, COLUMN> {
+public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, SUB_QUERY_TABLE_FILED> {
 
-
-    SELF select(COLUMN column);
+    SELF select(Cmd column);
 
     SELF selectDistinct();
 
-    SELF select1();
+    default SELF select1() {
+        this.select(SQL1.INSTANCE);
+        return (SELF) this;
+    }
 
-    SELF selectAll();
+    default SELF selectAll() {
+        this.select(SQLCmdAll.INSTANCE);
+        return (SELF) this;
+    }
 
-    SELF selectCountAll();
+    default SELF selectCount1() {
+        this.select(Count1.INSTANCE);
+        return (SELF) this;
+    }
 
-    SELF selectCount1();
+    default SELF selectCountAll() {
+        this.select(CountAll.INSTANCE);
+        return (SELF) this;
+    }
 
-
-    default SELF select(COLUMN... columns) {
-        for (COLUMN column : columns) {
+    default SELF select(Cmd... columns) {
+        for (Cmd column : columns) {
             this.select(column);
         }
         return (SELF) this;
     }
 
-
-    default SELF select(List<COLUMN> columns) {
-        for (COLUMN column : columns) {
+    default SELF select(List<Cmd> columns) {
+        for (Cmd column : columns) {
             this.select(column);
         }
         return (SELF) this;
     }
-
 
     default <T> SELF select(Getter<T> column) {
         return this.select(column, 1);
     }
 
-
-    default <T> SELF select(Getter<T> column, Function<TABLE_FIELD, Cmd> f) {
-        return this.select(column, 1, f);
-    }
-
-
-    default <T> SELF select(Getter<T> column, int storey) {
-        return this.select(column, storey, null);
-    }
-
-
-    <T> SELF select(Getter<T> column, int storey, Function<TABLE_FIELD, Cmd> f);
-
-
     default <T> SELF select(Getter<T>... columns) {
         return this.select(1, columns);
     }
-
 
     default <T> SELF select(int storey, Getter<T>... columns) {
         for (Getter<T> column : columns) {
@@ -68,17 +66,25 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, COLUMN> {
         return (SELF) this;
     }
 
+    default <T> SELF select(Getter<T> column, Function<TABLE_FIELD, Cmd> f) {
+        return this.select(column, 1, f);
+    }
+
+    default <T> SELF select(Getter<T> column, int storey) {
+        return this.select(column, storey, null);
+    }
+
+    <T> SELF select(Getter<T> column, int storey, Function<TABLE_FIELD, Cmd> f);
+
     default SELF select(Class entity) {
         return this.select(entity, 1);
     }
 
     SELF select(Class entity, int storey);
 
-
     default SELF select(Class... entities) {
         return this.select(1, entities);
     }
-
 
     default SELF select(int storey, Class... entities) {
         for (Class entity : entities) {
@@ -86,4 +92,55 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, COLUMN> {
         }
         return (SELF) this;
     }
+
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param column
+     * @param <T>
+     * @return
+     */
+    default <T> SELF select(SubQuery subQuery, Getter<T> column) {
+        return this.select(subQuery, column, 1);
+    }
+
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param column
+     * @param storey
+     * @param <T>
+     * @return
+     */
+    default <T> SELF select(SubQuery subQuery, Getter<T> column, int storey) {
+        return this.select(subQuery, column, storey, null);
+    }
+
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param column
+     * @param f
+     * @param <T>
+     * @return
+     */
+    default <T> SELF select(SubQuery subQuery, Getter<T> column, Function<SUB_QUERY_TABLE_FILED, Cmd> f) {
+        return this.select(subQuery, column, 1, f);
+    }
+
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param column
+     * @param storey
+     * @param f
+     * @param <T>
+     * @return
+     */
+    <T> SELF select(SubQuery subQuery, Getter<T> column, int storey, Function<SUB_QUERY_TABLE_FILED, Cmd> f);
+
 }

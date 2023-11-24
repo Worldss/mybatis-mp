@@ -1,4 +1,4 @@
-package db.sql.api.cmd.executor.method.compare;
+package db.sql.api.cmd.executor.method.condition.compare;
 
 import db.sql.api.cmd.LikeMode;
 
@@ -25,8 +25,7 @@ public interface Compare<RV, COLUMN, V> extends
         IsNullGetterCompare<RV>,
         IsNotNullGetterCompare<RV>,
         EmptyGetterCompare<RV>,
-        NotEmptyGetterCompare<RV>,
-        Serializable {
+        NotEmptyGetterCompare<RV> {
 
     default RV empty(COLUMN column) {
         return this.empty(column, true);

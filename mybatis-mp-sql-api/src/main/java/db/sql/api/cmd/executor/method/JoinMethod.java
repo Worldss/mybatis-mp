@@ -56,4 +56,17 @@ public interface JoinMethod<SELF extends JoinMethod, TABLE, ON> {
     }
 
     SELF join(JoinMode mode, Class mainTable, int mainTableStorey, TABLE secondTable, Consumer<ON> consumer);
+
+    /**
+     * 实体类拦截
+     *
+     * @param mainTable
+     * @param mainTableStorey
+     * @param secondTable
+     * @param consumer
+     * @return
+     */
+    default Consumer<ON> joinEntityIntercept(Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<ON> consumer) {
+        return consumer;
+    }
 }

@@ -40,9 +40,9 @@ public class EntityTemplateBuilder extends AbstractTemplateBuilder {
         } else {
             data.put("superExtend", "");
         }
-        data.put("package",entityInfo.getEntityPackage());
+        data.put("package", entityInfo.getEntityPackage());
         data.put("date", LocalDate.now().toString());
-        data.put("author",generatorConfig.getAuthor());
+        data.put("author", generatorConfig.getAuthor());
         data.put("entityInfo", entityInfo);
         data.put("entityConfig", generatorConfig.getEntityConfig());
         return data;

@@ -22,20 +22,23 @@ public class UpdateTable implements db.sql.api.cmd.struct.update.UpdateTable<Tab
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        if (this.tables == null || this.tables.length < 1) {
+            return sqlBuilder;
+        }
         sqlBuilder = sqlBuilder.append(SqlConst.UPDATE);
-        boolean isFirst = true;
-        for (Dataset table : this.tables) {
-            if (!isFirst) {
+        int length = this.tables.length;
+        for (int i = 0; i < length; i++) {
+            Table table = this.tables[i];
+            if (i != 0) {
                 sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
             }
             if (table instanceof Table) {
-                sqlBuilder = sqlBuilder.append(((Table) table).getName());
+                sqlBuilder = sqlBuilder.append(table.getName());
                 sqlBuilder.append(SqlConst.BLANK);
             }
             if (table.getAlias() != null) {
                 sqlBuilder = sqlBuilder.append(table.getAlias());
             }
-            isFirst = false;
         }
         return sqlBuilder;
     }

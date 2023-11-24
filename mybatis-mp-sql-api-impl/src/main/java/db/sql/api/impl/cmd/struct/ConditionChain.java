@@ -388,8 +388,8 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain in(Cmd column, boolean when, Serializable... values) {
-        Condition condition = conditionFaction.in(column, values, when);
+    public ConditionChain in(Cmd cmd, boolean when, Query query) {
+        Condition condition = conditionFaction.in(cmd, when, query);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -397,8 +397,8 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public <T> ConditionChain in(Getter<T> column, boolean when, Serializable... values) {
-        Condition condition = conditionFaction.in(column, values, when);
+    public ConditionChain in(Cmd cmd, boolean when, Serializable... values) {
+        Condition condition = conditionFaction.in(cmd, values, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -406,8 +406,8 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain in(Cmd column, boolean when, List<Object> values) {
-        Condition condition = conditionFaction.in(column, values, when);
+    public ConditionChain in(Cmd cmd, boolean when, List<Serializable> values) {
+        Condition condition = conditionFaction.in(cmd, when, values);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -415,8 +415,26 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public <T> ConditionChain in(Getter<T> column, boolean when, List<Object> values) {
-        Condition condition = conditionFaction.in(column, values, when);
+    public <T> ConditionChain in(Getter<T> column, int storey, boolean when, Query query) {
+        Condition condition = conditionFaction.in(column, storey, when, query);
+        if (condition != null) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
+    }
+
+    @Override
+    public <T> ConditionChain in(Getter<T> column, int storey, boolean when, Serializable... values) {
+        Condition condition = conditionFaction.in(column, storey, when, values);
+        if (condition != null) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
+    }
+
+    @Override
+    public <T> ConditionChain in(Getter<T> column, int storey, boolean when, List<Serializable> values) {
+        Condition condition = conditionFaction.in(column, storey, when, values);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }

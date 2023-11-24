@@ -4,7 +4,9 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.Query;
-import db.sql.api.cmd.executor.method.compare.Compare;
+import db.sql.api.cmd.executor.method.condition.ConditionMethods;
+import db.sql.api.cmd.executor.method.condition.InConditionMethod;
+import db.sql.api.cmd.executor.method.condition.compare.Compare;
 import db.sql.api.cmd.struct.ConditionChain;
 import db.sql.api.cmd.struct.Nested;
 
@@ -14,7 +16,13 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 
-public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN, V, CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>> extends Compare<SELF, COLUMN, V>, Nested<SELF, CONDITION_CHAIN> {
+public interface ConditionChainMethod<SELF extends ConditionChainMethod,
+        COLUMN,
+        V,
+        CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>
+        >
+        extends ConditionMethods<SELF, COLUMN, V>,
+        Nested<SELF, CONDITION_CHAIN> {
 
     CONDITION_CHAIN conditionChain();
 
@@ -255,39 +263,39 @@ public interface ConditionChainMethod<SELF extends ConditionChainMethod, COLUMN,
         return (SELF) this;
     }
 
-    default SELF in(COLUMN column, Serializable... values) {
-        return this.in(column, true, values);
+    @Override
+    default SELF in(COLUMN column, boolean when, Query query) {
+        conditionChain().in(column,when,query);
+        return (SELF) this;
     }
 
+    @Override
     default SELF in(COLUMN column, boolean when, Serializable... values) {
-        conditionChain().in(column, when, values);
+        conditionChain().in(column,when,values);
         return (SELF) this;
     }
 
-    default <T> SELF in(Getter<T> column, Serializable... values) {
-        return this.in(column, true, values);
-    }
-
-    default <T> SELF in(Getter<T> column, boolean when, Serializable... values) {
-        conditionChain().in(column, when, values);
+    @Override
+    default SELF in(COLUMN column, boolean when, List<Serializable> values) {
+        conditionChain().in(column,when,values);
         return (SELF) this;
     }
 
-    default SELF in(COLUMN column, List<Object> values) {
-        return this.in(column, true, values);
-    }
-
-    default SELF in(COLUMN column, boolean when, List<Object> values) {
-        conditionChain().in(column, when, values);
+    @Override
+    default <T> SELF in(Getter<T> column, int storey, boolean when, Query query) {
+        conditionChain().in(column,storey,when,query);
         return (SELF) this;
     }
 
-    default <T> SELF in(Getter<T> column, List<Object> values) {
-        return this.in(column, true, values);
+    @Override
+    default <T> SELF in(Getter<T> column, int storey, boolean when, Serializable... values) {
+        conditionChain().in(column,storey,when,values);
+        return (SELF) this;
     }
 
-    default <T> SELF in(Getter<T> column, boolean when, List<Object> values) {
-        conditionChain().in(column, when, values);
+    @Override
+    default <T> SELF in(Getter<T> column, int storey, boolean when, List<Serializable> values) {
+        conditionChain().in(column,storey,when,values);
         return (SELF) this;
     }
 

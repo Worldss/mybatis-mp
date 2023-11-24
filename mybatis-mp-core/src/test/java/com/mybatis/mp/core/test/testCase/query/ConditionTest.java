@@ -338,7 +338,7 @@ public class ConditionTest extends BaseTest {
             List<Integer> list = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId)
                     .from(SysUser.class)
-                    .in(SysUser::getId, 1, 2)
+                    .in(SysUser::getId, 1, new Integer[]{2})
                     .setReturnType(Integer.TYPE)
                     .list();
 

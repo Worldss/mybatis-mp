@@ -5,12 +5,13 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.Condition;
 import db.sql.api.cmd.executor.Query;
-import db.sql.api.cmd.executor.method.compare.Compare;
+import db.sql.api.cmd.executor.method.condition.ConditionMethods;
+
 
 import java.io.Serializable;
 import java.util.List;
 
-public class ConditionFaction implements Compare<Condition, Cmd, Object> {
+public class ConditionFaction implements ConditionMethods<Condition, Cmd, Object> {
 
     protected final CmdFactory cmdFactory;
 
@@ -367,67 +368,52 @@ public class ConditionFaction implements Compare<Condition, Cmd, Object> {
         return Methods.isNotNull(convert(column, storey));
     }
 
-    public <T> Condition in(Getter<T> column, Object[] values, boolean when) {
+    @Override
+    public Condition in(Cmd cmd, boolean when, Query query) {
+        if (!isValid(when, true, query)) {
+            return null;
+        }
+        return Methods.in(cmd, query);
+    }
+
+    @Override
+    public Condition in(Cmd cmd, boolean when, Serializable... values) {
         if (!isValid(when, false, values)) {
             return null;
         }
-
-        Cmd[] cmds = new Cmd[values.length];
-        int i = 0;
-        for (Object value : values) {
-            if (!hasValue(value)) {
-                continue;
-            }
-            cmds[i++] = convert(value);
-        }
-        return cmdFactory.in(convert(column, 1)).add(cmds);
+        return Methods.in(cmd, values);
     }
 
-    public Condition in(Cmd column, Object[] values, boolean when) {
-        if (!isValid(when, column, false, values)) {
-            return null;
-        }
-        Cmd[] cmds = new Cmd[values.length];
-        int i = 0;
-        for (Object value : values) {
-            if (!hasValue(value)) {
-                continue;
-            }
-            cmds[i++] = convert(value);
-        }
-        return cmdFactory.in(column).add(cmds);
-    }
-
-
-    public <T> Condition in(Getter<T> column, List<Object> values, boolean when) {
+    @Override
+    public Condition in(Cmd cmd, boolean when, List<Serializable> values) {
         if (!isValid(when, false, values)) {
             return null;
         }
-
-        Cmd[] cmds = new Cmd[values.size()];
-        int i = 0;
-        for (Object value : values) {
-            if (!hasValue(value)) {
-                continue;
-            }
-            cmds[i++] = convert(value);
-        }
-        return cmdFactory.in(convert(column, 1)).add(cmds);
+        return Methods.in(cmd, values);
     }
 
-    public Condition in(Cmd column, List<Object> values, boolean when) {
-        if (!isValid(when, column, false, values)) {
+    @Override
+    public <T> Condition in(Getter<T> column, int storey, boolean when, Query query) {
+        if (!isValid(when, true, query)) {
             return null;
         }
-        Cmd[] cmds = new Cmd[values.size()];
-        int i = 0;
-        for (Object value : values) {
-            if (!hasValue(value)) {
-                continue;
-            }
-            cmds[i++] = convert(value);
+        return Methods.in(convert(column, storey), query);
+    }
+
+    @Override
+    public <T> Condition in(Getter<T> column, int storey, boolean when, Serializable... values) {
+        if (!isValid(when, false, values)) {
+            return null;
         }
-        return cmdFactory.in(column).add(cmds);
+        return Methods.in(convert(column, storey), values);
+    }
+
+    @Override
+    public <T> Condition in(Getter<T> column, int storey, boolean when, List<Serializable> values) {
+        if (!isValid(when, false, values)) {
+            return null;
+        }
+        return Methods.in(convert(column, storey), values);
     }
 
     public Condition exists(Query query) {

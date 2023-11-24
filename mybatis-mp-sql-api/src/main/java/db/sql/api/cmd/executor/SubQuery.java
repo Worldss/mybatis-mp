@@ -1,10 +1,10 @@
 package db.sql.api.cmd.executor;
 
 import db.sql.api.Cmd;
+import db.sql.api.cmd.basic.Alias;
 import db.sql.api.cmd.CmdFactory;
 import db.sql.api.cmd.struct.*;
 import db.sql.api.cmd.struct.query.*;
-import org.apache.ibatis.type.Alias;
 
 /**
  * 子查询
@@ -78,7 +78,7 @@ public interface SubQuery<SELF extends SubQuery,
         FORUPDATE,
         UNION,
         UNIONS
-        >, Alias {
+        >, Alias<SELF> {
 
 
 }

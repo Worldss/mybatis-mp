@@ -1,42 +1,36 @@
 package cn.mybatis.mp.core.sql.executor;
 
-import cn.mybatis.mp.core.db.reflect.TableInfo;
-import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
+import db.sql.api.Cmd;
+import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.impl.cmd.basic.Dataset;
-import db.sql.api.impl.cmd.executor.AbstractQuery;
+import db.sql.api.impl.cmd.condition.Exists;
+import db.sql.api.impl.cmd.condition.In;
+import db.sql.api.impl.cmd.executor.AbstractSubQuery;
 import db.sql.api.impl.cmd.struct.OnDataset;
+import db.sql.api.impl.tookit.SqlConst;
 
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, MybatisCmdFactory> {
+public abstract class BaseSubQuery<Q extends BaseSubQuery> extends AbstractSubQuery<Q, MybatisCmdFactory> {
+    private final String alias;
 
-    protected Class returnType;
-
-    public BaseQuery() {
-        this(new MybatisCmdFactory());
-    }
-
-    public BaseQuery(MybatisCmdFactory mybatisCmdFactory) {
-        super(mybatisCmdFactory);
+    public BaseSubQuery(String alias) {
+        super(new MybatisCmdFactory("st"));
+        this.alias = alias;
     }
 
     @Override
-    public Q select(Class entity, int storey) {
-        TableInfo tableInfo = Tables.get(entity);
-        if (tableInfo == null) {
-            return super.select(entity, storey);
-        } else {
-            tableInfo.getTableFieldInfos().stream().forEach(item -> {
-                if (item.getTableFieldAnnotation().select()) {
-                    this.select($.field(entity, item.getField().getName(), storey));
-                }
-            });
-        }
-        return (Q) this;
+    public String getAlias() {
+        return alias;
+    }
+
+    @Override
+    public Q as(String alias) {
+        throw new RuntimeException("not support");
     }
 
     protected void addTenantCondition(Class entity, int storey) {
@@ -60,12 +54,18 @@ public class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, MybatisCmdF
         return (Q) this;
     }
 
-    public Class getReturnType() {
-        return returnType;
-    }
+    @Override
+    public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
+        if (parent instanceof In || parent instanceof Exists) {
+            return super.sql(module, this, context, sqlBuilder);
+        }
+        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
+        sqlBuilder = super.sql(module, this, context, sqlBuilder);
+        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        if (this.alias != null) {
+            sqlBuilder = sqlBuilder.append(SqlConst.AS).append(this.alias);
+        }
 
-    public Q setReturnType(Class returnType) {
-        this.returnType = returnType;
-        return (Q) this;
+        return sqlBuilder;
     }
 }

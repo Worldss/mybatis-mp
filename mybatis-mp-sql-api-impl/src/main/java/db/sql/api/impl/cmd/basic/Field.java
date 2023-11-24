@@ -1,5 +1,6 @@
 package db.sql.api.impl.cmd.basic;
 
+import db.sql.api.cmd.basic.Alias;
 import db.sql.api.impl.cmd.dbFun.FunctionInterface;
 
 public abstract class Field<T extends Field<T>> implements Alias<T>, Value, FunctionInterface {

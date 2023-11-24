@@ -1,4 +1,4 @@
-package db.sql.api.impl.cmd.basic;
+package db.sql.api.cmd.basic;
 
 public interface Alias<T> {
 

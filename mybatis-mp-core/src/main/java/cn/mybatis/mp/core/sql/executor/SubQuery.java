@@ -1,71 +1,23 @@
 package cn.mybatis.mp.core.sql.executor;
 
-import db.sql.api.Cmd;
-import db.sql.api.SqlBuilderContext;
-import db.sql.api.impl.cmd.basic.Dataset;
-import db.sql.api.impl.cmd.condition.Exists;
-import db.sql.api.impl.cmd.condition.In;
-import db.sql.api.impl.tookit.SqlConst;
-
 /**
  * 子查询
  */
-public class SubQuery extends BaseQuery<SubQuery> implements Dataset<SubQuery> {
-
-    private final String alias;
-
-    private String prefix;
+public class SubQuery extends BaseSubQuery<SubQuery> {
 
     public SubQuery() {
         this(null);
     }
 
     public SubQuery(String alias) {
-        super(new MybatisCmdFactory("st"));
-        this.alias = alias;
+        super(alias);
     }
 
     public static final SubQuery create() {
-        return new SubQuery();
+        return new SubQuery(null);
     }
 
     public static final SubQuery create(String alias) {
         return new SubQuery(alias);
-    }
-
-    @Override
-public String getAlias() {
-        return alias;
-    }
-
-    @Override
-public SubQuery as(String alias) {
-        throw new RuntimeException("not support");
-    }
-
-    @Override
-public String getPrefix() {
-        return prefix;
-    }
-
-    @Override
-public SubQuery setPrefix(String prefix) {
-        this.prefix = prefix;
-        return this;
-    }
-
-    @Override
-public StringBuilder sql(Cmd module,Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (parent instanceof In || parent instanceof Exists) {
-            return super.sql(module,this, context, sqlBuilder);
-        }
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = super.sql(module,this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        if (this.alias != null) {
-            sqlBuilder = sqlBuilder.append(SqlConst.AS).append(this.alias);
-        }
-
-        return sqlBuilder;
     }
 }

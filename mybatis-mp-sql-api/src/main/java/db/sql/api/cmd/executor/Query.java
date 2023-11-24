@@ -38,7 +38,8 @@ public interface Query<SELF extends Query,
         UNIONS extends Unions<UNION>
         >
         extends SelectMethod<SELF, TABLE_FIELD>,
-        FromMethod<SELF, DATASET>, JoinMethod<SELF, DATASET, ON>,
+        FromMethod<SELF, DATASET>,
+        JoinMethod<SELF, DATASET, ON>,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
         GroupByMethod<SELF, TABLE_FIELD, COLUMN>,
         HavingMethod<SELF, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN, HAVING>,
@@ -74,6 +75,7 @@ public interface Query<SELF extends Query,
         return (SELF) this;
     }
 
+    @Override
     default SELF select(Class entity, int storey) {
         return this.select($().allField($(entity, storey)));
     }

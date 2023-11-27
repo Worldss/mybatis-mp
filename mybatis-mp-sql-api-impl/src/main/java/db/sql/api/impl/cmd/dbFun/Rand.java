@@ -16,7 +16,7 @@ public class Rand extends BasicFunction<Rand> {
 
     public Rand(Cmd value, Number max) {
         super(SqlConst.RAND, value);
-        this.max=max;
+        this.max = max;
     }
 
     @Override

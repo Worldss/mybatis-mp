@@ -5,7 +5,7 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.tookit.SqlConst;
 
-public class Table implements Dataset<Table,TableField> {
+public class Table implements Dataset<Table, TableField> {
 
     private final String name;
 

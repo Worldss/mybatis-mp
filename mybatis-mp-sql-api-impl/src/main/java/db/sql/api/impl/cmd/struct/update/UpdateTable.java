@@ -2,7 +2,6 @@ package db.sql.api.impl.cmd.struct.update;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;

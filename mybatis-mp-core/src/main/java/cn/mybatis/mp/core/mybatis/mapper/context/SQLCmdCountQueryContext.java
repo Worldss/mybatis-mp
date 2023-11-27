@@ -16,7 +16,7 @@ public class SQLCmdCountQueryContext extends SQLCmdQueryContext {
     }
 
     @Override
-public StringBuilder sql(String dbType) {
+    public StringBuilder sql(String dbType) {
         if (Objects.nonNull(sql)) {
             return sql;
         }

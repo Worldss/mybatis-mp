@@ -23,7 +23,11 @@ public class SqlConst {
     public static final String DELIMITER = " , ";
 
     public static final String INTERVAL = "INTERVAL ";
+
     public static final String AS = " AS ";
+
+    public static final String SINGLE_QUOT = "'";
+
     public static final String IS = " IS ";
     public static final String IS_NOT = " IS NOT ";
     public static final String CREATE_TABLE = "CREATE TABLE ";
@@ -148,17 +152,26 @@ public class SqlConst {
     public static final String ASC = " ASC ";
     public static final String DESC = " DESC ";
     public static final String FOR_UPDATE = " FOR UPDATE";
+    public static final String DOUBLE_QUOT = "\"";
+
+    public static final String AS(DbType dbType) {
+        switch (dbType) {
+            case ORACLE: {
+                return " ";
+            }
+            default: {
+                return AS;
+            }
+        }
+    }
 
     public static final String SINGLE_QUOT(DbType dbType) {
         switch (dbType) {
-            case MYSQL: {
-                return "'";
-            }
             case PGSQL: {
-                return "\"";
+                return DOUBLE_QUOT;
             }
         }
-        return "'";
+        return SINGLE_QUOT;
     }
 
     public static String CURRENT_DATE_TIME(DbType dbType) {

@@ -28,7 +28,7 @@ public class IfNull extends BasicFunction<IfNull> {
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
         sqlBuilder = this.value.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

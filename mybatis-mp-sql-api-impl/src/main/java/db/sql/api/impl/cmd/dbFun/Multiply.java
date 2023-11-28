@@ -26,7 +26,7 @@ public class Multiply extends BasicFunction<Multiply> {
         sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(this.operator);
         sqlBuilder = this.value.sql(module, this, context, sqlBuilder);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

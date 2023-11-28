@@ -62,7 +62,7 @@ public abstract class BaseSubQuery<Q extends BaseSubQuery> extends AbstractSubQu
         sqlBuilder = super.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         if (this.alias != null) {
-            sqlBuilder = sqlBuilder.append(SqlConst.AS).append(this.alias);
+            sqlBuilder = sqlBuilder.append(SqlConst.AS(context.getDbType())).append(this.alias);
         }
 
         return sqlBuilder;

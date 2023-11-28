@@ -18,11 +18,11 @@ public abstract class BasicFunction<T extends BasicFunction> extends Field<Basic
         this.key = key;
     }
 
-    protected StringBuilder appendAlias(Cmd module, Cmd user, StringBuilder sqlBuilder) {
+    protected StringBuilder appendAlias(Cmd module, Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         //拼接 select 的别名
         if (module instanceof Select && user instanceof Select) {
             if (this.getAlias() != null) {
-                sqlBuilder = sqlBuilder.append(SqlConst.AS);
+                sqlBuilder = sqlBuilder.append(SqlConst.AS(context.getDbType()));
                 sqlBuilder = sqlBuilder.append(this.getAlias());
             }
             return sqlBuilder;
@@ -36,7 +36,7 @@ public abstract class BasicFunction<T extends BasicFunction> extends Field<Basic
         sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
         sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

@@ -64,7 +64,7 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
         sqlBuilder = CmdUtils.join(module, this, context, sqlBuilder, this.values, SqlConst.DELIMITER);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

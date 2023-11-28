@@ -39,7 +39,7 @@ public class SubQuery extends AbstractSubQuery<SubQuery, CmdFactory> implements 
         }
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
         sqlBuilder = super.sql(module, this, context, sqlBuilder);
-        sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.AS).append(this.alias);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.AS(context.getDbType())).append(this.alias);
         return sqlBuilder;
     }
 }

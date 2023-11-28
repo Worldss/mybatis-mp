@@ -27,7 +27,7 @@ public class Rand extends BasicFunction<Rand> {
             sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER).append(this.max);
         }
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 }

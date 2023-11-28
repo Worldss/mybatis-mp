@@ -50,7 +50,7 @@ public class Case extends BasicFunction<Case> {
         }
         sqlBuilder = sqlBuilder.append(SqlConst.END);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

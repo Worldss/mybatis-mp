@@ -131,7 +131,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      */
     @Override
     public <T> SELF select(SubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
-        DatasetField datasetField = $((Dataset) subQuery, column);
+        return this.select(subQuery, $.columnName(column), f);
+    }
+
+    @Override
+    public SELF select(SubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
+        DatasetField datasetField = $((Dataset) subQuery, columnName);
         if (Objects.nonNull(f)) {
             this.select(f.apply(datasetField));
         } else {
@@ -229,7 +234,20 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      */
     @Override
     public <T> SELF groupBy(SubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
-        DatasetField datasetField = $((Dataset) subQuery, column);
+        return this.groupBy(subQuery, $.columnName(column), f);
+    }
+
+    /**
+     * groupBy 子查询 列
+     *
+     * @param subQuery
+     * @param columnName
+     * @param f
+     * @return
+     */
+    @Override
+    public SELF groupBy(SubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
+        DatasetField datasetField = $((Dataset) subQuery, columnName);
         if (Objects.nonNull(f)) {
             this.groupBy(f.apply(datasetField));
         } else {
@@ -259,13 +277,23 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     @Override
     public <T> SELF havingAnd(SubQuery subQuery, Getter<T> column, Function<DatasetField, Condition> f) {
-        DatasetField datasetField = $((Dataset) subQuery, column);
-        return this.havingAnd(f.apply(datasetField));
+        return this.havingAnd(subQuery, $.columnName(column), f);
     }
 
     @Override
     public <T> SELF havingOr(SubQuery subQuery, Getter<T> column, Function<DatasetField, Condition> f) {
-        DatasetField datasetField = $((Dataset) subQuery, column);
+        return this.havingOr(subQuery, $.columnName(column), f);
+    }
+
+    @Override
+    public SELF havingAnd(SubQuery subQuery, String columnName, Function<DatasetField, Condition> f) {
+        DatasetField datasetField = $((Dataset) subQuery, columnName);
+        return this.havingAnd(f.apply(datasetField));
+    }
+
+    @Override
+    public SELF havingOr(SubQuery subQuery, String columnName, Function<DatasetField, Condition> f) {
+        DatasetField datasetField = $((Dataset) subQuery, columnName);
         return this.havingOr(f.apply(datasetField));
     }
 
@@ -318,7 +346,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      */
     @Override
     public <T> SELF orderBy(SubQuery subQuery, Getter<T> column, boolean asc, Function<DatasetField, Cmd> f) {
-        DatasetField datasetField = $((Dataset) subQuery, column);
+        return this.orderBy(subQuery, $.columnName(column), asc, f);
+    }
+
+    @Override
+    public SELF orderBy(SubQuery subQuery, String columnName, boolean asc, Function<DatasetField, Cmd> f) {
+        DatasetField datasetField = $((Dataset) subQuery, columnName);
         if (Objects.nonNull(f)) {
             this.orderBy(f.apply(datasetField), asc);
         } else {

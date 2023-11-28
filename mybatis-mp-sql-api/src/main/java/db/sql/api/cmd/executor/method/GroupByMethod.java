@@ -64,4 +64,10 @@ public interface GroupByMethod<SELF extends GroupByMethod, TABLE_FIELD, DATASET_
         }
         return (SELF) this;
     }
+
+    default SELF groupBy(SubQuery subQuery, String columnName) {
+        return this.groupBy(subQuery, columnName, null);
+    }
+
+    SELF groupBy(SubQuery subQuery, String columnName, Function<DATASET_FIELD, Cmd> f);
 }

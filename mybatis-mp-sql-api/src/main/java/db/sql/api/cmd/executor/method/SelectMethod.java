@@ -105,7 +105,6 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, DATASET_FI
         return this.select(subQuery, column, null);
     }
 
-
     /**
      * select子查询列
      *
@@ -116,5 +115,28 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, DATASET_FI
      * @return
      */
     <T> SELF select(SubQuery subQuery, Getter<T> column, Function<DATASET_FIELD, Cmd> f);
+
+
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @return
+     */
+    default SELF select(SubQuery subQuery, String columnName) {
+        return this.select(subQuery, columnName, null);
+    }
+
+
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param columnName
+     * @param f
+     * @param <T>
+     * @return
+     */
+    SELF select(SubQuery subQuery, String columnName, Function<DATASET_FIELD, Cmd> f);
 
 }

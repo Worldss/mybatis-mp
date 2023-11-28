@@ -42,7 +42,11 @@ public interface HavingMethod<SELF extends HavingMethod, TABLE_FIELD, DATASET_FI
         return this.havingAnd(column, storey, f);
     }
 
+    SELF havingAnd(SubQuery subQuery, String columnName, Function<DATASET_FILED, Condition> f);
+
     <T> SELF havingAnd(SubQuery subQuery, Getter<T> column, Function<DATASET_FILED, Condition> f);
+
+    SELF havingOr(SubQuery subQuery, String columnName, Function<DATASET_FILED, Condition> f);
 
     <T> SELF havingOr(SubQuery subQuery, Getter<T> column, Function<DATASET_FILED, Condition> f);
 
@@ -50,5 +54,7 @@ public interface HavingMethod<SELF extends HavingMethod, TABLE_FIELD, DATASET_FI
         return this.havingAnd(subQuery, column, f);
     }
 
-
+    default <T> SELF having(SubQuery subQuery, String columnName, Function<DATASET_FILED, Condition> f) {
+        return this.havingAnd(subQuery, columnName, f);
+    }
 }

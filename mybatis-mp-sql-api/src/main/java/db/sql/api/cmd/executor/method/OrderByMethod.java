@@ -106,4 +106,19 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, DATASET_
         }
         return (SELF) this;
     }
+
+
+    default SELF orderBy(SubQuery subQuery, String columnName) {
+        return this.orderBy(subQuery, columnName, true);
+    }
+
+    default SELF orderBy(SubQuery subQuery, String columnName, boolean asc) {
+        return this.orderBy(subQuery, columnName, asc, null);
+    }
+
+    default SELF orderBy(SubQuery subQuery, String columnName, Function<DATASET_FILED, Cmd> f) {
+        return this.orderBy(subQuery, columnName, true, f);
+    }
+
+    SELF orderBy(SubQuery subQuery, String columnName, boolean asc, Function<DATASET_FILED, Cmd> f);
 }

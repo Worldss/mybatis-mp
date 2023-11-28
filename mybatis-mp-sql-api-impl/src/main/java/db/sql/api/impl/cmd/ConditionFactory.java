@@ -105,14 +105,8 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
         return v1;
     }
 
-    private <T> Cmd convert(Getter<T> getter, int storey) {
-        Cmd v1;
-        if (getter instanceof Cmd) {
-            v1 = (Cmd) getter;
-        } else {
-            v1 = cmdFactory.field(getter, storey);
-        }
-        return v1;
+    private <T> Cmd convert(Getter<T> column, int storey) {
+        return cmdFactory.field(column, storey);
     }
 
     @Override

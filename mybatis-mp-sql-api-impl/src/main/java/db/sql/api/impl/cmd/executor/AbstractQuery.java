@@ -129,7 +129,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      */
     @Override
     public <T> SELF select(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Cmd> f) {
-        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(column, storey));
+        SubQueryTableField subQueryTableField = $(subQuery, column, storey);
         if (Objects.nonNull(f)) {
             this.select(f.apply(subQueryTableField));
         } else {
@@ -228,7 +228,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      */
     @Override
     public <T> SELF groupBy(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Cmd> f) {
-        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(column, storey));
+        SubQueryTableField subQueryTableField = $(subQuery, column, storey);
         if (Objects.nonNull(f)) {
             this.groupBy(f.apply(subQueryTableField));
         } else {
@@ -247,24 +247,24 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF havingAnd(Getter<T> getter, int storey, Function<TableField, Condition> f) {
-        return this.havingAnd(f.apply($(getter, storey)));
+    public <T> SELF havingAnd(Getter<T> column, int storey, Function<TableField, Condition> f) {
+        return this.havingAnd(f.apply($(column, storey)));
     }
 
     @Override
-    public <T> SELF havingOr(Getter<T> getter, int storey, Function<TableField, Condition> f) {
-        return this.havingOr(f.apply($(getter, storey)));
+    public <T> SELF havingOr(Getter<T> column, int storey, Function<TableField, Condition> f) {
+        return this.havingOr(f.apply($(column, storey)));
     }
 
     @Override
-    public <T> SELF havingAnd(SubQuery subQuery, Getter<T> getter, int storey, Function<SubQueryTableField, Condition> f) {
-        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(getter, storey));
+    public <T> SELF havingAnd(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Condition> f) {
+        SubQueryTableField subQueryTableField = $(subQuery, column, storey);
         return this.havingAnd(f.apply(subQueryTableField));
     }
 
     @Override
-    public <T> SELF havingOr(SubQuery subQuery, Getter<T> getter, int storey, Function<SubQueryTableField, Condition> f) {
-        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(getter, storey));
+    public <T> SELF havingOr(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Condition> f) {
+        SubQueryTableField subQueryTableField = $(subQuery, column, storey);
         return this.havingOr(f.apply(subQueryTableField));
     }
 
@@ -318,7 +318,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      */
     @Override
     public <T> SELF orderBy(SubQuery subQuery, Getter<T> column, int storey, boolean asc, Function<SubQueryTableField, Cmd> f) {
-        SubQueryTableField subQueryTableField = new SubQueryTableField(subQuery, (TableField) subQuery.$(column, storey));
+        SubQueryTableField subQueryTableField = $(subQuery, column, storey);
         if (Objects.nonNull(f)) {
             this.orderBy(f.apply(subQueryTableField), asc);
         } else {

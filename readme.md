@@ -1171,7 +1171,76 @@ new Query().selectAll();
 new Query().selectCount1();
 new Query().selectCountAll();
 ```
+# 批量操作
+MybatisBatchUtil 内置了批量保存，批量修改，批量其他操作
+## batchSave 批量保存
+```java
+/**
+ * 批量插入（batchSize！=1时，无法获取主键）
+ *
+ * @param sqlSessionFactory mybatis SqlSessionFactory 通过spring 注解注入获取
+ * @param mapperType        MybatisMapper 的 class
+ * @param list              数据列表
+ * @param batchSize         一次批量处理的条数(如需获取主键，请设置为1)
+ * @param <M>               MybatisMapper
+ * @param <T>               数据的类型
+ * @return 影响的条数
+ */
+public static <M extends MybatisMapper, T> int batchSave(SqlSessionFactory sqlSessionFactory, Class<M> mapperType, List<T> list, int batchSize) {
+    
+}
+```
+## batchUpdate 批量更新
+```java
+/**
+ * 批量更新
+ *
+ * @param sqlSessionFactory mybatis SqlSessionFactory 通过spring 注解注入获取
+ * @param mapperType        MybatisMapper 的 class
+ * @param list              数据列表
+ * @param batchSize         一次批量处理的条数
+ * @param <M>               MybatisMapper
+ * @param <T>               数据的类型
+ * @return 影响的条数
+ */
+public static <M extends MybatisMapper, T> int batchUpdate(SqlSessionFactory sqlSessionFactory, Class<M> mapperType, List<T> list, int batchSize) {
+    
+}
+```
+## batch（核心）批量
+```java
+/**
+ * 批量操作
+ *
+ * @param sqlSessionFactory mybatis SqlSessionFactory 通过spring 注解注入获取
+ * @param mapperType        MybatisMapper 的 class
+ * @param list              数据列表
+ * @param batchSize         一次批量处理的条数
+ * @param batchFunction     操作方法
+ * @param <M>               MybatisMapper
+ * @param <T>               数据的类型
+ * @return 影响的条数
+ */
+public static <M extends MybatisMapper, T> int batch(SqlSessionFactory sqlSessionFactory, Class<M> mapperType, List<T> list, int batchSize, MybatisBatchBiConsumer<SqlSession, M, T> batchFunction) {
+    
+}
+```
+## 如何使用批量操作
+```java
+List<IdTest> list = new ArrayList<>(10000);
+for (int i = 0; i < 10000; i++) {
+    IdTest idTest = new IdTest();
+    idTest.setCreateTime(LocalDateTime.now());
+    list.add(idTest);
+}
 
+MybatisBatchUtil.batchSave(sqlSessionFactory, IdTestMapper.class, list);
+```
+> sqlSessionFactory 是mybatis SqlSessionFactory 可通过spring 依赖注入获得
+
+> IdTestMapper 是mybatis Mapper 接口
+
+> 如需获取主键，可设置batchSize=1，虽然性能可能下降，也比一般的循环save，update快！
 # 如何创建条件，列，表等
 
 > Query，QueryChain等中有个方法，专门提供创建sql的工厂类：$()

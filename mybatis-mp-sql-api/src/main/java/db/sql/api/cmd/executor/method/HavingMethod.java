@@ -21,45 +21,45 @@ public interface HavingMethod<SELF extends HavingMethod, TABLE_FIELD, SUB_QUERY_
 
     SELF havingOr(Condition condition);
 
-    default <T> SELF havingAnd(Getter<T> getter, Function<TABLE_FIELD, Condition> f) {
-        return this.havingAnd(getter, 1, f);
+    default <T> SELF havingAnd(Getter<T> column, Function<TABLE_FIELD, Condition> f) {
+        return this.havingAnd(column, 1, f);
     }
 
-    <T> SELF havingAnd(Getter<T> getter, int storey, Function<TABLE_FIELD, Condition> f);
+    <T> SELF havingAnd(Getter<T> column, int storey, Function<TABLE_FIELD, Condition> f);
 
-    default <T> SELF havingOr(Getter<T> getter, Function<TABLE_FIELD, Condition> f) {
-        return this.havingOr(getter, 1, f);
+    default <T> SELF havingOr(Getter<T> column, Function<TABLE_FIELD, Condition> f) {
+        return this.havingOr(column, 1, f);
     }
 
-    <T> SELF havingOr(Getter<T> getter, int storey, Function<TABLE_FIELD, Condition> f);
+    <T> SELF havingOr(Getter<T> column, int storey, Function<TABLE_FIELD, Condition> f);
 
 
-    default <T> SELF having(Getter<T> getter, Function<TABLE_FIELD, Condition> f) {
-        return this.having(getter, 1, f);
+    default <T> SELF having(Getter<T> column, Function<TABLE_FIELD, Condition> f) {
+        return this.having(column, 1, f);
     }
 
-    default <T> SELF having(Getter<T> getter, int storey, Function<TABLE_FIELD, Condition> f) {
-        return this.havingAnd(getter, storey, f);
+    default <T> SELF having(Getter<T> column, int storey, Function<TABLE_FIELD, Condition> f) {
+        return this.havingAnd(column, storey, f);
     }
 
 
-    default <T> SELF havingAnd(SubQuery subQuery, Getter<T> getter, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
-        return this.havingAnd(subQuery, getter, 1, f);
+    default <T> SELF havingAnd(SubQuery subQuery, Getter<T> column, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
+        return this.havingAnd(subQuery, column, 1, f);
     }
 
-    <T> SELF havingAnd(SubQuery subQuery, Getter<T> getter, int storey, Function<SUB_QUERY_TABLE_FIELD, Condition> f);
+    <T> SELF havingAnd(SubQuery subQuery, Getter<T> column, int storey, Function<SUB_QUERY_TABLE_FIELD, Condition> f);
 
-    default <T> SELF havingOr(SubQuery subQuery, Getter<T> getter, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
-        return this.havingOr(subQuery, getter, 1, f);
+    default <T> SELF havingOr(SubQuery subQuery, Getter<T> column, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
+        return this.havingOr(subQuery, column, 1, f);
     }
 
-    <T> SELF havingOr(SubQuery subQuery, Getter<T> getter, int storey, Function<SUB_QUERY_TABLE_FIELD, Condition> f);
+    <T> SELF havingOr(SubQuery subQuery, Getter<T> column, int storey, Function<SUB_QUERY_TABLE_FIELD, Condition> f);
 
-    default <T> SELF having(SubQuery subQuery, Getter<T> getter, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
-        return this.having(subQuery, getter, 1, f);
+    default <T> SELF having(SubQuery subQuery, Getter<T> column, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
+        return this.having(subQuery, column, 1, f);
     }
 
-    default <T> SELF having(SubQuery subQuery, Getter<T> getter, int storey, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
-        return this.havingAnd(subQuery, getter, storey, f);
+    default <T> SELF having(SubQuery subQuery, Getter<T> column, int storey, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
+        return this.havingAnd(subQuery, column, storey, f);
     }
 }

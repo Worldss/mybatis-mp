@@ -28,13 +28,13 @@ public interface Executor<SELF extends Executor,
     }
 
     @Override
-    default <T> DatasetField $(Dataset dataset, Getter<T> getter) {
-        return $().field(dataset, getter);
+    default <T> DatasetField $(Dataset dataset, Getter<T> column) {
+        return $().field(dataset, column);
     }
 
     @Override
-    default <T> TableField $(Getter<T> getter, int storey) {
-        return $().field(getter, storey);
+    default <T> TableField $(Getter<T> column, int storey) {
+        return $().field(column, storey);
     }
 
     @Override
@@ -52,8 +52,8 @@ public interface Executor<SELF extends Executor,
      * @param <R>    返回命令
      * @return
      */
-    default <T, R extends Cmd> R $(Getter<T> getter, int storey, Function<TableField, R> RF) {
-        return $().create(getter, storey, RF);
+    default <T, R extends Cmd> R $(Getter<T> column, int storey, Function<TableField, R> RF) {
+        return $().create(column, storey, RF);
     }
 
     @Override

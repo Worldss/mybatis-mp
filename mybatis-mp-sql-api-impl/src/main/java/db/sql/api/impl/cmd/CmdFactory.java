@@ -56,14 +56,14 @@ public class CmdFactory extends Methods implements db.sql.api.cmd.CmdFactory<Tab
     }
 
     @Override
-    public <T> String columnName(Getter<T> getter) {
-        return LambdaUtil.getName(getter);
+    public <T> String columnName(Getter<T> column) {
+        return LambdaUtil.getName(column);
     }
 
     @Override
-    public <T> TableField field(Getter<T> getter, int storey) {
-        Class entity = LambdaUtil.getClass(getter);
-        String filedName = LambdaUtil.getName(getter);
+    public <T> TableField field(Getter<T> column, int storey) {
+        Class entity = LambdaUtil.getClass(column);
+        String filedName = LambdaUtil.getName(column);
         return this.field(entity, 1, filedName);
     }
 
@@ -72,13 +72,13 @@ public class CmdFactory extends Methods implements db.sql.api.cmd.CmdFactory<Tab
 //        return consumer;
 //    }
 
-    public <T> TableField field(Table table, Getter<T> getter) {
-        return new TableField(table, columnName(getter));
+    public <T> TableField field(Table table, Getter<T> column) {
+        return new TableField(table, columnName(column));
     }
 
     @Override
-    public <T> DatasetField field(Dataset dataset, Getter<T> getter) {
-        String filedName = LambdaUtil.getName(getter);
+    public <T> DatasetField field(Dataset dataset, Getter<T> column) {
+        String filedName = LambdaUtil.getName(column);
         return new DatasetField<>(dataset, filedName);
     }
 
@@ -97,8 +97,8 @@ public class CmdFactory extends Methods implements db.sql.api.cmd.CmdFactory<Tab
     }
 
     @Override
-    public <T, R extends Cmd> R create(Getter<T> getter, int storey, Function<TableField, R> RF) {
-        return RF.apply(this.field(getter, storey));
+    public <T, R extends Cmd> R create(Getter<T> column, int storey, Function<TableField, R> RF) {
+        return RF.apply(this.field(column, storey));
     }
 
     protected TableField field(Class clazz, int storey, String filedName) {

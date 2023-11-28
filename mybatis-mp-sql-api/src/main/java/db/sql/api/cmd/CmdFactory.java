@@ -31,36 +31,36 @@ public interface CmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASET
     /**
      * 根据Lambda getter 获取列名
      *
-     * @param getter
+     * @param column
      * @param <T>
      * @return
      */
-    <T> String columnName(Getter<T> getter);
+    <T> String columnName(Getter<T> column);
 
-    default <T> TABLE_FIELD field(Getter<T> getter) {
-        return this.field(getter, 1);
+    default <T> TABLE_FIELD field(Getter<T> column) {
+        return this.field(column, 1);
     }
 
     /**
      * 根据Lambda getter 获取列对象
      *
-     * @param getter
+     * @param column
      * @param storey 存储层级
      * @param <T>
      * @return
      */
-    <T> TABLE_FIELD field(Getter<T> getter, int storey);
+    <T> TABLE_FIELD field(Getter<T> column, int storey);
 
 
     /**
      * 根据dataset(可能是子查询 也可能是表),Lambda getter 创建列对象
      *
      * @param dataset
-     * @param getter
+     * @param column
      * @param <T>
      * @return
      */
-    <T> DATASET_FIELD field(DATASET dataset, Getter<T> getter);
+    <T> DATASET_FIELD field(DATASET dataset, Getter<T> column);
 
     /**
      * 根据dataset(可能是子查询 也可能是表) 列名，创建 列对象
@@ -83,25 +83,25 @@ public interface CmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASET
     /**
      * 根据Lambda getter，万能创建SQL命令方法
      *
-     * @param getter 列
+     * @param column 列
      * @param RF     返回函数
      * @param <T>    实体类型
      * @param <R>    返回命令
      * @return
      */
-    default <T, R extends Cmd> R create(Getter<T> getter, Function<TABLE_FIELD, R> RF) {
+    default <T, R extends Cmd> R create(Getter<T> column, Function<TABLE_FIELD, R> RF) {
         return this.create(getter, 1, RF);
     }
 
     /**
      * 根据Lambda getter，万能创建SQL命令方法
      *
-     * @param getter 列
+     * @param column 列
      * @param storey 缓存区
      * @param RF     返回函数
      * @param <T>    实体类型
      * @param <R>    返回命令
      * @return
      */
-    <T, R extends Cmd> R create(Getter<T> getter, int storey, Function<TABLE_FIELD, R> RF);
+    <T, R extends Cmd> R create(Getter<T> column, int storey, Function<TABLE_FIELD, R> RF);
 }

@@ -124,8 +124,8 @@ public interface BaseMapper<T> {
      */
     default int update(T entity, Getter<T>... forceUpdateFields) {
         Set<String> forceUpdateFieldsSet = new HashSet<>();
-        for (Getter<T> getter : forceUpdateFields) {
-            forceUpdateFieldsSet.add(LambdaUtil.getName(getter));
+        for (Getter<T> column : forceUpdateFields) {
+            forceUpdateFieldsSet.add(LambdaUtil.getName(column));
         }
         return this.$update(new EntityUpdateContext(entity, forceUpdateFieldsSet));
     }

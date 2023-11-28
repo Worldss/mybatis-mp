@@ -3,10 +3,7 @@ package db.sql.api.impl.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.impl.cmd.CmdFactory;
-import db.sql.api.impl.cmd.basic.Dataset;
-import db.sql.api.impl.cmd.basic.DatasetField;
-import db.sql.api.impl.cmd.basic.Table;
-import db.sql.api.impl.cmd.basic.TableField;
+import db.sql.api.impl.cmd.basic.*;
 import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
@@ -20,16 +17,36 @@ public abstract class BaseExecutor<SELF extends BaseExecutor, CMD_FACTORY extend
 
     private Map<Class<? extends Cmd>, Integer> cmdSorts;
 
-    public <T> TableField $(Table table, Getter<T> getter) {
-        return $().field(table, getter);
+    public <T> TableField $(Table table, Getter<T> column) {
+        return $().field(table, column);
     }
 
-    public <T> TableField $(Getter<T> getter, int storey) {
-        return $().field(getter, storey);
+    public <T> TableField $(Getter<T> column, int storey) {
+        return $().field(column, storey);
     }
 
     public DatasetField $(Dataset dataset, String columnName) {
         return $().field(dataset, columnName);
+    }
+
+    public TableField $(Table table, String columnName) {
+        return $().field(table, columnName);
+    }
+
+    public <T> SubQueryTableField $(SubQuery subQuery, Getter<T> column) {
+        return this.$(subQuery, column, 1);
+    }
+
+    public <T> SubQueryTableField $(SubQuery subQuery, Getter<T> column, int storey) {
+        return new SubQueryTableField(subQuery, subQuery.$(column, storey));
+    }
+
+    public <T> SubQueryTableField $(db.sql.api.cmd.executor.SubQuery subQuery, Getter<T> column) {
+        return this.$(subQuery, column, 1);
+    }
+
+    public <T> SubQueryTableField $(db.sql.api.cmd.executor.SubQuery subQuery, Getter<T> column, int storey) {
+        return this.$((SubQuery) subQuery, column, 1);
     }
 
     @Override

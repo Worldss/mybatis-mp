@@ -44,7 +44,7 @@ public interface Executor<T extends Executor,
     /**
      * 万能创建SQL命令方法
      *
-     * @param getter 列
+     * @param column 列
      * @param RF     返回函数
      * @param <T>    实体类型
      * @param <R>    返回命令
@@ -57,7 +57,7 @@ public interface Executor<T extends Executor,
     /**
      * 万能创建SQL命令方法
      *
-     * @param getter 列
+     * @param column 列
      * @param storey 缓存区
      * @param RF     返回函数
      * @param <T>    实体类型

@@ -7,7 +7,7 @@ import db.sql.api.cmd.executor.SubQuery;
 import java.util.List;
 import java.util.function.Function;
 
-public interface GroupByMethod<SELF extends GroupByMethod, TABLE_FIELD, SUB_QUERY_TABLE_FILED, COLUMN> {
+public interface GroupByMethod<SELF extends GroupByMethod, TABLE_FIELD, DATASET_FIELD, COLUMN> {
 
     SELF groupBy(COLUMN column);
 
@@ -53,26 +53,14 @@ public interface GroupByMethod<SELF extends GroupByMethod, TABLE_FIELD, SUB_QUER
     }
 
     default <T> SELF groupBy(SubQuery subQuery, Getter<T> column) {
-        return this.groupBy(subQuery, column, 1);
+        return this.groupBy(subQuery, column, null);
     }
 
-    default <T> SELF groupBy(SubQuery subQuery, Getter<T> column, Function<SUB_QUERY_TABLE_FILED, Cmd> f) {
-        return this.groupBy(subQuery, column, 1, f);
-    }
-
-    default <T> SELF groupBy(SubQuery subQuery, Getter<T> column, int storey) {
-        return this.groupBy(subQuery, column, storey, null);
-    }
-
-    <T> SELF groupBy(SubQuery subQuery, Getter<T> column, int storey, Function<SUB_QUERY_TABLE_FILED, Cmd> f);
+    <T> SELF groupBy(SubQuery subQuery, Getter<T> column, Function<DATASET_FIELD, Cmd> f);
 
     default <T> SELF groupBy(SubQuery subQuery, Getter<T>... columns) {
-        return this.groupBy(subQuery, 1, columns);
-    }
-
-    default <T> SELF groupBy(SubQuery subQuery, int storey, Getter<T>... columns) {
         for (Getter<T> column : columns) {
-            this.groupBy(subQuery, column, storey);
+            this.groupBy(subQuery, column);
         }
         return (SELF) this;
     }

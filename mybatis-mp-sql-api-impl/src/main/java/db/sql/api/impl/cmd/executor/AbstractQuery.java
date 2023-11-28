@@ -11,7 +11,10 @@ import db.sql.api.cmd.struct.Joins;
 import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.ConditionFactory;
-import db.sql.api.impl.cmd.basic.*;
+import db.sql.api.impl.cmd.basic.Dataset;
+import db.sql.api.impl.cmd.basic.DatasetField;
+import db.sql.api.impl.cmd.basic.Table;
+import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.cmd.struct.*;
 import db.sql.api.impl.cmd.struct.query.*;
 import db.sql.api.impl.tookit.SqlConst;
@@ -28,7 +31,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         Dataset,
         TableField,
         DatasetField,
-        SubQueryTableField,
         Cmd,
         Object,
         CMD_FACTORY,
@@ -128,12 +130,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      * @return
      */
     @Override
-    public <T> SELF select(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Cmd> f) {
-        SubQueryTableField subQueryTableField = $(subQuery, column, storey);
+    public <T> SELF select(SubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+        DatasetField datasetField = $((Dataset) subQuery, column);
         if (Objects.nonNull(f)) {
-            this.select(f.apply(subQueryTableField));
+            this.select(f.apply(datasetField));
         } else {
-            this.select(subQueryTableField);
+            this.select(datasetField);
         }
         return (SELF) this;
     }
@@ -221,18 +223,17 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      *
      * @param subQuery
      * @param column
-     * @param storey
      * @param f
      * @param <T>
      * @return
      */
     @Override
-    public <T> SELF groupBy(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Cmd> f) {
-        SubQueryTableField subQueryTableField = $(subQuery, column, storey);
+    public <T> SELF groupBy(SubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+        DatasetField datasetField = $((Dataset) subQuery, column);
         if (Objects.nonNull(f)) {
-            this.groupBy(f.apply(subQueryTableField));
+            this.groupBy(f.apply(datasetField));
         } else {
-            this.groupBy(subQueryTableField);
+            this.groupBy(datasetField);
         }
         return (SELF) this;
     }
@@ -257,15 +258,15 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF havingAnd(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Condition> f) {
-        SubQueryTableField subQueryTableField = $(subQuery, column, storey);
-        return this.havingAnd(f.apply(subQueryTableField));
+    public <T> SELF havingAnd(SubQuery subQuery, Getter<T> column, Function<DatasetField, Condition> f) {
+        DatasetField datasetField = $((Dataset) subQuery, column);
+        return this.havingAnd(f.apply(datasetField));
     }
 
     @Override
-    public <T> SELF havingOr(SubQuery subQuery, Getter<T> column, int storey, Function<SubQueryTableField, Condition> f) {
-        SubQueryTableField subQueryTableField = $(subQuery, column, storey);
-        return this.havingOr(f.apply(subQueryTableField));
+    public <T> SELF havingOr(SubQuery subQuery, Getter<T> column, Function<DatasetField, Condition> f) {
+        DatasetField datasetField = $((Dataset) subQuery, column);
+        return this.havingOr(f.apply(datasetField));
     }
 
     @Override
@@ -310,19 +311,18 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      *
      * @param subQuery
      * @param column
-     * @param storey
      * @param asc
      * @param f
      * @param <T>
      * @return
      */
     @Override
-    public <T> SELF orderBy(SubQuery subQuery, Getter<T> column, int storey, boolean asc, Function<SubQueryTableField, Cmd> f) {
-        SubQueryTableField subQueryTableField = $(subQuery, column, storey);
+    public <T> SELF orderBy(SubQuery subQuery, Getter<T> column, boolean asc, Function<DatasetField, Cmd> f) {
+        DatasetField datasetField = $((Dataset) subQuery, column);
         if (Objects.nonNull(f)) {
-            this.orderBy(f.apply(subQueryTableField), asc);
+            this.orderBy(f.apply(datasetField), asc);
         } else {
-            this.orderBy(subQueryTableField, asc);
+            this.orderBy(datasetField, asc);
         }
         return (SELF) this;
     }

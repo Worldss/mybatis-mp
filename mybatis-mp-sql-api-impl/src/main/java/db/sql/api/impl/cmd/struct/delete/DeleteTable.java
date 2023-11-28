@@ -33,7 +33,7 @@ public class DeleteTable implements db.sql.api.cmd.struct.delete.DeleteTable<Tab
             }
             if (table.getAlias() != null) {
                 sqlBuilder = sqlBuilder.append(table.getAlias());
-            } else if (table instanceof Table) {
+            } else {
                 sqlBuilder = sqlBuilder.append(table.getName());
             }
         }

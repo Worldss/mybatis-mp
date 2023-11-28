@@ -90,7 +90,7 @@ public interface CmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASET
      * @return
      */
     default <T, R extends Cmd> R create(Getter<T> column, Function<TABLE_FIELD, R> RF) {
-        return this.create(getter, 1, RF);
+        return this.create(column, 1, RF);
     }
 
     /**

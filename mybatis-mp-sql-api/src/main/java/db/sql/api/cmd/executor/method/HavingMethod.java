@@ -8,7 +8,7 @@ import db.sql.api.cmd.struct.query.Having;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface HavingMethod<SELF extends HavingMethod, TABLE_FIELD, SUB_QUERY_TABLE_FIELD, HAVING extends Having<HAVING>> {
+public interface HavingMethod<SELF extends HavingMethod, TABLE_FIELD, DATASET_FILED, HAVING extends Having<HAVING>> {
 
 
     SELF having(Consumer<HAVING> consumer);
@@ -42,24 +42,13 @@ public interface HavingMethod<SELF extends HavingMethod, TABLE_FIELD, SUB_QUERY_
         return this.havingAnd(column, storey, f);
     }
 
+    <T> SELF havingAnd(SubQuery subQuery, Getter<T> column, Function<DATASET_FILED, Condition> f);
 
-    default <T> SELF havingAnd(SubQuery subQuery, Getter<T> column, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
-        return this.havingAnd(subQuery, column, 1, f);
+    <T> SELF havingOr(SubQuery subQuery, Getter<T> column, Function<DATASET_FILED, Condition> f);
+
+    default <T> SELF having(SubQuery subQuery, Getter<T> column, Function<DATASET_FILED, Condition> f) {
+        return this.havingAnd(subQuery, column, f);
     }
 
-    <T> SELF havingAnd(SubQuery subQuery, Getter<T> column, int storey, Function<SUB_QUERY_TABLE_FIELD, Condition> f);
 
-    default <T> SELF havingOr(SubQuery subQuery, Getter<T> column, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
-        return this.havingOr(subQuery, column, 1, f);
-    }
-
-    <T> SELF havingOr(SubQuery subQuery, Getter<T> column, int storey, Function<SUB_QUERY_TABLE_FIELD, Condition> f);
-
-    default <T> SELF having(SubQuery subQuery, Getter<T> column, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
-        return this.having(subQuery, column, 1, f);
-    }
-
-    default <T> SELF having(SubQuery subQuery, Getter<T> column, int storey, Function<SUB_QUERY_TABLE_FIELD, Condition> f) {
-        return this.havingAnd(subQuery, column, storey, f);
-    }
 }

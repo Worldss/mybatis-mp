@@ -1147,16 +1147,19 @@ Integer count = QueryChain.of(sysUserMapper)
 
 ```java
 SubQuery subQuery = SubQuery.create("sub")
-        .select(SysRole.class)
-        .from(SysRole.class)
-        .eq(SysRole::getId, 1);
+    .select(SysRole.class)
+    .from(SysRole.class)
+    .eq(SysRole::getId, 1);
 
-        List<SysUser> list = QueryChain.of(sysUserMapper)
-        .select(SysUser.class)
-        .from(SysUser.class)
-        .join(JoinMode.INNER, SysUser.class, subQuery, on -> on.eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId)))
-        .list();
+List<SysUser> list = QueryChain.of(sysUserMapper)
+    .select(subQuery, SysRole::getId, c -> c.as("xx"))
+    .select(SysUser.class)
+    .from(SysUser.class)
+    .join(JoinMode.INNER, SysUser.class, subQuery, on -> on.eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId)))
+    .orderBy(subQuery, SysRole::getId)
+    .list();
 ```
+> select(subQuery, SysRole::getId, c -> c.as("xx")) 返回子表的角色ID并设置别名
 
 ### select 1 or  select *
 

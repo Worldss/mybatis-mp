@@ -31,10 +31,10 @@ public class UpdateTable implements db.sql.api.cmd.struct.update.UpdateTable<Tab
             if (i != 0) {
                 sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
             }
-            if (table instanceof Table) {
-                sqlBuilder = sqlBuilder.append(table.getName());
-                sqlBuilder.append(SqlConst.BLANK);
-            }
+
+            sqlBuilder = sqlBuilder.append(table.getName());
+            sqlBuilder.append(SqlConst.BLANK);
+
             if (table.getAlias() != null) {
                 sqlBuilder = sqlBuilder.append(table.getAlias());
             }

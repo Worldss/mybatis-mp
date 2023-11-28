@@ -16,8 +16,6 @@ public class SubQuery extends AbstractSubQuery<SubQuery, CmdFactory> implements 
 
     private final String alias;
 
-    private String prefix;
-
     public SubQuery(String alias) {
         super(new CmdFactory("st"));
         this.alias = alias;

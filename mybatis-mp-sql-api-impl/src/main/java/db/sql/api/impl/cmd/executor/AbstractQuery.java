@@ -9,6 +9,7 @@ import db.sql.api.cmd.executor.Query;
 import db.sql.api.cmd.executor.SubQuery;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.cmd.struct.query.Unions;
+import db.sql.api.cmd.struct.query.Withs;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.cmd.basic.Dataset;
@@ -35,6 +36,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         Object,
         CMD_FACTORY,
         ConditionChain,
+        With,
         Select,
         FromDataset,
         JoinDataset,
@@ -46,8 +48,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         OrderBy,
         Limit,
         ForUpdate,
-        Union,
-        Unions<Union>
+        Union
         >, Cmd {
 
     protected final ConditionFactory conditionFactory;
@@ -55,6 +56,8 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     protected final CMD_FACTORY $;
 
     protected Select select;
+
+    protected Withs withs;
 
     protected FromDataset from;
 
@@ -97,6 +100,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     @Override
     void initCmdSorts(Map<Class<? extends Cmd>, Integer> cmdSorts) {
         int i = 0;
+        cmdSorts.put(Withs.class, ++i);
         cmdSorts.put(Select.class, ++i);
         cmdSorts.put(FromDataset.class, ++i);
         cmdSorts.put(Joins.class, ++i);
@@ -110,6 +114,16 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         cmdSorts.put(UnionsCmdLists.class, ++i);
     }
 
+    @Override
+    public With $with(SubQuery subQuery) {
+        if (Objects.isNull(this.withs)) {
+            this.withs = new Withs();
+            this.append(this.withs);
+        }
+        With with = new With(subQuery);
+        this.withs.add(with);
+        return with;
+    }
 
     @Override
     public Select $select() {

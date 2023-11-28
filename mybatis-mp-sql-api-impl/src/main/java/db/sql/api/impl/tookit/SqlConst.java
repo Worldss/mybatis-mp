@@ -14,6 +14,8 @@ public class SqlConst {
 
     public static final String UNION_ALL = " UNION ALL ";
 
+    public static final String WITH = " WITH ";
+
     public static final String ALL = "*";
 
     public static final String DOT = ".";
@@ -25,7 +27,7 @@ public class SqlConst {
     public static final String IS = " IS ";
     public static final String IS_NOT = " IS NOT ";
     public static final String CREATE_TABLE = "CREATE TABLE ";
-    public static final String SELECT = "SELECT ";
+    public static final String SELECT = " SELECT ";
     public static final String FROM = " FROM ";
     public static final String DELETE = "DELETE ";
     public static final String UPDATE = "UPDATE ";

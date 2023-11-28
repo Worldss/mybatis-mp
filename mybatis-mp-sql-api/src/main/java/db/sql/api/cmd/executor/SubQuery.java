@@ -42,6 +42,8 @@ public interface SubQuery<SELF extends SubQuery,
 
         CMD_FACTORY extends CmdFactory<TABLE, DATASET, TABLE_FIELD, DATASET_FILED>,
         CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>,
+
+        WITH extends With<WITH>,
         SELECT extends Select<SELECT>,
         FROM extends From<DATASET>,
         JOIN extends Join<JOIN, DATASET, ON>,
@@ -53,8 +55,7 @@ public interface SubQuery<SELF extends SubQuery,
         ORDERBY extends OrderBy<ORDERBY>,
         LIMIT extends Limit<LIMIT>,
         FORUPDATE extends ForUpdate<FORUPDATE>,
-        UNION extends Union,
-        UNIONS extends Unions<UNION>
+        UNION extends Union
         > extends Query<
         SELF,
         TABLE,
@@ -65,6 +66,7 @@ public interface SubQuery<SELF extends SubQuery,
         V,
         CMD_FACTORY,
         CONDITION_CHAIN,
+        WITH,
         SELECT,
         FROM,
         JOIN,
@@ -76,8 +78,7 @@ public interface SubQuery<SELF extends SubQuery,
         ORDERBY,
         LIMIT,
         FORUPDATE,
-        UNION,
-        UNIONS
+        UNION
         >, Dataset<SELF, DATASET_FILED> {
 
 

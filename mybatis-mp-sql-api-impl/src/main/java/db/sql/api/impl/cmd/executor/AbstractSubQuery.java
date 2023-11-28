@@ -3,7 +3,6 @@ package db.sql.api.impl.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.cmd.executor.SubQuery;
 import db.sql.api.cmd.struct.Joins;
-import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.DatasetField;
@@ -22,6 +21,7 @@ public abstract class AbstractSubQuery<SELF extends AbstractSubQuery, CMD_FACTOR
         Object,
         CMD_FACTORY,
         ConditionChain,
+        With,
         Select,
         FromDataset,
         JoinDataset,
@@ -33,8 +33,7 @@ public abstract class AbstractSubQuery<SELF extends AbstractSubQuery, CMD_FACTOR
         OrderBy,
         Limit,
         ForUpdate,
-        Union,
-        Unions<Union>
+        Union
         > {
     public AbstractSubQuery(CMD_FACTORY $) {
         super($);

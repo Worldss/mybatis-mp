@@ -172,35 +172,33 @@ public final class SQLOptimizeUtils {
      * 获取优化后的查询
      * 只优化left joins
      *
-     * @param query      查询语句
-     * @param context    构建SQL上下文
-     * @param sqlBuilder SQL拼接 StringBuilder
+     * @param query   查询语句
+     * @param context 构建SQL上下文
      * @return
      */
-    public static StringBuilder getOptimizedSql(Query query, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public static StringBuilder getOptimizedSql(Query query, SqlBuilderContext context) {
         Map<Class, Cmd> classCmdMap = new HashMap<>();
         List<Cmd> cmdList = query.cmds();
         cmdList.stream().forEach(cmd -> classCmdMap.put(cmd.getClass(), cmd));
         optimizedCmdList(classCmdMap, false, false, true, classCmdMap.containsKey(Unions.class));
         cmdList = (List<Cmd>) classCmdMap.entrySet().stream().map(Map.Entry::getValue).sorted(query.comparator()).collect(Collectors.toList());
-        return CmdUtils.join(context, sqlBuilder, cmdList);
+        return CmdUtils.join(context, new StringBuilder(), cmdList);
     }
 
     /**
      * 从一个query里获取count SQL
      *
-     * @param query      查询语句
-     * @param context    构建SQL上下文
-     * @param sqlBuilder SQL拼接 StringBuilder
-     * @param optimize   是否优化
+     * @param query    查询语句
+     * @param context  构建SQL上下文
+     * @param optimize 是否优化
      * @return SQL StringBuilder
      */
-    public static StringBuilder getCountSqlFromQuery(Query query, SqlBuilderContext context, StringBuilder sqlBuilder, boolean optimize) {
+    public static StringBuilder getCountSqlFromQuery(Query query, SqlBuilderContext context, boolean optimize) {
         if (!optimize) {
             //不优化直接包裹一层
-            return new StringBuilder("SELECT COUNT(*) FROM (").append(CmdUtils.join(context, sqlBuilder, query.sortedCmds())).append(") AS T");
+            return new StringBuilder("SELECT COUNT(*) FROM (").append(CmdUtils.join(context, new StringBuilder(), query.sortedCmds())).append(") AS T");
         }
-        return getOptimizedCountSql(query, context, sqlBuilder);
+        return getOptimizedCountSql(query, context);
     }
 
     /**
@@ -211,7 +209,7 @@ public final class SQLOptimizeUtils {
      * @param sqlBuilder SQL拼接 StringBuilder
      * @return SQL StringBuilder
      */
-    public static StringBuilder getOptimizedCountSql(Query query, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    public static StringBuilder getOptimizedCountSql(Query query, SqlBuilderContext context) {
         Map<Class, Cmd> classCmdMap = new HashMap<>();
         List<Cmd> cmdList = query.cmds();
         cmdList.stream().forEach(cmd -> classCmdMap.put(cmd.getClass(), cmd));
@@ -238,8 +236,8 @@ public final class SQLOptimizeUtils {
         }
         cmdList = (List<Cmd>) classCmdMap.values().stream().sorted(query.comparator()).collect(Collectors.toList());
         if (needWarp) {
-            return new StringBuilder("SELECT COUNT(*) FROM (").append(CmdUtils.join(context, sqlBuilder, cmdList)).append(") AS T");
+            return new StringBuilder("SELECT COUNT(*) FROM (").append(CmdUtils.join(context, new StringBuilder(), cmdList)).append(") AS T");
         }
-        return CmdUtils.join(context, sqlBuilder, cmdList);
+        return CmdUtils.join(context, new StringBuilder(), cmdList);
     }
 }

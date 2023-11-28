@@ -1,5 +1,8 @@
-package cn.mybatis.mp.core.mybatis.configuration;
+package cn.mybatis.mp.core;
 
+
+import cn.mybatis.mp.core.sql.MybatisMpQuerySQLBuilder;
+import cn.mybatis.mp.core.sql.QuerySQLBuilder;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,6 +16,9 @@ public final class MybatisMpConfig {
     private static final String COLUMN_UNDERLINE = "columnUnderline";
     private static final String TABLE_UNDERLINE = "tableUnderline";
     private static final String DEFAULT_BATCH_SIZE = "defaultBatchSize";
+    private static final String SQL_BUILDER = "SQLBuilder";
+
+    private static final QuerySQLBuilder DEFAULT_SQL_BUILDER = new MybatisMpQuerySQLBuilder();
 
     private MybatisMpConfig() {
 
@@ -58,5 +64,18 @@ public final class MybatisMpConfig {
             throw new RuntimeException("defaultBatchSize can't less 1");
         }
         CACHE.put(DEFAULT_BATCH_SIZE, defaultBatchSize);
+    }
+
+    /**
+     * 设置QUERY SQL BUILDER
+     *
+     * @return
+     */
+    public static QuerySQLBuilder getQuerySQLBuilder() {
+        return (QuerySQLBuilder) CACHE.computeIfAbsent(SQL_BUILDER, key -> DEFAULT_SQL_BUILDER);
+    }
+
+    public static void setQuerySQLBuilder(QuerySQLBuilder querySQLBuilder) {
+        CACHE.put(SQL_BUILDER, querySQLBuilder);
     }
 }

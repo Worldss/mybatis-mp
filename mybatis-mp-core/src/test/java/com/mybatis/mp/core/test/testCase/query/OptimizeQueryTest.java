@@ -19,7 +19,7 @@ public class OptimizeQueryTest extends BaseTest {
         //创建构建SQL的上下文 数据库:MYSQL SQL模式 打印
         SqlBuilderContext sqlBuilderContext = new SqlBuilderContext(DbType.MYSQL, SQLMode.PRINT);
         String sql = SQLPrinter.sql(query);
-        String str = SQLOptimizeUtils.getOptimizedSql(query, sqlBuilderContext, new StringBuilder()).toString();
+        String str = SQLOptimizeUtils.getOptimizedSql(query, sqlBuilderContext).toString();
         Assert.assertEquals("sql 优化破坏了原来有query", sql, SQLPrinter.sql(query));
         return str;
     }

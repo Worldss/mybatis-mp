@@ -1,6 +1,6 @@
 package cn.mybatis.mp.core.mybatis;
 
-import cn.mybatis.mp.core.mybatis.configuration.MybatisMpConfig;
+import cn.mybatis.mp.core.MybatisMpConfig;
 import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.ExecutorType;

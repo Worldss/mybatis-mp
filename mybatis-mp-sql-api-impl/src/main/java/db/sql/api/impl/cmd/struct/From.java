@@ -27,10 +27,7 @@ public abstract class From<TABLE extends Dataset> implements db.sql.api.cmd.stru
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.FROM);
-        for (Dataset t : tables) {
-            sqlBuilder = t.sql(module, this, context, sqlBuilder);
-        }
-        return sqlBuilder;
+        return CmdUtils.join(module, this, context, sqlBuilder, this.tables, SqlConst.DELIMITER);
     }
 
     @Override

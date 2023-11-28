@@ -31,40 +31,40 @@ public interface Executor<T extends Executor,
 
     TABLE $(Class entity, int storey);
 
-    default <T> TABLE_FIELD $(Getter<T> getter) {
-        return this.$(getter, 1);
+    default <T> TABLE_FIELD $(Getter<T> column) {
+        return this.$(column, 1);
     }
 
-    <T> TABLE_FIELD $(Getter<T> getter, int storey);
+    <T> TABLE_FIELD $(Getter<T> column, int storey);
 
-    <T> DATASET_FILED $(DATASET dataset, Getter<T> getter);
+    <T> DATASET_FILED $(DATASET dataset, Getter<T> column);
 
     DATASET_FILED $(DATASET dataset, String columnName);
 
     /**
      * 万能创建SQL命令方法
      *
-     * @param getter 列
+     * @param column 列
      * @param RF     返回函数
      * @param <T>    实体类型
      * @param <R>    返回命令
      * @return
      */
-    default <T, R extends Cmd> R $(Getter<T> getter, Function<TABLE_FIELD, R> RF) {
-        return this.$(getter, 1, RF);
+    default <T, R extends Cmd> R $(Getter<T> column, Function<TABLE_FIELD, R> RF) {
+        return this.$(column, 1, RF);
     }
 
     /**
      * 万能创建SQL命令方法
      *
-     * @param getter 列
+     * @param column 列
      * @param storey 缓存区
      * @param RF     返回函数
      * @param <T>    实体类型
      * @param <R>    返回命令
      * @return
      */
-    <T, R extends Cmd> R $(Getter<T> getter, int storey, Function<TABLE_FIELD, R> RF);
+    <T, R extends Cmd> R $(Getter<T> column, int storey, Function<TABLE_FIELD, R> RF);
 
     /**
      * 内联，用于获取自身

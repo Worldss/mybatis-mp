@@ -27,12 +27,12 @@ public abstract class BaseSQLCmdContext<E extends Executor> implements SQLCmdCon
     }
 
     @Override
-public E getExecution() {
+    public E getExecution() {
         return execution;
     }
 
     @Override
-public StringBuilder sql(String dbType) {
+    public StringBuilder sql(String dbType) {
         if (Objects.nonNull(sql)) {
             return sql;
         }
@@ -42,7 +42,7 @@ public StringBuilder sql(String dbType) {
     }
 
     @Override
-public Object[] getSQLCmdParams() {
+    public Object[] getSQLCmdParams() {
         return sqlBuilderContext.getParams();
     }
 

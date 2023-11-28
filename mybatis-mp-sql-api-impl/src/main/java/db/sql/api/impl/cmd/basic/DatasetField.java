@@ -49,7 +49,7 @@ public class DatasetField<T extends DatasetField<T, DATASET>, DATASET extends Da
                 prefix = ((Table) getTable()).getPrefix();
             }
             if (this.getAlias() != null || prefix != null) {
-                sqlBuilder = sqlBuilder.append(SqlConst.AS);
+                sqlBuilder = sqlBuilder.append(SqlConst.AS(context.getDbType()));
                 if (prefix != null) {
                     sqlBuilder = sqlBuilder.append(prefix);
                 }

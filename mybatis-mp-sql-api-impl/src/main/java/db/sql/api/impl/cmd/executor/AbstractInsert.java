@@ -68,6 +68,16 @@ public abstract class AbstractInsert<SELF extends AbstractInsert,
     }
 
     @Override
+    public InsertFields $field(List<TableField> fields) {
+        if (this.insertFields == null) {
+            this.insertFields = new InsertFields();
+            this.append(this.insertFields);
+        }
+        this.insertFields.filed(fields);
+        return this.insertFields;
+    }
+
+    @Override
     public InsertValues $values(List<Cmd> values) {
         if (this.insertValues == null) {
             this.insertValues = new InsertValues();

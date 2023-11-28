@@ -20,16 +20,24 @@ public abstract class BaseExecutor<SELF extends BaseExecutor, CMD_FACTORY extend
 
     private Map<Class<? extends Cmd>, Integer> cmdSorts;
 
-    public <T> TableField $(Table table, Getter<T> getter) {
-        return $().field(table, getter);
+    public <T> TableField $(Table table, Getter<T> column) {
+        return $().field(table, column);
     }
 
-    public <T> TableField $(Getter<T> getter, int storey) {
-        return $().field(getter, storey);
+    public <T> TableField $(Getter<T> column, int storey) {
+        return $().field(column, storey);
+    }
+
+    public <T> DatasetField $(Dataset dataset, Getter<T> column) {
+        return this.$(dataset, $().columnName(column));
     }
 
     public DatasetField $(Dataset dataset, String columnName) {
         return $().field(dataset, columnName);
+    }
+
+    public TableField $(Table table, String columnName) {
+        return $().field(table, columnName);
     }
 
     @Override

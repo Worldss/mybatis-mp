@@ -25,7 +25,7 @@ public class Divide extends BasicFunction<Divide> {
         sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(this.operator);
         sqlBuilder = this.value.sql(module, this, context, sqlBuilder);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

@@ -15,7 +15,7 @@ public class CurrentTime extends BasicFunction<CurrentTime> {
         sqlBuilder = sqlBuilder.append(SqlConst.CURRENT_TIME);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

@@ -2,7 +2,6 @@ package db.sql.api.impl.cmd.struct.update;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
@@ -32,10 +31,10 @@ public class UpdateTable implements db.sql.api.cmd.struct.update.UpdateTable<Tab
             if (i != 0) {
                 sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
             }
-            if (table instanceof Table) {
-                sqlBuilder = sqlBuilder.append(table.getName());
-                sqlBuilder.append(SqlConst.BLANK);
-            }
+
+            sqlBuilder = sqlBuilder.append(table.getName());
+            sqlBuilder.append(SqlConst.BLANK);
+
             if (table.getAlias() != null) {
                 sqlBuilder = sqlBuilder.append(table.getAlias());
             }

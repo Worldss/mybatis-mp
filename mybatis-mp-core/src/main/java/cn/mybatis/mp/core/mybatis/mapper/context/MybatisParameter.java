@@ -1,4 +1,4 @@
-package cn.mybatis.mp.core.mybatis.configuration;
+package cn.mybatis.mp.core.mybatis.mapper.context;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;

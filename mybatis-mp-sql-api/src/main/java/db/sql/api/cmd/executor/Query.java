@@ -18,12 +18,13 @@ public interface Query<SELF extends Query,
         DATASET extends Cmd,
         TABLE_FIELD extends DATASET_FILED,
         DATASET_FILED extends Cmd,
-        SUB_QUERY_TABLE_FILED extends Cmd,
         COLUMN extends Cmd,
         V,
 
         CMD_FACTORY extends CmdFactory<TABLE, DATASET, TABLE_FIELD, DATASET_FILED>,
         CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>,
+
+        WITH extends With<WITH>,
         SELECT extends Select<SELECT>,
         FROM extends From<DATASET>,
         JOIN extends Join<JOIN, DATASET, ON>,
@@ -35,22 +36,24 @@ public interface Query<SELF extends Query,
         ORDERBY extends OrderBy<ORDERBY>,
         LIMIT extends Limit<LIMIT>,
         FORUPDATE extends ForUpdate<FORUPDATE>,
-        UNION extends Union,
-        UNIONS extends Unions<UNION>
+        UNION extends Union
         >
-        extends SelectMethod<SELF, TABLE_FIELD, SUB_QUERY_TABLE_FILED>,
+        extends WithMethod<SELF>,
+        SelectMethod<SELF, TABLE_FIELD, DATASET_FILED>,
         FromMethod<SELF, DATASET>,
         JoinMethod<SELF, DATASET, ON>,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
-        GroupByMethod<SELF, TABLE_FIELD, SUB_QUERY_TABLE_FILED, COLUMN>,
-        HavingMethod<SELF, TABLE_FIELD, SUB_QUERY_TABLE_FILED, HAVING>,
-        OrderByMethod<SELF, TABLE_FIELD, SUB_QUERY_TABLE_FILED, COLUMN>,
+        GroupByMethod<SELF, TABLE_FIELD, DATASET_FILED, COLUMN>,
+        HavingMethod<SELF, TABLE_FIELD, DATASET_FILED, HAVING>,
+        OrderByMethod<SELF, TABLE_FIELD, DATASET_FILED, COLUMN>,
         LimitMethod<SELF>,
         ForUpdateMethod<SELF>,
         UnionMethod<SELF>,
         Executor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
 
     CMD_FACTORY $();
+
+    WITH $with(SubQuery subQuery);
 
     SELECT $select();
 
@@ -69,6 +72,12 @@ public interface Query<SELF extends Query,
     LIMIT $limit();
 
     FORUPDATE $forUpdate();
+
+    @Override
+    default SELF with(SubQuery subQuery) {
+        $with(subQuery);
+        return (SELF) this;
+    }
 
     @Override
     default SELF select(Cmd column) {
@@ -96,6 +105,12 @@ public interface Query<SELF extends Query,
         } else {
             return this.select(field);
         }
+    }
+
+    @Override
+    default <T> SELF selectIgnore(Getter<T> column, int storey) {
+        this.$select().selectIgnore($(column, storey));
+        return (SELF) this;
     }
 
     @Override
@@ -167,7 +182,7 @@ public interface Query<SELF extends Query,
 
     FORUPDATE getForUpdate();
 
-    UNIONS getUnions();
+    Unions getUnions();
 
     @Override
     default CONDITION_CHAIN conditionChain() {

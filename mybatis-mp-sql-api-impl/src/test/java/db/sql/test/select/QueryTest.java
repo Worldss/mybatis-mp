@@ -2,6 +2,7 @@ package db.sql.test.select;
 
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.impl.cmd.executor.Query;
+import db.sql.api.impl.cmd.executor.SubQuery;
 import db.sql.test.BaseTest;
 import db.sql.test.Entity;
 import db.sql.test.Entity2;
@@ -140,6 +141,13 @@ public class QueryTest extends BaseTest {
                 .gt(Entity::getId, Entity2::getId)
         );
 
+
+        SubQuery subQuery=new SubQuery("a").select(userTable().$("id")).from(userTable());
+        check("WITH 测试", "with a as (select id from user) select id,name,a.id", new Query()
+                .with(subQuery)
+                .select(userTable().$("id"), userTable().$("name"))
+                .select(subQuery,"id")
+        );
 
     }
 }

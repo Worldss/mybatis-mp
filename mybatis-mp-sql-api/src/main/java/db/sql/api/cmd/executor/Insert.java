@@ -25,7 +25,9 @@ public interface Insert<SELF extends Insert,
     INSERT_TABLE $insert(TABLE table);
 
 
-    INSERT_FIELD $field(COLUMN... fields);
+    INSERT_FIELD $field(TABLE_FIELD... fields);
+
+    INSERT_FIELD $field(List<TABLE_FIELD> fields);
 
     INSERT_VALUE $values(List<V> values);
 
@@ -38,11 +40,15 @@ public interface Insert<SELF extends Insert,
     SELF insert(Class entity);
 
 
-    default SELF field(COLUMN... fields) {
+    default SELF field(TABLE_FIELD... fields) {
         $field(fields);
         return (SELF) this;
     }
 
+    default SELF field(List<TABLE_FIELD> fields) {
+        $field(fields);
+        return (SELF) this;
+    }
 
     <T> SELF field(Getter<T>... fields);
 

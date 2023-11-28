@@ -7,6 +7,7 @@ import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.DatasetField;
 import db.sql.api.impl.cmd.condition.Exists;
 import db.sql.api.impl.cmd.condition.In;
+import db.sql.api.impl.cmd.struct.query.With;
 import db.sql.api.impl.tookit.SqlConst;
 
 /**
@@ -15,8 +16,6 @@ import db.sql.api.impl.tookit.SqlConst;
 public class SubQuery extends AbstractSubQuery<SubQuery, CmdFactory> implements Dataset<SubQuery, DatasetField> {
 
     private final String alias;
-
-    private String prefix;
 
     public SubQuery(String alias) {
         super(new CmdFactory("st"));
@@ -35,12 +34,12 @@ public class SubQuery extends AbstractSubQuery<SubQuery, CmdFactory> implements 
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (parent instanceof Exists || parent instanceof In) {
+        if (parent instanceof Exists || parent instanceof In || parent instanceof With) {
             return super.sql(module, this, context, sqlBuilder);
         }
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
         sqlBuilder = super.sql(module, this, context, sqlBuilder);
-        sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.AS).append(this.alias);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.AS(context.getDbType())).append(this.alias);
         return sqlBuilder;
     }
 }

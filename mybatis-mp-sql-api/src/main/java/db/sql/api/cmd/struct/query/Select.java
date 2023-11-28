@@ -20,4 +20,5 @@ public interface Select<SELF extends Select> extends Cmd {
 
     List<Cmd> getSelectFiled();
 
+    SELF selectIgnore(Cmd column);
 }

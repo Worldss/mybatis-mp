@@ -57,7 +57,7 @@
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-spring-boot-starter</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
 </dependency>  
 ```
 
@@ -551,6 +551,16 @@ Student stu3=QueryChain.of(sysUserMapper)
     .eq(Student::getId,1)
     .get();
 ```
+### 1.2 忽略部分列
+```java
+Student stu3=QueryChain.of(sysUserMapper)
+    .select(Student.class)
+    .selectIgnore(Student::getCreateTime)
+    .from(Student.class)
+    .eq(Student::getId,1)
+    .get();
+```
+> 注意：需要先select  再 selectIgnore
 
 ### 1.3 join 连表查询
 
@@ -1056,6 +1066,30 @@ Integer id = QueryChain.of(sysUserMapper)
         .setReturnType(Integer.TYPE)
         .get();
 ```
+### 4.3 with 操作
+```java
+SubQuery subQuery = SubQuery.create("sub")
+    .select(SysRole.class)
+    .from(SysRole.class)
+    .eq(SysRole::getId, 1);
+
+List<SysUser> list = QueryChain.of(sysUserMapper)
+    .with(subQuery)
+    .select(subQuery, SysRole::getId, c -> c.as("xx"))
+    .select(subQuery, "id")
+    .select(SysUser.class)
+    .from(SysUser.class)
+    .from(subQuery)
+    .eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId))
+    .orderBy(subQuery, SysRole::getId)
+    .list();
+```
+> 上面是一个利用with 构建的复杂SQL，核心在
+> .with(subQuery)
+> 
+> .from(subQuery)
+> 
+> 把它看成一个子查询
 
 ## 函数操作
 
@@ -1147,16 +1181,19 @@ Integer count = QueryChain.of(sysUserMapper)
 
 ```java
 SubQuery subQuery = SubQuery.create("sub")
-        .select(SysRole.class)
-        .from(SysRole.class)
-        .eq(SysRole::getId, 1);
+    .select(SysRole.class)
+    .from(SysRole.class)
+    .eq(SysRole::getId, 1);
 
-        List<SysUser> list = QueryChain.of(sysUserMapper)
-        .select(SysUser.class)
-        .from(SysUser.class)
-        .join(JoinMode.INNER, SysUser.class, subQuery, on -> on.eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId)))
-        .list();
+List<SysUser> list = QueryChain.of(sysUserMapper)
+    .select(subQuery, SysRole::getId, c -> c.as("xx"))
+    .select(SysUser.class)
+    .from(SysUser.class)
+    .join(JoinMode.INNER, SysUser.class, subQuery, on -> on.eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId)))
+    .orderBy(subQuery, SysRole::getId)
+    .list();
 ```
+> select(subQuery, SysRole::getId, c -> c.as("xx")) 返回子表的角色ID并设置别名
 
 ### select 1 or  select *
 
@@ -1171,7 +1208,76 @@ new Query().selectAll();
 new Query().selectCount1();
 new Query().selectCountAll();
 ```
+# 批量操作
+MybatisBatchUtil 内置了批量保存，批量修改，批量其他操作
+## batchSave 批量保存
+```java
+/**
+ * 批量插入（batchSize！=1时，无法获取主键）
+ *
+ * @param sqlSessionFactory mybatis SqlSessionFactory 通过spring 注解注入获取
+ * @param mapperType        MybatisMapper 的 class
+ * @param list              数据列表
+ * @param batchSize         一次批量处理的条数(如需获取主键，请设置为1)
+ * @param <M>               MybatisMapper
+ * @param <T>               数据的类型
+ * @return 影响的条数
+ */
+public static <M extends MybatisMapper, T> int batchSave(SqlSessionFactory sqlSessionFactory, Class<M> mapperType, List<T> list, int batchSize) {
+    
+}
+```
+## batchUpdate 批量更新
+```java
+/**
+ * 批量更新
+ *
+ * @param sqlSessionFactory mybatis SqlSessionFactory 通过spring 注解注入获取
+ * @param mapperType        MybatisMapper 的 class
+ * @param list              数据列表
+ * @param batchSize         一次批量处理的条数
+ * @param <M>               MybatisMapper
+ * @param <T>               数据的类型
+ * @return 影响的条数
+ */
+public static <M extends MybatisMapper, T> int batchUpdate(SqlSessionFactory sqlSessionFactory, Class<M> mapperType, List<T> list, int batchSize) {
+    
+}
+```
+## batch（核心）批量
+```java
+/**
+ * 批量操作
+ *
+ * @param sqlSessionFactory mybatis SqlSessionFactory 通过spring 注解注入获取
+ * @param mapperType        MybatisMapper 的 class
+ * @param list              数据列表
+ * @param batchSize         一次批量处理的条数
+ * @param batchFunction     操作方法
+ * @param <M>               MybatisMapper
+ * @param <T>               数据的类型
+ * @return 影响的条数
+ */
+public static <M extends MybatisMapper, T> int batch(SqlSessionFactory sqlSessionFactory, Class<M> mapperType, List<T> list, int batchSize, MybatisBatchBiConsumer<SqlSession, M, T> batchFunction) {
+    
+}
+```
+## 如何使用批量操作
+```java
+List<IdTest> list = new ArrayList<>(10000);
+for (int i = 0; i < 10000; i++) {
+    IdTest idTest = new IdTest();
+    idTest.setCreateTime(LocalDateTime.now());
+    list.add(idTest);
+}
 
+MybatisBatchUtil.batchSave(sqlSessionFactory, IdTestMapper.class, list);
+```
+> sqlSessionFactory 是mybatis SqlSessionFactory 可通过spring 依赖注入获得
+
+> IdTestMapper 是mybatis Mapper 接口
+
+> 如需获取主键，可设置batchSize=1，虽然性能可能下降，也比一般的循环save，update快！
 # 如何创建条件，列，表等
 
 > Query，QueryChain等中有个方法，专门提供创建sql的工厂类：$()
@@ -1534,7 +1640,7 @@ mybatis:
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-generator</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     <scope>provided</scope>
 </dependency>
 ```

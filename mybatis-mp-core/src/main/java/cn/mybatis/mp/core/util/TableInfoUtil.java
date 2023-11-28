@@ -1,7 +1,7 @@
 package cn.mybatis.mp.core.util;
 
+import cn.mybatis.mp.core.MybatisMpConfig;
 import cn.mybatis.mp.core.db.reflect.Default;
-import cn.mybatis.mp.core.mybatis.configuration.MybatisMpConfig;
 import cn.mybatis.mp.db.annotations.Table;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;

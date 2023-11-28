@@ -2,7 +2,6 @@ package db.sql.api.impl.cmd.struct.delete;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
@@ -34,7 +33,7 @@ public class DeleteTable implements db.sql.api.cmd.struct.delete.DeleteTable<Tab
             }
             if (table.getAlias() != null) {
                 sqlBuilder = sqlBuilder.append(table.getAlias());
-            } else if (table instanceof Table) {
+            } else {
                 sqlBuilder = sqlBuilder.append(table.getName());
             }
         }

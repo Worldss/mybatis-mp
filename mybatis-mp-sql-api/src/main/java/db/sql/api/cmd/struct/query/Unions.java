@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Unions<UNION extends Union> implements Cmd {
+public class Unions implements Cmd {
 
-    private List<UNION> unions;
+    private List<Union> unions;
 
-    public void add(UNION union) {
+    public void add(Union union) {
         if (unions == null) {
             unions = new ArrayList<>();
         }
@@ -35,7 +35,7 @@ public class Unions<UNION extends Union> implements Cmd {
         return CmdUtils.contain(cmd, this.unions);
     }
 
-    public List<UNION> getUnions() {
+    public List<Union> getUnions() {
         return Collections.unmodifiableList(unions);
     }
 }

@@ -6,7 +6,6 @@ import cn.mybatis.mp.core.db.reflect.Models;
 import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.incrementer.IdentifierGenerator;
 import cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory;
-import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.Model;
@@ -97,7 +96,7 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
 
 
     @Override
-public void setId(Object id) {
+    public void setId(Object id) {
         ModelInfo modelInfo = Models.get(this.value.getClass());
         setId(this.value, modelInfo.getIdFieldInfo(), id);
     }

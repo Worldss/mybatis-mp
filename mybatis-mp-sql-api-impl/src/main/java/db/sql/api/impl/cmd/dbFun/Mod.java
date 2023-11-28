@@ -19,7 +19,7 @@ public class Mod extends BasicFunction<Mod> {
         sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER).append(this.number);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

@@ -3,7 +3,6 @@ package cn.mybatis.mp.core.mybatis.mapper.context;
 
 import cn.mybatis.mp.core.db.reflect.ModelInfo;
 import cn.mybatis.mp.core.db.reflect.Models;
-import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import cn.mybatis.mp.core.sql.executor.Update;
 import cn.mybatis.mp.core.tenant.TenantContext;
 import cn.mybatis.mp.core.tenant.TenantInfo;

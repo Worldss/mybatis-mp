@@ -14,7 +14,7 @@ public class Pi extends BasicFunction {
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.PI).append(SqlConst.BRACKET_LEFT);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

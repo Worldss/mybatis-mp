@@ -6,7 +6,6 @@ import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.incrementer.IdentifierGenerator;
 import cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory;
-import cn.mybatis.mp.core.mybatis.configuration.MybatisParameter;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.annotations.TableField;

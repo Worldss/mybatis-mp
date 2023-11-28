@@ -30,7 +30,7 @@ public class DateAdd extends BasicFunction<DateAdd> {
         sqlBuilder = sqlBuilder.append(SqlConst.BLANK);
         sqlBuilder = sqlBuilder.append(timeUnit.name(), 0, timeUnit.name().length() - 1);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 }

@@ -11,7 +11,7 @@ import db.sql.api.cmd.executor.SubQuery;
 import java.util.List;
 import java.util.function.Function;
 
-public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, SUB_QUERY_TABLE_FILED> {
+public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, DATASET_FIELD> {
 
     SELF select(Cmd column);
 
@@ -93,6 +93,23 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, SUB_QUERY_
         return (SELF) this;
     }
 
+    default <T> SELF selectIgnore(Getter<T> column) {
+        return this.selectIgnore(column, 1);
+    }
+
+    <T> SELF selectIgnore(Getter<T> column, int storey);
+
+    default <T> SELF selectIgnore(Getter<T>... columns) {
+        return this.selectIgnore(1, columns);
+    }
+
+    default <T> SELF selectIgnore(int storey, Getter<T>... columns) {
+        for (Getter column : columns) {
+            this.selectIgnore(column, storey);
+        }
+        return (SELF) this;
+    }
+
     /**
      * select子查询列
      *
@@ -102,20 +119,7 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, SUB_QUERY_
      * @return
      */
     default <T> SELF select(SubQuery subQuery, Getter<T> column) {
-        return this.select(subQuery, column, 1);
-    }
-
-    /**
-     * select子查询列
-     *
-     * @param subQuery
-     * @param column
-     * @param storey
-     * @param <T>
-     * @return
-     */
-    default <T> SELF select(SubQuery subQuery, Getter<T> column, int storey) {
-        return this.select(subQuery, column, storey, null);
+        return this.select(subQuery, column, null);
     }
 
     /**
@@ -127,20 +131,28 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, SUB_QUERY_
      * @param <T>
      * @return
      */
-    default <T> SELF select(SubQuery subQuery, Getter<T> column, Function<SUB_QUERY_TABLE_FILED, Cmd> f) {
-        return this.select(subQuery, column, 1, f);
-    }
+    <T> SELF select(SubQuery subQuery, Getter<T> column, Function<DATASET_FIELD, Cmd> f);
+
 
     /**
      * select子查询列
      *
      * @param subQuery
-     * @param column
-     * @param storey
-     * @param f
-     * @param <T>
      * @return
      */
-    <T> SELF select(SubQuery subQuery, Getter<T> column, int storey, Function<SUB_QUERY_TABLE_FILED, Cmd> f);
+    default SELF select(SubQuery subQuery, String columnName) {
+        return this.select(subQuery, columnName, null);
+    }
+
+
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param columnName
+     * @param f
+     * @return
+     */
+    SELF select(SubQuery subQuery, String columnName, Function<DATASET_FIELD, Cmd> f);
 
 }

@@ -1,5 +1,6 @@
 package cn.mybatis.mp.core.mybatis.configuration;
 
+import cn.mybatis.mp.core.mybatis.mapper.context.MybatisParameter;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -21,12 +22,12 @@ public class PreparedParameterHandler implements ParameterHandler {
     }
 
     @Override
-public Object getParameterObject() {
+    public Object getParameterObject() {
         return cmdContext;
     }
 
     @Override
-public void setParameters(PreparedStatement ps) throws SQLException {
+    public void setParameters(PreparedStatement ps) throws SQLException {
         Object[] params = cmdContext.getSQLCmdParams();
         int length = params.length;
         for (int i = 0; i < length; i++) {

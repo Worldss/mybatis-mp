@@ -21,7 +21,7 @@ public class DateDiff extends BasicFunction<DateDiff> {
         sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
         sqlBuilder = this.another.sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, sqlBuilder);
+        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

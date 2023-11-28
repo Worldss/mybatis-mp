@@ -93,6 +93,23 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, DATASET_FI
         return (SELF) this;
     }
 
+    default <T> SELF selectIgnore(Getter<T> column) {
+        return this.selectIgnore(column, 1);
+    }
+
+    <T> SELF selectIgnore(Getter<T> column, int storey);
+
+    default <T> SELF selectIgnore(Getter<T>... columns) {
+        return this.selectIgnore(1, columns);
+    }
+
+    default <T> SELF selectIgnore(int storey, Getter<T>... columns) {
+        for (Getter column : columns) {
+            this.selectIgnore(column, storey);
+        }
+        return (SELF) this;
+    }
+
     /**
      * select子查询列
      *
@@ -134,7 +151,6 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, DATASET_FI
      * @param subQuery
      * @param columnName
      * @param f
-     * @param <T>
      * @return
      */
     SELF select(SubQuery subQuery, String columnName, Function<DATASET_FIELD, Cmd> f);

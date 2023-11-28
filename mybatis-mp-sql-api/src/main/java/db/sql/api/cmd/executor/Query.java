@@ -108,6 +108,12 @@ public interface Query<SELF extends Query,
     }
 
     @Override
+    default <T> SELF selectIgnore(Getter<T> column, int storey) {
+        this.$select().selectIgnore($(column, storey));
+        return (SELF) this;
+    }
+
+    @Override
     default SELF from(DATASET... tables) {
         $from(tables);
         return (SELF) this;

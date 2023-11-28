@@ -22,6 +22,12 @@ public class Select implements db.sql.api.cmd.struct.query.Select<Select> {
     }
 
     @Override
+    public Select selectIgnore(Cmd column) {
+        selectFields.remove(column);
+        return this;
+    }
+
+    @Override
     public Select distinct() {
         this.distinct = true;
         return this;

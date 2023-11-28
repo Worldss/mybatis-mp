@@ -551,6 +551,16 @@ Student stu3=QueryChain.of(sysUserMapper)
     .eq(Student::getId,1)
     .get();
 ```
+### 1.2 忽略部分列
+```java
+Student stu3=QueryChain.of(sysUserMapper)
+    .select(Student.class)
+    .selectIgnore(Student::getCreateTime)
+    .from(Student.class)
+    .eq(Student::getId,1)
+    .get();
+```
+> 注意：需要先select  再 selectIgnore
 
 ### 1.3 join 连表查询
 

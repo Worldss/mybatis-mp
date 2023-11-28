@@ -30,7 +30,6 @@ import db.sql.api.cmd.struct.query.*;
  * @param <LIMIT>
  * @param <FORUPDATE>
  * @param <UNION>
- * @param <UNIONS>
  */
 public interface SubQuery<SELF extends SubQuery,
         TABLE extends DATASET,

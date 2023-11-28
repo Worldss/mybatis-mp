@@ -1,5 +1,6 @@
 package cn.mybatis.mp.core.mybatis;
 
+import cn.mybatis.mp.core.mybatis.configuration.MybatisMpConfig;
 import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.ExecutorType;
@@ -14,9 +15,6 @@ import java.util.Objects;
  */
 public final class MybatisBatchUtil {
 
-    public final static int DEFAULT_BATCH_SIZE = 1000;
-
-
     /**
      * 批量插入（表自增的，无法获取主键ID）
      *
@@ -28,7 +26,7 @@ public final class MybatisBatchUtil {
      * @return 影响的条数
      */
     public static <M extends MybatisMapper, T> int batchSave(SqlSessionFactory sqlSessionFactory, Class<M> mapperType, List<T> list) {
-        return batchSave(sqlSessionFactory, mapperType, list, DEFAULT_BATCH_SIZE);
+        return batchSave(sqlSessionFactory, mapperType, list, MybatisMpConfig.getDefaultBatchSize());
     }
 
     /**
@@ -60,7 +58,7 @@ public final class MybatisBatchUtil {
      * @return 影响的条数
      */
     public static <M extends MybatisMapper, T> int batchUpdate(SqlSessionFactory sqlSessionFactory, Class<M> mapperType, List<T> list) {
-        return batchUpdate(sqlSessionFactory, mapperType, list, DEFAULT_BATCH_SIZE);
+        return batchUpdate(sqlSessionFactory, mapperType, list, MybatisMpConfig.getDefaultBatchSize());
     }
 
     /**

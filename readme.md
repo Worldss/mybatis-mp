@@ -1056,6 +1056,30 @@ Integer id = QueryChain.of(sysUserMapper)
         .setReturnType(Integer.TYPE)
         .get();
 ```
+### 4.3 with 操作
+```java
+SubQuery subQuery = SubQuery.create("sub")
+    .select(SysRole.class)
+    .from(SysRole.class)
+    .eq(SysRole::getId, 1);
+
+List<SysUser> list = QueryChain.of(sysUserMapper)
+    .with(subQuery)
+    .select(subQuery, SysRole::getId, c -> c.as("xx"))
+    .select(subQuery, "id")
+    .select(SysUser.class)
+    .from(SysUser.class)
+    .from(subQuery)
+    .eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId))
+    .orderBy(subQuery, SysRole::getId)
+    .list();
+```
+> 上面是一个利用with 构建的复杂SQL，核心在
+> .with(subQuery)
+> 
+> .from(subQuery)
+> 
+> 把它看成一个子查询
 
 ## 函数操作
 

@@ -4,6 +4,7 @@ import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import com.mybatis.mp.core.test.mapper.*;
 import db.sql.api.Cmd;
 import db.sql.api.impl.tookit.SQLPrinter;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -18,6 +19,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
 public class BaseTest {
 
     protected SqlSessionFactory sqlSessionFactory;
@@ -27,7 +29,6 @@ public class BaseTest {
 
     @BeforeEach
     public void init() {
-
         dataSource = new EmbeddedDatabaseBuilder()
                 .setName("test_db")
                 .setType(EmbeddedDatabaseType.H2)
@@ -37,6 +38,7 @@ public class BaseTest {
         TransactionFactory transactionFactory = new JdbcTransactionFactory();
         Environment environment = new Environment("Test", transactionFactory, dataSource);
         MybatisConfiguration configuration = new MybatisConfiguration(environment);
+        configuration.setLogImpl(StdOutImpl.class);
         configuration.addMapper(SysUserMapper.class);
         configuration.addMapper(SysRoleMapper.class);
         configuration.addMapper(SysUserScoreMapper.class);
@@ -45,7 +47,7 @@ public class BaseTest {
         configuration.addMapper(TenantTestMapper.class);
 
 
-        configuration.setLogImpl(StdOutImpl.class);
+
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     }
 

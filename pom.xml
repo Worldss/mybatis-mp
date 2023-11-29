@@ -10,7 +10,7 @@
     </description>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp</artifactId>
-    <version>1.1.6</version>
+    <version>1.1.7</version>
     <packaging>pom</packaging>
     <modules>
         <module>mybatis-mp-annotation</module>
@@ -49,7 +49,7 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 
-        <mybatis-mp.version>1.1.6</mybatis-mp.version>
+        <mybatis-mp.version>1.1.7</mybatis-mp.version>
 
         <!-- spring version -->
         <spring-boot.version>2.7.18</spring-boot.version>

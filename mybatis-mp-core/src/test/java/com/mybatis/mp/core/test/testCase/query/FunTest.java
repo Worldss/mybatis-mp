@@ -10,11 +10,12 @@ import com.mybatis.mp.core.test.mapper.SysUserScoreMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.impl.cmd.Methods;
-import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FunTest extends BaseTest {
 
@@ -29,7 +30,7 @@ public class FunTest extends BaseTest {
                     .setReturnType(Integer.TYPE)
                     .count();
 
-            Assert.assertEquals("count", Integer.valueOf(2), count);
+            assertEquals(Integer.valueOf(2), count, "count");
         }
     }
 
@@ -44,7 +45,7 @@ public class FunTest extends BaseTest {
                     .setReturnType(Integer.TYPE)
                     .get();
 
-            Assert.assertEquals("min", Integer.valueOf(2), count);
+            assertEquals(Integer.valueOf(2), count, "min");
         }
     }
 
@@ -59,7 +60,7 @@ public class FunTest extends BaseTest {
                     .setReturnType(Integer.TYPE)
                     .get();
 
-            Assert.assertEquals("max", Integer.valueOf(3), count);
+            assertEquals(Integer.valueOf(3), count, "max");
         }
     }
 
@@ -73,7 +74,7 @@ public class FunTest extends BaseTest {
                     .eq(SysUser::getId, 1).or().eq(SysUser::getId, 3)
                     .setReturnType(BigDecimal.class)
                     .get();
-            Assert.assertTrue("avg", new BigDecimal("2").compareTo(avg)==0);
+            assertEquals(0, new BigDecimal("2").compareTo(avg), "avg");
         }
     }
 
@@ -88,7 +89,7 @@ public class FunTest extends BaseTest {
                     .setReturnType(BigDecimal.class)
                     .get();
 
-            Assert.assertEquals("multiply", new BigDecimal("-1"), multiply);
+            assertEquals(new BigDecimal("-1"), multiply, "multiply");
         }
     }
 
@@ -104,7 +105,7 @@ public class FunTest extends BaseTest {
                     .get();
 
 
-            Assert.assertEquals("divide", new BigDecimal("-1"), divide);
+            assertEquals(new BigDecimal("-1"), divide, "divide");
         }
     }
 
@@ -118,7 +119,7 @@ public class FunTest extends BaseTest {
                     .setReturnType(BigDecimal.class)
                     .get();
 
-            Assert.assertEquals("plus", new BigDecimal("3"), divide);
+            assertEquals(new BigDecimal("3"), divide, "plus");
         }
     }
 
@@ -133,7 +134,7 @@ public class FunTest extends BaseTest {
                     .setReturnType(BigDecimal.class)
                     .get();
 
-            Assert.assertEquals("subtract", new BigDecimal("2"), divide);
+            assertEquals(new BigDecimal("2"), divide, "subtract");
         }
     }
 
@@ -147,7 +148,7 @@ public class FunTest extends BaseTest {
                     .eq(SysUser::getId, 3)
                     .setReturnType(BigDecimal.class)
                     .get();
-            Assert.assertEquals("abs", new BigDecimal("6"), divide);
+            assertEquals(new BigDecimal("6"), divide, "abs");
         }
     }
 
@@ -173,7 +174,7 @@ public class FunTest extends BaseTest {
                     .setReturnType(String.class)
                     .get();
 
-            Assert.assertEquals("concat", "32", str);
+            assertEquals("32", str, "concat");
         }
     }
 
@@ -187,7 +188,7 @@ public class FunTest extends BaseTest {
                     .eq(SysUser::getId, 3)
                     .setReturnType(String.class)
                     .get();
-            Assert.assertEquals("concatAs", "3a2a3", str);
+            assertEquals("3a2a3", str, "concatAs");
         }
     }
 
@@ -202,7 +203,7 @@ public class FunTest extends BaseTest {
                         .eq(SysUserScore::getUserId, 3)
                         .setReturnType(BigDecimal.class)
                         .get();
-                Assert.assertEquals("round", new BigDecimal("5.5"), divide);
+                assertEquals(new BigDecimal("5.5"), divide, "round");
             }
             {
                 BigDecimal divide = QueryChain.of(sysUserScoreMapper)
@@ -212,7 +213,7 @@ public class FunTest extends BaseTest {
                         .setReturnType(BigDecimal.class)
                         .get();
 
-                Assert.assertEquals("round", new BigDecimal("6.0"), divide);
+                assertEquals(new BigDecimal("6.0"), divide, "round");
             }
         }
     }
@@ -245,7 +246,7 @@ public class FunTest extends BaseTest {
                     .eq(SysUser::getId, 1)
                     .setReturnType(String.class)
                     .get();
-            Assert.assertEquals("caseWhenThen", "1", str);
+            assertEquals("1", str, "caseWhenThen");
         }
     }
 
@@ -267,7 +268,7 @@ public class FunTest extends BaseTest {
                     .eq(SysUser::getId, 3)
                     .setReturnType(String.class)
                     .get();
-            Assert.assertEquals("caseWhenElse", "4", str);
+            assertEquals("4", str, "caseWhenElse");
         }
     }
 }

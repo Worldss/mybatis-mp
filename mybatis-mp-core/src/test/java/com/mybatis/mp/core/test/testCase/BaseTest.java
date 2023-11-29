@@ -4,7 +4,6 @@ import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import com.mybatis.mp.core.test.mapper.*;
 import db.sql.api.Cmd;
 import db.sql.api.impl.tookit.SQLPrinter;
-import junit.framework.Assert;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -16,6 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BaseTest {
 
@@ -63,7 +64,7 @@ public class BaseTest {
         String sql2 = trim(sql);
         System.out.println("sql1:  " + sql1);
         System.out.println("sql2:  " + sql2);
-        Assert.assertEquals(message, sql1, sql2);
+        assertEquals(sql1, sql2, message);
     }
 
     private String trim(String sql) {

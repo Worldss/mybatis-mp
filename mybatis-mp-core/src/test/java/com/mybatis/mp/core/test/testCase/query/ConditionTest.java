@@ -5,11 +5,13 @@ import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import db.sql.api.cmd.LikeMode;
-import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 
 public class ConditionTest extends BaseTest {
@@ -26,7 +28,7 @@ public class ConditionTest extends BaseTest {
                     .setReturnType(Integer.TYPE)
                     .get();
 
-            Assert.assertNull("eq", id);
+            assertNull(id, "eq");
         }
     }
 
@@ -42,7 +44,7 @@ public class ConditionTest extends BaseTest {
                     .setReturnType(Integer.TYPE)
                     .get();
 
-            Assert.assertEquals("eq", Integer.valueOf(2), id);
+            assertEquals(Integer.valueOf(2), id, "eq");
         }
     }
 
@@ -57,7 +59,7 @@ public class ConditionTest extends BaseTest {
                     .setReturnType(Integer.TYPE)
                     .get();
 
-            Assert.assertEquals("eq", Integer.valueOf(2), id);
+            assertEquals(Integer.valueOf(2), id, "eq");
         }
     }
 
@@ -71,7 +73,7 @@ public class ConditionTest extends BaseTest {
                     .eq(SysUser::getId, 2).and().or().eq(SysUser::getId, 1)
                     .setReturnType(Integer.TYPE)
                     .get();
-            Assert.assertEquals("andOr", Integer.valueOf(2), count);
+            assertEquals(Integer.valueOf(2), count, "andOr");
         }
     }
 
@@ -87,7 +89,7 @@ public class ConditionTest extends BaseTest {
                     .setReturnType(Integer.TYPE)
                     .count();
 
-            Assert.assertEquals("eq", Integer.valueOf(3), id);
+            assertEquals(Integer.valueOf(3), id, "eq");
         }
     }
 
@@ -102,7 +104,7 @@ public class ConditionTest extends BaseTest {
                     .limit(1)
                     .setReturnType(Integer.TYPE)
                     .get();
-            Assert.assertEquals("gt", Integer.valueOf(2), id);
+            assertEquals(Integer.valueOf(2), id, "gt");
         }
     }
 
@@ -118,7 +120,7 @@ public class ConditionTest extends BaseTest {
                     .setReturnType(Integer.TYPE)
                     .get();
 
-            Assert.assertEquals("gte", Integer.valueOf(2), id);
+            assertEquals(Integer.valueOf(2), id, "gte");
         }
     }
 
@@ -133,7 +135,7 @@ public class ConditionTest extends BaseTest {
                     .limit(1)
                     .setReturnType(Integer.TYPE)
                     .get();
-            Assert.assertEquals("lt", Integer.valueOf(1), id);
+            assertEquals(Integer.valueOf(1), id, "lt");
         }
     }
 
@@ -148,7 +150,7 @@ public class ConditionTest extends BaseTest {
                     .limit(1)
                     .setReturnType(Integer.TYPE)
                     .get();
-            Assert.assertEquals("lte", Integer.valueOf(1), id);
+            assertEquals(Integer.valueOf(1), id, "lte");
         }
     }
 
@@ -163,7 +165,7 @@ public class ConditionTest extends BaseTest {
                     .eq(SysUser::getId, 3)
                     .setReturnType(Integer.TYPE)
                     .get();
-            Assert.assertNull("isNotNull", sysUser);
+            assertNull(sysUser, "isNotNull");
         }
     }
 
@@ -181,7 +183,7 @@ public class ConditionTest extends BaseTest {
             eqSysUser.setId(3);
             eqSysUser.setPassword(null);
             eqSysUser.setRole_id(1);
-            Assert.assertEquals("isNull", eqSysUser, sysUser);
+            assertEquals(eqSysUser, sysUser, "isNull");
         }
     }
 
@@ -200,7 +202,7 @@ public class ConditionTest extends BaseTest {
             eqSysUser.setId(2);
             eqSysUser.setPassword("123456");
             eqSysUser.setRole_id(1);
-            Assert.assertEquals("like", eqSysUser, sysUser);
+            assertEquals(eqSysUser, sysUser, "like");
         }
     }
 
@@ -216,7 +218,7 @@ public class ConditionTest extends BaseTest {
                     .count();
 
 
-            Assert.assertEquals("rightLike", Integer.valueOf(2), count);
+            assertEquals(Integer.valueOf(2), count, "rightLike");
         }
     }
 
@@ -235,7 +237,7 @@ public class ConditionTest extends BaseTest {
             eqSysUser.setId(2);
             eqSysUser.setPassword("123456");
             eqSysUser.setRole_id(1);
-            Assert.assertEquals("leftLike", eqSysUser, sysUser);
+            assertEquals(eqSysUser, sysUser, "leftLike");
         }
     }
 
@@ -255,7 +257,7 @@ public class ConditionTest extends BaseTest {
             eqSysUser.setId(3);
             eqSysUser.setPassword(null);
             eqSysUser.setRole_id(1);
-            Assert.assertEquals("notLike", eqSysUser, sysUser);
+            assertEquals(eqSysUser, sysUser, "notLike");
         }
     }
 
@@ -275,7 +277,7 @@ public class ConditionTest extends BaseTest {
             eqSysUser.setId(2);
             eqSysUser.setPassword("123456");
             eqSysUser.setRole_id(1);
-            Assert.assertEquals("notRightLike", eqSysUser, sysUser);
+            assertEquals(eqSysUser, sysUser, "notRightLike");
         }
     }
 
@@ -294,7 +296,7 @@ public class ConditionTest extends BaseTest {
             eqSysUser.setId(3);
             eqSysUser.setPassword(null);
             eqSysUser.setRole_id(1);
-            Assert.assertEquals("notLeftLike", eqSysUser, sysUser);
+            assertEquals(eqSysUser, sysUser, "notLeftLike");
         }
     }
 
@@ -310,8 +312,8 @@ public class ConditionTest extends BaseTest {
                     .list();
 
 
-            Assert.assertEquals("between", Integer.valueOf(1), list.get(0));
-            Assert.assertEquals("between", Integer.valueOf(2), list.get(1));
+            assertEquals(Integer.valueOf(1), list.get(0), "between");
+            assertEquals(Integer.valueOf(2), list.get(1), "between");
         }
     }
 
@@ -326,8 +328,8 @@ public class ConditionTest extends BaseTest {
                     .notBetween(SysUser::getId, 1, 2)
                     .setReturnType(Integer.TYPE)
                     .list();
-            Assert.assertEquals("notLeftLike", 1, list.size());
-            Assert.assertEquals("notLeftLike", Integer.valueOf(3), list.get(0));
+            assertEquals(1, list.size(), "notLeftLike");
+            assertEquals(Integer.valueOf(3), list.get(0), "notLeftLike");
         }
     }
 
@@ -338,13 +340,13 @@ public class ConditionTest extends BaseTest {
             List<Integer> list = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId)
                     .from(SysUser.class)
-                    .in(SysUser::getId,  new Integer[]{1,2})
+                    .in(SysUser::getId, new Integer[]{1, 2})
                     .setReturnType(Integer.TYPE)
                     .list();
 
 
-            Assert.assertEquals("between", Integer.valueOf(1), list.get(0));
-            Assert.assertEquals("between", Integer.valueOf(2), list.get(1));
+            assertEquals(Integer.valueOf(1), list.get(0), "between");
+            assertEquals(Integer.valueOf(2), list.get(1), "between");
         }
     }
 }

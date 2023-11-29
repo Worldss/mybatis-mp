@@ -3,7 +3,8 @@ package db.sql.test;
 import db.sql.api.Cmd;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SQLPrinter;
-import junit.framework.Assert;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BaseTest {
     protected Table userTable() {
@@ -39,6 +40,6 @@ public class BaseTest {
         String sql2 = trim(SQLPrinter.sql(cmd));
         System.out.println("sql1:  " + sql1);
         System.out.println("sql2:  " + sql2);
-        Assert.assertEquals(message, sql1, sql2);
+        assertEquals(sql1, sql2, message);
     }
 }

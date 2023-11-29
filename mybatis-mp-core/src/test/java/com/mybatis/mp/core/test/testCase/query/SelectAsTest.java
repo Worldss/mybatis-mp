@@ -8,11 +8,12 @@ import com.mybatis.mp.core.test.testCase.BaseTest;
 import com.mybatis.mp.core.test.vo.NestedSysRoleVo;
 import com.mybatis.mp.core.test.vo.SysUserRoleVo;
 import com.mybatis.mp.core.test.vo.SysUserVo;
-import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SelectAsTest extends BaseTest {
 
@@ -29,7 +30,7 @@ public class SelectAsTest extends BaseTest {
             SysUserVo eqSysUser = new SysUserVo();
             eqSysUser.setId(1);
             eqSysUser.setUserName("admin");
-            Assert.assertEquals("@ResultEntity注解测试", eqSysUser, sysUser);
+            assertEquals(eqSysUser, sysUser, "@ResultEntity注解测试");
         }
     }
 
@@ -48,7 +49,7 @@ public class SelectAsTest extends BaseTest {
             eqSysUser.setId(1);
             eqSysUser.setUserName("admin");
             eqSysUser.setPwd("123");
-            Assert.assertEquals("@ResultEntityField注解测试", eqSysUser, sysUser);
+            assertEquals(eqSysUser, sysUser, "@ResultEntityField注解测试");
         }
     }
 
@@ -68,7 +69,7 @@ public class SelectAsTest extends BaseTest {
             eqSysUser.setUserName("admin");
             eqSysUser.setPwd("123");
             eqSysUser.setKkName("1kk");
-            Assert.assertEquals("@ResultEntity 之 @ResultField注解 ，返回Vo测试", eqSysUser, sysUser);
+            assertEquals(eqSysUser, sysUser, "@ResultEntity 之 @ResultField注解 ，返回Vo测试");
         }
     }
 
@@ -97,9 +98,9 @@ public class SelectAsTest extends BaseTest {
             sysRole.setCreateTime(LocalDateTime.parse("2022-10-10T00:00"));
             eqSysUser.setRole(sysRole);
 
-            Assert.assertEquals("@NestedResultEntity注解，返回实体类测试", eqSysUser, sysUser);
+            assertEquals(eqSysUser, sysUser, "@NestedResultEntity注解，返回实体类测试");
 
-            Assert.assertEquals("@NestedResultEntity注解，返回实体类测试", eqSysUser, queryChain.list().get(0));
+            assertEquals(eqSysUser, queryChain.list().get(0), "@NestedResultEntity注解，返回实体类测试");
         }
     }
 
@@ -123,8 +124,8 @@ public class SelectAsTest extends BaseTest {
             sysRole.setId(1);
             sysRole.setXxName("测试");
             eqSysUser.setRole(sysRole);
-            Assert.assertEquals("@NestedResultEntity注解，返回Vo测试", eqSysUser, sysUser);
-            Assert.assertEquals("@NestedResultEntity注解，返回Vo测试", eqSysUser, queryChain.list().get(0));
+            assertEquals(eqSysUser, sysUser, "@NestedResultEntity注解，返回Vo测试");
+            assertEquals(eqSysUser, queryChain.list().get(0), "@NestedResultEntity注解，返回Vo测试");
         }
     }
 
@@ -150,7 +151,7 @@ public class SelectAsTest extends BaseTest {
             sysRole.setXxName("测试");
             sysRole.setCc("test1aa");
             eqSysUser.setRole(sysRole);
-            Assert.assertEquals("@NestedResultEntity 之 @ResultField注解 ，返回Vo测试", eqSysUser, sysUser);
+            assertEquals(eqSysUser, sysUser, "@NestedResultEntity 之 @ResultField注解 ，返回Vo测试");
         }
     }
 }

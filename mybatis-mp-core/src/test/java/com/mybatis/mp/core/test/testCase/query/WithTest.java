@@ -6,13 +6,13 @@ import com.mybatis.mp.core.test.DO.SysRole;
 import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
-import db.sql.api.cmd.JoinMode;
 import db.sql.api.impl.tookit.SQLPrinter;
-import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WithTest extends BaseTest {
 
@@ -37,7 +37,7 @@ public class WithTest extends BaseTest {
                     .orderBy(subQuery, SysRole::getId)
                     .list();
             System.out.println(SQLPrinter.sql(queryChain));
-            Assert.assertEquals("withQuery", 2, list.size());
+            assertEquals(2, list.size(), "withQuery");
         }
     }
 }

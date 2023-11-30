@@ -7,27 +7,27 @@ import db.sql.api.cmd.executor.method.FromMethod;
 import db.sql.api.cmd.executor.method.JoinMethod;
 import db.sql.api.cmd.executor.method.WhereMethod;
 import db.sql.api.cmd.struct.*;
-import db.sql.api.cmd.struct.delete.DeleteTable;
+import db.sql.api.cmd.struct.delete.IDeleteTable;
 
-public interface Delete<SELF extends Delete,
+public interface IDelete<SELF extends IDelete,
         TABLE extends DATASET,
         DATASET extends Cmd,
         TABLE_FIELD extends DATASET_FILED,
         DATASET_FILED extends COLUMN,
         COLUMN extends Cmd,
         V,
-        CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>,
-        DELETE_TABLE extends DeleteTable<TABLE>,
-        FROM extends From<TABLE>,
-        JOIN extends Join<JOIN, TABLE, ON>,
-        ON extends On<ON, TABLE, COLUMN, V, JOIN, CONDITION_CHAIN>,
-        WHERE extends Where<WHERE, COLUMN, V, CONDITION_CHAIN>>
+        CONDITION_CHAIN extends IConditionChain<CONDITION_CHAIN, COLUMN, V>,
+        DELETE_TABLE extends IDeleteTable<TABLE>,
+        FROM extends IFrom<TABLE>,
+        JOIN extends IJoin<JOIN, TABLE, ON>,
+        ON extends IOn<ON, TABLE, COLUMN, V, JOIN, CONDITION_CHAIN>,
+        WHERE extends IWhere<WHERE, COLUMN, V, CONDITION_CHAIN>>
 
         extends DeleteMethod<SELF, TABLE>,
         FromMethod<SELF, TABLE>,
         JoinMethod<SELF, TABLE, ON>,
         WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
-        Executor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
+        IExecutor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
 
     DELETE_TABLE $delete(TABLE... tables);
 

@@ -10,9 +10,9 @@ import java.util.List;
 
 public class Unions implements Cmd {
 
-    private List<Union> unions;
+    private List<IUnion> unions;
 
-    public void add(Union union) {
+    public void add(IUnion union) {
         if (unions == null) {
             unions = new ArrayList<>();
         }
@@ -24,7 +24,7 @@ public class Unions implements Cmd {
         if (unions == null || unions.isEmpty()) {
             return sqlBuilder;
         }
-        for (Union union : unions) {
+        for (IUnion union : unions) {
             sqlBuilder = union.sql(module, this, context, sqlBuilder);
         }
         return sqlBuilder;
@@ -35,7 +35,7 @@ public class Unions implements Cmd {
         return CmdUtils.contain(cmd, this.unions);
     }
 
-    public List<Union> getUnions() {
+    public List<IUnion> getUnions() {
         return Collections.unmodifiableList(unions);
     }
 }

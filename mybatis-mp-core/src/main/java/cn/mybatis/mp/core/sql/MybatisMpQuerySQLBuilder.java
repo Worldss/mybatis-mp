@@ -1,12 +1,12 @@
 package cn.mybatis.mp.core.sql;
 
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.executor.IQuery;
 import db.sql.api.impl.tookit.SQLOptimizeUtils;
 
 public class MybatisMpQuerySQLBuilder implements QuerySQLBuilder {
     @Override
-    public StringBuilder buildQuerySQl(Query query, SqlBuilderContext context, boolean optimize) {
+    public StringBuilder buildQuerySQl(IQuery query, SqlBuilderContext context, boolean optimize) {
         if (optimize) {
             return SQLOptimizeUtils.getOptimizedSql(query, context);
         }
@@ -14,7 +14,7 @@ public class MybatisMpQuerySQLBuilder implements QuerySQLBuilder {
     }
 
     @Override
-    public StringBuilder buildCountQuerySQl(Query query, SqlBuilderContext context, boolean optimize) {
+    public StringBuilder buildCountQuerySQl(IQuery query, SqlBuilderContext context, boolean optimize) {
         if (optimize) {
             return SQLOptimizeUtils.getOptimizedCountSql(query, context);
         }
@@ -22,7 +22,7 @@ public class MybatisMpQuerySQLBuilder implements QuerySQLBuilder {
     }
 
     @Override
-    public StringBuilder buildCountSQLFromQuery(Query query, SqlBuilderContext context, boolean optimize) {
+    public StringBuilder buildCountSQLFromQuery(IQuery query, SqlBuilderContext context, boolean optimize) {
         return SQLOptimizeUtils.getCountSqlFromQuery(query, context, optimize);
     }
 }

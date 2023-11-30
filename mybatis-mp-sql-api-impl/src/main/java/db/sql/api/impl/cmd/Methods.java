@@ -2,7 +2,7 @@ package db.sql.api.impl.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.cmd.LikeMode;
-import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.executor.IQuery;
 import db.sql.api.impl.cmd.basic.BasicValue;
 import db.sql.api.impl.cmd.basic.Condition;
 import db.sql.api.impl.cmd.condition.*;
@@ -1164,7 +1164,7 @@ public class Methods {
      *
      * @return
      */
-    public static In in(Cmd key, Query query) {
+    public static In in(Cmd key, IQuery query) {
         return new In(key).add(query);
     }
 
@@ -1174,7 +1174,7 @@ public class Methods {
      * @param query
      * @return
      */
-    public static Exists exists(Query query) {
+    public static Exists exists(IQuery query) {
         return new Exists(query);
     }
 
@@ -1184,7 +1184,7 @@ public class Methods {
      * @param query
      * @return
      */
-    public static NotExists notExists(Query query) {
+    public static NotExists notExists(IQuery query) {
         return new NotExists(query);
     }
 

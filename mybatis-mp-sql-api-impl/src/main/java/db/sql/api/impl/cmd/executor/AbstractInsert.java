@@ -2,7 +2,7 @@ package db.sql.api.impl.cmd.executor;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.cmd.executor.Insert;
+import db.sql.api.cmd.executor.IInsert;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.cmd.basic.Dataset;
@@ -22,7 +22,7 @@ public abstract class AbstractInsert<SELF extends AbstractInsert,
         CMD_FACTORY extends CmdFactory
         >
         extends BaseExecutor<SELF, CMD_FACTORY>
-        implements Insert<SELF,
+        implements IInsert<SELF,
         Table,
         Dataset,
         TableField,

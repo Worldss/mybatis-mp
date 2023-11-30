@@ -3,9 +3,9 @@ package db.sql.api.cmd.executor;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.cmd.CmdFactory;
+import db.sql.api.cmd.ICmdFactory;
 import db.sql.api.cmd.JoinMode;
-import db.sql.api.cmd.basic.Condition;
+import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.method.*;
 import db.sql.api.cmd.struct.*;
 import db.sql.api.cmd.struct.query.*;
@@ -13,7 +13,7 @@ import db.sql.api.cmd.struct.query.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface Query<SELF extends Query,
+public interface IQuery<SELF extends IQuery,
         TABLE extends DATASET,
         DATASET extends Cmd,
         TABLE_FIELD extends DATASET_FILED,
@@ -21,22 +21,22 @@ public interface Query<SELF extends Query,
         COLUMN extends Cmd,
         V,
 
-        CMD_FACTORY extends CmdFactory<TABLE, DATASET, TABLE_FIELD, DATASET_FILED>,
-        CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>,
+        CMD_FACTORY extends ICmdFactory<TABLE, DATASET, TABLE_FIELD, DATASET_FILED>,
+        CONDITION_CHAIN extends IConditionChain<CONDITION_CHAIN, COLUMN, V>,
 
-        WITH extends With<WITH>,
-        SELECT extends Select<SELECT>,
-        FROM extends From<DATASET>,
-        JOIN extends Join<JOIN, DATASET, ON>,
-        ON extends On<ON, DATASET, COLUMN, V, JOIN, CONDITION_CHAIN>,
+        WITH extends IWith<WITH>,
+        SELECT extends ISelect<SELECT>,
+        FROM extends IFrom<DATASET>,
+        JOIN extends IJoin<JOIN, DATASET, ON>,
+        ON extends IOn<ON, DATASET, COLUMN, V, JOIN, CONDITION_CHAIN>,
         JOINS extends Joins<JOIN>,
-        WHERE extends Where<WHERE, COLUMN, V, CONDITION_CHAIN>,
-        GROUPBY extends GroupBy<GROUPBY, COLUMN>,
-        HAVING extends Having<HAVING>,
-        ORDERBY extends OrderBy<ORDERBY>,
-        LIMIT extends Limit<LIMIT>,
-        FORUPDATE extends ForUpdate<FORUPDATE>,
-        UNION extends Union
+        WHERE extends IWhere<WHERE, COLUMN, V, CONDITION_CHAIN>,
+        GROUPBY extends IGroupBy<GROUPBY, COLUMN>,
+        HAVING extends IHaving<HAVING>,
+        ORDERBY extends IOrderBy<ORDERBY>,
+        LIMIT extends ILimit<LIMIT>,
+        FORUPDATE extends IForUpdate<FORUPDATE>,
+        UNION extends IUnion
         >
         extends WithMethod<SELF>,
         SelectMethod<SELF, TABLE_FIELD, DATASET_FILED>,
@@ -49,11 +49,11 @@ public interface Query<SELF extends Query,
         LimitMethod<SELF>,
         ForUpdateMethod<SELF>,
         UnionMethod<SELF>,
-        Executor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
+        IExecutor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
 
     CMD_FACTORY $();
 
-    WITH $with(SubQuery subQuery);
+    WITH $with(ISubQuery subQuery);
 
     SELECT $select();
 
@@ -74,7 +74,7 @@ public interface Query<SELF extends Query,
     FORUPDATE $forUpdate();
 
     @Override
-    default SELF with(SubQuery subQuery) {
+    default SELF with(ISubQuery subQuery) {
         $with(subQuery);
         return (SELF) this;
     }
@@ -132,13 +132,13 @@ public interface Query<SELF extends Query,
     }
 
     @Override
-    default SELF havingAnd(Condition condition) {
+    default SELF havingAnd(ICondition condition) {
         $having().and(condition);
         return (SELF) this;
     }
 
     @Override
-    default SELF havingOr(Condition condition) {
+    default SELF havingOr(ICondition condition) {
         $having().or(condition);
         return (SELF) this;
     }

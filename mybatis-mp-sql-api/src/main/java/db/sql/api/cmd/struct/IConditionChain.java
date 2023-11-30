@@ -1,19 +1,19 @@
 package db.sql.api.cmd.struct;
 
 
-import db.sql.api.cmd.basic.Condition;
+import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.method.condition.ConditionMethods;
 
 import java.util.function.Consumer;
 
 
-public interface ConditionChain<SELF extends ConditionChain,
+public interface IConditionChain<SELF extends IConditionChain,
         COLUMN,
         V>
 
         extends ConditionMethods<SELF, COLUMN, V>,
         Nested<SELF, SELF>,
-        Condition {
+        ICondition {
 
     boolean hasContent();
 
@@ -23,9 +23,9 @@ public interface ConditionChain<SELF extends ConditionChain,
 
     SELF or();
 
-    SELF and(Condition condition, boolean when);
+    SELF and(ICondition condition, boolean when);
 
-    SELF or(Condition condition, boolean when);
+    SELF or(ICondition condition, boolean when);
 
     @Override
     default SELF andNested(Consumer<SELF> consumer) {

@@ -3,6 +3,7 @@ package db.sql.api.impl.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.executor.IExecutor;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.DatasetField;
@@ -16,7 +17,7 @@ import java.util.function.Function;
 public interface Executor<SELF extends Executor,
         CMD_FACTORY extends CmdFactory
         >
-        extends db.sql.api.cmd.executor.Executor<SELF, Table, Dataset, TableField, DatasetField> {
+        extends IExecutor<SELF, Table, Dataset, TableField, DatasetField> {
 
     CMD_FACTORY $();
 

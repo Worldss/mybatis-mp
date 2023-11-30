@@ -3,6 +3,7 @@ package db.sql.api.impl.cmd.struct.update;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.struct.update.IUpdateSets;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
@@ -10,7 +11,7 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateSets implements db.sql.api.cmd.struct.update.UpdateSets<TableField, Cmd, UpdateSet> {
+public class UpdateSets implements IUpdateSets<TableField, Cmd, UpdateSet> {
 
     private List<UpdateSet> updateSets;
 

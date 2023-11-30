@@ -10,9 +10,9 @@ import java.util.List;
 
 public class Withs implements Cmd {
 
-    private List<With> withs;
+    private List<IWith> withs;
 
-    public void add(With with) {
+    public void add(IWith with) {
         if (withs == null) {
             withs = new ArrayList<>();
         }
@@ -33,7 +33,7 @@ public class Withs implements Cmd {
         return CmdUtils.contain(cmd, this.withs);
     }
 
-    public List<With> getUnions() {
+    public List<IWith> getUnions() {
         return Collections.unmodifiableList(this.withs);
     }
 }

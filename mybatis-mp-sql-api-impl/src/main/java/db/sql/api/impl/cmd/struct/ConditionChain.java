@@ -5,8 +5,9 @@ import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.LikeMode;
-import db.sql.api.cmd.basic.Condition;
-import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.basic.ICondition;
+import db.sql.api.cmd.executor.IQuery;
+import db.sql.api.cmd.struct.IConditionChain;
 import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.cmd.basic.ConditionBlock;
 import db.sql.api.impl.cmd.basic.Connector;
@@ -17,7 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<ConditionChain, Cmd, Object>, Condition {
+public class ConditionChain implements IConditionChain<ConditionChain, Cmd, Object>, ICondition {
 
     private final ConditionFactory conditionFactory;
 
@@ -64,7 +65,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain and(Condition condition, boolean when) {
+    public ConditionChain and(ICondition condition, boolean when) {
         this.and();
         if (when && condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
@@ -73,7 +74,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain or(Condition condition, boolean when) {
+    public ConditionChain or(ICondition condition, boolean when) {
         this.or();
         if (when && condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
@@ -83,7 +84,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain empty(Getter<T> column, int storey, boolean when) {
-        Condition condition = conditionFactory.empty(column, storey, when);
+        ICondition condition = conditionFactory.empty(column, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -92,7 +93,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain empty(Cmd column, boolean when) {
-        Condition condition = conditionFactory.empty(column, when);
+        ICondition condition = conditionFactory.empty(column, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -101,7 +102,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain notEmpty(Getter<T> column, int storey, boolean when) {
-        Condition condition = conditionFactory.notEmpty(column, storey, when);
+        ICondition condition = conditionFactory.notEmpty(column, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -110,7 +111,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain notEmpty(Cmd column, boolean when) {
-        Condition condition = conditionFactory.notEmpty(column, when);
+        ICondition condition = conditionFactory.notEmpty(column, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -119,7 +120,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain eq(Cmd column, Object value, boolean when) {
-        Condition condition = conditionFactory.eq(column, value, when);
+        ICondition condition = conditionFactory.eq(column, value, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -128,7 +129,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain ne(Cmd column, Object value, boolean when) {
-        Condition condition = conditionFactory.ne(column, value, when);
+        ICondition condition = conditionFactory.ne(column, value, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -137,7 +138,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain gt(Cmd column, Object value, boolean when) {
-        Condition condition = conditionFactory.gt(column, value, when);
+        ICondition condition = conditionFactory.gt(column, value, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -146,7 +147,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain gte(Cmd column, Object value, boolean when) {
-        Condition condition = conditionFactory.gte(column, value, when);
+        ICondition condition = conditionFactory.gte(column, value, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -155,7 +156,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain lt(Cmd column, Object value, boolean when) {
-        Condition condition = conditionFactory.lt(column, value, when);
+        ICondition condition = conditionFactory.lt(column, value, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -164,7 +165,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain lte(Cmd column, Object value, boolean when) {
-        Condition condition = conditionFactory.lte(column, value, when);
+        ICondition condition = conditionFactory.lte(column, value, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -173,7 +174,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain between(Cmd column, Serializable value, Serializable value2, boolean when) {
-        Condition condition = conditionFactory.between(column, value, value2, when);
+        ICondition condition = conditionFactory.between(column, value, value2, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -182,7 +183,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain notBetween(Cmd column, Serializable value, Serializable value2, boolean when) {
-        Condition condition = conditionFactory.notBetween(column, value, value2, when);
+        ICondition condition = conditionFactory.notBetween(column, value, value2, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -191,7 +192,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain isNull(Cmd column, boolean when) {
-        Condition condition = conditionFactory.isNull(column, when);
+        ICondition condition = conditionFactory.isNull(column, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -200,7 +201,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain isNotNull(Cmd column, boolean when) {
-        Condition condition = conditionFactory.isNotNull(column, when);
+        ICondition condition = conditionFactory.isNotNull(column, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -209,7 +210,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain like(Cmd column, String value, LikeMode mode, boolean when) {
-        Condition condition = conditionFactory.like(column, value, mode, when);
+        ICondition condition = conditionFactory.like(column, value, mode, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -218,7 +219,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain notLike(Cmd column, String value, LikeMode mode, boolean when) {
-        Condition condition = conditionFactory.notLike(column, value, mode, when);
+        ICondition condition = conditionFactory.notLike(column, value, mode, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -227,7 +228,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain between(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
-        Condition condition = conditionFactory.between(column, value, value2, storey, when);
+        ICondition condition = conditionFactory.between(column, value, value2, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -236,7 +237,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain eq(Getter<T> column, Object value, int storey, boolean when) {
-        Condition condition = conditionFactory.eq(column, value, storey, when);
+        ICondition condition = conditionFactory.eq(column, value, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -245,7 +246,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T, T2> ConditionChain eq(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        Condition condition = conditionFactory.eq(column, columnStorey, value, valueStorey, when);
+        ICondition condition = conditionFactory.eq(column, columnStorey, value, valueStorey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -254,7 +255,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain gt(Getter<T> column, Object value, int storey, boolean when) {
-        Condition condition = conditionFactory.gt(column, value, storey, when);
+        ICondition condition = conditionFactory.gt(column, value, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -263,7 +264,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T, T2> ConditionChain gt(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        Condition condition = conditionFactory.gt(column, columnStorey, value, valueStorey, when);
+        ICondition condition = conditionFactory.gt(column, columnStorey, value, valueStorey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -272,7 +273,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain gte(Getter<T> column, Object value, int storey, boolean when) {
-        Condition condition = conditionFactory.gte(column, value, storey, when);
+        ICondition condition = conditionFactory.gte(column, value, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -281,7 +282,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T, T2> ConditionChain gte(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        Condition condition = conditionFactory.gte(column, columnStorey, value, valueStorey, when);
+        ICondition condition = conditionFactory.gte(column, columnStorey, value, valueStorey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -290,7 +291,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain like(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
-        Condition condition = conditionFactory.like(column, value, mode, storey, when);
+        ICondition condition = conditionFactory.like(column, value, mode, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -299,7 +300,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain lt(Getter<T> column, Object value, int storey, boolean when) {
-        Condition condition = conditionFactory.lt(column, value, storey, when);
+        ICondition condition = conditionFactory.lt(column, value, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -308,7 +309,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T, T2> ConditionChain lt(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        Condition condition = conditionFactory.lt(column, columnStorey, value, valueStorey, when);
+        ICondition condition = conditionFactory.lt(column, columnStorey, value, valueStorey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -317,7 +318,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain lte(Getter<T> column, Object value, int storey, boolean when) {
-        Condition condition = conditionFactory.lte(column, value, storey, when);
+        ICondition condition = conditionFactory.lte(column, value, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -326,7 +327,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T, T2> ConditionChain lte(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        Condition condition = conditionFactory.lte(column, columnStorey, value, valueStorey, when);
+        ICondition condition = conditionFactory.lte(column, columnStorey, value, valueStorey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -335,7 +336,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain ne(Getter<T> column, Object value, int storey, boolean when) {
-        Condition condition = conditionFactory.ne(column, value, storey, when);
+        ICondition condition = conditionFactory.ne(column, value, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -344,7 +345,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T, T2> ConditionChain ne(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        Condition condition = conditionFactory.ne(column, columnStorey, value, valueStorey, when);
+        ICondition condition = conditionFactory.ne(column, columnStorey, value, valueStorey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -353,7 +354,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain notBetween(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
-        Condition condition = conditionFactory.notBetween(column, value, value2, storey, when);
+        ICondition condition = conditionFactory.notBetween(column, value, value2, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -362,7 +363,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain notLike(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
-        Condition condition = conditionFactory.notLike(column, value, mode, storey, when);
+        ICondition condition = conditionFactory.notLike(column, value, mode, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -371,7 +372,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain isNotNull(Getter<T> column, int storey, boolean when) {
-        Condition condition = conditionFactory.isNotNull(column, storey, when);
+        ICondition condition = conditionFactory.isNotNull(column, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -380,7 +381,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain isNull(Getter<T> column, int storey, boolean when) {
-        Condition condition = conditionFactory.isNull(column, storey, when);
+        ICondition condition = conditionFactory.isNull(column, storey, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -388,8 +389,8 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain in(Cmd cmd, boolean when, Query query) {
-        Condition condition = conditionFactory.in(cmd, when, query);
+    public ConditionChain in(Cmd cmd, boolean when, IQuery query) {
+        ICondition condition = conditionFactory.in(cmd, when, query);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -398,7 +399,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain in(Cmd cmd, boolean when, Serializable... values) {
-        Condition condition = conditionFactory.in(cmd, values, when);
+        ICondition condition = conditionFactory.in(cmd, values, when);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -407,7 +408,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public ConditionChain in(Cmd cmd, boolean when, List<Serializable> values) {
-        Condition condition = conditionFactory.in(cmd, when, values);
+        ICondition condition = conditionFactory.in(cmd, when, values);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -415,8 +416,8 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public <T> ConditionChain in(Getter<T> column, int storey, boolean when, Query query) {
-        Condition condition = conditionFactory.in(column, storey, when, query);
+    public <T> ConditionChain in(Getter<T> column, int storey, boolean when, IQuery query) {
+        ICondition condition = conditionFactory.in(column, storey, when, query);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -425,7 +426,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain in(Getter<T> column, int storey, boolean when, Serializable... values) {
-        Condition condition = conditionFactory.in(column, storey, when, values);
+        ICondition condition = conditionFactory.in(column, storey, when, values);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -434,7 +435,7 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
 
     @Override
     public <T> ConditionChain in(Getter<T> column, int storey, boolean when, List<Serializable> values) {
-        Condition condition = conditionFactory.in(column, storey, when, values);
+        ICondition condition = conditionFactory.in(column, storey, when, values);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -442,8 +443,8 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain exists(boolean when, Query query) {
-        Condition condition = conditionFactory.exists(when, query);
+    public ConditionChain exists(boolean when, IQuery query) {
+        ICondition condition = conditionFactory.exists(when, query);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }
@@ -451,8 +452,8 @@ public class ConditionChain implements db.sql.api.cmd.struct.ConditionChain<Cond
     }
 
     @Override
-    public ConditionChain notExists(boolean when, Query query) {
-        Condition condition = conditionFactory.notExists(when, query);
+    public ConditionChain notExists(boolean when, IQuery query) {
+        ICondition condition = conditionFactory.notExists(when, query);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }

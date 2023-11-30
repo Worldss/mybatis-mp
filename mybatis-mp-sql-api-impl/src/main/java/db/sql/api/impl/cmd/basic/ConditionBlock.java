@@ -2,7 +2,7 @@ package db.sql.api.impl.cmd.basic;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.cmd.basic.Condition;
+import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
@@ -10,9 +10,9 @@ public class ConditionBlock implements Cmd {
 
     private final Connector connector;
 
-    private final Condition condition;
+    private final ICondition condition;
 
-    public ConditionBlock(Connector connector, Condition condition) {
+    public ConditionBlock(Connector connector, ICondition condition) {
         this.connector = connector;
         this.condition = condition;
     }
@@ -21,7 +21,7 @@ public class ConditionBlock implements Cmd {
         return connector;
     }
 
-    public Condition getCondition() {
+    public ICondition getCondition() {
         return condition;
     }
 

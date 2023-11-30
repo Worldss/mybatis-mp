@@ -3,10 +3,10 @@ package db.sql.api.impl.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.JoinMode;
-import db.sql.api.cmd.basic.Condition;
+import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.basic.UnionsCmdLists;
-import db.sql.api.cmd.executor.Query;
-import db.sql.api.cmd.executor.SubQuery;
+import db.sql.api.cmd.executor.IQuery;
+import db.sql.api.cmd.executor.ISubQuery;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.cmd.struct.query.Withs;
@@ -27,7 +27,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY>
-        implements Query<SELF,
+        implements IQuery<SELF,
         Table,
         Dataset,
         TableField,
@@ -115,7 +115,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public With $with(SubQuery subQuery) {
+    public With $with(ISubQuery subQuery) {
         if (Objects.isNull(this.withs)) {
             this.withs = new Withs();
             this.append(this.withs);
@@ -144,12 +144,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      * @return
      */
     @Override
-    public <T> SELF select(SubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+    public <T> SELF select(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
         return this.select(subQuery, $.columnName(column), f);
     }
 
     @Override
-    public SELF select(SubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
+    public SELF select(ISubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
         DatasetField datasetField = $((Dataset) subQuery, columnName);
         if (Objects.nonNull(f)) {
             this.select(f.apply(datasetField));
@@ -247,7 +247,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      * @return
      */
     @Override
-    public <T> SELF groupBy(SubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+    public <T> SELF groupBy(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
         return this.groupBy(subQuery, $.columnName(column), f);
     }
 
@@ -260,7 +260,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      * @return
      */
     @Override
-    public SELF groupBy(SubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
+    public SELF groupBy(ISubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
         DatasetField datasetField = $((Dataset) subQuery, columnName);
         if (Objects.nonNull(f)) {
             this.groupBy(f.apply(datasetField));
@@ -280,33 +280,33 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF havingAnd(Getter<T> column, int storey, Function<TableField, Condition> f) {
+    public <T> SELF havingAnd(Getter<T> column, int storey, Function<TableField, ICondition> f) {
         return this.havingAnd(f.apply($(column, storey)));
     }
 
     @Override
-    public <T> SELF havingOr(Getter<T> column, int storey, Function<TableField, Condition> f) {
+    public <T> SELF havingOr(Getter<T> column, int storey, Function<TableField, ICondition> f) {
         return this.havingOr(f.apply($(column, storey)));
     }
 
     @Override
-    public <T> SELF havingAnd(SubQuery subQuery, Getter<T> column, Function<DatasetField, Condition> f) {
+    public <T> SELF havingAnd(ISubQuery subQuery, Getter<T> column, Function<DatasetField, ICondition> f) {
         return this.havingAnd(subQuery, $.columnName(column), f);
     }
 
     @Override
-    public <T> SELF havingOr(SubQuery subQuery, Getter<T> column, Function<DatasetField, Condition> f) {
+    public <T> SELF havingOr(ISubQuery subQuery, Getter<T> column, Function<DatasetField, ICondition> f) {
         return this.havingOr(subQuery, $.columnName(column), f);
     }
 
     @Override
-    public SELF havingAnd(SubQuery subQuery, String columnName, Function<DatasetField, Condition> f) {
+    public SELF havingAnd(ISubQuery subQuery, String columnName, Function<DatasetField, ICondition> f) {
         DatasetField datasetField = $((Dataset) subQuery, columnName);
         return this.havingAnd(f.apply(datasetField));
     }
 
     @Override
-    public SELF havingOr(SubQuery subQuery, String columnName, Function<DatasetField, Condition> f) {
+    public SELF havingOr(ISubQuery subQuery, String columnName, Function<DatasetField, ICondition> f) {
         DatasetField datasetField = $((Dataset) subQuery, columnName);
         return this.havingOr(f.apply(datasetField));
     }
@@ -359,12 +359,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      * @return
      */
     @Override
-    public <T> SELF orderBy(SubQuery subQuery, Getter<T> column, boolean asc, Function<DatasetField, Cmd> f) {
+    public <T> SELF orderBy(ISubQuery subQuery, Getter<T> column, boolean asc, Function<DatasetField, Cmd> f) {
         return this.orderBy(subQuery, $.columnName(column), asc, f);
     }
 
     @Override
-    public SELF orderBy(SubQuery subQuery, String columnName, boolean asc, Function<DatasetField, Cmd> f) {
+    public SELF orderBy(ISubQuery subQuery, String columnName, boolean asc, Function<DatasetField, Cmd> f) {
         DatasetField datasetField = $((Dataset) subQuery, columnName);
         if (Objects.nonNull(f)) {
             this.orderBy(f.apply(datasetField), asc);
@@ -383,13 +383,13 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF union(Query unionQuery) {
+    public SELF union(IQuery unionQuery) {
         $unions().add(new Union(unionQuery));
         return (SELF) this;
     }
 
     @Override
-    public SELF unionAll(Query unionQuery) {
+    public SELF unionAll(IQuery unionQuery) {
         $unions().add(new Union(SqlConst.UNION_ALL, unionQuery));
         return (SELF) this;
     }

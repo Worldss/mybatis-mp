@@ -3,11 +3,12 @@ package db.sql.api.impl.cmd.struct.update;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.struct.update.IUpdateSet;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class UpdateSet implements db.sql.api.cmd.struct.update.UpdateSet<TableField, Cmd> {
+public class UpdateSet implements IUpdateSet<TableField, Cmd> {
 
     private final TableField field;
 

@@ -3,6 +3,7 @@ package db.sql.api.impl.cmd.struct.query;
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.basic.Distinct;
+import db.sql.api.cmd.struct.query.ISelect;
 import db.sql.api.impl.cmd.dbFun.Function;
 import db.sql.api.impl.tookit.Lists;
 import db.sql.api.impl.tookit.SqlConst;
@@ -11,7 +12,7 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Select implements db.sql.api.cmd.struct.query.Select<Select> {
+public class Select implements ISelect<Select> {
 
     private final List<Cmd> selectFields = new ArrayList<>();
     private boolean distinct = false;

@@ -2,6 +2,7 @@ package db.sql.api.impl.cmd.struct.insert;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.struct.insert.IInsertFields;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.tookit.Lists;
 import db.sql.api.impl.tookit.SqlConst;
@@ -10,7 +11,7 @@ import db.sql.api.tookit.CmdUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InsertFields implements db.sql.api.cmd.struct.insert.InsertFields<TableField> {
+public class InsertFields implements IInsertFields<TableField> {
 
     protected List<TableField> tableFields;
 

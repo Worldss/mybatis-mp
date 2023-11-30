@@ -2,13 +2,14 @@ package db.sql.api.impl.cmd.struct.query;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.struct.query.IOrderBy;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderBy implements db.sql.api.cmd.struct.query.OrderBy<OrderBy> {
+public class OrderBy implements IOrderBy<OrderBy> {
 
     private final List<OrderByValue> orderByValues = new ArrayList<>();
 

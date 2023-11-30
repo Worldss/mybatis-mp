@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 
 import java.util.List;
 
-public interface Select<SELF extends Select> extends Cmd {
+public interface ISelect<SELF extends ISelect> extends Cmd {
 
     SELF distinct();
 

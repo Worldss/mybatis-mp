@@ -2,11 +2,12 @@ package db.sql.api.impl.cmd.struct.update;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.struct.update.IUpdateTable;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class UpdateTable implements db.sql.api.cmd.struct.update.UpdateTable<Table> {
+public class UpdateTable implements IUpdateTable<Table> {
 
     private final Table[] tables;
 

@@ -2,21 +2,22 @@ package db.sql.api.impl.cmd.struct.query;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.executor.IQuery;
+import db.sql.api.cmd.struct.query.IUnion;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class Union implements db.sql.api.cmd.struct.query.Union {
+public class Union implements IUnion {
 
     private final String operator;
 
-    private final Query unionQuery;
+    private final IQuery unionQuery;
 
-    public Union(Query unionQuery) {
+    public Union(IQuery unionQuery) {
         this(SqlConst.UNION, unionQuery);
     }
 
-    public Union(String operator, Query unionQuery) {
+    public Union(String operator, IQuery unionQuery) {
         this.operator = operator;
         this.unionQuery = unionQuery;
     }
@@ -34,7 +35,7 @@ public class Union implements db.sql.api.cmd.struct.query.Union {
     }
 
     @Override
-    public Query getUnionQuery() {
+    public IQuery getUnionQuery() {
         return unionQuery;
     }
 

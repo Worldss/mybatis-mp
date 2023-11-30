@@ -2,15 +2,16 @@ package db.sql.api.impl.cmd.struct.query;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.cmd.executor.SubQuery;
+import db.sql.api.cmd.executor.ISubQuery;
+import db.sql.api.cmd.struct.query.IWith;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class With implements db.sql.api.cmd.struct.query.With<With> {
+public class With implements IWith<With> {
 
-    private final SubQuery subQuery;
+    private final ISubQuery subQuery;
 
-    public With(SubQuery subQuery) {
+    public With(ISubQuery subQuery) {
         this.subQuery = subQuery;
     }
 

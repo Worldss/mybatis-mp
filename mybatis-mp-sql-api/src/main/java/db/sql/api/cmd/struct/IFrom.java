@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 
 import java.util.List;
 
-public interface From<TABLE> extends Cmd {
+public interface IFrom<TABLE> extends Cmd {
 
     List<TABLE> getTables();
 }

@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <name>mybatis-mp</name>
-    <url>https://gitee.com/mybatis-mp/mybatis-mp</url>
+    <url>https://gitee.com/mybatis-mp</url>
     <description>
         一款基于mybatis的ORM框架
     </description>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp</artifactId>
-    <version>1.1.6</version>
+    <version>1.1.7</version>
     <packaging>pom</packaging>
     <modules>
         <module>mybatis-mp-annotation</module>
@@ -49,24 +49,24 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 
-        <mybatis-mp.version>1.1.6</mybatis-mp.version>
+        <mybatis-mp.version>1.1.7</mybatis-mp.version>
 
         <!-- spring version -->
-        <spring-boot.version>2.7.16</spring-boot.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
         <!-- spring boot version -->
-        <spring.version>5.3.25</spring.version>
+        <spring.version>5.3.31</spring.version>
 
         <!-- mybatis version -->
-        <mybatis.version>3.5.13</mybatis.version>
-        <mybatis-spring.version>2.1.1</mybatis-spring.version>
-        <mybatis-spring-boot-starter.version>2.3.1</mybatis-spring-boot-starter.version>
+        <mybatis.version>3.5.14</mybatis.version>
+        <mybatis-spring.version>2.1.2</mybatis-spring.version>
+        <mybatis-spring-boot-starter.version>2.3.2</mybatis-spring-boot-starter.version>
 
         <!-- log version -->
         <logback.version>1.2.12</logback.version>
         <slf4j.version>1.7.36</slf4j.version>
 
         <!-- jdbc version -->
-        <mysql.version>8.0.33</mysql.version>
+        <mysql.version>8.2.0</mysql.version>
 
         <lombok.version>1.18.28</lombok.version>
 
@@ -80,47 +80,22 @@
                 <artifactId>mybatis-mp-core</artifactId>
                 <version>${mybatis-mp.version}</version>
             </dependency>
+            <dependency>
+                <groupId>cn.mybatis-mp</groupId>
+                <artifactId>mybatis-mp-generator</artifactId>
+                <version>${mybatis-mp.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis-spring</artifactId>
                 <version>${mybatis-spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis.scripting</groupId>
-                <artifactId>mybatis-freemarker</artifactId>
-                <version>${mybatis-freemarker.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis.scripting</groupId>
-                <artifactId>mybatis-velocity</artifactId>
-                <version>${mybatis-velocity.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis.scripting</groupId>
-                <artifactId>mybatis-thymeleaf</artifactId>
-                <version>${mybatis-thymeleaf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-autoconfigure</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis-spring-boot-starter.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.mybatis.spring.boot</groupId>
-                        <artifactId>mybatis-spring-boot-autoconfigure</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
@@ -129,12 +104,6 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <version>${spring-boot.version}</version>
             </dependency>
 
             <dependency>
@@ -163,9 +132,17 @@
             </dependency>
 
             <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
                 <version>${mysql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.10.1</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -177,42 +154,36 @@
             <artifactId>mybatis</artifactId>
         </dependency>
 
+        <!-- test -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.4.0</version>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.4.0</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.0</version>
+                <version>3.1.2</version>
                 <configuration>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.22.0</version>
+                <version>3.1.2</version>
             </plugin>
         </plugins>
     </build>

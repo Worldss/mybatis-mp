@@ -5,7 +5,7 @@ import db.sql.api.Getter;
 
 import java.util.function.Function;
 
-public interface CmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASET_FIELD> {
+public interface ICmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASET_FIELD> {
 
     default TABLE table(Class entity) {
         return this.table(entity, 1);

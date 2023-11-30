@@ -2,6 +2,8 @@ package db.sql.api.impl.cmd.struct.query;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.basic.ICondition;
+import db.sql.api.cmd.struct.query.IHaving;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.basic.Condition;
 import db.sql.api.impl.cmd.basic.ConditionBlock;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class Having implements db.sql.api.cmd.struct.query.Having<Having> {
+public class Having implements IHaving<Having> {
 
     private final CmdFactory cmdFactory;
 
@@ -30,7 +32,7 @@ public class Having implements db.sql.api.cmd.struct.query.Having<Having> {
     }
 
     @Override
-    public Having and(db.sql.api.cmd.basic.Condition condition) {
+    public Having and(ICondition condition) {
         conditionBlocks.add(new ConditionBlock(Connector.AND, condition));
         return this;
     }
@@ -41,7 +43,7 @@ public class Having implements db.sql.api.cmd.struct.query.Having<Having> {
     }
 
     @Override
-    public Having or(db.sql.api.cmd.basic.Condition condition) {
+    public Having or(ICondition condition) {
         conditionBlocks.add(new ConditionBlock(Connector.OR, condition));
         return this;
     }

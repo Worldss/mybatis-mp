@@ -6,7 +6,7 @@ import db.sql.api.cmd.basic.Count1;
 import db.sql.api.cmd.basic.CountAll;
 import db.sql.api.cmd.basic.SQL1;
 import db.sql.api.cmd.basic.SQLCmdAll;
-import db.sql.api.cmd.executor.SubQuery;
+import db.sql.api.cmd.executor.ISubQuery;
 
 import java.util.List;
 import java.util.function.Function;
@@ -118,7 +118,7 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, DATASET_FI
      * @param <T>
      * @return
      */
-    default <T> SELF select(SubQuery subQuery, Getter<T> column) {
+    default <T> SELF select(ISubQuery subQuery, Getter<T> column) {
         return this.select(subQuery, column, null);
     }
 
@@ -131,7 +131,7 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, DATASET_FI
      * @param <T>
      * @return
      */
-    <T> SELF select(SubQuery subQuery, Getter<T> column, Function<DATASET_FIELD, Cmd> f);
+    <T> SELF select(ISubQuery subQuery, Getter<T> column, Function<DATASET_FIELD, Cmd> f);
 
 
     /**
@@ -140,7 +140,7 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, DATASET_FI
      * @param subQuery
      * @return
      */
-    default SELF select(SubQuery subQuery, String columnName) {
+    default SELF select(ISubQuery subQuery, String columnName) {
         return this.select(subQuery, columnName, null);
     }
 
@@ -153,6 +153,6 @@ public interface SelectMethod<SELF extends SelectMethod, TABLE_FIELD, DATASET_FI
      * @param f
      * @return
      */
-    SELF select(SubQuery subQuery, String columnName, Function<DATASET_FIELD, Cmd> f);
+    SELF select(ISubQuery subQuery, String columnName, Function<DATASET_FIELD, Cmd> f);
 
 }

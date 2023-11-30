@@ -2,13 +2,14 @@ package db.sql.api.impl.cmd.struct.insert;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.struct.insert.IInsertValues;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InsertValues implements db.sql.api.cmd.struct.insert.InsertValues<Cmd> {
+public class InsertValues implements IInsertValues<Cmd> {
 
     protected List<List<Cmd>> values;
 

@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 
 import java.util.List;
 
-public interface GroupBy<SELF extends GroupBy, COLUMN> extends Cmd {
+public interface IGroupBy<SELF extends IGroupBy, COLUMN> extends Cmd {
 
     SELF groupBy(COLUMN column);
 

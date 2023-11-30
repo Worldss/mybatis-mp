@@ -9,11 +9,12 @@ import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.impl.cmd.dbFun.FunctionInterface;
-import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class JoinTest extends BaseTest {
@@ -30,7 +31,7 @@ public class JoinTest extends BaseTest {
                     .get();
 
 
-            Assert.assertEquals("defaultAddOn", Integer.valueOf(2), count);
+            assertEquals(Integer.valueOf(2), count, "defaultAddOn");
         }
     }
 
@@ -46,7 +47,7 @@ public class JoinTest extends BaseTest {
                     .get();
 
 
-            Assert.assertEquals("customAddOn", Integer.valueOf(1), count);
+            assertEquals(Integer.valueOf(1), count, "customAddOn");
         }
     }
 
@@ -60,7 +61,7 @@ public class JoinTest extends BaseTest {
                     .join(SysUser.class, SysRole.class)
                     .setReturnType(Integer.TYPE)
                     .get();
-            Assert.assertEquals("innerJoin", Integer.valueOf(2), count);
+            assertEquals(Integer.valueOf(2), count, "innerJoin");
         }
     }
 
@@ -74,7 +75,7 @@ public class JoinTest extends BaseTest {
                     .join(JoinMode.LEFT, SysUser.class, SysRole.class)
                     .setReturnType(Integer.TYPE)
                     .get();
-            Assert.assertEquals("leftJoin", Integer.valueOf(3), count);
+            assertEquals(Integer.valueOf(3), count, "leftJoin");
         }
     }
 
@@ -88,7 +89,7 @@ public class JoinTest extends BaseTest {
                     .join(JoinMode.RIGHT, SysUser.class, SysRole.class)
                     .setReturnType(Integer.TYPE)
                     .get();
-            Assert.assertEquals("rightJoin", Integer.valueOf(2), count);
+            assertEquals(Integer.valueOf(2), count, "rightJoin");
         }
     }
 
@@ -114,7 +115,7 @@ public class JoinTest extends BaseTest {
                     .join(JoinMode.INNER, SysUser.class, 1, SysUser.class, 2, on -> on.eq(SysUser::getId, 1, SysUser::getRole_id, 2))
                     .setReturnType(Integer.TYPE)
                     .get();
-            Assert.assertEquals("joinSelf", Integer.valueOf(2), count);
+            assertEquals(Integer.valueOf(2), count, "joinSelf");
         }
     }
 
@@ -136,7 +137,7 @@ public class JoinTest extends BaseTest {
                     .join(JoinMode.INNER, SysUser.class, subQuery, on -> on.eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId)))
                     .orderBy(subQuery, SysRole::getId)
                     .list();
-            Assert.assertEquals("joinSelf", 2, list.size());
+            assertEquals(2, list.size(), "joinSelf");
         }
     }
 }

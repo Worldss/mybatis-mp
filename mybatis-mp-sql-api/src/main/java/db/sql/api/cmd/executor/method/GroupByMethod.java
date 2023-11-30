@@ -2,7 +2,7 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.cmd.executor.SubQuery;
+import db.sql.api.cmd.executor.ISubQuery;
 
 import java.util.List;
 import java.util.function.Function;
@@ -52,22 +52,22 @@ public interface GroupByMethod<SELF extends GroupByMethod, TABLE_FIELD, DATASET_
         return (SELF) this;
     }
 
-    default <T> SELF groupBy(SubQuery subQuery, Getter<T> column) {
+    default <T> SELF groupBy(ISubQuery subQuery, Getter<T> column) {
         return this.groupBy(subQuery, column, null);
     }
 
-    <T> SELF groupBy(SubQuery subQuery, Getter<T> column, Function<DATASET_FIELD, Cmd> f);
+    <T> SELF groupBy(ISubQuery subQuery, Getter<T> column, Function<DATASET_FIELD, Cmd> f);
 
-    default <T> SELF groupBy(SubQuery subQuery, Getter<T>... columns) {
+    default <T> SELF groupBy(ISubQuery subQuery, Getter<T>... columns) {
         for (Getter<T> column : columns) {
             this.groupBy(subQuery, column);
         }
         return (SELF) this;
     }
 
-    default SELF groupBy(SubQuery subQuery, String columnName) {
+    default SELF groupBy(ISubQuery subQuery, String columnName) {
         return this.groupBy(subQuery, columnName, null);
     }
 
-    SELF groupBy(SubQuery subQuery, String columnName, Function<DATASET_FIELD, Cmd> f);
+    SELF groupBy(ISubQuery subQuery, String columnName, Function<DATASET_FIELD, Cmd> f);
 }

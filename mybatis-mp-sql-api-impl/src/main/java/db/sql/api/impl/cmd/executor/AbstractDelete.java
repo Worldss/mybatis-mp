@@ -3,7 +3,7 @@ package db.sql.api.impl.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.JoinMode;
-import db.sql.api.cmd.executor.Delete;
+import db.sql.api.cmd.executor.IDelete;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.ConditionFactory;
@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY extends CmdFactory>
         extends BaseExecutor<SELF, CMD_FACTORY>
-        implements Delete<SELF,
+        implements IDelete<SELF,
         Table,
         Dataset,
         TableField,

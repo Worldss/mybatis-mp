@@ -3,6 +3,7 @@ package db.sql.api.impl.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.ICmdFactory;
 import db.sql.api.impl.cmd.basic.*;
 import db.sql.api.impl.cmd.condition.In;
 import db.sql.api.impl.tookit.LambdaUtil;
@@ -12,7 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 
-public class CmdFactory extends Methods implements db.sql.api.cmd.CmdFactory<Table, Dataset, TableField, DatasetField> {
+public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, TableField, DatasetField> {
 
     private final String tableAsPrefix;
     protected Map<String, Table> tableCache = new HashMap<>();

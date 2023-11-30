@@ -3,7 +3,7 @@ package db.sql.api.impl.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.JoinMode;
-import db.sql.api.cmd.executor.Update;
+import db.sql.api.cmd.executor.IUpdate;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.ConditionFactory;
@@ -27,7 +27,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
         CMD_FACTORY extends CmdFactory
         >
         extends BaseExecutor<SELF, CMD_FACTORY>
-        implements Update<SELF,
+        implements IUpdate<SELF,
         Table,
         Dataset,
         TableField,

@@ -3,13 +3,14 @@ package db.sql.api.impl.cmd.struct;
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.JoinMode;
+import db.sql.api.cmd.struct.IJoin;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
 import java.util.function.Function;
 
-public abstract class Join<SELF extends Join<SELF, TABLE, ON>, TABLE extends Dataset, ON extends On<ON, TABLE, SELF>> implements db.sql.api.cmd.struct.Join<SELF, TABLE, ON> {
+public abstract class Join<SELF extends Join<SELF, TABLE, ON>, TABLE extends Dataset, ON extends On<ON, TABLE, SELF>> implements IJoin<SELF, TABLE, ON> {
 
     private final TABLE mainTable;
 

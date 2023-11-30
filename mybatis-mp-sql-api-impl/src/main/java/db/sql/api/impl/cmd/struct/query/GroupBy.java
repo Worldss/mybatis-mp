@@ -2,13 +2,14 @@ package db.sql.api.impl.cmd.struct.query;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.struct.query.IGroupBy;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupBy implements db.sql.api.cmd.struct.query.GroupBy<GroupBy, Cmd> {
+public class GroupBy implements IGroupBy<GroupBy, Cmd> {
 
     private final List<Cmd> groupByFields = new ArrayList<>();
 

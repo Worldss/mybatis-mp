@@ -2,10 +2,10 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
-import db.sql.api.cmd.basic.Condition;
-import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.basic.ICondition;
+import db.sql.api.cmd.executor.IQuery;
 import db.sql.api.cmd.executor.method.condition.ConditionMethods;
-import db.sql.api.cmd.struct.ConditionChain;
+import db.sql.api.cmd.struct.IConditionChain;
 import db.sql.api.cmd.struct.Nested;
 
 import java.io.Serializable;
@@ -17,7 +17,7 @@ import java.util.function.Function;
 public interface ConditionMethod<SELF extends ConditionMethod,
         COLUMN,
         V,
-        CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>
+        CONDITION_CHAIN extends IConditionChain<CONDITION_CHAIN, COLUMN, V>
         >
         extends ConditionMethods<SELF, COLUMN, V>,
         Nested<SELF, CONDITION_CHAIN> {
@@ -34,12 +34,12 @@ public interface ConditionMethod<SELF extends ConditionMethod,
         return (SELF) this;
     }
 
-    default SELF and(Function<SELF, Condition> function) {
+    default SELF and(Function<SELF, ICondition> function) {
         conditionChain().and(function.apply((SELF) this), true);
         return (SELF) this;
     }
 
-    default SELF or(Function<SELF, Condition> function) {
+    default SELF or(Function<SELF, ICondition> function) {
         conditionChain().or(function.apply((SELF) this), true);
         return (SELF) this;
     }
@@ -262,7 +262,7 @@ public interface ConditionMethod<SELF extends ConditionMethod,
     }
 
     @Override
-    default SELF in(COLUMN column, boolean when, Query query) {
+    default SELF in(COLUMN column, boolean when, IQuery query) {
         conditionChain().in(column, when, query);
         return (SELF) this;
     }
@@ -280,7 +280,7 @@ public interface ConditionMethod<SELF extends ConditionMethod,
     }
 
     @Override
-    default <T> SELF in(Getter<T> column, int storey, boolean when, Query query) {
+    default <T> SELF in(Getter<T> column, int storey, boolean when, IQuery query) {
         conditionChain().in(column, storey, when, query);
         return (SELF) this;
     }
@@ -298,13 +298,13 @@ public interface ConditionMethod<SELF extends ConditionMethod,
     }
 
     @Override
-    default SELF exists(boolean when, Query query) {
+    default SELF exists(boolean when, IQuery query) {
         conditionChain().exists(when, query);
         return (SELF) this;
     }
 
     @Override
-    default SELF notExists(boolean when, Query query) {
+    default SELF notExists(boolean when, IQuery query) {
         conditionChain().notExists(when, query);
         return (SELF) this;
     }

@@ -10,8 +10,9 @@ import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.impl.tookit.SQLOptimizeUtils;
 import db.sql.api.impl.tookit.SQLPrinter;
-import junit.framework.Assert;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OptimizeQueryTest extends BaseTest {
 
@@ -20,7 +21,7 @@ public class OptimizeQueryTest extends BaseTest {
         SqlBuilderContext sqlBuilderContext = new SqlBuilderContext(DbType.MYSQL, SQLMode.PRINT);
         String sql = SQLPrinter.sql(query);
         String str = SQLOptimizeUtils.getOptimizedSql(query, sqlBuilderContext).toString();
-        Assert.assertEquals("sql 优化破坏了原来有query", sql, SQLPrinter.sql(query));
+        assertEquals(sql, SQLPrinter.sql(query), "sql 优化破坏了原来有query");
         return str;
     }
 

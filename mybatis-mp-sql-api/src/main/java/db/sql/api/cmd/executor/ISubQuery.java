@@ -1,8 +1,8 @@
 package db.sql.api.cmd.executor;
 
 import db.sql.api.Cmd;
-import db.sql.api.cmd.CmdFactory;
-import db.sql.api.cmd.basic.Dataset;
+import db.sql.api.cmd.ICmdFactory;
+import db.sql.api.cmd.basic.IDataset;
 import db.sql.api.cmd.struct.*;
 import db.sql.api.cmd.struct.query.*;
 
@@ -31,7 +31,7 @@ import db.sql.api.cmd.struct.query.*;
  * @param <FORUPDATE>
  * @param <UNION>
  */
-public interface SubQuery<SELF extends SubQuery,
+public interface ISubQuery<SELF extends ISubQuery,
         TABLE extends DATASET,
         DATASET extends Cmd,
         TABLE_FIELD extends DATASET_FILED,
@@ -39,23 +39,23 @@ public interface SubQuery<SELF extends SubQuery,
         COLUMN extends Cmd,
         V,
 
-        CMD_FACTORY extends CmdFactory<TABLE, DATASET, TABLE_FIELD, DATASET_FILED>,
-        CONDITION_CHAIN extends ConditionChain<CONDITION_CHAIN, COLUMN, V>,
+        CMD_FACTORY extends ICmdFactory<TABLE, DATASET, TABLE_FIELD, DATASET_FILED>,
+        CONDITION_CHAIN extends IConditionChain<CONDITION_CHAIN, COLUMN, V>,
 
-        WITH extends With<WITH>,
-        SELECT extends Select<SELECT>,
-        FROM extends From<DATASET>,
-        JOIN extends Join<JOIN, DATASET, ON>,
-        ON extends On<ON, DATASET, COLUMN, V, JOIN, CONDITION_CHAIN>,
+        WITH extends IWith<WITH>,
+        SELECT extends ISelect<SELECT>,
+        FROM extends IFrom<DATASET>,
+        JOIN extends IJoin<JOIN, DATASET, ON>,
+        ON extends IOn<ON, DATASET, COLUMN, V, JOIN, CONDITION_CHAIN>,
         JOINS extends Joins<JOIN>,
-        WHERE extends Where<WHERE, COLUMN, V, CONDITION_CHAIN>,
-        GROUPBY extends GroupBy<GROUPBY, COLUMN>,
-        HAVING extends Having<HAVING>,
-        ORDERBY extends OrderBy<ORDERBY>,
-        LIMIT extends Limit<LIMIT>,
-        FORUPDATE extends ForUpdate<FORUPDATE>,
-        UNION extends Union
-        > extends Query<
+        WHERE extends IWhere<WHERE, COLUMN, V, CONDITION_CHAIN>,
+        GROUPBY extends IGroupBy<GROUPBY, COLUMN>,
+        HAVING extends IHaving<HAVING>,
+        ORDERBY extends IOrderBy<ORDERBY>,
+        LIMIT extends ILimit<LIMIT>,
+        FORUPDATE extends IForUpdate<FORUPDATE>,
+        UNION extends IUnion
+        > extends IQuery<
         SELF,
         TABLE,
         DATASET,
@@ -78,7 +78,7 @@ public interface SubQuery<SELF extends SubQuery,
         LIMIT,
         FORUPDATE,
         UNION
-        >, Dataset<SELF, DATASET_FILED> {
+        >, IDataset<SELF, DATASET_FILED> {
 
 
 }

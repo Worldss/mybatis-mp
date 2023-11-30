@@ -1,19 +1,19 @@
 package db.sql.api.cmd.executor.method.condition;
 
 
-import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.executor.IQuery;
 
 public interface ExistsMethod<RV> {
 
-    default RV exists(Query query) {
+    default RV exists(IQuery query) {
         return this.exists(true, query);
     }
 
-    RV exists(boolean when, Query query);
+    RV exists(boolean when, IQuery query);
 
-    default RV notExists(Query query) {
+    default RV notExists(IQuery query) {
         return this.notExists(true, query);
     }
 
-    RV notExists(boolean when, Query query);
+    RV notExists(boolean when, IQuery query);
 }

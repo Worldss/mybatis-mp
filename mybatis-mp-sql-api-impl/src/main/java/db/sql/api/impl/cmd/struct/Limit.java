@@ -4,8 +4,9 @@ package db.sql.api.impl.cmd.struct;
 import db.sql.api.Cmd;
 import db.sql.api.DbType;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.struct.ILimit;
 
-public class Limit implements db.sql.api.cmd.struct.Limit<Limit> {
+public class Limit implements ILimit<Limit> {
 
     private int offset;
 

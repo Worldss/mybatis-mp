@@ -7,9 +7,9 @@ import db.sql.api.cmd.basic.CmdList;
 import db.sql.api.cmd.basic.CountAll;
 import db.sql.api.cmd.basic.SQL1;
 import db.sql.api.cmd.basic.UnionsCmdLists;
-import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.executor.IQuery;
 import db.sql.api.cmd.struct.Joins;
-import db.sql.api.cmd.struct.query.Union;
+import db.sql.api.cmd.struct.query.IUnion;
 import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.impl.cmd.dbFun.Count;
 import db.sql.api.impl.cmd.struct.Join;
@@ -146,9 +146,9 @@ public final class SQLOptimizeUtils {
         if (Objects.nonNull(unions) && (optimizeOrderBy || optimizeJoins)) {
             // 优化union
             // 无法优化 select 和 order by
-            List<Union> unionList = unions.getUnions();
+            List<IUnion> unionList = unions.getUnions();
             List<CmdList> cmdListList = new ArrayList<>(unionList.size());
-            for (Union union : unionList) {
+            for (IUnion union : unionList) {
                 Map<Class, Cmd> unionCmdClassMap = new HashMap<>();
                 List<Cmd> unionCmdList = union.getUnionQuery().cmds();
                 unionCmdList.stream().forEach(cmd -> unionCmdClassMap.put(cmd.getClass(), cmd));
@@ -176,7 +176,7 @@ public final class SQLOptimizeUtils {
      * @param context 构建SQL上下文
      * @return
      */
-    public static StringBuilder getOptimizedSql(Query query, SqlBuilderContext context) {
+    public static StringBuilder getOptimizedSql(IQuery query, SqlBuilderContext context) {
         Map<Class, Cmd> classCmdMap = new HashMap<>();
         List<Cmd> cmdList = query.cmds();
         cmdList.stream().forEach(cmd -> classCmdMap.put(cmd.getClass(), cmd));
@@ -193,7 +193,7 @@ public final class SQLOptimizeUtils {
      * @param optimize 是否优化
      * @return SQL StringBuilder
      */
-    public static StringBuilder getCountSqlFromQuery(Query query, SqlBuilderContext context, boolean optimize) {
+    public static StringBuilder getCountSqlFromQuery(IQuery query, SqlBuilderContext context, boolean optimize) {
         if (!optimize) {
             //不优化直接包裹一层
             return new StringBuilder("SELECT COUNT(*) FROM (").append(CmdUtils.join(context, new StringBuilder(), query.sortedCmds())).append(") AS T");
@@ -209,7 +209,7 @@ public final class SQLOptimizeUtils {
      * @param sqlBuilder SQL拼接 StringBuilder
      * @return SQL StringBuilder
      */
-    public static StringBuilder getOptimizedCountSql(Query query, SqlBuilderContext context) {
+    public static StringBuilder getOptimizedCountSql(IQuery query, SqlBuilderContext context) {
         Map<Class, Cmd> classCmdMap = new HashMap<>();
         List<Cmd> cmdList = query.cmds();
         cmdList.stream().forEach(cmd -> classCmdMap.put(cmd.getClass(), cmd));

@@ -7,12 +7,14 @@ import com.mybatis.mp.core.test.DO.TenantTest;
 import com.mybatis.mp.core.test.mapper.TenantTestMapper;
 import com.mybatis.mp.core.test.model.TenantModel;
 import com.mybatis.mp.core.test.testCase.BaseTest;
-import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TenantTestCase extends BaseTest {
 
@@ -32,8 +34,8 @@ public class TenantTestCase extends BaseTest {
             tenantTest.setCreateTime(LocalDateTime.now());
             tenantTestMapper.save(tenantTest);
             System.out.println(tenantTest);
-            Assert.assertNotNull(tenantTest.getId());
-            Assert.assertEquals(1, (int) tenantTestMapper.getById(tenantTest.getId()).getTenantId());
+            assertNotNull(tenantTest.getId());
+            assertEquals(1, (int) tenantTestMapper.getById(tenantTest.getId()).getTenantId());
         }
     }
 
@@ -49,7 +51,7 @@ public class TenantTestCase extends BaseTest {
             tenantTest.setName("我是2");
             tenantTestMapper.update(tenantTest);
             System.out.println(tenantTest);
-            Assert.assertEquals(1, (int) tenantTest.getTenantId());
+            assertEquals(1, (int) tenantTest.getTenantId());
 
 
             TenantContext.registerTenantGetter(() -> {
@@ -57,7 +59,7 @@ public class TenantTestCase extends BaseTest {
             });
             tenantTest.setName("我是3");
             int updateCnt = tenantTestMapper.update(tenantTest);
-            Assert.assertEquals(updateCnt, 0);
+            assertEquals(updateCnt, 0);
         }
     }
 
@@ -71,8 +73,8 @@ public class TenantTestCase extends BaseTest {
             tenantTest.setCreateTime(LocalDateTime.now());
             tenantTestMapper.save(tenantTest);
             System.out.println(tenantTest);
-            Assert.assertNotNull(tenantTest.getId());
-            Assert.assertEquals(1, (int) tenantTestMapper.getById(tenantTest.getId()).getTenantId());
+            assertNotNull(tenantTest.getId());
+            assertEquals(1, (int) tenantTestMapper.getById(tenantTest.getId()).getTenantId());
         }
     }
 
@@ -88,7 +90,7 @@ public class TenantTestCase extends BaseTest {
             tenantTest.setName("我是2");
             tenantTestMapper.update(tenantTest);
             System.out.println(tenantTest);
-            Assert.assertEquals(1, (int) tenantTest.getTenantId());
+            assertEquals(1, (int) tenantTest.getTenantId());
 
 
             TenantContext.registerTenantGetter(() -> {
@@ -96,7 +98,7 @@ public class TenantTestCase extends BaseTest {
             });
             tenantTest.setName("我是3");
             int updateCnt = tenantTestMapper.update(tenantTest);
-            Assert.assertEquals(updateCnt, 0);
+            assertEquals(updateCnt, 0);
         }
     }
 

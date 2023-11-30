@@ -2,11 +2,12 @@ package db.sql.api.impl.cmd.struct.insert;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.struct.insert.IInsertTable;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
-public class InsertTable implements db.sql.api.cmd.struct.insert.InsertTable<Table> {
+public class InsertTable implements IInsertTable<Table> {
 
     protected final Table table;
 

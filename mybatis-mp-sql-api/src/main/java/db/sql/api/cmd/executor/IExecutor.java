@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public interface Executor<T extends Executor,
+public interface IExecutor<T extends IExecutor,
         TABLE extends DATASET,
         DATASET extends Cmd,
         TABLE_FIELD extends DATASET_FILED,

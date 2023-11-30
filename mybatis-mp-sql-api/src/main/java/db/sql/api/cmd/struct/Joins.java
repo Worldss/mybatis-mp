@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Joins<JOIN extends Join> implements Cmd {
+public class Joins<JOIN extends IJoin> implements Cmd {
 
     private final List<JOIN> joins;
 

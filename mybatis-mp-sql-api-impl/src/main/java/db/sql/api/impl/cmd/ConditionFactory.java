@@ -3,14 +3,14 @@ package db.sql.api.impl.cmd;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
-import db.sql.api.cmd.basic.Condition;
-import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.basic.ICondition;
+import db.sql.api.cmd.executor.IQuery;
 import db.sql.api.cmd.executor.method.condition.ConditionMethods;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object> {
+public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Object> {
 
     protected final CmdFactory cmdFactory;
 
@@ -110,7 +110,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition empty(Cmd column, boolean when) {
+    public ICondition empty(Cmd column, boolean when) {
         if (!when) {
             return null;
         }
@@ -121,7 +121,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition empty(Getter<T> column, int storey, boolean when) {
+    public <T> ICondition empty(Getter<T> column, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -129,7 +129,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition notEmpty(Cmd column, boolean when) {
+    public ICondition notEmpty(Cmd column, boolean when) {
         if (!when) {
             return null;
         }
@@ -140,7 +140,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition notEmpty(Getter<T> column, int storey, boolean when) {
+    public <T> ICondition notEmpty(Getter<T> column, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -148,7 +148,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition eq(Cmd column, Object value, boolean when) {
+    public ICondition eq(Cmd column, Object value, boolean when) {
         if (!when) {
             return null;
         }
@@ -159,7 +159,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition ne(Cmd column, Object value, boolean when) {
+    public ICondition ne(Cmd column, Object value, boolean when) {
         if (!when) {
             return null;
         }
@@ -170,7 +170,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition gt(Cmd column, Object value, boolean when) {
+    public ICondition gt(Cmd column, Object value, boolean when) {
         if (!when) {
             return null;
         }
@@ -181,7 +181,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition gte(Cmd column, Object value, boolean when) {
+    public ICondition gte(Cmd column, Object value, boolean when) {
         if (!when) {
             return null;
         }
@@ -192,7 +192,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition lt(Cmd column, Object value, boolean when) {
+    public ICondition lt(Cmd column, Object value, boolean when) {
         if (!when) {
             return null;
         }
@@ -203,7 +203,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition lte(Cmd column, Object value, boolean when) {
+    public ICondition lte(Cmd column, Object value, boolean when) {
         if (!when) {
             return null;
         }
@@ -214,7 +214,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition like(Cmd column, String value, LikeMode mode, boolean when) {
+    public ICondition like(Cmd column, String value, LikeMode mode, boolean when) {
         if (!when) {
             return null;
         }
@@ -225,7 +225,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition notLike(Cmd column, String value, LikeMode mode, boolean when) {
+    public ICondition notLike(Cmd column, String value, LikeMode mode, boolean when) {
         if (!when) {
             return null;
         }
@@ -236,7 +236,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition between(Cmd column, Serializable value, Serializable value2, boolean when) {
+    public ICondition between(Cmd column, Serializable value, Serializable value2, boolean when) {
         if (!when) {
             return null;
         }
@@ -247,7 +247,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition between(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
+    public <T> ICondition between(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -258,7 +258,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition notBetween(Cmd column, Serializable value, Serializable value2, boolean when) {
+    public ICondition notBetween(Cmd column, Serializable value, Serializable value2, boolean when) {
         if (!when) {
             return null;
         }
@@ -269,7 +269,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition notBetween(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
+    public <T> ICondition notBetween(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -280,7 +280,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition isNull(Cmd column, boolean when) {
+    public ICondition isNull(Cmd column, boolean when) {
         if (!when) {
             return null;
         }
@@ -291,7 +291,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition isNotNull(Cmd column, boolean when) {
+    public ICondition isNotNull(Cmd column, boolean when) {
         if (!when) {
             return null;
         }
@@ -302,7 +302,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition eq(Getter<T> column, Object value, int storey, boolean when) {
+    public <T> ICondition eq(Getter<T> column, Object value, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -313,7 +313,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T, T2> Condition eq(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
+    public <T, T2> ICondition eq(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
         if (!when) {
             return null;
         }
@@ -321,7 +321,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition gt(Getter<T> column, Object value, int storey, boolean when) {
+    public <T> ICondition gt(Getter<T> column, Object value, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -332,7 +332,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T, T2> Condition gt(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
+    public <T, T2> ICondition gt(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
         if (!when) {
             return null;
         }
@@ -340,7 +340,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition gte(Getter<T> column, Object value, int storey, boolean when) {
+    public <T> ICondition gte(Getter<T> column, Object value, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -351,7 +351,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T, T2> Condition gte(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
+    public <T, T2> ICondition gte(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
         if (!when) {
             return null;
         }
@@ -359,7 +359,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition like(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
+    public <T> ICondition like(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -370,7 +370,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition lt(Getter<T> column, Object value, int storey, boolean when) {
+    public <T> ICondition lt(Getter<T> column, Object value, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -381,7 +381,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T, T2> Condition lt(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
+    public <T, T2> ICondition lt(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
         if (!when) {
             return null;
         }
@@ -389,7 +389,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition lte(Getter<T> column, Object value, int storey, boolean when) {
+    public <T> ICondition lte(Getter<T> column, Object value, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -400,7 +400,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T, T2> Condition lte(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
+    public <T, T2> ICondition lte(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
         if (!when) {
             return null;
         }
@@ -408,7 +408,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition ne(Getter<T> column, Object value, int storey, boolean when) {
+    public <T> ICondition ne(Getter<T> column, Object value, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -419,7 +419,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T, T2> Condition ne(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
+    public <T, T2> ICondition ne(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
         if (!when) {
             return null;
         }
@@ -428,7 +428,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
 
 
     @Override
-    public <T> Condition notLike(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
+    public <T> ICondition notLike(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -439,7 +439,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition isNull(Getter<T> column, int storey, boolean when) {
+    public <T> ICondition isNull(Getter<T> column, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -447,7 +447,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition isNotNull(Getter<T> column, int storey, boolean when) {
+    public <T> ICondition isNotNull(Getter<T> column, int storey, boolean when) {
         if (!when) {
             return null;
         }
@@ -455,7 +455,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition in(Cmd column, boolean when, Query query) {
+    public ICondition in(Cmd column, boolean when, IQuery query) {
         if (!when) {
             return null;
         }
@@ -466,7 +466,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition in(Cmd column, boolean when, Serializable... values) {
+    public ICondition in(Cmd column, boolean when, Serializable... values) {
         if (!when) {
             return null;
         }
@@ -477,7 +477,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition in(Cmd column, boolean when, List<Serializable> values) {
+    public ICondition in(Cmd column, boolean when, List<Serializable> values) {
         if (!when) {
             return null;
         }
@@ -488,7 +488,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition in(Getter<T> column, int storey, boolean when, Query query) {
+    public <T> ICondition in(Getter<T> column, int storey, boolean when, IQuery query) {
         if (!when) {
             return null;
         }
@@ -499,7 +499,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition in(Getter<T> column, int storey, boolean when, Serializable... values) {
+    public <T> ICondition in(Getter<T> column, int storey, boolean when, Serializable... values) {
         if (!when) {
             return null;
         }
@@ -510,7 +510,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public <T> Condition in(Getter<T> column, int storey, boolean when, List<Serializable> values) {
+    public <T> ICondition in(Getter<T> column, int storey, boolean when, List<Serializable> values) {
         if (!when) {
             return null;
         }
@@ -521,7 +521,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
     }
 
     @Override
-    public Condition exists(boolean when, Query query) {
+    public ICondition exists(boolean when, IQuery query) {
         if (!when) {
             return null;
         }
@@ -533,7 +533,7 @@ public class ConditionFactory implements ConditionMethods<Condition, Cmd, Object
 
 
     @Override
-    public Condition notExists(boolean when, Query query) {
+    public ICondition notExists(boolean when, IQuery query) {
         if (!when) {
             return null;
         }

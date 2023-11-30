@@ -1,13 +1,14 @@
 package db.sql.api.impl.cmd.basic;
 
 import db.sql.api.Cmd;
+import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.impl.cmd.Methods;
 import db.sql.api.impl.cmd.dbFun.Case;
 import db.sql.api.impl.cmd.dbFun.If;
 
 import java.io.Serializable;
 
-public interface Condition<Field, Value> extends db.sql.api.cmd.basic.Condition, Cmd {
+public interface Condition<Field, Value> extends ICondition, Cmd {
     String getOperator();
 
     Field getField();

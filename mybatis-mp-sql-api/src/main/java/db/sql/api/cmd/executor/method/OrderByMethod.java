@@ -2,7 +2,7 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.cmd.executor.SubQuery;
+import db.sql.api.cmd.executor.ISubQuery;
 
 import java.util.List;
 import java.util.function.Function;
@@ -82,25 +82,25 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, DATASET_
         return (SELF) this;
     }
 
-    default <T> SELF orderBy(SubQuery subQuery, Getter<T> column) {
+    default <T> SELF orderBy(ISubQuery subQuery, Getter<T> column) {
         return this.orderBy(subQuery, column, true);
     }
 
-    default <T> SELF orderBy(SubQuery subQuery, Getter<T> column, boolean asc) {
+    default <T> SELF orderBy(ISubQuery subQuery, Getter<T> column, boolean asc) {
         return this.orderBy(subQuery, column, asc, null);
     }
 
-    default <T> SELF orderBy(SubQuery subQuery, Getter<T> column, Function<DATASET_FILED, Cmd> f) {
+    default <T> SELF orderBy(ISubQuery subQuery, Getter<T> column, Function<DATASET_FILED, Cmd> f) {
         return this.orderBy(subQuery, column, true, f);
     }
 
-    <T> SELF orderBy(SubQuery subQuery, Getter<T> column, boolean asc, Function<DATASET_FILED, Cmd> f);
+    <T> SELF orderBy(ISubQuery subQuery, Getter<T> column, boolean asc, Function<DATASET_FILED, Cmd> f);
 
-    default <T> SELF orderBy(SubQuery subQuery, Getter<T>... columns) {
+    default <T> SELF orderBy(ISubQuery subQuery, Getter<T>... columns) {
         return this.orderBy(subQuery, true, columns);
     }
 
-    default <T> SELF orderBy(SubQuery subQuery, boolean asc, Getter<T>... columns) {
+    default <T> SELF orderBy(ISubQuery subQuery, boolean asc, Getter<T>... columns) {
         for (Getter<T> column : columns) {
             this.orderBy(subQuery, column, asc);
         }
@@ -108,17 +108,17 @@ public interface OrderByMethod<SELF extends OrderByMethod, TABLE_FIELD, DATASET_
     }
 
 
-    default SELF orderBy(SubQuery subQuery, String columnName) {
+    default SELF orderBy(ISubQuery subQuery, String columnName) {
         return this.orderBy(subQuery, columnName, true);
     }
 
-    default SELF orderBy(SubQuery subQuery, String columnName, boolean asc) {
+    default SELF orderBy(ISubQuery subQuery, String columnName, boolean asc) {
         return this.orderBy(subQuery, columnName, asc, null);
     }
 
-    default SELF orderBy(SubQuery subQuery, String columnName, Function<DATASET_FILED, Cmd> f) {
+    default SELF orderBy(ISubQuery subQuery, String columnName, Function<DATASET_FILED, Cmd> f) {
         return this.orderBy(subQuery, columnName, true, f);
     }
 
-    SELF orderBy(SubQuery subQuery, String columnName, boolean asc, Function<DATASET_FILED, Cmd> f);
+    SELF orderBy(ISubQuery subQuery, String columnName, boolean asc, Function<DATASET_FILED, Cmd> f);
 }

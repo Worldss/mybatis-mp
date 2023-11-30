@@ -4,7 +4,7 @@ import db.sql.api.Cmd;
 
 import java.util.List;
 
-public interface OrderBy<SELF extends OrderBy> extends Cmd {
+public interface IOrderBy<SELF extends IOrderBy> extends Cmd {
 
     default SELF orderBy(Cmd column) {
         return this.orderBy(column, true);

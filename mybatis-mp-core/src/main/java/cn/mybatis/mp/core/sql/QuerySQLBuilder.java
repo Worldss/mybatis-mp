@@ -1,7 +1,7 @@
 package cn.mybatis.mp.core.sql;
 
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.cmd.executor.Query;
+import db.sql.api.cmd.executor.IQuery;
 
 public interface QuerySQLBuilder {
 
@@ -13,7 +13,7 @@ public interface QuerySQLBuilder {
      * @param optimize 是否优化
      * @return
      */
-    StringBuilder buildQuerySQl(Query query, SqlBuilderContext context, boolean optimize);
+    StringBuilder buildQuerySQl(IQuery query, SqlBuilderContext context, boolean optimize);
 
 
     /**
@@ -24,7 +24,7 @@ public interface QuerySQLBuilder {
      * @param optimize 是否优化
      * @return
      */
-    StringBuilder buildCountQuerySQl(Query query, SqlBuilderContext context, boolean optimize);
+    StringBuilder buildCountQuerySQl(IQuery query, SqlBuilderContext context, boolean optimize);
 
     /**
      * 从query 中 获取 count 查询 sql
@@ -34,6 +34,6 @@ public interface QuerySQLBuilder {
      * @param optimize 是否优化
      * @return
      */
-    StringBuilder buildCountSQLFromQuery(Query query, SqlBuilderContext context, boolean optimize);
+    StringBuilder buildCountSQLFromQuery(IQuery query, SqlBuilderContext context, boolean optimize);
 
 }

@@ -29,7 +29,7 @@ public class EntityUpdateContext<T> extends SQLCmdUpdateContext {
     private static Update createCmd(Object t, Set<String> forceUpdateFields) {
         TableInfo tableInfo = Tables.get(t.getClass());
         Update update = new Update() {{
-            Table table = $.table(tableInfo.getSchemaAndTableName());
+            Table table = $(t.getClass());
             update(table);
             tableInfo.getTableFieldInfos().stream().forEach(item -> {
                 Object value = item.getValue(t);

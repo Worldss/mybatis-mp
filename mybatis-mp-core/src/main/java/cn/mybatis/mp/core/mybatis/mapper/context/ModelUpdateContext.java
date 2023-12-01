@@ -31,7 +31,7 @@ public class ModelUpdateContext<T extends Model> extends SQLCmdUpdateContext {
     private static Update createCmd(Object t, Set<String> forceUpdateFields) {
         ModelInfo modelInfo = Models.get(t.getClass());
         Update update = new Update() {{
-            Table table = $.table(modelInfo.getTableInfo().getSchemaAndTableName());
+            Table table = $(modelInfo.getEntityType());
             update(table);
             modelInfo.getModelFieldInfos().stream().forEach(item -> {
                 Object value = item.getValue(t);

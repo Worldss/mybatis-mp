@@ -56,6 +56,8 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
     public AbstractUpdate(Where where) {
         this.$ = (CMD_FACTORY) where.getConditionFactory().getCmdFactory();
         this.conditionFactory = where.getConditionFactory();
+        this.where = where;
+        this.append(where);
     }
 
     @Override

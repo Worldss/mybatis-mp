@@ -32,7 +32,7 @@ public class EntityUpdateWithWhereContext<T> extends SQLCmdUpdateContext {
     private static Update createCmd(Object t, Where where, Set<String> forceUpdateFields) {
         TableInfo tableInfo = Tables.get(t.getClass());
         Update update = new Update(where) {{
-            Table table = $.table(tableInfo.getSchemaAndTableName());
+            Table table = $(t.getClass());
             update(table);
             tableInfo.getTableFieldInfos().stream().forEach(item -> {
                 Object value = item.getValue(t);

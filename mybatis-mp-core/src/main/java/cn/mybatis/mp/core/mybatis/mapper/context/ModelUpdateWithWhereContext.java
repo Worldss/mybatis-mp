@@ -32,7 +32,7 @@ public class ModelUpdateWithWhereContext<T extends Model> extends SQLCmdUpdateCo
     private static Update createCmd(Object t, Where where, Set<String> forceUpdateFields) {
         ModelInfo modelInfo = Models.get(t.getClass());
         Update update = new Update(where) {{
-            Table table = $.table(modelInfo.getTableInfo().getSchemaAndTableName());
+            Table table = $(modelInfo.getEntityType());
             update(table);
             modelInfo.getModelFieldInfos().stream().forEach(item -> {
                 Object value = item.getValue(t);

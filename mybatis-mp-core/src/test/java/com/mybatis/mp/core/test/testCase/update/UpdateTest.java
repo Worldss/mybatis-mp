@@ -120,7 +120,7 @@ public class UpdateTest extends BaseTest {
 
             SysUser updateSysUser = new SysUser();
             updateSysUser.setUserName("adminxx");
-            sysUserMapper.update(updateSysUser, Wheres.create().eq(SysUser::getId,1));
+            sysUserMapper.update(updateSysUser, where -> where.eq(SysUser::getId, 1));
 
             SysUser eqSysUser = new SysUser();
             eqSysUser.setId(1);
@@ -142,55 +142,6 @@ public class UpdateTest extends BaseTest {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
 
             SysUser updateSysUser = new SysUser();
-            updateSysUser.setUserName("adminxx");
-            sysUserMapper.update(updateSysUser, Wheres.create().eq(SysUser::getId,1), SysUser::getPassword);
-
-
-            SysUser eqSysUser = new SysUser();
-            eqSysUser.setId(1);
-            eqSysUser.setUserName("adminxx");
-            eqSysUser.setPassword(null);
-            eqSysUser.setRole_id(0);
-            eqSysUser.setCreate_time(LocalDateTime.parse("2023-10-10T10:10:10"));
-
-
-            List<SysUser> list=QueryChain.of(sysUserMapper).eq(SysUser::getUserName,"adminxx").list();
-            assertEquals(list.size(),1);
-            assertEquals(list.get(0), eqSysUser, "实体with where 强制修改");
-        }
-    }
-
-
-
-    @Test
-    public void updateModelWithWhereTest() {
-        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
-            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-
-            SysUserModel updateSysUser = new SysUserModel();
-            updateSysUser.setUserName("adminxx");
-            sysUserMapper.update(updateSysUser, where -> where.eq(SysUser::getId, 1));
-
-            SysUser eqSysUser = new SysUser();
-            eqSysUser.setId(1);
-            eqSysUser.setUserName("adminxx");
-            eqSysUser.setPassword("123");
-            eqSysUser.setRole_id(0);
-            eqSysUser.setCreate_time(LocalDateTime.parse("2023-10-10T10:10:10"));
-
-
-            List<SysUser> list=QueryChain.of(sysUserMapper).eq(SysUser::getUserName,"adminxx").list();
-            assertEquals(list.size(),1);
-            assertEquals(list.get(0), eqSysUser, "实体with where修改");
-        }
-    }
-
-    @Test
-    public void updateModelTestForceUpdateWithWhere() {
-        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
-            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-
-            SysUserModel updateSysUser = new SysUserModel();
             updateSysUser.setUserName("adminxx");
             sysUserMapper.update(updateSysUser, Wheres.create().eq(SysUser::getId,1), SysUser::getPassword);
 

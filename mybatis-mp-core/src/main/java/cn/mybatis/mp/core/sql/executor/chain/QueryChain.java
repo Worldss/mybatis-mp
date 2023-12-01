@@ -1,6 +1,6 @@
 package cn.mybatis.mp.core.sql.executor.chain;
 
-import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
+import cn.mybatis.mp.core.mybatis.mapper.BaseMapper;
 import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.BaseQuery;
 import db.sql.api.impl.cmd.struct.Where;
@@ -13,22 +13,22 @@ import java.util.Objects;
  */
 public class QueryChain extends BaseQuery<QueryChain> {
 
-    protected final MybatisMapper mapper;
+    protected final BaseMapper mapper;
 
-    public QueryChain(MybatisMapper mapper) {
+    public QueryChain(BaseMapper mapper) {
         this.mapper = mapper;
     }
 
-    public QueryChain(MybatisMapper mapper, Where where) {
+    public QueryChain(BaseMapper mapper, Where where) {
         super(where);
         this.mapper = mapper;
     }
 
-    public static QueryChain of(MybatisMapper mapper) {
+    public static QueryChain of(BaseMapper mapper) {
         return new QueryChain(mapper);
     }
 
-    public static QueryChain of(MybatisMapper mapper, Where where) {
+    public static QueryChain of(BaseMapper mapper, Where where) {
         return new QueryChain(mapper, where);
     }
 

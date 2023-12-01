@@ -462,53 +462,66 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### 单个查询
 
 > getById(Serializable id) 根据ID查询实体
->
+
 > R get(Query query) 单个动态查询（可自定返回类型）
+ 
+> T get(Where where) 单个动态查询（只返回实体类）
 
 ### 列表查询
 
 > List<R> list(Query query) 列表动态查询（可自定返回类型）
+
+> List<T> list(Where where) 列表动态查询（只返回实体类）
 >
 
 ### count查询
 
 > count(Query query) 动态count查询
 
+> count(Where where) 动态count查询
+
 ### exists查询
 
 > exists(Query query) 动态检测是否存在
 
+> exists(Where where) 动态检测是否存在
 ### 删除
 
 > deleteById(Serializable id) 根据ID删除
->
+
 > delete(T entity) 根据实体类删除
->
+
+> delete(Where where) 动态删除
+
 > delete(Delete delete) 动态删除
 
 ### 保存
 
 > save(T entity) 实体类保存
->
+
 > save(Model entity) 实体类部分保存
->
+
 > save(Insert insert) 动态插入（无法返回ID）
 
 ### 修改
 
 > update(T entity) 实体类更新
->
+
 > update(T entity,F... fields) 实体类更新 + 强制字段更新
->
+
 > update(Model entity) 实体类部分更新
->
+
 > update(Model entity,F... fields) 实体类部分更新 + 强制字段更新
->
+
+> update(T entity,Where where) 实体类批量更新
+
 > update(Update update) 动态更新
 
 ### 分页查询
 
 > Pager<R> paging(Query query, Pager<R> pager) 分页查询（可自定返回类型）
+
+> Pager<T> paging(Where where, Pager<R> pager) 分页查询（只返回实体类类型）
 
 ### 牛逼的SQL优化
 
@@ -538,6 +551,11 @@ Student stu=studentMapper.getById(1);
 Student stu2=QueryChain.of(sysUserMapper)
     .eq(Student::getId,1)
     .get();
+
+或
+
+Student stu3=studentMapper.get(where->where.eq(Student::getId,1));
+
 ```
 
 > 能用前者优先前者，后者为单个动态查询
@@ -664,11 +682,15 @@ List<SysUser> list=QueryChain.of(sysUserMapper)
 ### 1.4 删除
 
 ```java
- studentMapper.deleteById(1);
+studentMapper.deleteById(1);
 
     或
-    
- DeleteChain.of(studentMapper).eq(Student::getId,1).execute();
+        
+DeleteChain.of(studentMapper).eq(Student::getId,1).execute();
+
+    或
+
+studentMapper.delete(where->where.eq(Student::getId,1))
 ```
 
 > 能用前者优先前者，后者为单个动态删除
@@ -751,6 +773,12 @@ UpdateChain.of(studentMapper)
     .set(Student::getName,"嘿嘿")
     .eq(Student::getId,1)
     .execute();
+
+或者
+
+SysUser updateSysUser = new SysUser();
+updateSysUser.setUserName("adminxx");
+sysUserMapper.update(updateSysUser, where->where.eq(SysUser::getId,1));
 ```
 
 > 能用前者优先前者，后者为动态更新
@@ -1007,6 +1035,9 @@ boolean exists = QueryChain.of(sysUserMapper)
         .join(SysUser.class, SysRole.class)
         .like(SysUser::getUserName, "test")
         .exists();
+或者
+
+sysUserMapper.exists(where->where.like(SysUser::getUserName, "test"));
 ```
 
 ### 3.0 select 去重
@@ -1044,6 +1075,11 @@ List<SysUser> list = QueryChain.of(sysUserMapper)
         .from(SysUser.class)
         .lt(SysUser::getId, 3)
         .list();
+
+或者
+
+List<SysUser> list=sysUserMapper.list(where->where.lt(SysUser::getId, 3));
+        
 ```
 ### 4.1 为空
 ```java

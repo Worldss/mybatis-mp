@@ -169,7 +169,7 @@ public class UpdateTest extends BaseTest {
 
             SysUserModel updateSysUser = new SysUserModel();
             updateSysUser.setUserName("adminxx");
-            sysUserMapper.update(updateSysUser, Wheres.create().eq(SysUser::getId,1));
+            sysUserMapper.update(updateSysUser, where -> where.eq(SysUser::getId, 1));
 
             SysUser eqSysUser = new SysUser();
             eqSysUser.setId(1);

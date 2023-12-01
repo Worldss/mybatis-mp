@@ -3,11 +3,14 @@ package cn.mybatis.mp.core.mybatis.mapper;
 
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
+import cn.mybatis.mp.core.sql.executor.Wheres;
 import cn.mybatis.mp.core.sql.executor.chain.DeleteChain;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
+import db.sql.api.impl.cmd.struct.Where;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * 数据库 Mapper
@@ -46,6 +49,17 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
                 .get();
     }
 
+    default T get(Consumer<Where> consumer) {
+        Where where = Wheres.create();
+        consumer.accept(where);
+        return QueryChain.of(this, where).get();
+    }
+
+    default int delete(Consumer<Where> consumer) {
+        Where where = Wheres.create();
+        consumer.accept(where);
+        return DeleteChain.of(this, where).execute();
+    }
 
     /**
      * 根据实体类删除

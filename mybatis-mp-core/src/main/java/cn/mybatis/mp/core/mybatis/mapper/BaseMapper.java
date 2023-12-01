@@ -18,6 +18,7 @@ import org.apache.ibatis.session.RowBounds;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Consumer;
 
 
 public interface BaseMapper<T> {
@@ -40,10 +41,6 @@ public interface BaseMapper<T> {
      * @return
      */
     default boolean exists(BaseQuery query, boolean optimize) {
-        if (query.getSelect() != null) {
-            query.getSelect().getSelectFiled().clear();
-        }
-        query.select1();
         query.limit(1);
         query.setReturnType(Integer.TYPE);
         Integer obj = this.get(query, optimize);
@@ -132,7 +129,9 @@ public interface BaseMapper<T> {
     }
 
 
-    default int update(T entity, Where where) {
+    default int update(T entity, Consumer<Where> consumer) {
+        Where where = Wheres.create();
+        consumer.accept(where);
         return this.$update(new EntityUpdateWithWhereContext(entity, where));
     }
 
@@ -169,7 +168,9 @@ public interface BaseMapper<T> {
         return this.$update(new ModelUpdateContext<>(model, forceUpdateFieldsSet));
     }
 
-    default int update(Model<T> model, Where where) {
+    default int update(Model<T> model, Consumer<Where> consumer) {
+        Where where = Wheres.create();
+        consumer.accept(where);
         return this.$update(new ModelUpdateWithWhereContext(model, where));
     }
 
@@ -211,11 +212,6 @@ public interface BaseMapper<T> {
     }
 
 
-    default int delete(Where where) {
-        Delete delete = new Delete(where);
-        return this.delete(delete);
-    }
-
     /**
      * 动态删除
      *
@@ -255,6 +251,7 @@ public interface BaseMapper<T> {
      * @return
      */
     default Integer count(BaseQuery query) {
+        query.setReturnType(Integer.TYPE);
         return this.$count(new SQLCmdCountQueryContext(query, false));
     }
 

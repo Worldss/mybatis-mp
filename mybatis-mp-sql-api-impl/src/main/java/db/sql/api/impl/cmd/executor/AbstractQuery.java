@@ -87,6 +87,13 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         };
     }
 
+    public AbstractQuery(Where where) {
+        this.$ = (CMD_FACTORY) where.getConditionFactory().getCmdFactory();
+        this.conditionFactory = where.getConditionFactory();
+        this.where = where;
+        this.append(where);
+    }
+
     @Override
     public CMD_FACTORY $() {
         return $;

@@ -465,7 +465,7 @@ public class ConditionChain implements IConditionChain<ConditionChain, Cmd, Obje
         if (conditionBlocks == null || conditionBlocks.isEmpty()) {
             return sqlBuilder;
         }
-        if (module != null || this.parent != null) {
+        if ((!(parent instanceof Where) && !(parent instanceof On)) || this.parent != null) {
             sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(SqlConst.BRACKET_LEFT);
         }
         boolean isFirst = true;
@@ -482,7 +482,7 @@ public class ConditionChain implements IConditionChain<ConditionChain, Cmd, Obje
             conditionBlock.getCondition().sql(module, this, context, sqlBuilder);
             isFirst = false;
         }
-        if (module != null || this.parent != null) {
+        if ((!(parent instanceof Where) && !(parent instanceof On)) || this.parent != null) {
             sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);
         }
 

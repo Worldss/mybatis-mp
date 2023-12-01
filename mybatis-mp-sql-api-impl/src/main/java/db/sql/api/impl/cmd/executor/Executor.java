@@ -69,6 +69,6 @@ public interface Executor<SELF extends Executor,
             return sqlBuilder;
         }
         cmdList = sortedCmds();
-        return CmdUtils.join(null, null, context, sqlBuilder, cmdList);
+        return CmdUtils.join(this, this, context, sqlBuilder, cmdList);
     }
 }

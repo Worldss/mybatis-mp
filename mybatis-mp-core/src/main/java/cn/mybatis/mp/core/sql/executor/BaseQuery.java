@@ -6,6 +6,7 @@ import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
 import db.sql.api.impl.cmd.executor.AbstractQuery;
 import db.sql.api.impl.cmd.struct.OnDataset;
+import db.sql.api.impl.cmd.struct.Where;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -20,6 +21,10 @@ public abstract class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, My
 
     public BaseQuery(MybatisCmdFactory mybatisCmdFactory) {
         super(mybatisCmdFactory);
+    }
+
+    public BaseQuery(Where where) {
+        super(where);
     }
 
     @Override

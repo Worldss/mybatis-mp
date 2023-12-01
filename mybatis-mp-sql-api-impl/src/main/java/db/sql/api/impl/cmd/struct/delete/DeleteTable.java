@@ -4,6 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.struct.delete.IDeleteTable;
 import db.sql.api.impl.cmd.basic.Table;
+import db.sql.api.impl.cmd.executor.AbstractDelete;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
@@ -24,6 +25,11 @@ public class DeleteTable implements IDeleteTable<Table> {
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = sqlBuilder.append(SqlConst.DELETE);
         if (this.tables == null || this.tables.length < 1) {
+            return sqlBuilder;
+        }
+        AbstractDelete delete = (AbstractDelete) module;
+        if (this.tables.length == 1 && delete.getJoins() == null) {
+            this.tables[0].as(null);
             return sqlBuilder;
         }
         int length = this.tables.length;

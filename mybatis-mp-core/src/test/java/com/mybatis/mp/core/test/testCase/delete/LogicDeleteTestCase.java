@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class LogicDeleteTestCase extends BaseTest {
 
     public LogicDeleteTestCase(){
-        MybatisMpConfig.setLogicDeleteSwitch(false);
+        MybatisMpConfig.setLogicDeleteSwitch(true);
     }
 
     @Test

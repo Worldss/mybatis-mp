@@ -26,8 +26,7 @@ public final class MybatisMpConfig {
     private static final String DEFAULT_VALUE_MANAGER = "defaultValueManager";
     private static final QuerySQLBuilder DEFAULT_SQL_BUILDER = new MybatisMpQuerySQLBuilder();
 
-
-    private MybatisMpConfig() {
+    static {
         Map<String, Supplier<Object>> defaultValueMap = new ConcurrentHashMap<>();
         defaultValueMap.put("{NOW}", () -> {
             return LocalDateTime.now();
@@ -38,14 +37,22 @@ public final class MybatisMpConfig {
         });
 
         defaultValueMap.put("{DATE_NOW}", () -> {
-            return new Date(System.currentTimeMillis());
+            return new Date();
         });
 
-        defaultValueMap.put("{TIMESTAMP}", () -> {
+        defaultValueMap.put("{NOW_TIMESTAMP}", () -> {
+            return System.currentTimeMillis() / 1000;
+        });
+
+        defaultValueMap.put("{NOW_MILLISECOND}", () -> {
             return System.currentTimeMillis() / 1000;
         });
 
         CACHE.put(DEFAULT_VALUE_MANAGER, defaultValueMap);
+    }
+
+    private MybatisMpConfig() {
+
     }
 
     /**

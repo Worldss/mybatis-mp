@@ -20,4 +20,7 @@ public class LogicDeleteTest {
 
     @LogicDelete(beforeValue = "0", afterValue = "1", deleteTimeField = "deleteTime")
     private Byte deleted;
+
+//    @LogicDelete(  afterValue = "{NOW}" )
+//    private LocalDateTime deleteTime;
 }

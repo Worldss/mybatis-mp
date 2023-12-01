@@ -72,7 +72,7 @@ public class ModelUpdateContext<T extends Model> extends SQLCmdUpdateContext {
                 }
             });
         }};
-        if (update.getWhere() == null || !update.getWhere().conditionChain().hasContent()) {
+        if (update.getWhere() == null || !update.getWhere().hasContent()) {
             throw new RuntimeException(MessageFormat.format("model {0} can't found id", t.getClass()));
         }
         return update;

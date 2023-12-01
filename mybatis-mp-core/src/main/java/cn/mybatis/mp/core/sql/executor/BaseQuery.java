@@ -4,6 +4,7 @@ import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
+import cn.mybatis.mp.core.util.LogicDeleteUtil;
 import db.sql.api.impl.cmd.executor.AbstractQuery;
 import db.sql.api.impl.cmd.struct.OnDataset;
 import db.sql.api.impl.cmd.struct.Where;
@@ -42,18 +43,26 @@ public abstract class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, My
         return (Q) this;
     }
 
+
     protected void addTenantCondition(Class entity, int storey) {
         TenantUtil.addTenantCondition(this, $, entity, storey);
     }
 
+    protected void addLogicDeleteCondition(Class entity, int storey) {
+        LogicDeleteUtil.addLogicDeleteCondition(this, $, entity, storey);
+    }
+
+
     @Override
     public void fromEntityIntercept(Class entity, int storey) {
         this.addTenantCondition(entity, storey);
+        this.addLogicDeleteCondition(entity, storey);
     }
 
     @Override
     public Consumer<OnDataset> joinEntityIntercept(Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<OnDataset> consumer) {
         this.addTenantCondition(secondTable, secondTableStorey);
+        this.addLogicDeleteCondition(secondTable, secondTableStorey);
         if (Objects.isNull(consumer)) {
             //自动加上外键连接条件
             consumer = ForeignKeyUtil.buildForeignKeyOnConsumer($, mainTable, mainTableStorey, secondTable, secondTableStorey);

@@ -51,6 +51,15 @@ public interface ICmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASE
      */
     <T> TABLE_FIELD field(Getter<T> column, int storey);
 
+    /**
+     * 根据字段名获取TABLE_FIELD
+     * @param entity
+     * @param filedName
+     * @param storey
+     * @return
+     */
+    TABLE_FIELD field(Class entity, String filedName, int storey);
+
 
     /**
      * 根据dataset(可能是子查询 也可能是表),Lambda getter 创建列对象

@@ -31,9 +31,6 @@ public class MybatisSQLProvider {
     }
 
     public static StringBuilder delete(SQLCmdDeleteContext deleteContext, ProviderContext providerContext) {
-        if (!deleteContext.getExecution().getWhere().conditionChain().hasContent()) {
-            throw new RuntimeException("Unable to delete table data without conditions attached");
-        }
         return deleteContext.sql(providerContext.getDatabaseId());
     }
 

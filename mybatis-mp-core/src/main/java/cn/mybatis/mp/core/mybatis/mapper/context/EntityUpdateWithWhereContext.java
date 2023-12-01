@@ -30,6 +30,11 @@ public class EntityUpdateWithWhereContext<T> extends SQLCmdUpdateContext {
     }
 
     private static Update createCmd(Object t, Where where, Set<String> forceUpdateFields) {
+
+        if (!where.hasContent()) {
+            throw new RuntimeException("update has on where condition content ");
+        }
+
         TableInfo tableInfo = Tables.get(t.getClass());
         Update update = new Update(where) {{
             Table table = $(t.getClass());

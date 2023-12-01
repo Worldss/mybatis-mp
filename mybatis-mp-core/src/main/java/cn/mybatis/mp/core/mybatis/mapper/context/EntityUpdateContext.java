@@ -9,6 +9,7 @@ import cn.mybatis.mp.core.tenant.TenantInfo;
 import cn.mybatis.mp.db.annotations.TableField;
 import db.sql.api.impl.cmd.basic.Table;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -71,6 +72,10 @@ public class EntityUpdateContext<T> extends SQLCmdUpdateContext {
                 }
             });
         }};
+
+        if (update.getWhere() == null || !update.getWhere().hasContent()) {
+            throw new RuntimeException(MessageFormat.format("entity {0} can't found id", t.getClass()));
+        }
         return update;
     }
 }

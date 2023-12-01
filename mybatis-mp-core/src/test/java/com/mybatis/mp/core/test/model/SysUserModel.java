@@ -1,7 +1,6 @@
 package com.mybatis.mp.core.test.model;
 
 import cn.mybatis.mp.db.Model;
-
 import com.mybatis.mp.core.test.DO.SysUser;
 import lombok.Data;
 

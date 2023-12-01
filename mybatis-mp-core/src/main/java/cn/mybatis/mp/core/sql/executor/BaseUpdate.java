@@ -4,6 +4,7 @@ import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
 import db.sql.api.impl.cmd.executor.AbstractUpdate;
 import db.sql.api.impl.cmd.struct.OnTable;
+import db.sql.api.impl.cmd.struct.Where;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -12,6 +13,10 @@ public abstract class BaseUpdate<T extends BaseUpdate> extends AbstractUpdate<T,
 
     public BaseUpdate() {
         super(new MybatisCmdFactory());
+    }
+
+    public BaseUpdate(Where where) {
+        super(where);
     }
 
 

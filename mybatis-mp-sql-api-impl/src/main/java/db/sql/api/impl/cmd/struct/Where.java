@@ -26,6 +26,10 @@ public class Where implements IWhere<Where, Cmd, Object, ConditionChain> {
         return conditionChain;
     }
 
+    public ConditionFactory getConditionFactory() {
+        return conditionFactory;
+    }
+
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (this.conditionChain == null || !this.conditionChain.hasContent()) {

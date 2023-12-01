@@ -53,6 +53,11 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
         this.conditionFactory = new ConditionFactory($);
     }
 
+    public AbstractUpdate(Where where) {
+        this.$ = (CMD_FACTORY) where.getConditionFactory().getCmdFactory();
+        this.conditionFactory = where.getConditionFactory();
+    }
+
     @Override
     public CMD_FACTORY $() {
         return $;

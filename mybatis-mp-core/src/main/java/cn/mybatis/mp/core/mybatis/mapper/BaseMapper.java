@@ -8,6 +8,7 @@ import cn.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import cn.mybatis.mp.core.sql.executor.*;
 import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
+import db.sql.api.impl.cmd.struct.Where;
 import db.sql.api.impl.tookit.LambdaUtil;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -81,7 +82,7 @@ public interface BaseMapper<T> {
      * @return
      */
     default int save(T entity) {
-        return this.$save(new EntityInsertContext(entity));
+        return this.$saveEntity(new EntityInsertContext(entity));
     }
 
     /**
@@ -91,7 +92,7 @@ public interface BaseMapper<T> {
      * @return
      */
     default int save(Model<T> model) {
-        return this.$$save(new ModelInsertContext<>(model));
+        return this.$saveModel(new ModelInsertContext<>(model));
     }
 
     /**
@@ -101,7 +102,7 @@ public interface BaseMapper<T> {
      * @return
      */
     default int save(BaseInsert insert) {
-        return this.$$$save(new SQLCmdInsertContext<>(insert));
+        return this.$save(new SQLCmdInsertContext<>(insert));
     }
 
     /**
@@ -131,6 +132,18 @@ public interface BaseMapper<T> {
     }
 
 
+    default int update(T entity, Where where) {
+        return this.$update(new EntityUpdateWithWhereContext(entity, where));
+    }
+
+    default int update(T entity, Where where, Getter<T>... forceUpdateFields) {
+        Set<String> forceUpdateFieldsSet = new HashSet<>();
+        for (Getter getter : forceUpdateFields) {
+            forceUpdateFieldsSet.add(LambdaUtil.getName(getter));
+        }
+        return this.$update(new EntityUpdateWithWhereContext(entity, where, forceUpdateFieldsSet));
+    }
+
     /**
      * model插入 部分字段修改
      *
@@ -138,7 +151,7 @@ public interface BaseMapper<T> {
      * @return
      */
     default int update(Model<T> model) {
-        return this.$$update(new ModelUpdateContext<>(model));
+        return this.$update(new ModelUpdateContext<>(model));
     }
 
     /**
@@ -153,7 +166,19 @@ public interface BaseMapper<T> {
         for (Getter getter : forceUpdateFields) {
             forceUpdateFieldsSet.add(LambdaUtil.getName(getter));
         }
-        return this.$$update(new ModelUpdateContext<>(model, forceUpdateFieldsSet));
+        return this.$update(new ModelUpdateContext<>(model, forceUpdateFieldsSet));
+    }
+
+    default int update(Model<T> model, Where where) {
+        return this.$update(new ModelUpdateWithWhereContext(model, where));
+    }
+
+    default int update(Model<T> model, Where where, Getter<T>... forceUpdateFields) {
+        Set<String> forceUpdateFieldsSet = new HashSet<>();
+        for (Getter getter : forceUpdateFields) {
+            forceUpdateFieldsSet.add(LambdaUtil.getName(getter));
+        }
+        return this.$update(new ModelUpdateWithWhereContext(model, where, forceUpdateFieldsSet));
     }
 
     /**
@@ -163,7 +188,7 @@ public interface BaseMapper<T> {
      * @return
      */
     default int update(BaseUpdate update) {
-        return this.$$update(new SQLCmdUpdateContext(update));
+        return this.$update(new SQLCmdUpdateContext(update));
     }
 
     /**
@@ -183,6 +208,12 @@ public interface BaseMapper<T> {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    default int delete(Where where) {
+        Delete delete = new Delete(where);
+        return this.delete(delete);
     }
 
     /**
@@ -253,7 +284,6 @@ public interface BaseMapper<T> {
         return pager;
     }
 
-
     /**
      * 动态查询 返回单个
      *
@@ -264,6 +294,14 @@ public interface BaseMapper<T> {
     @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
     <R> R $get(SQLCmdQueryContext queryContext, RowBounds rowBounds);
 
+    /**
+     * @param insertContext
+     * @return
+     * @see MybatisSQLProvider#save(SQLCmdInsertContext, ProviderContext)
+     */
+    @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
+    int $save(SQLCmdInsertContext insertContext);
+
 
     /**
      * @param insertContext
@@ -271,13 +309,16 @@ public interface BaseMapper<T> {
      * @see MybatisSQLProvider#save(SQLCmdInsertContext, ProviderContext)
      */
     @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
-    int $save(EntityInsertContext<T> insertContext);
+    int $saveEntity(EntityInsertContext insertContext);
 
-    @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
-    int $$save(ModelInsertContext<Model<T>> insertContext);
 
+    /**
+     * @param insertContext
+     * @return
+     * @see MybatisSQLProvider#save(SQLCmdInsertContext, ProviderContext)
+     */
     @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
-    int $$$save(SQLCmdInsertContext insertContext);
+    int $saveModel(ModelInsertContext insertContext);
 
     /**
      * @param updateContext
@@ -285,10 +326,7 @@ public interface BaseMapper<T> {
      * @see MybatisSQLProvider#update(SQLCmdUpdateContext, ProviderContext)
      */
     @UpdateProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.UPDATE_NAME)
-    int $update(EntityUpdateContext<T> updateContext);
-
-    @UpdateProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.UPDATE_NAME)
-    int $$update(SQLCmdUpdateContext updateContext);
+    int $update(SQLCmdUpdateContext updateContext);
 
 
     /**

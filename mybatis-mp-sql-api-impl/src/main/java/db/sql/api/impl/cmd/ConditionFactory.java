@@ -18,6 +18,10 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         this.cmdFactory = cmdFactory;
     }
 
+    public CmdFactory getCmdFactory() {
+        return cmdFactory;
+    }
+
     protected boolean ignoreEmpty() {
         return false;
     }

@@ -43,6 +43,12 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
         this.conditionFactory = new ConditionFactory($);
     }
 
+    public AbstractDelete(Where where) {
+        this.$ = (CMD_FACTORY) where.getConditionFactory().getCmdFactory();
+        this.conditionFactory = where.getConditionFactory();
+    }
+
+
     @Override
     public CMD_FACTORY $() {
         return $;

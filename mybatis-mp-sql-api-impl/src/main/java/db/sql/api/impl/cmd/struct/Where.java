@@ -20,7 +20,7 @@ public class Where implements IWhere<Where, Cmd, Object, ConditionChain> {
         this.conditionFactory = conditionFactory;
     }
 
-    public boolean hasContent(){
+    public boolean hasContent() {
         return Objects.nonNull(conditionChain) && conditionChain.hasContent();
     }
 

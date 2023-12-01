@@ -31,17 +31,17 @@ public final class DefaultValueConvertUtil {
         }
 
         Object newValue;
-        if (value instanceof Boolean) {
+        if (targetType == Boolean.class) {
             newValue = Boolean.valueOf(value.toString());
-        } else if (value instanceof Byte) {
+        } else if (targetType == Byte.class) {
             newValue = Byte.valueOf(value.toString());
-        } else if (value instanceof Integer) {
+        } else if (targetType == Integer.class) {
             newValue = Integer.valueOf(value.toString());
-        } else if (value instanceof Long) {
+        } else if (targetType == Long.class) {
             newValue = Long.valueOf(value.toString());
-        } else if (value instanceof BigDecimal) {
+        } else if (targetType == BigDecimal.class) {
             newValue = new BigDecimal(value.toString());
-        } else if (value instanceof BigInteger) {
+        } else if (targetType == BigInteger.class) {
             newValue = new BigInteger(value.toString());
         } else {
             throw new RuntimeException("Inconsistent types");

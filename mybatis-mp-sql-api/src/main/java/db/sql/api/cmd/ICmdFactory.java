@@ -53,6 +53,7 @@ public interface ICmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASE
 
     /**
      * 根据字段名获取TABLE_FIELD
+     *
      * @param entity
      * @param filedName
      * @param storey

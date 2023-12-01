@@ -2,6 +2,7 @@ package cn.mybatis.mp.core.db.reflect;
 
 import cn.mybatis.mp.core.MybatisMpConfig;
 import cn.mybatis.mp.core.util.FieldUtils;
+import cn.mybatis.mp.core.util.LogicDeleteUtil;
 import cn.mybatis.mp.core.util.StringPool;
 import cn.mybatis.mp.core.util.TableInfoUtil;
 import cn.mybatis.mp.db.annotations.ForeignKey;
@@ -120,7 +121,6 @@ public class TableInfo {
                 if (MybatisMpConfig.isDefaultValueKeyFormat(logicDeleteAnnotation.beforeValue())) {
                     throw new RuntimeException(String.format("the @LogicDelete of Entity %s has config error,the beforeValue can't be dynamic key", entity.getName()));
                 }
-
             }
         }
 
@@ -132,6 +132,13 @@ public class TableInfo {
 
         this.tableFieldInfoMap = Collections.unmodifiableMap(tableFieldInfoMap);
         this.foreignInfoMap = Collections.unmodifiableMap(foreignInfoMap);
+
+        if (Objects.nonNull(this.logicDeleteFieldInfo)) {
+            String deleteTimeFieldName = this.logicDeleteFieldInfo.getLogicDeleteAnnotation().deleteTimeField();
+            if (!StringPool.EMPTY.equals(deleteTimeFieldName)) {
+                LogicDeleteUtil.getLogicDeleteTimeValue(this);
+            }
+        }
     }
 
     /**

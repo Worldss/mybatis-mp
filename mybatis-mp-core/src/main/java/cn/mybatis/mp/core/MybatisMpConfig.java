@@ -114,12 +114,12 @@ public final class MybatisMpConfig {
     }
 
     /**
-     * 获取逻辑删除开关，默认关闭
+     * 获取逻辑删除开关，默认开启
      *
      * @return
      */
     public static boolean isLogicDeleteSwitchOpen() {
-        return (boolean) CACHE.computeIfAbsent(LOGIC_DELETE_SWITCH, key -> false);
+        return (boolean) CACHE.computeIfAbsent(LOGIC_DELETE_SWITCH, key -> true);
     }
 
     /**
@@ -128,7 +128,7 @@ public final class MybatisMpConfig {
      * @param bool
      */
     public static void setLogicDeleteSwitch(boolean bool) {
-        CACHE.computeIfAbsent(COLUMN_UNDERLINE, key -> bool);
+        CACHE.computeIfAbsent(LOGIC_DELETE_SWITCH, key -> bool);
     }
 
     public static boolean isDefaultValueKeyFormat(String key) {

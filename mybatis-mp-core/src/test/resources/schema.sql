@@ -60,3 +60,17 @@ CREATE TABLE IF NOT EXISTS tenant_test
     name VARCHAR(100) not null,
     create_time  DATETIME NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS logic_delete_test
+(
+    id   BIGINT PRIMARY KEY auto_increment,
+    name VARCHAR(100) not null,
+    deleted TINYINT not NULL default 0,
+    delete_time DATETIME
+);
+
+insert into logic_delete_test
+values
+    (1,'测试',0,null),
+    (2,'运维',0,null),
+    (3,'运维2',0,null);

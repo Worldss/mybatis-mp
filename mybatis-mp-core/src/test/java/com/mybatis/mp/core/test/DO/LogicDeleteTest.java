@@ -1,27 +1,23 @@
 package com.mybatis.mp.core.test.DO;
 
 import cn.mybatis.mp.db.annotations.LogicDelete;
+import cn.mybatis.mp.db.annotations.Table;
+import cn.mybatis.mp.db.annotations.TableId;
+import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
+@Data
+@Table
 public class LogicDeleteTest {
 
-    @LogicDelete(beforeValue = "0",afterValue = "1")
-    private Integer deleted;
+    @TableId
+    private Long id;
 
-    @LogicDelete(beforeValue = "0",afterValue = "1")
-    private Byte deleted5;
+    private String name;
 
-    @LogicDelete(beforeValue = "",afterValue = "{NOW}")
-    private LocalDateTime deletedTime;
+    private LocalDateTime deleteTime;
 
-    @LogicDelete(beforeValue = "false",afterValue = "true")
-    private Boolean deleted2;
-
-    @LogicDelete(beforeValue = "0",afterValue = "{TIMESTAMP}")
-    private Long deleted3;
-
-    @LogicDelete(beforeValue = "",afterValue = "{DATE_NOW}")
-    private Date deleted4;
+    @LogicDelete(beforeValue = "0", afterValue = "1", deleteTimeField = "deleteTime")
+    private Byte deleted;
 }

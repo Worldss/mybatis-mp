@@ -8,6 +8,8 @@ import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
+import java.util.Objects;
+
 public class Where implements IWhere<Where, Cmd, Object, ConditionChain> {
 
     private final ConditionFactory conditionFactory;
@@ -18,12 +20,20 @@ public class Where implements IWhere<Where, Cmd, Object, ConditionChain> {
         this.conditionFactory = conditionFactory;
     }
 
+    public boolean hasContent() {
+        return Objects.nonNull(conditionChain) && conditionChain.hasContent();
+    }
+
     @Override
     public ConditionChain conditionChain() {
         if (this.conditionChain == null) {
             this.conditionChain = new ConditionChain(conditionFactory);
         }
         return conditionChain;
+    }
+
+    public ConditionFactory getConditionFactory() {
+        return conditionFactory;
     }
 
     @Override

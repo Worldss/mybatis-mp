@@ -4,6 +4,7 @@ import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
 import db.sql.api.impl.cmd.executor.AbstractDelete;
 import db.sql.api.impl.cmd.struct.OnTable;
+import db.sql.api.impl.cmd.struct.Where;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -12,6 +13,10 @@ public abstract class BaseDelete<T extends BaseDelete> extends AbstractDelete<T,
 
     public BaseDelete() {
         super(new MybatisCmdFactory());
+    }
+
+    public BaseDelete(Where where) {
+        super(where);
     }
 
     protected void addTenantCondition(Class entity, int storey) {

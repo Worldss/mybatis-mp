@@ -18,6 +18,11 @@ public class ModelInfo {
     private final Class<?> type;
 
     /**
+     * 对应实体类的type
+     */
+    private final Class<?> entityType;
+
+    /**
      * 表信息
      */
     private final TableInfo tableInfo;
@@ -48,7 +53,7 @@ public class ModelInfo {
         Class<?> entity = GenericUtil.getGenericInterfaceClass(model).stream().filter(item -> item.isAnnotationPresent(Table.class)).findFirst().orElseThrow(() -> {
             return new RuntimeException(MessageFormat.format("class {0} have no generic type", model.getName()));
         });
-
+        this.entityType = entity;
         this.tableInfo = Tables.get(entity);
         if (Objects.isNull(tableInfo)) {
             throw new RuntimeException(MessageFormat.format("unable match model class {0} , the generic class {1} is not a entity", model.getName(), entity.getName()));
@@ -69,6 +74,9 @@ public class ModelInfo {
         return type;
     }
 
+    public Class<?> getEntityType() {
+        return entityType;
+    }
 
     public TableInfo getTableInfo() {
         return tableInfo;

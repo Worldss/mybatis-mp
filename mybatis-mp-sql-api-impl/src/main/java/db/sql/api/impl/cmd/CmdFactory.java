@@ -83,6 +83,11 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
         return new DatasetField<>(dataset, filedName);
     }
 
+    @Override
+    public TableField field(Class entity, String filedName, int storey) {
+        return this.field(entity, storey, filedName);
+    }
+
     public TableField field(Table table, String columnName) {
         return new TableField(table, columnName);
     }

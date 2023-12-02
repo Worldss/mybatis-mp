@@ -55,6 +55,23 @@ public class QueryTest extends BaseTest {
     }
 
     @Test
+    public void getWithWhere() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            SysUser sysUser = sysUserMapper.get(where -> {
+                where.eq(SysUser::getId, 2);
+            });
+            SysUser eqSysUser = new SysUser();
+            eqSysUser.setId(2);
+            eqSysUser.setUserName("test1");
+            eqSysUser.setRole_id(1);
+            eqSysUser.setPassword("123456");
+            eqSysUser.setCreate_time(LocalDateTime.parse("2023-10-11T10:10:10"));
+            assertEquals(eqSysUser, sysUser, "getWithWhere检测");
+        }
+    }
+
+    @Test
     public void innerJoinTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);

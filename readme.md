@@ -57,7 +57,7 @@
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-spring-boot-starter</artifactId>
-    <version>1.1.7</version>
+    <version>1.1.8</version>
 </dependency>  
 ```
 
@@ -315,7 +315,42 @@ TenantContext.registerTenantGetter(() -> {
     return new TenantInfo(2);
 });
 ```
+### 7. @LogicDelete 逻辑删除
+> 逻辑删除 在deleteById,delete(实体类),delete(Where) 生效
 
+> 查询时，将自动添加删除过滤条件（通常在 from(实体类),join(实体类),update(实体类)时，自动添加，delete 除上面3个方法， 其他不附加）
+```java
+@Data
+@Table
+public class LogicDeleteTest {
+
+    @TableId
+    private Long id;
+
+    private String name;
+
+    private LocalDateTime deleteTime;
+
+    @LogicDelete(beforeValue = "0", afterValue = "1", deleteTimeField = "deleteTime")
+    private Byte deleted;
+}
+```
+#### 7.1 @LogicDelete 属性 beforeValue
+> 未删除前的值，只能是固定值；时间类型的逻辑，可不填；类型支持，string，数字，布尔类型，时间类型（Date,LocalDateTime,Long,Integer）
+#### 7.2 @LogicDelete 属性 afterValue
+> 删除后的值，可固定值或者动态值 例如 afterValue = "{NOW}"，目前支持LocalDateTime,Date,Long,Integer，框架自动给值
+#### 7.3 @LogicDelete 属性 deleteTimeField
+> 逻辑删除的时间字段，可不填，填了系统自动update 时 设置删除时间，deleteTimeField对应的字段类型 支持：LocalDateTime,Date,Long,Integer类型
+#### 7.4 逻辑删除全局开关(默认开)
+```java
+MybatisMpConfig.setLogicDeleteSwitch(true);
+```
+#### 7.5 逻辑删除局部开关(仅在查询时，起作用)
+```java
+try (LogicDeleteSwitch ignored = LogicDeleteSwitch.with(false)) {
+    logicDeleteTestMapper.getById(1);
+}
+```
 # mybatis-mp mvc 架构理念
 
 > mybatis-mp 只设计到1层持久层，不过 mybatis-mp的理念，把持久层分2层，mapper层，dao层
@@ -462,53 +497,66 @@ public interface StudentMapper extends MybatisMapper<Student> {
 ### 单个查询
 
 > getById(Serializable id) 根据ID查询实体
->
+
 > R get(Query query) 单个动态查询（可自定返回类型）
+ 
+> T get(Where where) 单个动态查询（只返回实体类）
 
 ### 列表查询
 
 > List<R> list(Query query) 列表动态查询（可自定返回类型）
+
+> List<T> list(Where where) 列表动态查询（只返回实体类）
 >
 
 ### count查询
 
 > count(Query query) 动态count查询
 
+> count(Where where) 动态count查询
+
 ### exists查询
 
 > exists(Query query) 动态检测是否存在
 
+> exists(Where where) 动态检测是否存在
 ### 删除
 
 > deleteById(Serializable id) 根据ID删除
->
+
 > delete(T entity) 根据实体类删除
->
+
+> delete(Where where) 动态删除
+
 > delete(Delete delete) 动态删除
 
 ### 保存
 
 > save(T entity) 实体类保存
->
+
 > save(Model entity) 实体类部分保存
->
+
 > save(Insert insert) 动态插入（无法返回ID）
 
 ### 修改
 
 > update(T entity) 实体类更新
->
+
 > update(T entity,F... fields) 实体类更新 + 强制字段更新
->
+
 > update(Model entity) 实体类部分更新
->
+
 > update(Model entity,F... fields) 实体类部分更新 + 强制字段更新
->
+
+> update(T entity,Where where) 实体类批量更新
+
 > update(Update update) 动态更新
 
 ### 分页查询
 
 > Pager<R> paging(Query query, Pager<R> pager) 分页查询（可自定返回类型）
+
+> Pager<T> paging(Where where, Pager<R> pager) 分页查询（只返回实体类类型）
 
 ### 牛逼的SQL优化
 
@@ -538,6 +586,11 @@ Student stu=studentMapper.getById(1);
 Student stu2=QueryChain.of(sysUserMapper)
     .eq(Student::getId,1)
     .get();
+
+或
+
+Student stu3=studentMapper.get(where->where.eq(Student::getId,1));
+
 ```
 
 > 能用前者优先前者，后者为单个动态查询
@@ -664,11 +717,15 @@ List<SysUser> list=QueryChain.of(sysUserMapper)
 ### 1.4 删除
 
 ```java
- studentMapper.deleteById(1);
+studentMapper.deleteById(1);
 
     或
-    
- DeleteChain.of(studentMapper).eq(Student::getId,1).execute();
+        
+DeleteChain.of(studentMapper).eq(Student::getId,1).execute();
+
+    或
+
+studentMapper.delete(where->where.eq(Student::getId,1))
 ```
 
 > 能用前者优先前者，后者为单个动态删除
@@ -751,6 +808,12 @@ UpdateChain.of(studentMapper)
     .set(Student::getName,"嘿嘿")
     .eq(Student::getId,1)
     .execute();
+
+或者
+
+SysUser updateSysUser = new SysUser();
+updateSysUser.setUserName("adminxx");
+sysUserMapper.update(updateSysUser, where->where.eq(SysUser::getId,1));
 ```
 
 > 能用前者优先前者，后者为动态更新
@@ -1007,6 +1070,9 @@ boolean exists = QueryChain.of(sysUserMapper)
         .join(SysUser.class, SysRole.class)
         .like(SysUser::getUserName, "test")
         .exists();
+或者
+
+sysUserMapper.exists(where->where.like(SysUser::getUserName, "test"));
 ```
 
 ### 3.0 select 去重
@@ -1044,6 +1110,11 @@ List<SysUser> list = QueryChain.of(sysUserMapper)
         .from(SysUser.class)
         .lt(SysUser::getId, 3)
         .list();
+
+或者
+
+List<SysUser> list=sysUserMapper.list(where->where.lt(SysUser::getId, 3));
+        
 ```
 ### 4.1 为空
 ```java
@@ -1640,7 +1711,7 @@ mybatis:
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-generator</artifactId>
-    <version>1.1.7</version>
+    <version>1.1.8</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -1784,6 +1855,11 @@ new GeneratorConfig(...).columnConfig(columnConfig->{
         <td align="left">指定租户ID列名</td>
     </tr>
     <tr align="center">
+        <td>logicDeleteColumn</td>
+        <td>空</td>
+        <td align="left">逻辑删除列名，配置实体类配置：logicDeleteCode 一起使用</td>
+    </tr>
+    <tr align="center">
         <td>excludeColumns</td>
         <td>空</td>
         <td align="left">排除列，默认不排除<strong>（在有公共实体类的时候很实用）</strong></td>
@@ -1858,6 +1934,11 @@ new GeneratorConfig(...).entityConfig(entityConfig->{
         <td>defaultTableIdCode</td>
         <td>NULL</td>
         <td align="left">默认TableId代码，数据库非自增时生效,例如@TableId(...)</td>
+    </tr>
+    <tr align="center">
+        <td>logicDeleteCode</td>
+        <td>NULL</td>
+        <td align="left">默认@LogicDelete代码，数据库非自增时生效,例如@LogicDelete(beforeValue="0",afterValue="1",deleteTimeFile="create_time</td>
     </tr>
     <tr align="center">
         <td>typeMapping</td>

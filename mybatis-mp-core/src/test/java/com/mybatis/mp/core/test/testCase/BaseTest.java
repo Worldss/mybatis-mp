@@ -4,7 +4,6 @@ import cn.mybatis.mp.core.mybatis.configuration.MybatisConfiguration;
 import com.mybatis.mp.core.test.mapper.*;
 import db.sql.api.Cmd;
 import db.sql.api.impl.tookit.SQLPrinter;
-import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -45,8 +44,7 @@ public class BaseTest {
         configuration.addMapper(IdTestMapper.class);
         configuration.addMapper(VersionTestMapper.class);
         configuration.addMapper(TenantTestMapper.class);
-
-
+        configuration.addMapper(LogicDeleteTestMapper.class);
 
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     }

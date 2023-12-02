@@ -38,6 +38,11 @@ public class EntityConfig {
      * 默认TableId代码，数据库非自增时生效
      */
     private String defaultTableIdCode;
+
+    /**
+     * 逻辑删除代码
+     */
+    private String logicDeleteCode;
     /**
      * 实体类包名
      */
@@ -188,4 +193,15 @@ public class EntityConfig {
         this.defaultTableIdCode = defaultTableIdCode;
         return this;
     }
+
+    /**
+     * 设置逻辑删除代码块
+     * @param logicDeleteCode
+     * @return
+     */
+    public EntityConfig logicDeleteCode(String logicDeleteCode) {
+        this.logicDeleteCode = logicDeleteCode;
+        return this;
+    }
+
 }

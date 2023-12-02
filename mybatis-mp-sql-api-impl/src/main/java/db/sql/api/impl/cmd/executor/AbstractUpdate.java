@@ -53,6 +53,13 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
         this.conditionFactory = new ConditionFactory($);
     }
 
+    public AbstractUpdate(Where where) {
+        this.$ = (CMD_FACTORY) where.getConditionFactory().getCmdFactory();
+        this.conditionFactory = where.getConditionFactory();
+        this.where = where;
+        this.append(where);
+    }
+
     @Override
     public CMD_FACTORY $() {
         return $;
@@ -62,8 +69,8 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
     void initCmdSorts(Map<Class<? extends Cmd>, Integer> cmdSorts) {
         int i = 0;
         cmdSorts.put(UpdateTable.class, ++i);
-        cmdSorts.put(UpdateSets.class, ++i);
         cmdSorts.put(Joins.class, ++i);
+        cmdSorts.put(UpdateSets.class, ++i);
         cmdSorts.put(Where.class, ++i);
     }
 

@@ -3,11 +3,15 @@ package cn.mybatis.mp.core.mybatis.mapper;
 
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
+import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
+import cn.mybatis.mp.core.sql.executor.Wheres;
 import cn.mybatis.mp.core.sql.executor.chain.DeleteChain;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
+import db.sql.api.impl.cmd.struct.Where;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * 数据库 Mapper
@@ -16,26 +20,13 @@ import java.util.Objects;
  */
 public interface MybatisMapper<T> extends BaseMapper<T> {
 
-    /**
-     * 获取实体类的type
-     *
-     * @return
-     */
-    Class<T> getEntityType();
-
-    /**
-     * 获取当前mapper类的type
-     *
-     * @return
-     */
-    Class<MybatisMapper<T>> getMapperType();
-
     default T getById(Serializable id) {
         Class entityType = this.getEntityType();
         TableInfo tableInfo = Tables.get(entityType);
         if (tableInfo.getIdFieldInfo() == null) {
             throw new RuntimeException("Not Supported");
         }
+
         return QueryChain.of(this)
                 .select(entityType)
                 .from(entityType)
@@ -47,13 +38,30 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
     }
 
 
+    default int $delete(Class<T> entityType, Serializable id) {
+        return this.$delete(entityType, Tables.get(entityType), id);
+    }
+
+    default int $delete(Class entityType, TableInfo tableInfo, Serializable id) {
+        if (LogicDeleteUtil.isNeedLogicDelete(tableInfo)) {
+            //逻辑删除处理
+            return LogicDeleteUtil.logicDelete(this, entityType, tableInfo, id);
+        }
+        return DeleteChain.of(this)
+                .delete(entityType)
+                .from(entityType)
+                .connect(self -> {
+                    self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id);
+                })
+                .execute();
+    }
+
     /**
      * 根据实体类删除
      *
      * @param entity
      * @return
      */
-    @Override
     default int delete(T entity) {
         if (Objects.isNull(entity)) {
             return 0;
@@ -68,14 +76,7 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        Class entityType = entity.getClass();
-        return DeleteChain.of(this)
-                .delete(entityType)
-                .from(entityType)
-                .connect(self -> {
-                    self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id);
-                })
-                .execute();
+        return this.$delete(entity.getClass(), tableInfo, id);
     }
 
     /**
@@ -90,12 +91,26 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
         if (tableInfo.getIdFieldInfo() == null) {
             throw new RuntimeException("Not Supported");
         }
-        return DeleteChain.of(this)
+
+        return this.$delete(entityType, tableInfo, id);
+    }
+
+    @Override
+    default int delete(Consumer<Where> consumer) {
+        Where where = Wheres.create();
+        consumer.accept(where);
+        if (!where.hasContent()) {
+            throw new RuntimeException("delete has on where condition content ");
+        }
+        Class entityType = getEntityType();
+        TableInfo tableInfo = Tables.get(entityType);
+        if (LogicDeleteUtil.isNeedLogicDelete(tableInfo)) {
+            //逻辑删除处理
+            return LogicDeleteUtil.logicDelete(this, entityType, tableInfo, where);
+        }
+        return DeleteChain.of(this, where)
                 .delete(entityType)
                 .from(entityType)
-                .connect(self -> {
-                    self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id);
-                })
                 .execute();
     }
 

@@ -1,9 +1,12 @@
 package cn.mybatis.mp.core.db.reflect;
 
+import cn.mybatis.mp.core.MybatisMpConfig;
+import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
 import cn.mybatis.mp.core.util.FieldUtils;
 import cn.mybatis.mp.core.util.StringPool;
 import cn.mybatis.mp.core.util.TableInfoUtil;
 import cn.mybatis.mp.db.annotations.ForeignKey;
+import cn.mybatis.mp.db.annotations.LogicDelete;
 import cn.mybatis.mp.db.annotations.Table;
 
 import java.lang.reflect.Field;
@@ -47,6 +50,12 @@ public class TableInfo {
      * 多租户字段
      */
     private final TableFieldInfo tenantIdFieldInfo;
+
+    /**
+     * 逻辑删除字段
+     */
+    private final TableFieldInfo logicDeleteFieldInfo;
+
     /**
      * 外键关系
      */
@@ -72,6 +81,7 @@ public class TableInfo {
         TableFieldInfo idFieldInfo = null;
         TableFieldInfo versionFieldInfo = null;
         TableFieldInfo tenantIdFieldInfo = null;
+        TableFieldInfo logicDeleteFieldInfo = null;
 
         List<TableFieldInfo> tableFieldInfos = new ArrayList<>();
         Map<String, TableFieldInfo> tableFieldInfoMap = new HashMap<>();
@@ -102,14 +112,33 @@ public class TableInfo {
                 }
                 tenantIdFieldInfo = tableFieldInfo;
             }
+            if (tableFieldInfo.isLogicDelete()) {
+                if (logicDeleteFieldInfo != null) {
+                    throw new RuntimeException(String.format("Entity %s has multi @LogicDelete", entity.getName()));
+                }
+                logicDeleteFieldInfo = tableFieldInfo;
+                LogicDelete logicDeleteAnnotation = field.getAnnotation(LogicDelete.class);
+                if (MybatisMpConfig.isDefaultValueKeyFormat(logicDeleteAnnotation.beforeValue())) {
+                    throw new RuntimeException(String.format("the @LogicDelete of Entity %s has config error,the beforeValue can't be dynamic key", entity.getName()));
+                }
+            }
         }
 
         this.tableFieldInfos = Collections.unmodifiableList(tableFieldInfos);
         this.idFieldInfo = idFieldInfo;
         this.versionFieldInfo = versionFieldInfo;
         this.tenantIdFieldInfo = tenantIdFieldInfo;
+        this.logicDeleteFieldInfo = logicDeleteFieldInfo;
+
         this.tableFieldInfoMap = Collections.unmodifiableMap(tableFieldInfoMap);
         this.foreignInfoMap = Collections.unmodifiableMap(foreignInfoMap);
+
+        if (Objects.nonNull(this.logicDeleteFieldInfo)) {
+            String deleteTimeFieldName = this.logicDeleteFieldInfo.getLogicDeleteAnnotation().deleteTimeField();
+            if (!StringPool.EMPTY.equals(deleteTimeFieldName)) {
+                LogicDeleteUtil.getLogicDeleteTimeValue(this);
+            }
+        }
     }
 
     /**
@@ -172,4 +201,9 @@ public class TableInfo {
     public TableFieldInfo getTenantIdFieldInfo() {
         return tenantIdFieldInfo;
     }
+
+    public TableFieldInfo getLogicDeleteFieldInfo() {
+        return logicDeleteFieldInfo;
+    }
+
 }

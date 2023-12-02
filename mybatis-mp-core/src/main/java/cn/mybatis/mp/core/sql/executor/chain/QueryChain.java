@@ -1,8 +1,9 @@
 package cn.mybatis.mp.core.sql.executor.chain;
 
-import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
+import cn.mybatis.mp.core.mybatis.mapper.BaseMapper;
 import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.BaseQuery;
+import db.sql.api.impl.cmd.struct.Where;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,14 +13,23 @@ import java.util.Objects;
  */
 public class QueryChain extends BaseQuery<QueryChain> {
 
-    protected final MybatisMapper mapper;
+    protected final BaseMapper mapper;
 
-    public QueryChain(MybatisMapper mapper) {
+    public QueryChain(BaseMapper mapper) {
         this.mapper = mapper;
     }
 
-    public static QueryChain of(MybatisMapper mapper) {
+    public QueryChain(BaseMapper mapper, Where where) {
+        super(where);
+        this.mapper = mapper;
+    }
+
+    public static QueryChain of(BaseMapper mapper) {
         return new QueryChain(mapper);
+    }
+
+    public static QueryChain of(BaseMapper mapper, Where where) {
+        return new QueryChain(mapper, where);
     }
 
     private void setDefault() {
@@ -84,6 +94,9 @@ public class QueryChain extends BaseQuery<QueryChain> {
      * @return
      */
     public Integer count() {
+        if (this.select == null) {
+            this.selectCountAll();
+        }
         this.setDefault();
         return mapper.count(this);
     }
@@ -104,6 +117,10 @@ public class QueryChain extends BaseQuery<QueryChain> {
      * @return
      */
     public boolean exists(boolean optimize) {
+        if (this.select == null) {
+            this.select1();
+        }
+        this.limit(1);
         this.setDefault();
         return mapper.exists(this, optimize);
     }

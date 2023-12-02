@@ -121,6 +121,8 @@ public class GeneratorUtil {
                 classList.add(Version.class.getName());
             } else if (item.getColumnInfo().isTenantId()) {
                 classList.add(TenantId.class.getName());
+            }else if (item.getColumnInfo().isLogicDelete()) {
+                classList.add(LogicDelete.class.getName());
             }
         });
         return buildImports(classList);

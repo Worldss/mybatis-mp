@@ -1,6 +1,7 @@
 package com.mybatis.mp.core.test.testCase.tenant;
 
 import cn.mybatis.mp.core.sql.executor.chain.DeleteChain;
+import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import cn.mybatis.mp.core.tenant.TenantContext;
 import cn.mybatis.mp.core.tenant.TenantInfo;
 import com.mybatis.mp.core.test.DO.TenantTest;
@@ -113,12 +114,31 @@ public class TenantTestCase extends BaseTest {
             tenantTestMapper.save(tenantTest);
 
 
-            check("", "delete t FROM tenant_test t WHERE  t.tenant_id = 1 AND  t.id = '" + tenantTest.getId() + "'", DeleteChain.of(tenantTestMapper).delete(TenantTest.class).from(TenantTest.class).eq(TenantTest::getId, tenantTest.getId()));
+            check("", "delete FROM tenant_test WHERE  tenant_id = 1 AND  id = '" + tenantTest.getId() + "'", DeleteChain.of(tenantTestMapper).delete(TenantTest.class).from(TenantTest.class).eq(TenantTest::getId, tenantTest.getId()));
+            int count = QueryChain.of(tenantTestMapper).count();
+            assertEquals(count, 1);
 
             TenantContext.registerTenantGetter(() -> {
                 return new TenantInfo(2);
             });
-            check("", "delete t FROM tenant_test t WHERE  t.tenant_id = 2 AND  t.id = '" + tenantTest.getId() + "'", DeleteChain.of(tenantTestMapper).delete(TenantTest.class).from(TenantTest.class).eq(TenantTest::getId, tenantTest.getId()));
+
+            count = QueryChain.of(tenantTestMapper).count();
+            assertEquals(count, 0);
+
+            check("", "delete FROM tenant_test WHERE  tenant_id = 2 AND  id = '" + tenantTest.getId() + "'", DeleteChain.of(tenantTestMapper).delete(TenantTest.class).from(TenantTest.class).eq(TenantTest::getId, tenantTest.getId()));
+
+            TenantContext.registerTenantGetter(() -> {
+                return new TenantInfo(1);
+            });
+
+            count = QueryChain.of(tenantTestMapper).count();
+            assertEquals(count, 1);
+
+            tenantTestMapper.deleteById(tenantTest.getId());
+
+            count = QueryChain.of(tenantTestMapper).count();
+            assertEquals(count, 0);
+
 
         }
     }

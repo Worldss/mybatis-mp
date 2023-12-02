@@ -61,6 +61,7 @@ public class MybatisCmdFactory extends CmdFactory {
         return tableFieldInfo.getColumnName();
     }
 
+    @Override
     public TableField field(Class entity, String filedName, int storey) {
         return MapUtil.computeIfAbsent(tableFieldCache, String.format("%s.%s.%s", entity.getName(), filedName, storey), key -> {
             TableInfo tableInfo = Tables.get(entity);

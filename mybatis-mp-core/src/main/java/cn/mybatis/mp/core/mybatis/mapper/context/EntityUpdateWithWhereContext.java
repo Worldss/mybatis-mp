@@ -8,38 +8,40 @@ import cn.mybatis.mp.core.tenant.TenantContext;
 import cn.mybatis.mp.core.tenant.TenantInfo;
 import cn.mybatis.mp.db.annotations.TableField;
 import db.sql.api.impl.cmd.basic.Table;
+import db.sql.api.impl.cmd.struct.Where;
 
-import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-public class EntityUpdateContext<T> extends SQLCmdUpdateContext {
+public class EntityUpdateWithWhereContext<T> extends SQLCmdUpdateContext {
 
     private final T value;
 
-    public EntityUpdateContext(T t) {
-        this(t, Collections.emptySet());
+
+    public EntityUpdateWithWhereContext(T t, Where where) {
+        this(t, where, Collections.emptySet());
     }
 
-    public EntityUpdateContext(T t, Set<String> forceUpdateFields) {
-        super(createCmd(t, forceUpdateFields));
+    public EntityUpdateWithWhereContext(T t, Where where, Set<String> forceUpdateFields) {
+        super(createCmd(t, where, forceUpdateFields));
         this.value = t;
+
     }
 
-    private static Update createCmd(Object t, Set<String> forceUpdateFields) {
+    private static Update createCmd(Object t, Where where, Set<String> forceUpdateFields) {
+
+        if (!where.hasContent()) {
+            throw new RuntimeException("update has on where condition content ");
+        }
+
         TableInfo tableInfo = Tables.get(t.getClass());
-        Update update = new Update() {{
+        Update update = new Update(where) {{
             Table table = $(t.getClass());
             update(table);
             tableInfo.getTableFieldInfos().stream().forEach(item -> {
                 Object value = item.getValue(t);
-                if (item.isTableId()) {
-                    if (Objects.isNull(value)) {
-                        throw new RuntimeException(item.getField().getName() + " can't be null");
-                    }
-                    eq($.field(table, item.getColumnName()), $.value(value));
-                } else if (item.isTenantId()) {
+                if (item.isTenantId()) {
                     //添加租户条件
                     TenantInfo tenantInfo = TenantContext.getTenantInfo();
                     if (tenantInfo != null) {
@@ -48,23 +50,11 @@ public class EntityUpdateContext<T> extends SQLCmdUpdateContext {
                             eq($.field(table, item.getColumnName()), $.value(tenantId));
                         }
                     }
-                } else if (item.isVersion()) {
-                    if (Objects.isNull(value)) {
-                        throw new RuntimeException(item.getField().getName() + " is version filed, can't be null");
-                    }
-                    Integer version = (Integer) value + 1;
-                    //乐观锁设置
-                    set($.field(table, item.getColumnName()), $.value(version));
-                    eq($.field(table, item.getColumnName()), $.value(value));
-                    try {
-                        //乐观锁回写
-                        item.getWriteFieldInvoker().invoke(t, new Object[]{version});
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else if (forceUpdateFields.contains(item.getField().getName())) {
+                }
+                if (forceUpdateFields.contains(item.getField().getName())) {
                     set($.field(table, item.getColumnName()), Objects.isNull(value) ? $.NULL() : $.value(value));
                 } else if (!item.getTableFieldAnnotation().update()) {
+
                 } else if (Objects.nonNull(value)) {
                     TableField tableField = item.getTableFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());
@@ -72,10 +62,6 @@ public class EntityUpdateContext<T> extends SQLCmdUpdateContext {
                 }
             });
         }};
-
-        if (update.getWhere() == null || !update.getWhere().hasContent()) {
-            throw new RuntimeException(MessageFormat.format("entity {0} can't found id", t.getClass()));
-        }
         return update;
     }
 }

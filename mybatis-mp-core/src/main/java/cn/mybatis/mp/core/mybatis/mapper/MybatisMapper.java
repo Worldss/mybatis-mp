@@ -3,10 +3,10 @@ package cn.mybatis.mp.core.mybatis.mapper;
 
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
+import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
 import cn.mybatis.mp.core.sql.executor.Wheres;
 import cn.mybatis.mp.core.sql.executor.chain.DeleteChain;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
-import cn.mybatis.mp.core.util.LogicDeleteUtil;
 import db.sql.api.impl.cmd.struct.Where;
 
 import java.io.Serializable;

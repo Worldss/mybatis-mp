@@ -2,9 +2,9 @@ package cn.mybatis.mp.core.sql.executor;
 
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
+import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
-import cn.mybatis.mp.core.util.LogicDeleteUtil;
 import db.sql.api.impl.cmd.executor.AbstractQuery;
 import db.sql.api.impl.cmd.struct.OnDataset;
 import db.sql.api.impl.cmd.struct.Where;
@@ -49,7 +49,7 @@ public abstract class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, My
     }
 
     protected void addLogicDeleteCondition(Class entity, int storey) {
-        LogicDeleteUtil.addLogicDeleteCondition(this, $, entity, storey);
+        LogicDeleteUtil.addLogicDeleteCondition(true, this, $, entity, storey);
     }
 
 

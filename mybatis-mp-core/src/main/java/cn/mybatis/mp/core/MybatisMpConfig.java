@@ -3,14 +3,13 @@ package cn.mybatis.mp.core;
 
 import cn.mybatis.mp.core.sql.MybatisMpQuerySQLBuilder;
 import cn.mybatis.mp.core.sql.QuerySQLBuilder;
-import cn.mybatis.mp.core.util.DefaultValueConvertUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 /**
  * 全局配置
@@ -27,27 +26,21 @@ public final class MybatisMpConfig {
     private static final QuerySQLBuilder DEFAULT_SQL_BUILDER = new MybatisMpQuerySQLBuilder();
 
     static {
-        Map<String, Supplier<Object>> defaultValueMap = new ConcurrentHashMap<>();
-        defaultValueMap.put("{NOW}", () -> {
-            return LocalDateTime.now();
+        Map<String, Function<Class, Object>> defaultValueMap = new ConcurrentHashMap<>();
+        defaultValueMap.put("{NOW}", (type) -> {
+            if (type == LocalDateTime.class) {
+                return LocalDateTime.now();
+            } else if (type == LocalDate.class) {
+                return LocalDate.now();
+            } else if (type == Date.class) {
+                return new Date();
+            } else if (type == Long.class) {
+                return System.currentTimeMillis();
+            } else if (type == Integer.class) {
+                return (int) (System.currentTimeMillis() / 1000);
+            }
+            throw new RuntimeException("Inconsistent types");
         });
-
-        defaultValueMap.put("{DATE}", () -> {
-            return LocalDate.now();
-        });
-
-        defaultValueMap.put("{DATE_NOW}", () -> {
-            return new Date();
-        });
-
-        defaultValueMap.put("{NOW_TIMESTAMP}", () -> {
-            return System.currentTimeMillis() / 1000;
-        });
-
-        defaultValueMap.put("{NOW_MILLISECOND}", () -> {
-            return System.currentTimeMillis() / 1000;
-        });
-
         CACHE.put(DEFAULT_VALUE_MANAGER, defaultValueMap);
     }
 
@@ -142,9 +135,9 @@ public final class MybatisMpConfig {
         return key.startsWith("{") && key.endsWith("}");
     }
 
-    public static <T> void setDefaultValue(String key, Supplier<T> supplier) {
+    public static void setDefaultValue(String key, Function<Class, Object> function) {
         checkDefaultValueKey(key);
-        ((ConcurrentHashMap) CACHE.get(DEFAULT_VALUE_MANAGER)).computeIfAbsent(key, mapKey -> supplier);
+        ((ConcurrentHashMap) CACHE.get(DEFAULT_VALUE_MANAGER)).computeIfAbsent(key, mapKey -> function);
     }
 
     private static void checkDefaultValueKey(String key) {
@@ -163,12 +156,11 @@ public final class MybatisMpConfig {
      */
     public static <T> T getDefaultValue(Class<T> clazz, String key) {
         checkDefaultValueKey(key);
-        Map<String, Supplier<T>> map = (Map<String, Supplier<T>>) CACHE.get(DEFAULT_VALUE_MANAGER);
-        Supplier<T> supplier = map.get(key);
-        if (supplier == null) {
-            throw new RuntimeException(String.format("key: %s not set Supplier fun", key));
+        Map<String, Function<Class, T>> map = (Map<String, Function<Class, T>>) CACHE.get(DEFAULT_VALUE_MANAGER);
+        Function<Class, T> function = map.get(key);
+        if (function == null) {
+            throw new RuntimeException(String.format("key: %s not set", key));
         }
-        T value = supplier.get();
-        return DefaultValueConvertUtil.convert(value, clazz);
+        return function.apply(clazz);
     }
 }

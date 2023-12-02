@@ -1,8 +1,8 @@
 package cn.mybatis.mp.core.db.reflect;
 
-import cn.mybatis.mp.core.util.DefaultValueConvertUtil;
-import cn.mybatis.mp.core.util.LogicDeleteUtil;
+import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
 import cn.mybatis.mp.core.util.TableInfoUtil;
+import cn.mybatis.mp.core.util.TypeConvertUtil;
 import cn.mybatis.mp.db.annotations.*;
 import org.apache.ibatis.reflection.invoker.GetFieldInvoker;
 import org.apache.ibatis.reflection.invoker.SetFieldInvoker;
@@ -59,7 +59,7 @@ public class TableFieldInfo {
         this.tenantId = field.isAnnotationPresent(TenantId.class);
         this.logicDelete = field.isAnnotationPresent(LogicDelete.class);
         this.logicDeleteAnnotation = this.logicDelete ? field.getAnnotation(LogicDelete.class) : null;
-        this.logicDeleteInitValue = this.logicDelete ? DefaultValueConvertUtil.convert(this.logicDeleteAnnotation.beforeValue(), field.getType()) : null;
+        this.logicDeleteInitValue = this.logicDelete ? TypeConvertUtil.convert(this.logicDeleteAnnotation.beforeValue(), field.getType()) : null;
         if (this.logicDelete) {
             LogicDeleteUtil.getLogicAfterValue(this);
         }

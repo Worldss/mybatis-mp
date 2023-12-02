@@ -1,4 +1,4 @@
-package cn.mybatis.mp.core.util;
+package cn.mybatis.mp.core.logicDelete;
 
 import cn.mybatis.mp.core.MybatisMpConfig;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
@@ -7,6 +7,8 @@ import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.mybatis.mapper.BaseMapper;
 import cn.mybatis.mp.core.sql.executor.BaseUpdate;
 import cn.mybatis.mp.core.sql.executor.chain.UpdateChain;
+import cn.mybatis.mp.core.util.StringPool;
+import cn.mybatis.mp.core.util.TypeConvertUtil;
 import cn.mybatis.mp.db.annotations.LogicDelete;
 import db.sql.api.cmd.executor.method.condition.compare.Compare;
 import db.sql.api.impl.cmd.CmdFactory;
@@ -46,7 +48,7 @@ public final class LogicDeleteUtil {
         if (MybatisMpConfig.isDefaultValueKeyFormat(logicDelete.afterValue())) {
             value = MybatisMpConfig.getDefaultValue(type, logicDelete.afterValue());
         } else {
-            value = DefaultValueConvertUtil.convert(logicDelete.afterValue(), type);
+            value = TypeConvertUtil.convert(logicDelete.afterValue(), type);
         }
         if (value == null) {
             throw new RuntimeException(String.format("Unable to obtain deleted value，please use MybatisMpConfig.setDefaultValue(\"s%\") to resolve it", logicDelete.afterValue()));
@@ -91,7 +93,7 @@ public final class LogicDeleteUtil {
     public static void addLogicDeleteUpdateSets(BaseUpdate baseUpdate, Class entity, TableInfo tableInfo) {
         TableField logicDeleteTableField = baseUpdate.$().field(entity, tableInfo.getLogicDeleteFieldInfo().getField().getName(), 1);
         baseUpdate.set(logicDeleteTableField, getLogicAfterValue(tableInfo.getLogicDeleteFieldInfo()));
-        addLogicDeleteCondition(baseUpdate, baseUpdate.$(), entity, 1);
+        addLogicDeleteCondition(false, baseUpdate, baseUpdate.$(), entity, 1);
 
         String deleteTimeFieldName = tableInfo.getLogicDeleteFieldInfo().getLogicDeleteAnnotation().deleteTimeField();
         if (!StringPool.EMPTY.equals(deleteTimeFieldName)) {
@@ -146,9 +148,23 @@ public final class LogicDeleteUtil {
      * @param entity
      * @param storey
      */
-    public static void addLogicDeleteCondition(Compare compare, CmdFactory cmdFactory, Class entity, int storey) {
-        if (!MybatisMpConfig.isLogicDeleteSwitchOpen()) {
-            return;
+    public static void addLogicDeleteCondition(boolean forQuery, Compare compare, CmdFactory cmdFactory, Class entity, int storey) {
+        if (forQuery) {
+            Boolean state = LogicDeleteSwitch.getState();
+            if (state == Boolean.FALSE) {
+                //局部开关 优先
+                return;
+            }
+            if (state == null) {
+                //局部开关 未设置 则看全局开关
+                if (!MybatisMpConfig.isLogicDeleteSwitchOpen()) {
+                    return;
+                }
+            }
+        } else {
+            if (!MybatisMpConfig.isLogicDeleteSwitchOpen()) {
+                return;
+            }
         }
         TableInfo tableInfo = Tables.get(entity);
         if (Objects.isNull(tableInfo.getLogicDeleteFieldInfo())) {

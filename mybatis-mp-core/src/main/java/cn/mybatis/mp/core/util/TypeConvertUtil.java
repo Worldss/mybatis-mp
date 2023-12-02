@@ -6,9 +6,9 @@ import java.math.BigInteger;
 /**
  * 默认值转换
  */
-public final class DefaultValueConvertUtil {
+public final class TypeConvertUtil {
 
-    private DefaultValueConvertUtil() {
+    private TypeConvertUtil() {
     }
 
     /**

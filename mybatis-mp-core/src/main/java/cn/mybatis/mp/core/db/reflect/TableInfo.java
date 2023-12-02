@@ -1,8 +1,8 @@
 package cn.mybatis.mp.core.db.reflect;
 
 import cn.mybatis.mp.core.MybatisMpConfig;
+import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
 import cn.mybatis.mp.core.util.FieldUtils;
-import cn.mybatis.mp.core.util.LogicDeleteUtil;
 import cn.mybatis.mp.core.util.StringPool;
 import cn.mybatis.mp.core.util.TableInfoUtil;
 import cn.mybatis.mp.db.annotations.ForeignKey;

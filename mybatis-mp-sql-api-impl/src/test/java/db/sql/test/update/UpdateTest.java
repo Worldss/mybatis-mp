@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 public class UpdateTest extends BaseTest {
 
     @Test
-    void deleteTest() {
+    void updateTest() {
         check("update 简单", "update user set name='xx' where id=1",
                 new Update().update(userTable()).set(userTable().$("name"), "xx").eq(userTable().$("id"), 1)
         );
@@ -36,7 +36,7 @@ public class UpdateTest extends BaseTest {
         );
 
         userTable = userTable();
-        check("update", "update user set t.id=2 where id=1",
+        check("update", "update user set id=2 where id=1",
                 new Update().update(userTable).set(userTable.$("id"),2).eq(userTable.$("id"), 1)
         );
 

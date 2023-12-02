@@ -316,6 +316,8 @@ TenantContext.registerTenantGetter(() -> {
 });
 ```
 ### 7. @LogicDelete 逻辑删除
+> 支持字段类型：string，数字，布尔类型，时间类型（Date,LocalDateTime,Long,Integer）
+
 > 逻辑删除 在deleteById,delete(实体类),delete(Where) 生效
 
 > 查询时，将自动添加删除过滤条件（通常在 from(实体类),join(实体类),update(实体类)时，自动添加，delete 除上面3个方法， 其他不附加）
@@ -336,7 +338,7 @@ public class LogicDeleteTest {
 }
 ```
 #### 7.1 @LogicDelete 属性 beforeValue
-> 未删除前的值，只能是固定值；时间类型的逻辑，可不填；类型支持，string，数字，布尔类型，时间类型（Date,LocalDateTime,Long,Integer）
+> 未删除前的值，只能是固定值；时间类型的逻辑，可不填
 #### 7.2 @LogicDelete 属性 afterValue
 > 删除后的值，可固定值或者动态值 例如 afterValue = "{NOW}"，目前支持LocalDateTime,Date,Long,Integer，框架自动给值
 #### 7.3 @LogicDelete 属性 deleteTimeField

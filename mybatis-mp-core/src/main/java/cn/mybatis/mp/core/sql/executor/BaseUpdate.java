@@ -32,7 +32,7 @@ public abstract class BaseUpdate<T extends BaseUpdate> extends AbstractUpdate<T,
     @Override
     public void updateEntityIntercept(Class entity) {
         this.addTenantCondition(entity, 1);
-        this.addLogicDeleteCondition(entity,1);
+        this.addLogicDeleteCondition(entity, 1);
     }
 
     @Override

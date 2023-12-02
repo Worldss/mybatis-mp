@@ -116,6 +116,7 @@ public class TableMetaDataQuery {
 
                 columnInfo.setVersion(columnName.equals(generatorConfig.getColumnConfig().getVersionColumn()));
                 columnInfo.setTenantId(columnName.equals(generatorConfig.getColumnConfig().getTenantIdColumn()));
+                columnInfo.setLogicDelete(columnName.equals(generatorConfig.getColumnConfig().getLogicDeleteColumn()));
                 try {
                     columnInfo.setAutoIncrement("YES".equals(resultSet.getString("IS_AUTOINCREMENT")));
                 } catch (SQLException e) {

@@ -30,6 +30,8 @@ public class ColumnInfo {
 
     private boolean tenantId;
 
+    private boolean logicDelete;
+
     private JdbcType jdbcType;
 
     private String typeName;

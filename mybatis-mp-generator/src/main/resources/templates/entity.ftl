@@ -32,6 +32,8 @@ public class ${entityInfo.name} ${superExtend}{
     @Version
 <#elseif  field.columnInfo.isTenantId()>
     @TenantId
+<#elseif field.columnInfo.isLogicDelete()>
+    ${entityConfig.getLogicDeleteCode()!}
 </#if>
 <#if field.isNeedTableFiled()>
     ${field.buildTableField()}
@@ -56,7 +58,7 @@ public class ${entityInfo.name} ${superExtend}{
 </#if>
 <#if !entityConfig.isLombok()>
     @Override
-public String toString() {
+    public String toString() {
         return "${entityInfo.name}{" +
     <#list entityInfo.fieldInfoList as field>
         <#if field_index==0>

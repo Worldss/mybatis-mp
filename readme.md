@@ -315,7 +315,42 @@ TenantContext.registerTenantGetter(() -> {
     return new TenantInfo(2);
 });
 ```
+### 7. @LogicDelete 逻辑删除
+> 逻辑删除 在deleteById,delete(实体类),delete(Where) 生效
 
+> 查询时，将自动添加删除过滤条件（通常在 from(实体类),join(实体类),update(实体类)时，自动添加，delete 除上面3个方法， 其他不附加）
+```java
+@Data
+@Table
+public class LogicDeleteTest {
+
+    @TableId
+    private Long id;
+
+    private String name;
+
+    private LocalDateTime deleteTime;
+
+    @LogicDelete(beforeValue = "0", afterValue = "1", deleteTimeField = "deleteTime")
+    private Byte deleted;
+}
+```
+#### 7.1 @LogicDelete 属性 beforeValue
+> 未删除前的值，只能是固定值；时间类型的逻辑，可不填；类型支持，string，数字，布尔类型，时间类型（Date,LocalDateTime,Long,Integer）
+#### 7.2 @LogicDelete 属性 afterValue
+> 删除后的值，可固定值或者动态值 例如 afterValue = "{NOW}"，目前支持LocalDateTime,Date,Long,Integer，框架自动给值
+#### 7.3 @LogicDelete 属性 deleteTimeField
+> 逻辑删除的时间字段，可不填，填了系统自动update 时 设置删除时间，deleteTimeField对应的字段类型 支持：LocalDateTime,Date,Long,Integer类型
+#### 7.4 逻辑删除全局开关(默认开)
+```java
+MybatisMpConfig.setLogicDeleteSwitch(true);
+```
+#### 7.5 逻辑删除局部开关(仅在查询时，起作用)
+```java
+try (LogicDeleteSwitch ignored = LogicDeleteSwitch.with(false)) {
+    logicDeleteTestMapper.getById(1);
+}
+```
 # mybatis-mp mvc 架构理念
 
 > mybatis-mp 只设计到1层持久层，不过 mybatis-mp的理念，把持久层分2层，mapper层，dao层
@@ -1820,6 +1855,11 @@ new GeneratorConfig(...).columnConfig(columnConfig->{
         <td align="left">指定租户ID列名</td>
     </tr>
     <tr align="center">
+        <td>logicDeleteColumn</td>
+        <td>空</td>
+        <td align="left">逻辑删除列名，配置实体类配置：logicDeleteCode 一起使用</td>
+    </tr>
+    <tr align="center">
         <td>excludeColumns</td>
         <td>空</td>
         <td align="left">排除列，默认不排除<strong>（在有公共实体类的时候很实用）</strong></td>
@@ -1894,6 +1934,11 @@ new GeneratorConfig(...).entityConfig(entityConfig->{
         <td>defaultTableIdCode</td>
         <td>NULL</td>
         <td align="left">默认TableId代码，数据库非自增时生效,例如@TableId(...)</td>
+    </tr>
+    <tr align="center">
+        <td>logicDeleteCode</td>
+        <td>NULL</td>
+        <td align="left">默认@LogicDelete代码，数据库非自增时生效,例如@LogicDelete(beforeValue="0",afterValue="1",deleteTimeFile="create_time</td>
     </tr>
     <tr align="center">
         <td>typeMapping</td>

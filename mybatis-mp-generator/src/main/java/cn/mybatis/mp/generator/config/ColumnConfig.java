@@ -38,6 +38,11 @@ public class ColumnConfig {
     private String tenantIdColumn = "";
 
     /**
+     * 逻辑删除列名
+     */
+    private String logicDeleteColumn = "";
+
+    /**
      * 排除列
      */
     public ColumnConfig excludeColumns(String... columns) {
@@ -80,6 +85,17 @@ public class ColumnConfig {
      */
     public ColumnConfig tenantIdColumn(String tenantIdColumn) {
         this.tenantIdColumn = tenantIdColumn;
+        return this;
+    }
+
+    /**
+     * 逻辑列名
+     *
+     * @param logicDeleteColumn
+     * @return
+     */
+    public ColumnConfig logicDeleteColumn(String logicDeleteColumn) {
+        this.logicDeleteColumn = logicDeleteColumn;
         return this;
     }
 }

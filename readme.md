@@ -218,7 +218,7 @@ public class Student {
 
 > @TableField 可以设置列名、typeHandler、jdbcType、是否查询、是否更新,默认值 等
 
-> 默认值 可以是常量，动态值（结合 动态参数配置）
+> 默认值 可以是常量，动态值（结合 动态参数配置）,例如{BLANK} 空值，支持string,list,map,set,数组，更多查看 动态参数配置 一项
 
 ### 4. @Ignore 可忽略字段（可用的实体类 VO 等字段上）
 

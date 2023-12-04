@@ -74,3 +74,12 @@ values
     (1,'测试',0,null),
     (2,'运维',0,null),
     (3,'运维2',0,null);
+
+
+CREATE TABLE IF NOT EXISTS default_value_test
+(
+id   INT PRIMARY KEY auto_increment,
+value1 VARCHAR(100) not null,
+value2 INT not NULL ,
+create_time DATETIME NOT NULL
+);

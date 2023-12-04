@@ -3,11 +3,13 @@ package cn.mybatis.mp.core;
 
 import cn.mybatis.mp.core.sql.MybatisMpQuerySQLBuilder;
 import cn.mybatis.mp.core.sql.QuerySQLBuilder;
+import cn.mybatis.mp.core.util.StringPool;
+import cn.mybatis.mp.core.util.TypeConvertUtil;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -27,6 +29,21 @@ public final class MybatisMpConfig {
 
     static {
         Map<String, Function<Class, Object>> defaultValueMap = new ConcurrentHashMap<>();
+        defaultValueMap.put("{BLANK}", (type) -> {
+            if (type == String.class) {
+                return StringPool.EMPTY;
+            } else if (type.getClass().isArray()) {
+                return Array.newInstance(type, 0);
+            } else if (List.class.isAssignableFrom(type.getClass())) {
+                return Collections.EMPTY_LIST;
+            } else if (Set.class.isAssignableFrom(type.getClass())) {
+                return Collections.EMPTY_SET;
+            } else if (Map.class.isAssignableFrom(type.getClass())) {
+                return Collections.EMPTY_MAP;
+            }
+            throw new RuntimeException("Inconsistent types");
+        });
+
         defaultValueMap.put("{NOW}", (type) -> {
             if (type == LocalDateTime.class) {
                 return LocalDateTime.now();
@@ -155,7 +172,9 @@ public final class MybatisMpConfig {
      * @return
      */
     public static <T> T getDefaultValue(Class<T> clazz, String key) {
-        checkDefaultValueKey(key);
+        if (!isDefaultValueKeyFormat(key)) {
+            return TypeConvertUtil.convert(key, clazz);
+        }
         Map<String, Function<Class, T>> map = (Map<String, Function<Class, T>>) CACHE.get(DEFAULT_VALUE_MANAGER);
         Function<Class, T> function = map.get(key);
         if (function == null) {

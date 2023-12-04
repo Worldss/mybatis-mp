@@ -68,7 +68,7 @@
         <!-- jdbc version -->
         <mysql.version>8.2.0</mysql.version>
 
-        <lombok.version>1.18.28</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
 
     </properties>
 

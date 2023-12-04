@@ -57,7 +57,7 @@
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-spring-boot-starter</artifactId>
-    <version>1.1.8</version>
+    <version>1.1.9</version>
 </dependency>  
 ```
 
@@ -216,7 +216,9 @@ public class Student {
 }
 ```
 
-> @TableField 可以设置列名、typeHandler、jdbcType、是否查询、是否更新 等
+> @TableField 可以设置列名、typeHandler、jdbcType、是否查询、是否更新,默认值 等
+
+> 默认值 可以是常量，动态值（结合 动态参数配置）,例如{BLANK} 空值，支持string,list,map,set,数组，更多查看 动态参数配置 一项
 
 ### 4. @Ignore 可忽略字段（可用的实体类 VO 等字段上）
 
@@ -1351,6 +1353,31 @@ MybatisBatchUtil.batchSave(sqlSessionFactory, IdTestMapper.class, list);
 > IdTestMapper 是mybatis Mapper 接口
 
 > 如需获取主键，可设置batchSize=1，虽然性能可能下降，也比一般的循环save，update快！
+>
+# 动态参数配置（用于默认值，逻辑删除）
+> 项目启动时设置
+```java
+MybatisMpConfig.setDefaultValue("{NOW}", (type) -> {
+    if (type == LocalDateTime.class) {
+        return LocalDateTime.now();
+    } else if (type == LocalDate.class) {
+        return LocalDate.now();
+    } else if (type == Date.class) {
+        return new Date();
+    } else if (type == Long.class) {
+        return System.currentTimeMillis();
+    } else if (type == Integer.class) {
+        return (int) (System.currentTimeMillis() / 1000);
+    }
+    throw new RuntimeException("Inconsistent types");
+});
+```
+## 内置动态参数配置
+### 1.{BLANK} 空
+> 可应用在 字符串，集合，数组上
+### 2.{NOW} 当前时间
+> 可应用在 LocalDateTime，LocalDate，Date，Long，Integer 字段上
+
 # 如何创建条件，列，表等
 
 > Query，QueryChain等中有个方法，专门提供创建sql的工厂类：$()
@@ -1713,7 +1740,7 @@ mybatis:
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-generator</artifactId>
-    <version>1.1.8</version>
+    <version>1.1.9</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -1875,6 +1902,11 @@ new GeneratorConfig(...).columnConfig(columnConfig->{
         <td>disableSelectColumns</td>
         <td>空</td>
         <td align="left">禁止Select的列,这样字段上会生成<strong>@TableField(select=false)</strong></td>
+    </tr>
+    <tr align="center">
+        <td>defaultValueConvert</td>
+        <td>默认实现</td>
+        <td align="left">可动态转换数据库的默认值（由静态值转成动态值）</td>
     </tr>
 </table>
 

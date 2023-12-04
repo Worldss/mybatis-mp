@@ -46,7 +46,7 @@ public class EntityFieldInfo {
     }
 
     public boolean isNeedTableFiled() {
-        return !select || !update;
+        return !select || !update || this.getColumnInfo().getDefaultValue() != null;
     }
 
     public String buildTableField() {
@@ -56,6 +56,9 @@ public class EntityFieldInfo {
         }
         if (!update) {
             stringBuilder.append("update = false,");
+        }
+        if (this.getColumnInfo().getDefaultValue() != null) {
+            stringBuilder.append(String.format("defaultValue = \"%s\",", this.getColumnInfo().getDefaultValue().replace("\"", "\\\"")));
         }
         stringBuilder = stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 

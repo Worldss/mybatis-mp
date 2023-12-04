@@ -45,6 +45,7 @@ public class BaseTest {
         configuration.addMapper(VersionTestMapper.class);
         configuration.addMapper(TenantTestMapper.class);
         configuration.addMapper(LogicDeleteTestMapper.class);
+        configuration.addMapper(DefaultValueTestMapper.class);
 
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     }

@@ -1,5 +1,6 @@
 package cn.mybatis.mp.core.mybatis.mapper.context;
 
+import cn.mybatis.mp.core.MybatisMpConfig;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
@@ -7,6 +8,7 @@ import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.incrementer.IdentifierGenerator;
 import cn.mybatis.mp.core.incrementer.IdentifierGeneratorFactory;
 import cn.mybatis.mp.core.tenant.TenantUtil;
+import cn.mybatis.mp.core.util.StringPool;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;
@@ -41,15 +43,6 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
                 Object value = item.getValue(t);
                 if (Objects.nonNull(value)) {
                     isNeedInsert = true;
-                } else if (item.isVersion()) {
-                    isNeedInsert = true;
-                    try {
-                        //乐观锁设置 默认值1
-                        value = Integer.valueOf(1);
-                        item.getWriteFieldInvoker().invoke(t, new Object[]{value});
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
                 } else if (item.isTableId()) {
                     TableId tableId = TableIds.get(t.getClass());
                     if (tableId.value() == IdAutoType.GENERATOR) {
@@ -59,6 +52,24 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
                         if (setId(t, item, id)) {
                             value = id;
                         }
+                    }
+                } else if (!StringPool.EMPTY.equals(item.getTableFieldAnnotation().defaultValue())) {
+                    isNeedInsert = true;
+                    try {
+                        //设置默认值
+                        value = MybatisMpConfig.getDefaultValue(item.getField().getType(), item.getTableFieldAnnotation().defaultValue());
+                        item.getWriteFieldInvoker().invoke(t, new Object[]{value});
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else if (item.isVersion()) {
+                    isNeedInsert = true;
+                    try {
+                        //乐观锁设置 默认值1
+                        value = Integer.valueOf(1);
+                        item.getWriteFieldInvoker().invoke(t, new Object[]{value});
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
                     }
                 }
 

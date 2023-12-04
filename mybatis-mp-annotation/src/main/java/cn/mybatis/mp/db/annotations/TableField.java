@@ -47,4 +47,9 @@ public @interface TableField {
      * @return
      */
     Class<? extends TypeHandler<?>> typeHandler() default UnknownTypeHandler.class;
+
+    /**
+     * 默认值 默认为NULL，“”表示NULL，如需表达 空字符，填 {BLANK}
+     */
+    String defaultValue() default "";
 }

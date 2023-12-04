@@ -1,6 +1,7 @@
 package cn.mybatis.mp.generator.database.meta;
 
 import cn.mybatis.mp.generator.config.GeneratorConfig;
+import db.sql.api.DbType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.type.JdbcType;
 
@@ -44,8 +45,12 @@ public class TableMetaDataQuery {
         if (databaseName == null) {
             databaseName = this.connDatabaseName;
         }
+        String schema = generatorConfig.getDataBaseConfig().getSchema();
+        if (schema == null && generatorConfig.getDataBaseConfig().getDbType() == DbType.H2) {
+            schema = "PUBLIC";
+        }
 
-        try (ResultSet resultSet = metaData.getTables(databaseName, generatorConfig.getDataBaseConfig().getSchema(), null, types.toArray(new String[2]))) {
+        try (ResultSet resultSet = metaData.getTables(databaseName, schema, null, types.toArray(new String[2]))) {
             TableInfo tableInfo;
             while (resultSet.next()) {
                 String TABLE_NAME = resultSet.getString("TABLE_NAME");
@@ -111,7 +116,9 @@ public class TableMetaDataQuery {
                 columnInfo.setLength(resultSet.getInt("COLUMN_SIZE"));
                 columnInfo.setScale(resultSet.getInt("DECIMAL_DIGITS"));
                 columnInfo.setRemarks(resultSet.getString("REMARKS"));
-                columnInfo.setDefaultValue(resultSet.getString("COLUMN_DEF"));
+
+
+                columnInfo.setDefaultValue(generatorConfig.getColumnConfig().getDefaultValueConvert().apply(resultSet.getString("COLUMN_DEF")));
                 columnInfo.setNullable(resultSet.getInt("NULLABLE") == DatabaseMetaData.columnNullable);
 
                 columnInfo.setVersion(columnName.equals(generatorConfig.getColumnConfig().getVersionColumn()));

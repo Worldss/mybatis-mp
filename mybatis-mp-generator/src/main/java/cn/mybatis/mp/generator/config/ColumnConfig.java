@@ -1,10 +1,14 @@
 package cn.mybatis.mp.generator.config;
 
+import cn.mybatis.mp.core.util.StringPool;
+import cn.mybatis.mp.generator.strategy.DefaultValueConvert;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * 列配置
@@ -41,6 +45,11 @@ public class ColumnConfig {
      * 逻辑删除列名
      */
     private String logicDeleteColumn = "";
+
+    /**
+     * 默认值转换
+     */
+    private Function<String, String> defaultValueConvert = new DefaultValueConvert()::convert;
 
     /**
      * 排除列
@@ -96,6 +105,16 @@ public class ColumnConfig {
      */
     public ColumnConfig logicDeleteColumn(String logicDeleteColumn) {
         this.logicDeleteColumn = logicDeleteColumn;
+        return this;
+    }
+
+    /**
+     * 默认值转换
+     * @param defaultValueConvert
+     * @return
+     */
+    public ColumnConfig defaultValueConvert(Function<String, String> defaultValueConvert){
+        this.defaultValueConvert=defaultValueConvert;
         return this;
     }
 }

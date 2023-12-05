@@ -11,10 +11,7 @@ import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ResultMapping;
+import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.type.JdbcType;
@@ -25,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -93,13 +91,16 @@ public class MybatisConfiguration extends Configuration {
         return t;
     }
 
-    public ResultMapping buildResultMapping(Field property, String columnName, JdbcType jdbcType, Class<? extends TypeHandler<?>> typeHandlerClass) {
-        return new ResultMapping.Builder(this, property.getName())
+    public ResultMapping buildResultMapping(boolean id, Field property, String columnName, JdbcType jdbcType, Class<? extends TypeHandler<?>> typeHandlerClass) {
+        ResultMapping.Builder resultMappingBuilder = new ResultMapping.Builder(this, property.getName())
                 .column(columnName)
                 .javaType(property.getType())
                 .jdbcType(jdbcType)
-                .typeHandler(this.buildTypeHandler(property.getType(), typeHandlerClass))
-                .build();
+                .typeHandler(this.buildTypeHandler(property.getType(), typeHandlerClass));
+        if (id) {
+            resultMappingBuilder.flags(Collections.singletonList(ResultFlag.ID));
+        }
+        return resultMappingBuilder.build();
     }
 
 

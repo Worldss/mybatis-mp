@@ -80,7 +80,7 @@ public final class LogicDeleteUtil {
     }
 
     /**
-     * 设置逻辑删除字段值  例如： set deleted=1
+     * 设置逻辑删除字段值  例如： set deleted=1 和 删除时间设置
      *
      * @param baseUpdate
      * @param entity
@@ -100,6 +100,7 @@ public final class LogicDeleteUtil {
 
     /**
      * 根据ID 进行逻辑删除操作
+     * 实际为update操作
      *
      * @param baseMapper
      * @param entityType
@@ -119,6 +120,7 @@ public final class LogicDeleteUtil {
 
     /**
      * 根据where 执行逻辑删除操作
+     * 实际为update操作
      *
      * @param baseMapper
      * @param entityType
@@ -139,10 +141,11 @@ public final class LogicDeleteUtil {
     /**
      * 添加租户条件
      *
-     * @param compare
-     * @param cmdFactory
-     * @param entity
-     * @param storey
+     * @param forQuery   是否为了查询结果
+     * @param compare    比较器
+     * @param cmdFactory 命令工厂
+     * @param entity     实体类
+     * @param storey     实体类表的存储层级
      */
     public static void addLogicDeleteCondition(boolean forQuery, Compare compare, CmdFactory cmdFactory, Class entity, int storey) {
         if (forQuery) {

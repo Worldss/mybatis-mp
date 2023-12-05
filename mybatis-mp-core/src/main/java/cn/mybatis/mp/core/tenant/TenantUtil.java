@@ -7,6 +7,7 @@ import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.sql.executor.MybatisCmdFactory;
 import cn.mybatis.mp.db.Model;
 import db.sql.api.cmd.executor.method.condition.compare.Compare;
+import db.sql.api.impl.cmd.CmdFactory;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -74,12 +75,12 @@ public class TenantUtil {
     /**
      * 添加租户条件
      *
-     * @param compare
-     * @param mybatisCmdFactory
-     * @param entity
-     * @param storey
+     * @param compare    比较器
+     * @param cmdFactory 命令工厂
+     * @param entity     实体类
+     * @param storey     实体类表的存储层级
      */
-    public static final void addTenantCondition(Compare compare, MybatisCmdFactory mybatisCmdFactory, Class entity, int storey) {
+    public static final void addTenantCondition(Compare compare, CmdFactory cmdFactory, Class entity, int storey) {
         TenantInfo tenantInfo = TenantContext.getTenantInfo();
         if (Objects.isNull(tenantInfo)) {
             return;
@@ -92,6 +93,6 @@ public class TenantUtil {
         if (Objects.isNull(tableInfo.getTenantIdFieldInfo())) {
             return;
         }
-        compare.eq(mybatisCmdFactory.field(entity, tableInfo.getTenantIdFieldInfo().getField().getName(), storey), tenantId);
+        compare.eq(cmdFactory.field(entity, tableInfo.getTenantIdFieldInfo().getField().getName(), storey), tenantId);
     }
 }

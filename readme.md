@@ -57,7 +57,7 @@
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-spring-boot-starter</artifactId>
-    <version>1.1.9</version>
+    <version>1.2.0</version>
 </dependency>  
 ```
 
@@ -288,7 +288,22 @@ public class StudentAchievementVo extends StudentVo {
 
 #### @NestedResultEntity
 
-> 用于内嵌类的映射 和 @ResultEntity 类似
+> 用于内嵌类的映射 和 @ResultEntity 类似,可以映射一对一，一对多（List<POJO> 属性）
+```java
+@Data
+@ResultEntity(SysRole.class)
+public class OneToManyVo {
+
+    private Integer id;
+
+    private String name;
+
+    private LocalDateTime createTime;
+
+    @NestedResultEntity(target = SysUser.class)
+    private List<SysUser> sysUserList;
+}
+```
 
 #### @NestedResultEntityField
 
@@ -1740,7 +1755,7 @@ mybatis:
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-generator</artifactId>
-    <version>1.1.9</version>
+    <version>1.2.0</version>
     <scope>provided</scope>
 </dependency>
 ```

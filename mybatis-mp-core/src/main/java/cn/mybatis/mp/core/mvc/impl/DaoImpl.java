@@ -14,8 +14,8 @@ import java.io.Serializable;
 
 public abstract class DaoImpl<T, K> implements Dao<T, K> {
 
-    private final MybatisMapper<T> mapper;
-    private Class<K> idType;
+    protected final MybatisMapper<T> mapper;
+    protected Class<K> idType;
 
     public DaoImpl(MybatisMapper<T> mapper) {
         this.mapper = mapper;

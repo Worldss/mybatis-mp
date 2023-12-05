@@ -19,4 +19,8 @@ public class ${entityInfo.daoImplName} ${superExtend}<#if daoConfig.isGeneric()>
     public ${entityInfo.daoImplName} (${entityInfo.mapperName} ${util.firstToLower(entityInfo.mapperName)}){
         super(${util.firstToLower(entityInfo.mapperName)});
     }
+
+    private ${entityInfo.mapperName} getMapper(){
+        return (${entityInfo.mapperName}) this.mapper;
+    }
 }

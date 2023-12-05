@@ -46,16 +46,25 @@ public class GenericUtil {
         Type[] types = clazz.getGenericInterfaces();
         List<Class> classList = new ArrayList<>(types.length * 2);
         for (Type type : types) {
-            if (type instanceof ParameterizedType) {
-                Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-                for (Type actualTypeArgument : actualTypeArguments) {
-                    if (!(actualTypeArgument instanceof Class)) {
-                        continue;
-                    }
-                    classList.add((Class) actualTypeArgument);
-                }
-            }
+            classList = getGeneric(type, classList);
         }
         return classList;
+    }
+
+    public static List<Class> getGeneric(Type type) {
+        return getGeneric(type, new ArrayList<>(1));
+    }
+
+    public static List<Class> getGeneric(Type type, List<Class> resultList) {
+        if (type instanceof ParameterizedType) {
+            Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+            for (Type actualTypeArgument : actualTypeArguments) {
+                if (!(actualTypeArgument instanceof Class)) {
+                    continue;
+                }
+                resultList.add((Class) actualTypeArgument);
+            }
+        }
+        return resultList;
     }
 }

@@ -13,6 +13,7 @@ import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.RowBounds;
 
 import java.util.*;
@@ -267,6 +268,43 @@ public interface BaseMapper<T> {
         return this.$list(new SQLCmdQueryContext(query, optimize));
     }
 
+
+    /**
+     * 游标查询,返回类型，当前实体类
+     *
+     * @param consumer
+     * @return
+     */
+    default <T> Cursor<T> cursor(Consumer<Where> consumer) {
+        Where where = Wheres.create();
+        consumer.accept(where);
+        return QueryChain.of(this, where).cursor(false);
+    }
+
+
+    /**
+     * 游标查询
+     *
+     * @param query
+     * @return
+     */
+    default <R> Cursor<R> cursor(BaseQuery query) {
+        return this.cursor(query, true);
+    }
+
+
+    /**
+     * 游标查询
+     *
+     * @param query
+     * @param optimize 是否优化
+     * @return
+     */
+    default <R> Cursor<R> cursor(BaseQuery query, boolean optimize) {
+        return this.$cursor(new SQLCmdQueryContext(query, optimize));
+    }
+
+
     /**
      * count查询
      *
@@ -392,6 +430,16 @@ public interface BaseMapper<T> {
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_NAME)
     <T> List<T> $list(SQLCmdQueryContext queryContext);
+
+    /**
+     * 游标查询
+     *
+     * @param queryContext
+     * @return
+     * @see MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
+     */
+    @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_NAME)
+    <T> Cursor<T> $cursor(SQLCmdQueryContext queryContext);
 
     /**
      * count查询

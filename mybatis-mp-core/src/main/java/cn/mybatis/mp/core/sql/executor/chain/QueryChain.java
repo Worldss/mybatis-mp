@@ -4,6 +4,7 @@ import cn.mybatis.mp.core.mybatis.mapper.BaseMapper;
 import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.BaseQuery;
 import db.sql.api.impl.cmd.struct.Where;
+import org.apache.ibatis.cursor.Cursor;
 
 import java.util.List;
 import java.util.Objects;
@@ -87,6 +88,29 @@ public class QueryChain extends BaseQuery<QueryChain> {
         this.setDefault();
         return mapper.list(this, optimize);
     }
+
+    /**
+     * 获取列表
+     *
+     * @param <R>
+     * @return
+     */
+    public <R> Cursor<R> cursor() {
+        return this.cursor(true);
+    }
+
+    /**
+     * 获取列表
+     *
+     * @param optimize 是否自动优化
+     * @param <R>
+     * @return
+     */
+    public <R> Cursor<R> cursor(boolean optimize) {
+        this.setDefault();
+        return mapper.cursor(this, optimize);
+    }
+
 
     /**
      * 获取条数

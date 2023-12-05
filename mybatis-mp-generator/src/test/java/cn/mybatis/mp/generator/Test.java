@@ -6,7 +6,7 @@ public class Test {
 
     public static void main(String[] args) {
         new FastGenerator(new GeneratorConfig(
-                "jdbc:mysql://test.qushiwan.cn:3306/casual_put",
+                "jdbc:mysql://test.mysql.com:3306/casual_put",
                 "root",
                 "123456")
                 .basePackage("com.test")

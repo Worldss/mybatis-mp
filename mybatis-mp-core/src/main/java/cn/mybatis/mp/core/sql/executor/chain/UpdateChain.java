@@ -33,7 +33,7 @@ public class UpdateChain extends BaseUpdate<UpdateChain> {
     private void setDefault() {
         if (Objects.isNull(this.getUpdateTable())) {
             //自动设置实体类
-            this.update(mapper.getMapperType());
+            this.update(mapper.getEntityType());
         }
     }
 

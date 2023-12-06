@@ -23,26 +23,25 @@ public class UpdateTest extends BaseTest {
     public void updateEntityTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-//
-//
-//            SysUser updateSysUser = new SysUser();
-//            updateSysUser.setId(1);
-//            updateSysUser.setUserName("adminxx");
-//            sysUserMapper.update(updateSysUser);
-//            SysUser eqSysUser = new SysUser();
-//            eqSysUser.setId(1);
-//            eqSysUser.setUserName("adminxx");
-//            eqSysUser.setPassword("123");
-//            eqSysUser.setRole_id(0);
-//            eqSysUser.setCreate_time(LocalDateTime.parse("2023-10-10T10:10:10"));
-//
-//            List<SysUser> list = QueryChain.of(sysUserMapper).eq(SysUser::getUserName, "adminxx").list();
-//            assertEquals(list.size(), 1);
-//            assertEquals(list.get(0), eqSysUser, "实体修改");
+
+
+            SysUser updateSysUser = new SysUser();
+            updateSysUser.setId(1);
+            updateSysUser.setUserName("adminxx");
+            sysUserMapper.update(updateSysUser);
+            SysUser eqSysUser = new SysUser();
+            eqSysUser.setId(1);
+            eqSysUser.setUserName("adminxx");
+            eqSysUser.setPassword("123");
+            eqSysUser.setRole_id(0);
+            eqSysUser.setCreate_time(LocalDateTime.parse("2023-10-10T10:10:10"));
+
+            List<SysUser> list = QueryChain.of(sysUserMapper).eq(SysUser::getUserName, "adminxx").list();
+            assertEquals(list.size(), 1);
+            assertEquals(list.get(0), eqSysUser, "实体修改");
 
 
             UpdateChain.of(sysUserMapper)
-                    .update(SysUser.class)
                     .connect(updateChain -> {
                         updateChain.set(SysUser::getRole_id, SubQuery.create()
                                 .select(SysRole::getId)

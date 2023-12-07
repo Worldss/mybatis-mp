@@ -8,7 +8,6 @@ import cn.mybatis.mp.core.mybatis.mapper.BaseMapper;
 import cn.mybatis.mp.core.sql.executor.BaseUpdate;
 import cn.mybatis.mp.core.sql.executor.chain.UpdateChain;
 import cn.mybatis.mp.core.util.StringPool;
-import cn.mybatis.mp.core.util.TypeConvertUtil;
 import cn.mybatis.mp.db.annotations.LogicDelete;
 import db.sql.api.cmd.executor.method.condition.compare.Compare;
 import db.sql.api.impl.cmd.CmdFactory;

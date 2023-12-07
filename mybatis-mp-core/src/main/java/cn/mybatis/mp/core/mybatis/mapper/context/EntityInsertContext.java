@@ -38,48 +38,49 @@ public class EntityInsertContext<T> extends SQLCmdInsertContext<AbstractInsert> 
             Table table = $.table(tableInfo.getSchemaAndTableName());
             insert(table);
             List<Object> values = new ArrayList<>();
-            tableInfo.getTableFieldInfos().stream().forEach(item -> {
+            for (int i = 0; i < tableInfo.getFieldSize(); i++) {
+                TableFieldInfo tableFieldInfo = tableInfo.getTableFieldInfos().get(i);
                 boolean isNeedInsert = false;
-                Object value = item.getValue(t);
+                Object value = tableFieldInfo.getValue(t);
                 if (Objects.nonNull(value)) {
                     isNeedInsert = true;
-                } else if (item.isTableId()) {
+                } else if (tableFieldInfo.isTableId()) {
                     TableId tableId = TableIds.get(t.getClass());
                     if (tableId.value() == IdAutoType.GENERATOR) {
                         isNeedInsert = true;
                         IdentifierGenerator identifierGenerator = IdentifierGeneratorFactory.getIdentifierGenerator(tableId.generatorName());
                         Object id = identifierGenerator.nextId(tableInfo.getType());
-                        if (setId(t, item, id)) {
+                        if (setId(t, tableFieldInfo, id)) {
                             value = id;
                         }
                     }
-                } else if (!StringPool.EMPTY.equals(item.getTableFieldAnnotation().defaultValue())) {
+                } else if (!StringPool.EMPTY.equals(tableFieldInfo.getTableFieldAnnotation().defaultValue())) {
                     isNeedInsert = true;
                     try {
                         //设置默认值
-                        value = MybatisMpConfig.getDefaultValue(item.getField().getType(), item.getTableFieldAnnotation().defaultValue());
-                        item.getWriteFieldInvoker().invoke(t, new Object[]{value});
+                        value = MybatisMpConfig.getDefaultValue(tableFieldInfo.getField().getType(), tableFieldInfo.getTableFieldAnnotation().defaultValue());
+                        tableFieldInfo.getWriteFieldInvoker().invoke(t, new Object[]{value});
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
-                } else if (item.isVersion()) {
+                } else if (tableFieldInfo.isVersion()) {
                     isNeedInsert = true;
                     try {
                         //乐观锁设置 默认值1
                         value = Integer.valueOf(1);
-                        item.getWriteFieldInvoker().invoke(t, new Object[]{value});
+                        tableFieldInfo.getWriteFieldInvoker().invoke(t, new Object[]{value});
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 }
 
                 if (isNeedInsert) {
-                    field($.field(table, item.getColumnName()));
-                    TableField tableField = item.getTableFieldAnnotation();
+                    field($.field(table, tableFieldInfo.getColumnName()));
+                    TableField tableField = tableFieldInfo.getTableFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());
                     values.add($.value(mybatisParameter));
                 }
-            });
+            }
             values(values);
         }};
         return insert;

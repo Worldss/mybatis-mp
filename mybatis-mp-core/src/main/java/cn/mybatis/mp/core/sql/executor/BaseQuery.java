@@ -1,5 +1,6 @@
 package cn.mybatis.mp.core.sql.executor;
 
+import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
@@ -34,11 +35,12 @@ public abstract class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, My
         if (tableInfo == null) {
             return super.select(entity, storey);
         } else {
-            tableInfo.getTableFieldInfos().stream().forEach(item -> {
-                if (item.getTableFieldAnnotation().select()) {
-                    this.select($.field(entity, item.getField().getName(), storey));
+            for (int i = 0; i < tableInfo.getFieldSize(); i++) {
+                TableFieldInfo tableFieldInfo = tableInfo.getTableFieldInfos().get(i);
+                if (tableFieldInfo.getTableFieldAnnotation().select()) {
+                    this.select($.field(entity, tableFieldInfo.getField().getName(), storey));
                 }
-            });
+            }
         }
         return (Q) this;
     }

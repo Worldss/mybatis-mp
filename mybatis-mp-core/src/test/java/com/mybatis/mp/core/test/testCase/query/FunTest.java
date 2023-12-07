@@ -1,6 +1,6 @@
 package com.mybatis.mp.core.test.testCase.query;
 
-import cn.mybatis.mp.core.sql.executor.MybatisCmdFactory;
+import cn.mybatis.mp.core.sql.MybatisCmdFactory;
 import cn.mybatis.mp.core.sql.executor.Query;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import com.mybatis.mp.core.test.DO.SysUser;

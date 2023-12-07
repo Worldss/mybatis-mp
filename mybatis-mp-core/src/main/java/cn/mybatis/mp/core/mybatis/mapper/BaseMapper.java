@@ -114,6 +114,20 @@ public interface BaseMapper<T> {
     }
 
     /**
+     * 多个保存，非批量行为
+     *
+     * @param list
+     * @return 插入条数
+     */
+    default int save(List<T> list) {
+        int cnt = 0;
+        for (T entity : list) {
+            cnt += this.save(entity);
+        }
+        return cnt;
+    }
+
+    /**
      * model插入 部分字段插入
      *
      * @param model
@@ -143,6 +157,19 @@ public interface BaseMapper<T> {
         return this.$update(new EntityUpdateContext(entity));
     }
 
+    /**
+     * 多个修改，非批量行为
+     *
+     * @param list
+     * @return 修改条数
+     */
+    default int update(List<T> list) {
+        int cnt = 0;
+        for (T entity : list) {
+            cnt += this.update(entity);
+        }
+        return cnt;
+    }
 
     /**
      * 实体类修改

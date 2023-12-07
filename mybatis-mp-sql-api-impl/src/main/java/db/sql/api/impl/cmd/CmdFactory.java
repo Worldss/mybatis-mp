@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, TableField, DatasetField> {
 
     private final String tableAsPrefix;
-    protected Map<String, Table> tableCache = new HashMap<>();
+    protected Map<String, Table> tableCache = new HashMap<>(5);
     protected int tableNums = 0;
 
     public CmdFactory() {

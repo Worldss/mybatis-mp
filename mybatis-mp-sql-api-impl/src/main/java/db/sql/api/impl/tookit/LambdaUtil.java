@@ -26,9 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class LambdaUtil {
 
-    private static final Map<Serializable, SerializedLambda> SERIALIZED_LAMBDA_MAP = new ConcurrentHashMap<>();
-    private static final Map<Getter, String> LAMBDA_GETTER_FIELD_MAP = new ConcurrentHashMap<>();
-    private static final Map<Getter, Class<?>> LAMBDA_GETTER_CLASS_MAP = new ConcurrentHashMap<>();
+    private static final Map<Serializable, SerializedLambda> SERIALIZED_LAMBDA_MAP = new ConcurrentHashMap<>(65535);
+    private static final Map<Getter, String> LAMBDA_GETTER_FIELD_MAP = new ConcurrentHashMap<>(65535);
+    private static final Map<Getter, Class<?>> LAMBDA_GETTER_CLASS_MAP = new ConcurrentHashMap<>(8191);
 
     private LambdaUtil() {
 

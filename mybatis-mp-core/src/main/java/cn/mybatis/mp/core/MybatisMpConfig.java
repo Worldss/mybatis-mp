@@ -1,6 +1,7 @@
 package cn.mybatis.mp.core;
 
 
+import cn.mybatis.mp.core.logicDelete.LogicDeleteSwitch;
 import cn.mybatis.mp.core.sql.MybatisMpQuerySQLBuilder;
 import cn.mybatis.mp.core.sql.QuerySQLBuilder;
 import cn.mybatis.mp.core.util.StringPool;
@@ -136,6 +137,11 @@ public final class MybatisMpConfig {
      * @return
      */
     public static boolean isLogicDeleteSwitchOpen() {
+        Boolean state = LogicDeleteSwitch.getState();
+        if (state != null) {
+            //局部开关 优先
+            return state;
+        }
         return (boolean) CACHE.computeIfAbsent(LOGIC_DELETE_SWITCH, key -> true);
     }
 

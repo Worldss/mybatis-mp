@@ -42,7 +42,7 @@ public abstract class BaseSubQuery<Q extends BaseSubQuery> extends AbstractSubQu
     }
 
     protected void addLogicDeleteCondition(Class entity, int storey) {
-        LogicDeleteUtil.addLogicDeleteCondition(true, this, $, entity, storey);
+        LogicDeleteUtil.addLogicDeleteCondition(this, $, entity, storey);
     }
 
     @Override

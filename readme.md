@@ -364,11 +364,20 @@ public class LogicDeleteTest {
 ```java
 MybatisMpConfig.setLogicDeleteSwitch(true);
 ```
-#### 7.5 逻辑删除局部开关(仅在查询时，起作用)
+#### 7.5 逻辑删除-局部开关
 ```java
 try (LogicDeleteSwitch ignored = LogicDeleteSwitch.with(false)) {
     logicDeleteTestMapper.getById(1);
 }
+```
+> 上面代码必须try (LogicDeleteSwitch ignored = LogicDeleteSwitch.with(false))
+
+或
+> 下面的更简单：
+```java
+LogicDeleteTest logicDeleteTest = LogicDeleteUtil.execute(false, () -> {
+    return logicDeleteTestMapper.getById(1);
+});
 ```
 # mybatis-mp mvc 架构理念
 
@@ -1755,7 +1764,7 @@ mybatis:
 <dependency>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp-generator</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.0</version>
     <scope>provided</scope>
 </dependency>
 ```

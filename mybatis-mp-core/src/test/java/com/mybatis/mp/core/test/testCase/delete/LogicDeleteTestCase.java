@@ -2,6 +2,7 @@ package com.mybatis.mp.core.test.testCase.delete;
 
 import cn.mybatis.mp.core.MybatisMpConfig;
 import cn.mybatis.mp.core.logicDelete.LogicDeleteSwitch;
+import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import com.mybatis.mp.core.test.DO.LogicDeleteTest;
 import com.mybatis.mp.core.test.mapper.LogicDeleteTestMapper;
@@ -36,9 +37,10 @@ public class LogicDeleteTestCase extends BaseTest {
             LogicDeleteTestMapper logicDeleteTestMapper = session.getMapper(LogicDeleteTestMapper.class);
             logicDeleteTestMapper.deleteById(1);
 
-            try (LogicDeleteSwitch ignored = LogicDeleteSwitch.with(false)) {
-                assertEquals(logicDeleteTestMapper.getById(1).getDeleted(), Byte.valueOf("1"));
-            }
+            LogicDeleteTest logicDeleteTest = LogicDeleteUtil.execute(false, () -> {
+                return logicDeleteTestMapper.getById(1);
+            });
+            assertEquals(logicDeleteTest.getDeleted(), Byte.valueOf("1"));
         }
     }
 

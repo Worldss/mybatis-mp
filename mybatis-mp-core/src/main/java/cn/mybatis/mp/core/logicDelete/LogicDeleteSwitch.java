@@ -1,7 +1,6 @@
 package cn.mybatis.mp.core.logicDelete;
 
 /**
- * 逻辑删除开关，只在查询时起作用
  * 使用方式：
  * <pre>
  * try (LogicDeleteSwitch ignored = LogicDeleteSwitch.with(false)) {

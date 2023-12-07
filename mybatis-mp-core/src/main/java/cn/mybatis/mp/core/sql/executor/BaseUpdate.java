@@ -27,7 +27,7 @@ public abstract class BaseUpdate<T extends BaseUpdate> extends AbstractUpdate<T,
     }
 
     protected void addLogicDeleteCondition(Class entity, int storey) {
-        LogicDeleteUtil.addLogicDeleteCondition(false, this, $, entity, storey);
+        LogicDeleteUtil.addLogicDeleteCondition(this, $, entity, storey);
     }
 
     @Override

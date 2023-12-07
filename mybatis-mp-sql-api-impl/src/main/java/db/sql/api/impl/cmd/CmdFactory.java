@@ -17,7 +17,6 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
 
     private final String tableAsPrefix;
     protected Map<String, Table> tableCache = new HashMap<>();
-    protected Map<String, TableField> tableFieldCache = new HashMap<>();
     protected int tableNums = 0;
 
     public CmdFactory() {
@@ -68,11 +67,6 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
         return this.field(entity, 1, filedName);
     }
 
-//    @Override
-//    public Consumer<On> buildOn(Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
-//        return consumer;
-//    }
-
     public <T> TableField field(Table table, Getter<T> column) {
         return new TableField(table, columnName(column));
     }
@@ -108,10 +102,8 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
     }
 
     protected TableField field(Class clazz, int storey, String filedName) {
-        return tableFieldCache.computeIfAbsent(String.format("%s.%s", clazz.getName(), filedName), key -> {
-            Table table = table(clazz, storey);
-            return new TableField(table, filedName);
-        });
+        Table table = table(clazz, storey);
+        return new TableField(table, filedName);
     }
 
     public BasicValue value(Object value) {

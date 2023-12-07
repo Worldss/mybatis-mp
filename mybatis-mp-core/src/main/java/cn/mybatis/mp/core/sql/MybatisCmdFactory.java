@@ -63,18 +63,15 @@ public class MybatisCmdFactory extends CmdFactory {
 
     @Override
     public TableField field(Class entity, String filedName, int storey) {
-        return MapUtil.computeIfAbsent(tableFieldCache, String.format("%s.%s.%s", entity.getName(), filedName, storey), key -> {
-            TableInfo tableInfo = Tables.get(entity);
-            if (tableInfo == null) {
-                throw new RuntimeException(String.format("class %s is not entity", entity.getName()));
-            }
-            TableFieldInfo tableFieldInfo = tableInfo.getFieldInfo(filedName);
-            if (Objects.isNull(tableFieldInfo)) {
-                throw new RuntimeException(String.format("property %s is not a column", filedName));
-            }
-            Table table = table(entity, storey);
-            return new TableField(table, tableFieldInfo.getColumnName());
-        });
+        TableInfo tableInfo = Tables.get(entity);
+        if (tableInfo == null) {
+            throw new RuntimeException(String.format("class %s is not entity", entity.getName()));
+        }
+        TableFieldInfo tableFieldInfo = tableInfo.getFieldInfo(filedName);
+        if (Objects.isNull(tableFieldInfo)) {
+            throw new RuntimeException(String.format("property %s is not a column", filedName));
+        }
+        Table table = table(entity, storey);
+        return new TableField(table, tableFieldInfo.getColumnName());
     }
-
 }

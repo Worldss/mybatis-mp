@@ -40,20 +40,20 @@ public class MybatisCmdFactory extends CmdFactory {
 
     @Override
     public <T> TableField field(Getter<T> column, int storey) {
-        Class clazz = LambdaUtil.getClass(column);
-        String filedName = LambdaUtil.getName(column);
-        return this.field(clazz, filedName, storey);
+        LambdaUtil.LambdaFieldInfo fieldInfo = LambdaUtil.getFieldInfo(column);
+        return this.field(fieldInfo.getType(), fieldInfo.getName(), storey);
     }
 
 
     @Override
     public <T> String columnName(Getter<T> column) {
-        Class entity = LambdaUtil.getClass(column);
+        LambdaUtil.LambdaFieldInfo fieldInfo = LambdaUtil.getFieldInfo(column);
+        Class entity = fieldInfo.getType();
         TableInfo tableInfo = Tables.get(entity);
         if (tableInfo == null) {
             throw new RuntimeException(String.format("class %s is not entity", entity.getName()));
         }
-        String filedName = LambdaUtil.getName(column);
+        String filedName = fieldInfo.getName();
         TableFieldInfo tableFieldInfo = tableInfo.getFieldInfo(filedName);
         if (Objects.isNull(tableFieldInfo)) {
             throw new RuntimeException(String.format("property %s is not a column", filedName));

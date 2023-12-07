@@ -62,9 +62,8 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
 
     @Override
     public <T> TableField field(Getter<T> column, int storey) {
-        Class entity = LambdaUtil.getClass(column);
-        String filedName = LambdaUtil.getName(column);
-        return this.field(entity, 1, filedName);
+        LambdaUtil.LambdaFieldInfo fieldInfo = LambdaUtil.getFieldInfo(column);
+        return this.field(fieldInfo.getType(), 1, fieldInfo.getName());
     }
 
     public <T> TableField field(Table table, Getter<T> column) {

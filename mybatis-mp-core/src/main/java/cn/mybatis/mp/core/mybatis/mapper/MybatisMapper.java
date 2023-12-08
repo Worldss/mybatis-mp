@@ -88,9 +88,20 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
      * @return 修改条数
      */
     default int delete(List<T> list) {
+        Class entityType = getEntityType();
+        TableInfo tableInfo = Tables.get(entityType);
+        if (tableInfo.getIdFieldInfo() == null) {
+            throw new RuntimeException("Not Supported");
+        }
         int cnt = 0;
         for (T entity : list) {
-            cnt += this.delete(entity);
+            Serializable id;
+            try {
+                id = (Serializable) tableInfo.getIdFieldInfo().getReadFieldInvoker().invoke(entity, null);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            cnt += this.$delete(entityType, tableInfo, id);
         }
         return cnt;
     }

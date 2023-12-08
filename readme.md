@@ -453,6 +453,8 @@ int updateCnt=UpdateChain.of(sysUserMapper)
 
 ### deleteById
 
+### deleteByIds
+
 ### 链式类的获取方法
 
 > queryChain()
@@ -558,6 +560,9 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 > delete(Delete delete) 动态删除
 
+> deleteByIds(Serializable... ids) 根据多个ID删除
+
+> deleteByIds(List<Serializable> ids) 根据多个ID删除
 ### 保存
 
 > save(T entity) 实体类保存

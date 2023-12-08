@@ -571,6 +571,21 @@ public interface StudentMapper extends MybatisMapper<Student> {
 
 > save(Insert insert) 动态插入（无法返回ID）
 
+> save(List<T> list) 插入多个
+
+> saveBatch(List<T> list, Getter<T>... saveFields) 原生sql批量插入,需要指定列
+<pre>
+ * 使用数据库原生方式批量插入
+ * 一次最好在100条内
+ * 
+ * 会自动加入 主键 租户ID 逻辑删除列 乐观锁
+ * 自动设置 默认值,不会忽略NULL值字段
+</pre>
+```java
+List<DefaultValueTest> list= Arrays.asList(new DefaultValueTest(),new DefaultValueTest());
+mapper.saveBatch(list, DefaultValueTest::getValue1, DefaultValueTest::getValue2, DefaultValueTest::getCreateTime);
+```
+
 ### 修改
 
 > update(T entity) 实体类更新

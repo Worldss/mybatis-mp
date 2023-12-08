@@ -128,6 +128,25 @@ public interface BaseMapper<T> {
     }
 
     /**
+     * 使用数据库原生方式批量插入
+     * 一次最好在100条内
+     * <p>
+     * 会自动加入 主键 租户ID 逻辑删除列 乐观锁
+     * 自动设置 默认值,不会忽略NULL值字段
+     *
+     * @param list
+     * @param saveFields 指定那些列插入
+     * @return 插入的条数
+     */
+    default int saveBatch(List<T> list, Getter<T>... saveFields) {
+        Set<String> saveFieldSet = new HashSet<>();
+        for (Getter<T> column : saveFields) {
+            saveFieldSet.add(LambdaUtil.getName(column));
+        }
+        return this.$save(new EntityBatchInsertContext(list, saveFieldSet));
+    }
+
+    /**
      * model插入 部分字段插入
      *
      * @param model

@@ -8,6 +8,8 @@ import org.apache.ibatis.type.TypeHandler;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class PreparedParameterHandler implements ParameterHandler {
@@ -32,11 +34,19 @@ public class PreparedParameterHandler implements ParameterHandler {
         int length = params.length;
         for (int i = 0; i < length; i++) {
             Object value = params[i];
+            if (Objects.isNull(value)) {
+                ps.setNull(i + 1, Types.NULL);
+                continue;
+            }
             if (value instanceof MybatisParameter) {
                 MybatisParameter parameter = (MybatisParameter) value;
                 Object realValue = parameter.getValue();
                 if (value instanceof Supplier) {
                     realValue = ((Supplier) value).get();
+                }
+                if (Objects.isNull(realValue)) {
+                    ps.setNull(i + 1, Types.NULL);
+                    continue;
                 }
                 TypeHandler typeHandler = this.configuration.buildTypeHandler(realValue.getClass(), parameter.getTypeHandler());
                 typeHandler.setParameter(ps, i + 1, realValue, parameter.getJdbcType());

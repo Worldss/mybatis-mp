@@ -16,8 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class QueryTest extends BaseTest {
@@ -105,7 +104,7 @@ public class QueryTest extends BaseTest {
 
             SysUser sysUser = null;
             for (SysUser entity : sysUserCursor) {
-                assertEquals(sysUser, null);
+                assertNull(sysUser);
                 sysUser = entity;
             }
 

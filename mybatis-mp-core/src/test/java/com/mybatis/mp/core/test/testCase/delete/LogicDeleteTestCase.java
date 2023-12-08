@@ -1,7 +1,6 @@
 package com.mybatis.mp.core.test.testCase.delete;
 
 import cn.mybatis.mp.core.MybatisMpConfig;
-import cn.mybatis.mp.core.logicDelete.LogicDeleteSwitch;
 import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import com.mybatis.mp.core.test.DO.LogicDeleteTest;

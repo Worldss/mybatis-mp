@@ -36,5 +36,4 @@ public @interface LogicDelete {
      */
     String deleteTimeField() default "";
 
-    ;
 }

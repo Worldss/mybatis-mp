@@ -26,15 +26,15 @@ public class TenantUtil {
      *
      * @param entity
      */
-    public static final void setTenantId(Object entity) {
+    public static final Serializable setTenantId(Object entity) {
         TableInfo tableInfo = Tables.get(entity.getClass());
         if (Objects.isNull(tableInfo.getTenantIdFieldInfo())) {
-            return;
+            return null;
         }
 
         Serializable tenantId = getTenantId();
         if (Objects.isNull(tenantId)) {
-            return;
+            return null;
         }
 
         try {
@@ -44,6 +44,7 @@ public class TenantUtil {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+        return tenantId;
     }
 
     /**

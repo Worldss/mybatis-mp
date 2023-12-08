@@ -12,7 +12,6 @@ import cn.mybatis.mp.core.util.StringPool;
 import cn.mybatis.mp.db.IdAutoType;
 import cn.mybatis.mp.db.annotations.TableField;
 import cn.mybatis.mp.db.annotations.TableId;
-import db.sql.api.Getter;
 import db.sql.api.impl.cmd.basic.Table;
 import db.sql.api.impl.cmd.executor.AbstractInsert;
 import db.sql.api.impl.cmd.executor.Insert;
@@ -94,6 +93,8 @@ public class EntityBatchInsertContext<T> extends SQLCmdInsertContext<AbstractIns
                         } else {
                             throw new RuntimeException(tableFieldInfo.getField().getName() + " has no value");
                         }
+                    } else if (tableFieldInfo.isTenantId()) {
+                        value = TenantUtil.setTenantId(t);
                     } else if (!StringPool.EMPTY.equals(tableFieldInfo.getTableFieldAnnotation().defaultValue())) {
                         try {
                             //设置默认值

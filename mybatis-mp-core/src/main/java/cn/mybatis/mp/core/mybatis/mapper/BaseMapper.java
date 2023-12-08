@@ -220,7 +220,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * model插入 部分字段修改
+     * model修改 部分字段修改
      *
      * @param model
      * @return
@@ -230,7 +230,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * model插入 部分字段修改
+     * model修改 部分字段修改
      *
      * @param model
      * @param forceUpdateFields 强制更新指定，解决需要修改为null的需求

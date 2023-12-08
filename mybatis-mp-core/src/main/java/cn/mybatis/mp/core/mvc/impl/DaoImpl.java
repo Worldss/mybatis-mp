@@ -47,7 +47,8 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     }
 
     private void checkIdType() {
-        if (getIdType() == Void.class) {
+        Class<K> clazz = getIdType();
+        if (clazz == null || clazz == Void.class) {
             throw new RuntimeException("Not Supported");
         }
     }

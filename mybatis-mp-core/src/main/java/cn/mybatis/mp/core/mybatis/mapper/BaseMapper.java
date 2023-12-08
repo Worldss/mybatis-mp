@@ -213,7 +213,7 @@ public interface BaseMapper<T> {
      *
      * @param entity
      * @param forceUpdateFields 强制更新指定，解决需要修改为null的需求
-     * @return
+     * @return 返回修改条数
      */
     default int update(T entity, Getter<T>... forceUpdateFields) {
         Set<String> forceUpdateFieldsSet = new HashSet<>();

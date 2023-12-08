@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * mybatis 批量工具
@@ -98,18 +99,38 @@ public final class MybatisBatchUtil {
                 optTimes++;
                 batchFunction.accept(session, mapper, entity);
                 if (optTimes == batchSize) {
-                    updateCnt += getUpdateCnt(session.flushStatements());
+                    updateCnt += getEffectCnt(session.flushStatements());
                     optTimes = 0;
                 }
             }
             if (optTimes != 0) {
-                updateCnt += getUpdateCnt(session.flushStatements());
+                updateCnt += getEffectCnt(session.flushStatements());
             }
             return updateCnt;
         }
     }
 
-    private static int getUpdateCnt(List<BatchResult> batchResultList) {
+
+    /**
+     * 批量操作
+     *
+     * @param sqlSessionFactory mybatis SqlSessionFactory 通过spring 注解注入获取
+     * @param batchFunction     操作方法
+     * @return 影响的条数
+     */
+    public static int batch(SqlSessionFactory sqlSessionFactory, Function<SqlSession, Integer> batchFunction) {
+        try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
+            return batchFunction.apply(session);
+        }
+    }
+
+    /**
+     * 获取批量操作影响的条数
+     *
+     * @param batchResultList 批量操作结果list
+     * @return 影响的条数
+     */
+    public static int getEffectCnt(List<BatchResult> batchResultList) {
         int updateCnt = 0;
         for (BatchResult batchResult : batchResultList) {
             for (int i : batchResult.getUpdateCounts()) {

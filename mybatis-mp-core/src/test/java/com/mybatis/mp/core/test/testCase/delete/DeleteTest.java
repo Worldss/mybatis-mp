@@ -10,6 +10,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,6 +25,24 @@ public class DeleteTest extends BaseTest {
             sysUserMapper.deleteById(1);
             List<SysUser> list = QueryChain.of(sysUserMapper).list();
             assertEquals(list.size(), 2);
+        }
+    }
+
+
+    @Test
+    public void deleteIdsTest() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            sysUserMapper.deleteByIds(1,2);
+            List<SysUser> list = QueryChain.of(sysUserMapper).list();
+            assertEquals(list.size(), 1);
+        }
+
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            sysUserMapper.deleteByIds(Arrays.asList(1,2));
+            List<SysUser> list = QueryChain.of(sysUserMapper).list();
+            assertEquals(list.size(), 1);
         }
     }
 

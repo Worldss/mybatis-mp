@@ -172,6 +172,24 @@ public interface BaseMapper<T> {
     }
 
     /**
+     * 多个修改，非批量行为
+     *
+     * @param list
+     * @return 修改条数
+     */
+    default int update(List<T> list, Getter<T>... forceUpdateFields) {
+        Set<String> forceUpdateFieldsSet = new HashSet<>();
+        for (Getter<T> column : forceUpdateFields) {
+            forceUpdateFieldsSet.add(LambdaUtil.getName(column));
+        }
+        int cnt = 0;
+        for (T entity : list) {
+            cnt += this.$update(new EntityUpdateContext(entity, forceUpdateFieldsSet));
+        }
+        return cnt;
+    }
+
+    /**
      * 实体类修改
      *
      * @param entity

@@ -46,11 +46,15 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
         return DeleteChain.of(mapper);
     }
 
-    @Override
-    public T getById(K id) {
-        if (id.getClass() == Void.class) {
+    private void checkIdType() {
+        if (getIdType() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
+    }
+
+    @Override
+    public T getById(K id) {
+        this.checkIdType();
         return mapper.getById((Serializable) id);
     }
 
@@ -71,9 +75,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
 
     @Override
     public int update(T entity) {
-        if (getIdType() == Void.class) {
-            throw new RuntimeException("Not Supported");
-        }
+        this.checkIdType();
         return mapper.update(entity);
     }
 
@@ -84,9 +86,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
 
     @Override
     public int update(T entity, Getter<T>... forceUpdateFields) {
-        if (getIdType() == Void.class) {
-            throw new RuntimeException("Not Supported");
-        }
+        this.checkIdType();
         return mapper.update(entity, forceUpdateFields);
     }
 
@@ -105,9 +105,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
 
     @Override
     public int delete(T entity) {
-        if (getIdType() == Void.class) {
-            throw new RuntimeException("Not Supported");
-        }
+        this.checkIdType();
         return mapper.delete(entity);
     }
 
@@ -118,9 +116,19 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
 
     @Override
     public int deleteById(K id) {
-        if (id.getClass() == Void.class) {
-            throw new RuntimeException("Not Supported");
-        }
+        this.checkIdType();
         return mapper.deleteById((Serializable) id);
+    }
+
+    @Override
+    public int deleteByIds(K... ids) {
+        this.checkIdType();
+        return mapper.deleteByIds(ids);
+    }
+
+    @Override
+    public int deleteByIds(List<K> ids) {
+        this.checkIdType();
+        return mapper.deleteByIds((List<Serializable>) ids);
     }
 }

@@ -111,6 +111,50 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
         return this.$delete(entityType, tableInfo, id);
     }
 
+    /**
+     * 批量删除多个
+     *
+     * @param ids
+     * @return
+     */
+    default int deleteByIds(Serializable... ids) {
+        if (ids == null || ids.length < 1) {
+            throw new RuntimeException("ids array can't be empty");
+        }
+        Class entityType = getEntityType();
+        TableInfo tableInfo = Tables.get(entityType);
+        if (tableInfo.getIdFieldInfo() == null) {
+            throw new RuntimeException("Not Supported");
+        }
+        return DeleteChain.of(this)
+                .connect(self -> {
+                    self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids);
+                })
+                .execute();
+    }
+
+    /**
+     * 批量删除多个
+     *
+     * @param ids
+     * @return
+     */
+    default int deleteByIds(List<Serializable> ids) {
+        if (ids == null || ids.isEmpty()) {
+            throw new RuntimeException("ids list can't be empty");
+        }
+        Class entityType = getEntityType();
+        TableInfo tableInfo = Tables.get(entityType);
+        if (tableInfo.getIdFieldInfo() == null) {
+            throw new RuntimeException("Not Supported");
+        }
+        return DeleteChain.of(this)
+                .connect(self -> {
+                    self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids);
+                })
+                .execute();
+    }
+
     @Override
     default int delete(Consumer<Where> consumer) {
         Where where = Wheres.create();

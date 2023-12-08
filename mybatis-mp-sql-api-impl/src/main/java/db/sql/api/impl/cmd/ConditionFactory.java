@@ -474,6 +474,9 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
+        if (values != null && values.length > 0 && values[0] instanceof Serializable[]) {
+            values = (Serializable[]) values[0];
+        }
         if (!isValid(column, false, values)) {
             return null;
         }

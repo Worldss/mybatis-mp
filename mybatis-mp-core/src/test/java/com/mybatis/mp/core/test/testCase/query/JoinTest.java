@@ -68,12 +68,22 @@ public class JoinTest extends BaseTest {
 
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            Map map = QueryChain.of(sysUserMapper)
+            Map<String, Object> map = QueryChain.of(sysUserMapper)
                     .select(SysUser.class)
                     .from(SysUser.class)
                     .setReturnType(Map.class)
                     .get();
             assertNotNull(map);
+        }
+
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            List<Map<String, Object>> maps = QueryChain.of(sysUserMapper)
+                    .select(SysUser.class)
+                    .from(SysUser.class)
+                    .setReturnType(Map.class)
+                    .list();
+            assertEquals(3, maps.size());
         }
     }
 

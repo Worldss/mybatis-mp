@@ -11,9 +11,9 @@ import db.sql.api.impl.cmd.CmdFactory;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class TenantUtil {
+public final class TenantUtil {
 
-    public static final Serializable getTenantId() {
+    public static Serializable getTenantId() {
         TenantInfo tenantInfo = TenantContext.getTenantInfo();
         if (Objects.isNull(tenantInfo)) {
             return null;
@@ -24,9 +24,34 @@ public class TenantUtil {
     /**
      * 设置实体类的租户ID
      *
+     * @param model 实体类model
+     */
+    public static void setTenantId(Model model) {
+        ModelInfo modelInfo = Models.get(model.getClass());
+        if (Objects.isNull(modelInfo.getTenantIdFieldInfo())) {
+            return;
+        }
+
+        Serializable tenantId = getTenantId();
+        if (Objects.isNull(tenantId)) {
+            return;
+        }
+
+        try {
+            modelInfo.getTenantIdFieldInfo().getWriteFieldInvoker().invoke(model, new Object[]{
+                    tenantId
+            });
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 设置实体类的租户ID
+     *
      * @param entity
      */
-    public static final Serializable setTenantId(Object entity) {
+    public static Serializable setTenantId(Object entity) {
         TableInfo tableInfo = Tables.get(entity.getClass());
         if (Objects.isNull(tableInfo.getTenantIdFieldInfo())) {
             return null;
@@ -48,31 +73,6 @@ public class TenantUtil {
     }
 
     /**
-     * 设置实体类的租户ID
-     *
-     * @param model
-     */
-    public static final void setTenantId(Model model) {
-        ModelInfo modelInfo = Models.get(model.getClass());
-        if (Objects.isNull(modelInfo.getTenantIdFieldInfo())) {
-            return;
-        }
-
-        Serializable tenantId = getTenantId();
-        if (Objects.isNull(tenantId)) {
-            return;
-        }
-
-        try {
-            modelInfo.getTenantIdFieldInfo().getWriteFieldInvoker().invoke(model, new Object[]{
-                    tenantId
-            });
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
      * 添加租户条件
      *
      * @param compare    比较器
@@ -80,7 +80,7 @@ public class TenantUtil {
      * @param entity     实体类
      * @param storey     实体类表的存储层级
      */
-    public static final void addTenantCondition(Compare compare, CmdFactory cmdFactory, Class entity, int storey) {
+    public static void addTenantCondition(Compare compare, CmdFactory cmdFactory, Class entity, int storey) {
         TenantInfo tenantInfo = TenantContext.getTenantInfo();
         if (Objects.isNull(tenantInfo)) {
             return;

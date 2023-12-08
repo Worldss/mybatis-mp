@@ -2,6 +2,7 @@ package cn.mybatis.mp.core.mybatis.configuration;
 
 import cn.mybatis.mp.core.mybatis.mapper.context.MybatisParameter;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
+import db.sql.api.impl.cmd.executor.Executor;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
@@ -14,13 +15,13 @@ import java.util.function.Supplier;
 
 public class PreparedParameterHandler implements ParameterHandler {
 
-    private final SQLCmdContext cmdContext;
+    private final SQLCmdContext<? extends Executor> cmdContext;
 
     private final MybatisConfiguration configuration;
 
-    public PreparedParameterHandler(MybatisConfiguration configuration, SQLCmdContext cmdContext) {
-        this.cmdContext = cmdContext;
+    public PreparedParameterHandler(MybatisConfiguration configuration, SQLCmdContext<? extends Executor> cmdContext) {
         this.configuration = configuration;
+        this.cmdContext = cmdContext;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class PreparedParameterHandler implements ParameterHandler {
                 MybatisParameter parameter = (MybatisParameter) value;
                 Object realValue = parameter.getValue();
                 if (value instanceof Supplier) {
-                    realValue = ((Supplier) value).get();
+                    realValue = ((Supplier<?>) value).get();
                 }
                 if (Objects.isNull(realValue)) {
                     ps.setNull(i + 1, Types.NULL);

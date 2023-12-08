@@ -36,9 +36,7 @@ public class LogicDeleteTestCase extends BaseTest {
             LogicDeleteTestMapper logicDeleteTestMapper = session.getMapper(LogicDeleteTestMapper.class);
             logicDeleteTestMapper.deleteById(1);
 
-            LogicDeleteTest logicDeleteTest = LogicDeleteUtil.execute(false, () -> {
-                return logicDeleteTestMapper.getById(1);
-            });
+            LogicDeleteTest logicDeleteTest = LogicDeleteUtil.execute(false, () -> logicDeleteTestMapper.getById(1));
             assertEquals(logicDeleteTest.getDeleted(), Byte.valueOf("1"));
         }
     }

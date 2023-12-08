@@ -29,17 +29,17 @@ public final class MybatisMpConfig {
     private static final QuerySQLBuilder DEFAULT_SQL_BUILDER = new MybatisMpQuerySQLBuilder();
 
     static {
-        Map<String, Function<Class, Object>> defaultValueMap = new ConcurrentHashMap<>();
+        Map<String, Function<Class<?>, Object>> defaultValueMap = new ConcurrentHashMap<>();
         defaultValueMap.put("{BLANK}", (type) -> {
             if (type == String.class) {
                 return StringPool.EMPTY;
-            } else if (type.getClass().isArray()) {
+            } else if (type.isArray()) {
                 return Array.newInstance(type, 0);
-            } else if (List.class.isAssignableFrom(type.getClass())) {
+            } else if (List.class.isAssignableFrom(type)) {
                 return Collections.EMPTY_LIST;
-            } else if (Set.class.isAssignableFrom(type.getClass())) {
+            } else if (Set.class.isAssignableFrom(type)) {
                 return Collections.EMPTY_SET;
-            } else if (Map.class.isAssignableFrom(type.getClass())) {
+            } else if (Map.class.isAssignableFrom(type)) {
                 return Collections.EMPTY_MAP;
             }
             throw new RuntimeException("Inconsistent types");
@@ -69,7 +69,7 @@ public final class MybatisMpConfig {
     /**
      * 数据库列是否下划线规则 默认 true
      *
-     * @return
+     * @return 列是否是下划线命名规则
      */
     public static boolean isColumnUnderline() {
         return (boolean) CACHE.computeIfAbsent(COLUMN_UNDERLINE, key -> true);
@@ -78,16 +78,16 @@ public final class MybatisMpConfig {
     /**
      * 数据库列是否下划线规则（必须在项目启动时设置，否则可能永远不会成功）
      *
-     * @param bool
+     * @param bool 列是否下划线命名规则
      */
     public static void setColumnUnderline(boolean bool) {
-        CACHE.computeIfAbsent(COLUMN_UNDERLINE, key -> bool);
+        CACHE.putIfAbsent(COLUMN_UNDERLINE, bool);
     }
 
     /**
      * 数据库表是否下划线规则 默认 true
      *
-     * @return
+     * @return 是否是下划线规则
      */
     public static boolean isTableUnderline() {
         return (boolean) CACHE.computeIfAbsent(TABLE_UNDERLINE, key -> true);
@@ -96,16 +96,16 @@ public final class MybatisMpConfig {
     /**
      * 设置数据库表是否下划线规则（必须在项目启动时设置，否则可能永远不会成功）
      *
-     * @param bool
+     * @param bool 是否是下划线规则
      */
     public static void setTableUnderline(boolean bool) {
-        CACHE.computeIfAbsent(TABLE_UNDERLINE, key -> bool);
+        CACHE.putIfAbsent(TABLE_UNDERLINE, bool);
     }
 
     /**
-     * 批量提交的默认size 默认1000
+     * 默认1000
      *
-     * @return
+     * @return 批量提交的默认size
      */
     public static int getDefaultBatchSize() {
         return (int) CACHE.computeIfAbsent(DEFAULT_BATCH_SIZE, key -> 1000);
@@ -121,7 +121,7 @@ public final class MybatisMpConfig {
     /**
      * 设置QUERY SQL BUILDER
      *
-     * @return
+     * @return 返回QuerySQLBuilder
      */
     public static QuerySQLBuilder getQuerySQLBuilder() {
         return (QuerySQLBuilder) CACHE.computeIfAbsent(SQL_BUILDER, key -> DEFAULT_SQL_BUILDER);
@@ -134,7 +134,7 @@ public final class MybatisMpConfig {
     /**
      * 获取逻辑删除开关，默认开启
      *
-     * @return
+     * @return 逻辑开关的是否打开
      */
     public static boolean isLogicDeleteSwitchOpen() {
         Boolean state = LogicDeleteSwitch.getState();
@@ -148,19 +148,19 @@ public final class MybatisMpConfig {
     /**
      * 设置逻辑删除开关状态（必须在项目启动时设置，否则可能永远false）
      *
-     * @param bool
+     * @param bool 开关状态
      */
     public static void setLogicDeleteSwitch(boolean bool) {
-        CACHE.computeIfAbsent(LOGIC_DELETE_SWITCH, key -> bool);
+        CACHE.putIfAbsent(LOGIC_DELETE_SWITCH, bool);
     }
 
     public static boolean isDefaultValueKeyFormat(String key) {
         return key.startsWith("{") && key.endsWith("}");
     }
 
-    public static void setDefaultValue(String key, Function<Class, Object> function) {
+    public static void setDefaultValue(String key, Function<Class<?>, Object> function) {
         checkDefaultValueKey(key);
-        ((ConcurrentHashMap) CACHE.get(DEFAULT_VALUE_MANAGER)).computeIfAbsent(key, mapKey -> function);
+        ((Map<String, Function<Class<?>, Object>>) CACHE.get(DEFAULT_VALUE_MANAGER)).computeIfAbsent(key, mapKey -> function);
     }
 
     private static void checkDefaultValueKey(String key) {
@@ -172,17 +172,17 @@ public final class MybatisMpConfig {
     /**
      * 获取默认值
      *
-     * @param clazz
+     * @param clazz 默认值的类型
      * @param key   默认值的key，key必须以{}包裹，例如:{NOW}
-     * @param <T>
-     * @return
+     * @param <T>   类型clazz的泛型
+     * @return 返回指定类型clazz key的默认值
      */
     public static <T> T getDefaultValue(Class<T> clazz, String key) {
         if (!isDefaultValueKeyFormat(key)) {
             return TypeConvertUtil.convert(key, clazz);
         }
-        Map<String, Function<Class, T>> map = (Map<String, Function<Class, T>>) CACHE.get(DEFAULT_VALUE_MANAGER);
-        Function<Class, T> function = map.get(key);
+        Map<String, Function<Class<?>, T>> map = (Map<String, Function<Class<?>, T>>) CACHE.get(DEFAULT_VALUE_MANAGER);
+        Function<Class<?>, T> function = map.get(key);
         if (function == null) {
             throw new RuntimeException(String.format("key: %s not set", key));
         }

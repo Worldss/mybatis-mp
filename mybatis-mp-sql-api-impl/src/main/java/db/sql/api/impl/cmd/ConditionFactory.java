@@ -477,7 +477,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (values != null && values.length > 0 && values[0] instanceof Serializable[]) {
             values = (Serializable[]) values[0];
         }
-        if (!isValid(column, false, values)) {
+        if (!isValid(column, false, (Object[]) values)) {
             return null;
         }
         return Methods.in(column, values);
@@ -510,7 +510,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(false, values)) {
+        if (!isValid(false, (Object[]) values)) {
             return null;
         }
         return Methods.in(convert(column, storey), values);

@@ -37,6 +37,9 @@ public final class ResultMapUtils {
         if (Objects.nonNull(resultMappings)) {
             resultMap = new ResultMap.Builder(configuration, id, clazz, resultMappings, false).build();
             configuration.addResultMap(resultMap);
+        }else if(Map.class.isAssignableFrom(clazz)){
+            resultMap = new ResultMap.Builder(configuration, id, clazz, Collections.emptyList(), true).build();
+            configuration.addResultMap(resultMap);
         }
         return resultMap;
     }

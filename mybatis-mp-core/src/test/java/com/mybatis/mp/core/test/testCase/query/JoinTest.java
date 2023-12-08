@@ -13,8 +13,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class JoinTest extends BaseTest {
@@ -62,6 +64,16 @@ public class JoinTest extends BaseTest {
                     .setReturnType(Integer.TYPE)
                     .get();
             assertEquals(Integer.valueOf(2), count, "innerJoin");
+        }
+
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            Map map = QueryChain.of(sysUserMapper)
+                    .select(SysUser.class)
+                    .from(SysUser.class)
+                    .setReturnType(Map.class)
+                    .get();
+            assertNotNull(map);
         }
     }
 

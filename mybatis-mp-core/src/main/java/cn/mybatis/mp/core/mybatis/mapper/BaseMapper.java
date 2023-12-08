@@ -45,8 +45,8 @@ public interface BaseMapper<T> {
     /**
      * 是否存在
      *
-     * @param consumer
-     * @return
+     * @param consumer where consumer
+     * @return 是否存在
      */
     default boolean exists(Consumer<Where> consumer) {
         Where where = Wheres.create();

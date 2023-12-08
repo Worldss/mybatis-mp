@@ -33,6 +33,11 @@ public class ModelInfo {
     private final List<ModelFieldInfo> modelFieldInfos;
 
     /**
+     * 字段个数
+     */
+    private final int fieldSize;
+
+    /**
      * ID 字段信息
      */
     private final ModelFieldInfo idFieldInfo;
@@ -68,6 +73,7 @@ public class ModelInfo {
         this.tenantIdFieldInfo = modelFieldInfos.stream().filter(item -> item.getTableFieldInfo().isTenantId()).findFirst().orElse(null);
 
         this.modelFieldInfos = Collections.unmodifiableList(modelFieldInfos);
+        this.fieldSize = this.modelFieldInfos.size();
     }
 
     public Class<?> getType() {
@@ -96,5 +102,9 @@ public class ModelInfo {
 
     public List<ModelFieldInfo> getModelFieldInfos() {
         return modelFieldInfos;
+    }
+
+    public int getFieldSize() {
+        return fieldSize;
     }
 }

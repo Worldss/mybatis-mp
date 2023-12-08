@@ -1,8 +1,10 @@
 package cn.mybatis.mp.core.sql.executor;
 
+import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
+import cn.mybatis.mp.core.sql.MybatisCmdFactory;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
 import db.sql.api.impl.cmd.executor.AbstractQuery;
@@ -34,11 +36,12 @@ public abstract class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, My
         if (tableInfo == null) {
             return super.select(entity, storey);
         } else {
-            tableInfo.getTableFieldInfos().stream().forEach(item -> {
-                if (item.getTableFieldAnnotation().select()) {
-                    this.select($.field(entity, item.getField().getName(), storey));
+            for (int i = 0; i < tableInfo.getFieldSize(); i++) {
+                TableFieldInfo tableFieldInfo = tableInfo.getTableFieldInfos().get(i);
+                if (tableFieldInfo.getTableFieldAnnotation().select()) {
+                    this.select($.field(entity, tableFieldInfo.getField().getName(), storey));
                 }
-            });
+            }
         }
         return (Q) this;
     }
@@ -49,7 +52,7 @@ public abstract class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, My
     }
 
     protected void addLogicDeleteCondition(Class entity, int storey) {
-        LogicDeleteUtil.addLogicDeleteCondition(true, this, $, entity, storey);
+        LogicDeleteUtil.addLogicDeleteCondition(this, $, entity, storey);
     }
 
 

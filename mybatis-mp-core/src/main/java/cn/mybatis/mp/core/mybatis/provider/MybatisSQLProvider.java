@@ -7,6 +7,7 @@ import cn.mybatis.mp.core.sql.executor.BaseQuery;
 import db.sql.api.impl.cmd.basic.Table;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -44,15 +45,17 @@ public class MybatisSQLProvider {
         if (Objects.nonNull(query.getReturnType())) {
             Map<Class, String> entityPrefixMap = ResultClassEntityPrefixes.getEntityPrefix(query.getReturnType());
             if (Objects.nonNull(entityPrefixMap)) {
-                entityPrefixMap.forEach((key, value) -> {
+                Iterator<Map.Entry<Class, String>> iterator = entityPrefixMap.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<Class, String> entry = iterator.next();
                     for (int i = 1; i < 5; i++) {
-                        Table table = queryContext.getExecution().$().cacheTable(key, i);
+                        Table table = queryContext.getExecution().$().cacheTable(entry.getKey(), i);
                         if (Objects.nonNull(table)) {
-                            table.setPrefix(value);
+                            table.setPrefix(entry.getValue());
                             break;
                         }
                     }
-                });
+                }
             }
         }
     }

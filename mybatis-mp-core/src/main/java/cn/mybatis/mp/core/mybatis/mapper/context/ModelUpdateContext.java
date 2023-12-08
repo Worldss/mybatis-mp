@@ -1,6 +1,7 @@
 package cn.mybatis.mp.core.mybatis.mapper.context;
 
 
+import cn.mybatis.mp.core.db.reflect.ModelFieldInfo;
 import cn.mybatis.mp.core.db.reflect.ModelInfo;
 import cn.mybatis.mp.core.db.reflect.Models;
 import cn.mybatis.mp.core.sql.executor.Update;
@@ -33,44 +34,45 @@ public class ModelUpdateContext<T extends Model> extends SQLCmdUpdateContext {
         Update update = new Update() {{
             Table table = $(modelInfo.getEntityType());
             update(table);
-            modelInfo.getModelFieldInfos().stream().forEach(item -> {
-                Object value = item.getValue(t);
-                if (item.getTableFieldInfo().isTableId()) {
+            for (int i = 0; i < modelInfo.getFieldSize(); i++) {
+                ModelFieldInfo modelFieldInfo = modelInfo.getModelFieldInfos().get(i);
+                Object value = modelFieldInfo.getValue(t);
+                if (modelFieldInfo.getTableFieldInfo().isTableId()) {
                     if (Objects.isNull(value)) {
-                        throw new RuntimeException(item.getField().getName() + " can't be null");
+                        throw new RuntimeException(modelFieldInfo.getField().getName() + " can't be null");
                     }
-                    eq($.field(table, item.getTableFieldInfo().getColumnName()), $.value(value));
-                } else if (item.getTableFieldInfo().isTenantId()) {
+                    eq($.field(table, modelFieldInfo.getTableFieldInfo().getColumnName()), $.value(value));
+                } else if (modelFieldInfo.getTableFieldInfo().isTenantId()) {
                     //添加租户条件
                     TenantInfo tenantInfo = TenantContext.getTenantInfo();
                     if (tenantInfo != null) {
                         Object tenantId = tenantInfo.getTenantId();
                         if (Objects.nonNull(tenantId)) {
-                            eq($.field(table, item.getTableFieldInfo().getColumnName()), $.value(tenantId));
+                            eq($.field(table, modelFieldInfo.getTableFieldInfo().getColumnName()), $.value(tenantId));
                         }
                     }
-                } else if (item.getTableFieldInfo().isVersion()) {
+                } else if (modelFieldInfo.getTableFieldInfo().isVersion()) {
                     if (Objects.isNull(value)) {
-                        throw new RuntimeException(item.getField().getName() + " is version filed, can't be null");
+                        throw new RuntimeException(modelFieldInfo.getField().getName() + " is version filed, can't be null");
                     }
                     Integer version = (Integer) value + 1;
                     //乐观锁设置
-                    set($.field(table, item.getTableFieldInfo().getColumnName()), $.value(version));
-                    eq($.field(table, item.getTableFieldInfo().getColumnName()), $.value(value));
+                    set($.field(table, modelFieldInfo.getTableFieldInfo().getColumnName()), $.value(version));
+                    eq($.field(table, modelFieldInfo.getTableFieldInfo().getColumnName()), $.value(value));
                     try {
                         //乐观锁回写
-                        item.getWriteFieldInvoker().invoke(t, new Object[]{version});
+                        modelFieldInfo.getWriteFieldInvoker().invoke(t, new Object[]{version});
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
-                } else if (forceUpdateFields.contains(item.getField().getName())) {
-                    set($.field(table, item.getTableFieldInfo().getColumnName()), Objects.isNull(value) ? $.NULL() : $.value(value));
+                } else if (forceUpdateFields.contains(modelFieldInfo.getField().getName())) {
+                    set($.field(table, modelFieldInfo.getTableFieldInfo().getColumnName()), Objects.isNull(value) ? $.NULL() : $.value(value));
                 } else if (Objects.nonNull(value)) {
-                    TableField tableField = item.getTableFieldInfo().getTableFieldAnnotation();
+                    TableField tableField = modelFieldInfo.getTableFieldInfo().getTableFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());
-                    set($.field(table, item.getTableFieldInfo().getColumnName()), $.value(mybatisParameter));
+                    set($.field(table, modelFieldInfo.getTableFieldInfo().getColumnName()), $.value(mybatisParameter));
                 }
-            });
+            }
         }};
         if (update.getWhere() == null || !update.getWhere().hasContent()) {
             throw new RuntimeException(MessageFormat.format("model {0} can't found id", t.getClass()));

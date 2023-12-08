@@ -11,6 +11,7 @@ import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
 
 import java.io.Serializable;
+import java.util.List;
 
 public abstract class DaoImpl<T, K> implements Dao<T, K> {
 
@@ -54,21 +55,31 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     }
 
     @Override
-    public void save(T entity) {
-        mapper.save(entity);
+    public int save(T entity) {
+        return mapper.save(entity);
     }
 
     @Override
-    public void save(Model<T> model) {
-        mapper.save(model);
+    public int save(List<T> list) {
+        return mapper.save(list);
     }
 
     @Override
-    public void update(T entity) {
+    public int save(Model<T> model) {
+        return mapper.save(model);
+    }
+
+    @Override
+    public int update(T entity) {
         if (getIdType() == Void.class) {
             throw new RuntimeException("Not Supported");
         }
-        mapper.update(entity);
+        return mapper.update(entity);
+    }
+
+    @Override
+    public int update(List<T> list) {
+        return mapper.update(list);
     }
 
     @Override
@@ -98,6 +109,11 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
             throw new RuntimeException("Not Supported");
         }
         return mapper.delete(entity);
+    }
+
+    @Override
+    public int delete(List<T> list) {
+        return mapper.delete(list);
     }
 
     @Override

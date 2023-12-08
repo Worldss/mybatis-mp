@@ -147,11 +147,17 @@ public final class SQLOptimizeUtils {
             // 优化union
             // 无法优化 select 和 order by
             List<IUnion> unionList = unions.getUnions();
-            List<CmdList> cmdListList = new ArrayList<>(unionList.size());
-            for (IUnion union : unionList) {
+            int size = unionList.size();
+            List<CmdList> cmdListList = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                IUnion union = unionList.get(i);
                 Map<Class, Cmd> unionCmdClassMap = new HashMap<>();
                 List<Cmd> unionCmdList = union.getUnionQuery().cmds();
-                unionCmdList.stream().forEach(cmd -> unionCmdClassMap.put(cmd.getClass(), cmd));
+                int unionCmdSize = unionCmdList.size();
+                for (int j = 0; j < unionCmdSize; j++) {
+                    Cmd unionCmd = unionCmdList.get(j);
+                    unionCmdClassMap.put(unionCmd.getClass(), unionCmd);
+                }
                 optimizedCmdList(unionCmdClassMap, false, optimizeOrderBy, optimizeJoins, true);
                 unionCmdList = (List<Cmd>) unionCmdClassMap.values().stream().sorted(union.getUnionQuery().comparator()).collect(Collectors.toList());
                 CmdList cmdList = new CmdList(union.getOperator(), unionCmdList);
@@ -179,7 +185,11 @@ public final class SQLOptimizeUtils {
     public static StringBuilder getOptimizedSql(IQuery query, SqlBuilderContext context) {
         Map<Class, Cmd> classCmdMap = new HashMap<>();
         List<Cmd> cmdList = query.cmds();
-        cmdList.stream().forEach(cmd -> classCmdMap.put(cmd.getClass(), cmd));
+        int size = cmdList.size();
+        for (int i = 0; i < size; i++) {
+            Cmd cmd = cmdList.get(i);
+            classCmdMap.put(cmd.getClass(), cmd);
+        }
         optimizedCmdList(classCmdMap, false, false, true, classCmdMap.containsKey(Unions.class));
         cmdList = (List<Cmd>) classCmdMap.entrySet().stream().map(Map.Entry::getValue).sorted(query.comparator()).collect(Collectors.toList());
         return CmdUtils.join(context, new StringBuilder(), cmdList);
@@ -204,15 +214,19 @@ public final class SQLOptimizeUtils {
     /**
      * 获取优化后的count sql
      *
-     * @param query      查询语句
-     * @param context    构建SQL上下文
-     * @param sqlBuilder SQL拼接 StringBuilder
+     * @param query   查询语句
+     * @param context 构建SQL上下文
      * @return SQL StringBuilder
      */
     public static StringBuilder getOptimizedCountSql(IQuery query, SqlBuilderContext context) {
         Map<Class, Cmd> classCmdMap = new HashMap<>();
         List<Cmd> cmdList = query.cmds();
-        cmdList.stream().forEach(cmd -> classCmdMap.put(cmd.getClass(), cmd));
+        int size = cmdList.size();
+        for (int i = 0; i < size; i++) {
+            Cmd cmd = cmdList.get(i);
+            classCmdMap.put(cmd.getClass(), cmd);
+        }
+
         optimizedCmdList(classCmdMap, true, true, true, classCmdMap.containsKey(Unions.class));
 
         boolean needWarp = false;

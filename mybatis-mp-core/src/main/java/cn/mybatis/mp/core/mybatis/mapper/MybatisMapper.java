@@ -10,6 +10,7 @@ import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import db.sql.api.impl.cmd.struct.Where;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -56,6 +57,7 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
                 .execute();
     }
 
+
     /**
      * 根据实体类删除
      *
@@ -77,6 +79,20 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
             throw new RuntimeException(e);
         }
         return this.$delete(entity.getClass(), tableInfo, id);
+    }
+
+    /**
+     * 多个删除，非批量行为
+     *
+     * @param list
+     * @return 修改条数
+     */
+    default int delete(List<T> list) {
+        int cnt = 0;
+        for (T entity : list) {
+            cnt += this.delete(entity);
+        }
+        return cnt;
     }
 
     /**

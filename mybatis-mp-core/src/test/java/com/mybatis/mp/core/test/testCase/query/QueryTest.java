@@ -9,6 +9,7 @@ import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import db.sql.api.impl.cmd.dbFun.FunctionInterface;
+import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
@@ -87,6 +88,32 @@ public class QueryTest extends BaseTest {
             eqSysUser.setUserName("test1");
             eqSysUser.setRole_id(1);
             assertEquals(eqSysUser, sysUser, "返回单表，innerJoin检测");
+        }
+    }
+
+    @Test
+    public void innerJoinCursorTest() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            Cursor<SysUser> sysUserCursor = QueryChain.of(sysUserMapper)
+                    .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
+                    .from(SysUser.class)
+                    .join(SysUser.class, SysRole.class)
+                    .eq(SysUser::getId, 2)
+                    .cursor();
+            assertTrue(sysUserCursor instanceof Cursor);
+
+            SysUser sysUser = null;
+            for (SysUser entity : sysUserCursor) {
+                assertEquals(sysUser, null);
+                sysUser = entity;
+            }
+
+            SysUser eqSysUser = new SysUser();
+            eqSysUser.setId(2);
+            eqSysUser.setUserName("test1");
+            eqSysUser.setRole_id(1);
+            assertEquals(eqSysUser, sysUser);
         }
     }
 

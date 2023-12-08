@@ -1,6 +1,7 @@
 package cn.mybatis.mp.core.sql.executor;
 
 import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
+import cn.mybatis.mp.core.sql.MybatisCmdFactory;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
 import db.sql.api.Cmd;
@@ -41,7 +42,7 @@ public abstract class BaseSubQuery<Q extends BaseSubQuery> extends AbstractSubQu
     }
 
     protected void addLogicDeleteCondition(Class entity, int storey) {
-        LogicDeleteUtil.addLogicDeleteCondition(true, this, $, entity, storey);
+        LogicDeleteUtil.addLogicDeleteCondition(this, $, entity, storey);
     }
 
     @Override

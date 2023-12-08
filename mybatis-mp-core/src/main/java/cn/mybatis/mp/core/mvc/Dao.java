@@ -3,17 +3,23 @@ package cn.mybatis.mp.core.mvc;
 import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
 
+import java.util.List;
+
 public interface Dao<T, K> {
 
     Class<K> getIdType();
 
     T getById(K id);
 
-    void save(T entity);
+    int save(T entity);
 
-    void save(Model<T> model);
+    int save(List<T> list);
 
-    void update(T entity);
+    int save(Model<T> model);
+
+    int update(T entity);
+
+    int update(List<T> list);
 
     int update(T entity, Getter<T>... forceUpdateFields);
 
@@ -22,6 +28,8 @@ public interface Dao<T, K> {
     int update(Model<T> model, Getter<T>... forceUpdateFields);
 
     int delete(T entity);
+
+    int delete(List<T> list);
 
     int deleteById(K id);
 }

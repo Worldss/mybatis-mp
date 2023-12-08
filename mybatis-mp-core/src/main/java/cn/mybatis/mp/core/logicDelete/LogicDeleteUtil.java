@@ -8,7 +8,6 @@ import cn.mybatis.mp.core.mybatis.mapper.BaseMapper;
 import cn.mybatis.mp.core.sql.executor.BaseUpdate;
 import cn.mybatis.mp.core.sql.executor.chain.UpdateChain;
 import cn.mybatis.mp.core.util.StringPool;
-import cn.mybatis.mp.core.util.TypeConvertUtil;
 import cn.mybatis.mp.db.annotations.LogicDelete;
 import db.sql.api.cmd.executor.method.condition.compare.Compare;
 import db.sql.api.impl.cmd.CmdFactory;
@@ -19,11 +18,28 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * 逻辑删除工具类
  */
 public final class LogicDeleteUtil {
+
+    /**
+     * 在指定逻辑开关下执行
+     *
+     * @param state    开关状态
+     * @param supplier 函数
+     * @param <T>
+     * @return 函数执行后的返回值
+     */
+    public static <T> T execute(boolean state, Supplier<T> supplier) {
+        try (LogicDeleteSwitch ignore = LogicDeleteSwitch.with(state)) {
+            return supplier.get();
+        }
+    }
+
     /**
      * 是否需要逻辑删除
      *
@@ -89,7 +105,7 @@ public final class LogicDeleteUtil {
     public static void addLogicDeleteUpdateSets(BaseUpdate baseUpdate, Class entity, TableInfo tableInfo) {
         TableField logicDeleteTableField = baseUpdate.$().field(entity, tableInfo.getLogicDeleteFieldInfo().getField().getName(), 1);
         baseUpdate.set(logicDeleteTableField, getLogicAfterValue(tableInfo.getLogicDeleteFieldInfo()));
-        addLogicDeleteCondition(false, baseUpdate, baseUpdate.$(), entity, 1);
+        addLogicDeleteCondition(baseUpdate, baseUpdate.$(), entity, 1);
 
         String deleteTimeFieldName = tableInfo.getLogicDeleteFieldInfo().getLogicDeleteAnnotation().deleteTimeField();
         if (!StringPool.EMPTY.equals(deleteTimeFieldName)) {
@@ -139,32 +155,18 @@ public final class LogicDeleteUtil {
 
 
     /**
-     * 添加租户条件
+     * 添加逻辑删除条件
      *
-     * @param forQuery   是否为了查询结果
      * @param compare    比较器
      * @param cmdFactory 命令工厂
      * @param entity     实体类
      * @param storey     实体类表的存储层级
      */
-    public static void addLogicDeleteCondition(boolean forQuery, Compare compare, CmdFactory cmdFactory, Class entity, int storey) {
-        if (forQuery) {
-            Boolean state = LogicDeleteSwitch.getState();
-            if (state == Boolean.FALSE) {
-                //局部开关 优先
-                return;
-            }
-            if (state == null) {
-                //局部开关 未设置 则看全局开关
-                if (!MybatisMpConfig.isLogicDeleteSwitchOpen()) {
-                    return;
-                }
-            }
-        } else {
-            if (!MybatisMpConfig.isLogicDeleteSwitchOpen()) {
-                return;
-            }
+    public static void addLogicDeleteCondition(Compare compare, CmdFactory cmdFactory, Class entity, int storey) {
+        if (!MybatisMpConfig.isLogicDeleteSwitchOpen()) {
+            return;
         }
+
         TableInfo tableInfo = Tables.get(entity);
         if (Objects.isNull(tableInfo.getLogicDeleteFieldInfo())) {
             return;

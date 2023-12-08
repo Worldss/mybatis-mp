@@ -4,7 +4,7 @@ import cn.mybatis.mp.core.db.reflect.ForeignInfo;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
-import cn.mybatis.mp.core.sql.executor.MybatisCmdFactory;
+import cn.mybatis.mp.core.sql.MybatisCmdFactory;
 import db.sql.api.impl.cmd.struct.On;
 
 import java.util.function.Consumer;

@@ -16,8 +16,7 @@ import java.util.function.Function;
 public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, TableField, DatasetField> {
 
     private final String tableAsPrefix;
-    protected Map<String, Table> tableCache = new HashMap<>();
-    protected Map<String, TableField> tableFieldCache = new HashMap<>();
+    protected Map<String, Table> tableCache = new HashMap<>(5);
     protected int tableNums = 0;
 
     public CmdFactory() {
@@ -63,15 +62,9 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
 
     @Override
     public <T> TableField field(Getter<T> column, int storey) {
-        Class entity = LambdaUtil.getClass(column);
-        String filedName = LambdaUtil.getName(column);
-        return this.field(entity, 1, filedName);
+        LambdaUtil.LambdaFieldInfo fieldInfo = LambdaUtil.getFieldInfo(column);
+        return this.field(fieldInfo.getType(), 1, fieldInfo.getName());
     }
-
-//    @Override
-//    public Consumer<On> buildOn(Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<On> consumer) {
-//        return consumer;
-//    }
 
     public <T> TableField field(Table table, Getter<T> column) {
         return new TableField(table, columnName(column));
@@ -108,10 +101,8 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
     }
 
     protected TableField field(Class clazz, int storey, String filedName) {
-        return tableFieldCache.computeIfAbsent(String.format("%s.%s", clazz.getName(), filedName), key -> {
-            Table table = table(clazz, storey);
-            return new TableField(table, filedName);
-        });
+        Table table = table(clazz, storey);
+        return new TableField(table, filedName);
     }
 
     public BasicValue value(Object value) {

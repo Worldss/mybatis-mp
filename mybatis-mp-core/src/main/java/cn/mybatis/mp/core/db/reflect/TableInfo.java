@@ -37,6 +37,11 @@ public class TableInfo {
     private final List<TableFieldInfo> tableFieldInfos;
 
     /**
+     * 字段个数
+     */
+    private final int fieldSize;
+
+    /**
      * id字段信息
      */
     private final TableFieldInfo idFieldInfo;
@@ -125,6 +130,7 @@ public class TableInfo {
         }
 
         this.tableFieldInfos = Collections.unmodifiableList(tableFieldInfos);
+        this.fieldSize = this.tableFieldInfos.size();
         this.idFieldInfo = idFieldInfo;
         this.versionFieldInfo = versionFieldInfo;
         this.tenantIdFieldInfo = tenantIdFieldInfo;
@@ -188,6 +194,10 @@ public class TableInfo {
 
     public List<TableFieldInfo> getTableFieldInfos() {
         return tableFieldInfos;
+    }
+
+    public int getFieldSize() {
+        return fieldSize;
     }
 
     public TableFieldInfo getIdFieldInfo() {

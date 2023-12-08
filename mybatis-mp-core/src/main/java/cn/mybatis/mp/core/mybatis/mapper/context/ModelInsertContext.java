@@ -38,12 +38,13 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
             Table table = $.table(modelInfo.getTableInfo().getSchemaAndTableName());
             insert(table);
             List<Object> values = new ArrayList<>();
-            modelInfo.getModelFieldInfos().stream().forEach(item -> {
+            for (int i = 0; i < modelInfo.getFieldSize(); i++) {
+                ModelFieldInfo modelFieldInfo = modelInfo.getModelFieldInfos().get(i);
                 boolean isNeedInsert = false;
-                Object value = item.getValue(model);
+                Object value = modelFieldInfo.getValue(model);
                 if (Objects.nonNull(value)) {
                     isNeedInsert = true;
-                } else if (item.getTableFieldInfo().isTableId()) {
+                } else if (modelFieldInfo.getTableFieldInfo().isTableId()) {
                     TableId tableId = TableIds.get(modelInfo.getTableInfo().getType());
                     if (tableId.value() == IdAutoType.GENERATOR) {
                         isNeedInsert = true;
@@ -52,37 +53,37 @@ public class ModelInsertContext<T extends Model> extends SQLCmdInsertContext<Abs
                         if (modelInfo.getIdFieldInfo().getField().getType() == String.class) {
                             id = id instanceof String ? id : String.valueOf(id);
                         }
-                        if (setId(model, item, id)) {
+                        if (setId(model, modelFieldInfo, id)) {
                             value = id;
                         }
                     }
-                } else if (!StringPool.EMPTY.equals(item.getTableFieldInfo().getTableFieldAnnotation().defaultValue())) {
+                } else if (!StringPool.EMPTY.equals(modelFieldInfo.getTableFieldInfo().getTableFieldAnnotation().defaultValue())) {
                     isNeedInsert = true;
                     try {
                         //设置默认值
-                        value = MybatisMpConfig.getDefaultValue(item.getField().getType(), item.getTableFieldInfo().getTableFieldAnnotation().defaultValue());
-                        item.getWriteFieldInvoker().invoke(model, new Object[]{value});
+                        value = MybatisMpConfig.getDefaultValue(modelFieldInfo.getField().getType(), modelFieldInfo.getTableFieldInfo().getTableFieldAnnotation().defaultValue());
+                        modelFieldInfo.getWriteFieldInvoker().invoke(model, new Object[]{value});
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
-                } else if (item.getTableFieldInfo().isVersion()) {
+                } else if (modelFieldInfo.getTableFieldInfo().isVersion()) {
                     isNeedInsert = true;
                     try {
                         //乐观锁设置 默认值1
                         value = Integer.valueOf(1);
-                        item.getWriteFieldInvoker().invoke(model, new Object[]{value});
+                        modelFieldInfo.getWriteFieldInvoker().invoke(model, new Object[]{value});
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 }
 
                 if (isNeedInsert) {
-                    field($.field(table, item.getTableFieldInfo().getColumnName()));
-                    TableField tableField = item.getTableFieldInfo().getTableFieldAnnotation();
+                    field($.field(table, modelFieldInfo.getTableFieldInfo().getColumnName()));
+                    TableField tableField = modelFieldInfo.getTableFieldInfo().getTableFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());
                     values.add($.value(mybatisParameter));
                 }
-            });
+            }
             values(values);
         }};
         return insert;

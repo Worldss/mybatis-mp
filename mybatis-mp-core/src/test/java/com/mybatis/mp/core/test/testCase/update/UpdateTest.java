@@ -1,7 +1,10 @@
 package com.mybatis.mp.core.test.testCase.update;
 
+import cn.mybatis.mp.core.sql.executor.SubQuery;
 import cn.mybatis.mp.core.sql.executor.Wheres;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
+import cn.mybatis.mp.core.sql.executor.chain.UpdateChain;
+import com.mybatis.mp.core.test.DO.SysRole;
 import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.model.SysUserModel;
@@ -33,9 +36,23 @@ public class UpdateTest extends BaseTest {
             eqSysUser.setRole_id(0);
             eqSysUser.setCreate_time(LocalDateTime.parse("2023-10-10T10:10:10"));
 
-            List<SysUser> list=QueryChain.of(sysUserMapper).eq(SysUser::getUserName,"adminxx").list();
-            assertEquals(list.size(),1);
+            List<SysUser> list = QueryChain.of(sysUserMapper).eq(SysUser::getUserName, "adminxx").list();
+            assertEquals(list.size(), 1);
             assertEquals(list.get(0), eqSysUser, "实体修改");
+
+
+            UpdateChain.of(sysUserMapper)
+                    .connect(updateChain -> {
+                        updateChain.set(SysUser::getRole_id, SubQuery.create()
+                                .select(SysRole::getId)
+                                .from(SysRole.class)
+                                .eq(SysRole::getId, updateChain.$(SysUser::getRole_id))
+                                .orderBy(SysRole::getCreateTime)
+                                .limit(1)
+                        );
+                    })
+                    .eq(SysUser::getId, 1)
+                    .execute();
         }
     }
 
@@ -56,8 +73,8 @@ public class UpdateTest extends BaseTest {
             eqSysUser.setRole_id(0);
             eqSysUser.setCreate_time(LocalDateTime.parse("2023-10-10T10:10:10"));
 
-            List<SysUser> list=QueryChain.of(sysUserMapper).eq(SysUser::getUserName,"adminxx").list();
-            assertEquals(list.size(),1);
+            List<SysUser> list = QueryChain.of(sysUserMapper).eq(SysUser::getUserName, "adminxx").list();
+            assertEquals(list.size(), 1);
             assertEquals(list.get(0), eqSysUser, "实体强制修改");
         }
     }
@@ -81,8 +98,8 @@ public class UpdateTest extends BaseTest {
             eqSysUser.setCreate_time(LocalDateTime.parse("2023-10-10T10:10:10"));
 
 
-            List<SysUser> list=QueryChain.of(sysUserMapper).eq(SysUser::getUserName,"adminxx").list();
-            assertEquals(list.size(),1);
+            List<SysUser> list = QueryChain.of(sysUserMapper).eq(SysUser::getUserName, "adminxx").list();
+            assertEquals(list.size(), 1);
             assertEquals(list.get(0), eqSysUser, "实体model修改");
         }
     }
@@ -104,13 +121,11 @@ public class UpdateTest extends BaseTest {
             eqSysUser.setRole_id(0);
             eqSysUser.setCreate_time(LocalDateTime.parse("2023-10-10T10:10:10"));
 
-            List<SysUser> list=QueryChain.of(sysUserMapper).eq(SysUser::getUserName,"adminxx").list();
-            assertEquals(list.size(),1);
+            List<SysUser> list = QueryChain.of(sysUserMapper).eq(SysUser::getUserName, "adminxx").list();
+            assertEquals(list.size(), 1);
             assertEquals(list.get(0), eqSysUser, "实体model强制修改");
         }
     }
-
-
 
 
     @Test
@@ -130,8 +145,8 @@ public class UpdateTest extends BaseTest {
             eqSysUser.setCreate_time(LocalDateTime.parse("2023-10-10T10:10:10"));
 
 
-            List<SysUser> list=QueryChain.of(sysUserMapper).eq(SysUser::getUserName,"adminxx").list();
-            assertEquals(list.size(),1);
+            List<SysUser> list = QueryChain.of(sysUserMapper).eq(SysUser::getUserName, "adminxx").list();
+            assertEquals(list.size(), 1);
             assertEquals(list.get(0), eqSysUser, "实体with where修改");
         }
     }
@@ -143,7 +158,7 @@ public class UpdateTest extends BaseTest {
 
             SysUser updateSysUser = new SysUser();
             updateSysUser.setUserName("adminxx");
-            sysUserMapper.update(updateSysUser, Wheres.create().eq(SysUser::getId,1), SysUser::getPassword);
+            sysUserMapper.update(updateSysUser, Wheres.create().eq(SysUser::getId, 1), SysUser::getPassword);
 
 
             SysUser eqSysUser = new SysUser();
@@ -154,8 +169,8 @@ public class UpdateTest extends BaseTest {
             eqSysUser.setCreate_time(LocalDateTime.parse("2023-10-10T10:10:10"));
 
 
-            List<SysUser> list=QueryChain.of(sysUserMapper).eq(SysUser::getUserName,"adminxx").list();
-            assertEquals(list.size(),1);
+            List<SysUser> list = QueryChain.of(sysUserMapper).eq(SysUser::getUserName, "adminxx").list();
+            assertEquals(list.size(), 1);
             assertEquals(list.get(0), eqSysUser, "实体with where 强制修改");
         }
     }

@@ -1,6 +1,7 @@
 package cn.mybatis.mp.core.mybatis.mapper.context;
 
 
+import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
 import cn.mybatis.mp.core.sql.executor.Update;
@@ -39,28 +40,29 @@ public class EntityUpdateWithWhereContext<T> extends SQLCmdUpdateContext {
         Update update = new Update(where) {{
             Table table = $(t.getClass());
             update(table);
-            tableInfo.getTableFieldInfos().stream().forEach(item -> {
-                Object value = item.getValue(t);
-                if (item.isTenantId()) {
+            for (int i = 0; i < tableInfo.getFieldSize(); i++) {
+                TableFieldInfo tableFieldInfo = tableInfo.getTableFieldInfos().get(i);
+                Object value = tableFieldInfo.getValue(t);
+                if (tableFieldInfo.isTenantId()) {
                     //添加租户条件
                     TenantInfo tenantInfo = TenantContext.getTenantInfo();
                     if (tenantInfo != null) {
                         Object tenantId = tenantInfo.getTenantId();
                         if (Objects.nonNull(tenantId)) {
-                            eq($.field(table, item.getColumnName()), $.value(tenantId));
+                            eq($.field(table, tableFieldInfo.getColumnName()), $.value(tenantId));
                         }
                     }
                 }
-                if (forceUpdateFields.contains(item.getField().getName())) {
-                    set($.field(table, item.getColumnName()), Objects.isNull(value) ? $.NULL() : $.value(value));
-                } else if (!item.getTableFieldAnnotation().update()) {
+                if (forceUpdateFields.contains(tableFieldInfo.getField().getName())) {
+                    set($.field(table, tableFieldInfo.getColumnName()), Objects.isNull(value) ? $.NULL() : $.value(value));
+                } else if (!tableFieldInfo.getTableFieldAnnotation().update()) {
 
                 } else if (Objects.nonNull(value)) {
-                    TableField tableField = item.getTableFieldAnnotation();
+                    TableField tableField = tableFieldInfo.getTableFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());
-                    set($.field(table, item.getColumnName()), $.value(mybatisParameter));
+                    set($.field(table, tableFieldInfo.getColumnName()), $.value(mybatisParameter));
                 }
-            });
+            }
         }};
         return update;
     }

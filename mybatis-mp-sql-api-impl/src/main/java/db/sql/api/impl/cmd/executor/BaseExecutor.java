@@ -24,18 +24,12 @@ public abstract class BaseExecutor<SELF extends BaseExecutor, CMD_FACTORY extend
         return $().field(table, column);
     }
 
-    public <T> TableField $(Getter<T> column, int storey) {
-        return $().field(column, storey);
-    }
+ 
 
     public <T> DatasetField $(Dataset dataset, Getter<T> column) {
         return this.$(dataset, $().columnName(column));
     }
-
-    public DatasetField $(Dataset dataset, String columnName) {
-        return $().field(dataset, columnName);
-    }
-
+    
     public TableField $(Table table, String columnName) {
         return $().field(table, columnName);
     }

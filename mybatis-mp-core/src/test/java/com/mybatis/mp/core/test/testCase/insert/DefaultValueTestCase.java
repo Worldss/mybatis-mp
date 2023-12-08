@@ -3,9 +3,10 @@ package com.mybatis.mp.core.test.testCase.insert;
 import com.mybatis.mp.core.test.DO.DefaultValueTest;
 import com.mybatis.mp.core.test.mapper.DefaultValueTestMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
-import junit.framework.Assert;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DefaultValueTestCase extends BaseTest {
 
@@ -17,10 +18,10 @@ public class DefaultValueTestCase extends BaseTest {
 
             mapper.save(defaultValueTest);
             //System.out.println(idTest);
-            Assert.assertNotNull(defaultValueTest.getId());
-            Assert.assertNotNull(defaultValueTest.getValue1());
-            Assert.assertNotNull(defaultValueTest.getValue2());
-            Assert.assertNotNull(defaultValueTest.getCreateTime());
+            assertNotNull(defaultValueTest.getId());
+            assertNotNull(defaultValueTest.getValue1());
+            assertNotNull(defaultValueTest.getValue2());
+            assertNotNull(defaultValueTest.getCreateTime());
         }
     }
 }

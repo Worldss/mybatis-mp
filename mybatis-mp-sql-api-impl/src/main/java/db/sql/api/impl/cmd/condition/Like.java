@@ -35,9 +35,6 @@ public class Like extends BasicCondition {
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = getField().sql(module, this, context, sqlBuilder);
         sqlBuilder = sqlBuilder.append(getOperator());
-        if (context.getDbType() == DbType.MYSQL) {
-
-        }
         sqlBuilder = sqlBuilder.append(SqlConst.CONCAT).append(SqlConst.BRACKET_LEFT);
 
         boolean before = false;

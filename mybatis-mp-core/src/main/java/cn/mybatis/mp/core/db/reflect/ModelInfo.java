@@ -55,18 +55,14 @@ public class ModelInfo {
 
     public ModelInfo(Class<?> model) {
         this.type = model;
-        Class<?> entity = GenericUtil.getGenericInterfaceClass(model).stream().filter(item -> item.isAnnotationPresent(Table.class)).findFirst().orElseThrow(() -> {
-            return new RuntimeException(MessageFormat.format("class {0} have no generic type", model.getName()));
-        });
+        Class<?> entity = GenericUtil.getGenericInterfaceClass(model).stream().filter(item -> item.isAnnotationPresent(Table.class)).findFirst().orElseThrow(() -> new RuntimeException(MessageFormat.format("class {0} have no generic type", model.getName())));
         this.entityType = entity;
         this.tableInfo = Tables.get(entity);
         if (Objects.isNull(tableInfo)) {
             throw new RuntimeException(MessageFormat.format("unable match model class {0} , the generic class {1} is not a entity", model.getName(), entity.getName()));
         }
 
-        List<ModelFieldInfo> modelFieldInfos = FieldUtils.getResultMappingFields(model).stream().map(field -> {
-            return new ModelFieldInfo(entity, model, field);
-        }).collect(Collectors.toList());
+        List<ModelFieldInfo> modelFieldInfos = FieldUtils.getResultMappingFields(model).stream().map(field -> new ModelFieldInfo(entity, model, field)).collect(Collectors.toList());
 
         this.idFieldInfo = modelFieldInfos.stream().filter(item -> item.getTableFieldInfo().isTableId()).findFirst().orElse(null);
         this.versionFieldInfo = modelFieldInfos.stream().filter(item -> item.getTableFieldInfo().isVersion()).findFirst().orElse(null);

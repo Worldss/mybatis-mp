@@ -31,9 +31,7 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
         return QueryChain.of(this)
                 .select(entityType)
                 .from(entityType)
-                .connect(self -> {
-                    self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id);
-                })
+                .connect(self -> self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id))
                 .setReturnType(entityType)
                 .get();
     }
@@ -51,9 +49,7 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
         return DeleteChain.of(this)
                 .delete(entityType)
                 .from(entityType)
-                .connect(self -> {
-                    self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id);
-                })
+                .connect(self -> self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id))
                 .execute();
     }
 
@@ -138,9 +134,7 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
             throw new RuntimeException("Not Supported");
         }
         return DeleteChain.of(this)
-                .connect(self -> {
-                    self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids);
-                })
+                .connect(self -> self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids))
                 .execute();
     }
 
@@ -160,9 +154,7 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
             throw new RuntimeException("Not Supported");
         }
         return DeleteChain.of(this)
-                .connect(self -> {
-                    self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids);
-                })
+                .connect(self -> self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids))
                 .execute();
     }
 

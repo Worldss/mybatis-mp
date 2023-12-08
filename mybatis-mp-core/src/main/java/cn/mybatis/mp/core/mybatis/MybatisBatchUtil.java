@@ -41,9 +41,7 @@ public final class MybatisBatchUtil {
      * @return 影响的条数
      */
     public static <M extends MybatisMapper, T> int batchSave(SqlSessionFactory sqlSessionFactory, Class<M> mapperType, List<T> list, int batchSize) {
-        return batch(sqlSessionFactory, mapperType, list, batchSize, (session, mapper, data) -> {
-            mapper.save(data);
-        });
+        return batch(sqlSessionFactory, mapperType, list, batchSize, (session, mapper, data) -> mapper.save(data));
     }
 
 
@@ -73,9 +71,7 @@ public final class MybatisBatchUtil {
      * @return 影响的条数
      */
     public static <M extends MybatisMapper, T> int batchUpdate(SqlSessionFactory sqlSessionFactory, Class<M> mapperType, List<T> list, int batchSize) {
-        return batch(sqlSessionFactory, mapperType, list, batchSize, ((session, mapper, data) -> {
-            mapper.update(data);
-        }));
+        return batch(sqlSessionFactory, mapperType, list, batchSize, ((session, mapper, data) -> mapper.update(data)));
     }
 
     /**

@@ -2,7 +2,7 @@ package db.sql.api.impl.tookit;
 
 import db.sql.api.DbType;
 
-public class SqlConst {
+public final class SqlConst {
 
     public static final String EMPTY = "";
 
@@ -154,7 +154,7 @@ public class SqlConst {
     public static final String FOR_UPDATE = " FOR UPDATE";
     public static final String DOUBLE_QUOT = "\"";
 
-    public static final String AS(DbType dbType) {
+    public static String AS(DbType dbType) {
         switch (dbType) {
             case ORACLE: {
                 return " ";
@@ -165,7 +165,7 @@ public class SqlConst {
         }
     }
 
-    public static final String SINGLE_QUOT(DbType dbType) {
+    public static String SINGLE_QUOT(DbType dbType) {
         switch (dbType) {
             case PGSQL: {
                 return DOUBLE_QUOT;

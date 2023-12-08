@@ -62,7 +62,7 @@ public class TableIdGeneratorWrapper {
     }
 
     public static void addEntityKeyGenerator(MappedStatement ms, String selectKeyId, TableInfo tableInfo) {
-        KeyGenerator keyGenerator = null;
+        KeyGenerator keyGenerator;
         TableId tableId = TableIds.get(ms.getConfiguration(), tableInfo.getType());
         switch (tableId.value()) {
             //数据库默认自增

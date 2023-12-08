@@ -23,6 +23,6 @@ public class MybatisSqlBuilderContext extends SqlBuilderContext {
     }
 
     public Object[] getParams() {
-        return paramList.stream().toArray();
+        return paramList.toArray();
     }
 }

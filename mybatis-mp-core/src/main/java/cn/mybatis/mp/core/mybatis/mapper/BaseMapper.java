@@ -25,14 +25,14 @@ public interface BaseMapper<T> {
     /**
      * 获取实体类的type
      *
-     * @return
+     * @return 当前实体类
      */
     Class<T> getEntityType();
 
     /**
      * 获取当前mapper类的type
      *
-     * @return
+     * @return 当前mapper的class
      */
     Class<? extends BaseMapper<T>> getMapperType();
 
@@ -284,7 +284,7 @@ public interface BaseMapper<T> {
      * @param consumer
      * @return
      */
-    default <T> List<T> list(Consumer<Where> consumer) {
+    default List<T> list(Consumer<Where> consumer) {
         Where where = Wheres.create();
         consumer.accept(where);
         return QueryChain.of(this, where).list(false);
@@ -320,7 +320,7 @@ public interface BaseMapper<T> {
      * @param consumer
      * @return
      */
-    default <T> Cursor<T> cursor(Consumer<Where> consumer) {
+    default Cursor<T> cursor(Consumer<Where> consumer) {
         Where where = Wheres.create();
         consumer.accept(where);
         return QueryChain.of(this, where).cursor(false);
@@ -474,7 +474,7 @@ public interface BaseMapper<T> {
      * @see MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_NAME)
-    <T> List<T> $list(SQLCmdQueryContext queryContext);
+    <R> List<R> $list(SQLCmdQueryContext queryContext);
 
     /**
      * 游标查询
@@ -484,7 +484,7 @@ public interface BaseMapper<T> {
      * @see MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_NAME)
-    <T> Cursor<T> $cursor(SQLCmdQueryContext queryContext);
+    <R> Cursor<R> $cursor(SQLCmdQueryContext queryContext);
 
     /**
      * count查询

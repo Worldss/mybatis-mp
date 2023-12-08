@@ -56,7 +56,7 @@ public class EntityUpdateWithWhereContext<T> extends SQLCmdUpdateContext {
                 if (forceUpdateFields.contains(tableFieldInfo.getField().getName())) {
                     set($.field(table, tableFieldInfo.getColumnName()), Objects.isNull(value) ? $.NULL() : $.value(value));
                 } else if (!tableFieldInfo.getTableFieldAnnotation().update()) {
-
+                    continue;
                 } else if (Objects.nonNull(value)) {
                     TableField tableField = tableFieldInfo.getTableFieldAnnotation();
                     MybatisParameter mybatisParameter = new MybatisParameter(value, tableField.typeHandler(), tableField.jdbcType());

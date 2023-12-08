@@ -43,9 +43,7 @@ public final class ResultMapUtils {
 
     private static List<ResultMapping> getEntityResultMappings(MybatisConfiguration configuration, Class entity) {
         TableInfo tableInfo = Tables.get(entity);
-        List<ResultMapping> resultMappings = tableInfo.getTableFieldInfos().stream().map(tableFieldInfo -> {
-            return configuration.buildResultMapping(tableFieldInfo.isTableId(), tableFieldInfo.getField(), tableFieldInfo.getColumnName(), tableFieldInfo.getTableFieldAnnotation().jdbcType(), tableFieldInfo.getTableFieldAnnotation().typeHandler());
-        }).collect(Collectors.toList());
+        List<ResultMapping> resultMappings = tableInfo.getTableFieldInfos().stream().map(tableFieldInfo -> configuration.buildResultMapping(tableFieldInfo.isTableId(), tableFieldInfo.getField(), tableFieldInfo.getColumnName(), tableFieldInfo.getTableFieldAnnotation().jdbcType(), tableFieldInfo.getTableFieldAnnotation().typeHandler())).collect(Collectors.toList());
         return Collections.unmodifiableList(resultMappings);
     }
 

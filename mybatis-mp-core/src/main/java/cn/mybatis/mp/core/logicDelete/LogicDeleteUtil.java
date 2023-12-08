@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -147,9 +146,7 @@ public final class LogicDeleteUtil {
     public static int logicDelete(BaseMapper baseMapper, Class entityType, TableInfo tableInfo, Where where) {
         return UpdateChain.of(baseMapper, where)
                 .update(entityType)
-                .connect(self -> {
-                    LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo);
-                })
+                .connect(self -> LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo))
                 .execute();
     }
 

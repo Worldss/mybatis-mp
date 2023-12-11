@@ -1,3 +1,4 @@
+# 如果觉得还可以，能不能给个star和关注，目前star和关注 太少了 ，宣传不容易啊！
 # mybatis-mp ，诚邀各位进行参与补充
 
 <p align="center">

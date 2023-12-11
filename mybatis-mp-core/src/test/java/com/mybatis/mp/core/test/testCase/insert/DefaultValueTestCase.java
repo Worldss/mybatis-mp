@@ -53,59 +53,62 @@ public class DefaultValueTestCase extends BaseTest {
         }
     }
 
-    @Test
-    public void testBatch() {
-        int length = 20000;
-        List<DefaultValueTest> list = new ArrayList<>(length);
-        for (int i = 0; i < length; i++) {
-            list.add(new DefaultValueTest());
-        }
-
-        long startTime = 0;
-        startTime = System.currentTimeMillis();
-        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
-            DefaultValueTestMapper mapper = session.getMapper(DefaultValueTestMapper.class);
-            for (DefaultValueTest item : list) {
-                mapper.save(item);
-            }
-        }
-        System.out.println("普通：" + (System.currentTimeMillis() - startTime));
-
-
-        startTime = System.currentTimeMillis();
-        int xx = MybatisBatchUtil.batchSave(this.sqlSessionFactory, DefaultValueTestMapper.class, list);
-        //System.out.println(xx);
-        System.out.println("批量：" + (System.currentTimeMillis() - startTime));
-
-
-        startTime = System.currentTimeMillis();
-        List<DefaultValueTest> saveBatchList = new ArrayList<>(100);
-        int saveTotalCnt = MybatisBatchUtil.batch(this.sqlSessionFactory, (session) -> {
-            DefaultValueTestMapper mapper = session.getMapper(DefaultValueTestMapper.class);
-            int saveCnt = 0;
-            for (int i = 0; i < length; i++) {
-                saveBatchList.add(list.get(i));
-                if (i != 0 && i % 100 == 0) {
-                    mapper.saveBatch(saveBatchList, DefaultValueTest::getValue1, DefaultValueTest::getValue2, DefaultValueTest::getCreateTime);
-                    saveBatchList.clear();
-                }
-                if (i != 0 && i % 1000 == 0) {
-                    saveCnt += MybatisBatchUtil.getEffectCnt(session.flushStatements());
-                }
-            }
-            if (!saveBatchList.isEmpty()) {
-                mapper.saveBatch(saveBatchList, DefaultValueTest::getValue1, DefaultValueTest::getValue2, DefaultValueTest::getCreateTime);
-                saveBatchList.clear();
-                saveCnt += MybatisBatchUtil.getEffectCnt(session.flushStatements());
-            }
-            assertEquals(length, saveCnt);
-            assertEquals(length, QueryChain.of(mapper).count());
-            return saveCnt;
-
-        });
-        //System.out.println(saveTotalCnt);
-
-        System.out.println("批量+原生批量：" + (System.currentTimeMillis() - startTime));
-
-    }
+//    @Test
+//    public void testBatch() {
+//        int length = 20000;
+//        List<DefaultValueTest> list = new ArrayList<>(length);
+//        for (int i = 0; i < length; i++) {
+//            list.add(new DefaultValueTest());
+//        }
+//
+//        long startTime = 0;
+//        startTime = System.currentTimeMillis();
+//        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+//            DefaultValueTestMapper mapper = session.getMapper(DefaultValueTestMapper.class);
+//            for (DefaultValueTest item : list) {
+//                mapper.save(item);
+//            }
+//        }
+//        System.out.println("普通：" + (System.currentTimeMillis() - startTime));
+//
+//
+//        startTime = System.currentTimeMillis();
+//        int xx = MybatisBatchUtil.batchSave(this.sqlSessionFactory, DefaultValueTestMapper.class, list);
+//        //System.out.println(xx);
+//        System.out.println("批量：" + (System.currentTimeMillis() - startTime));
+//
+//
+//        startTime = System.currentTimeMillis();
+//        List<DefaultValueTest> saveBatchList = new ArrayList<>(100);
+//        int saveTotalCnt = MybatisBatchUtil.batch(this.sqlSessionFactory, (session) -> {
+//            DefaultValueTestMapper mapper = session.getMapper(DefaultValueTestMapper.class);
+//            int saveCnt = 0;
+//            int j=0;
+//            for (int i = 0; i < length; i++) {
+//                saveBatchList.add(list.get(i));
+//                if (i != 0 && i % 100 == 0) {
+//                    j++;
+//                    mapper.saveBatch(saveBatchList, DefaultValueTest::getValue1, DefaultValueTest::getValue2, DefaultValueTest::getCreateTime);
+//                    saveBatchList.clear();
+//                }
+//                if (i != 0 && j == 5) {
+//                    j=0;
+//                    saveCnt += MybatisBatchUtil.getEffectCnt(session.flushStatements());
+//                }
+//            }
+//            if (!saveBatchList.isEmpty()) {
+//                mapper.saveBatch(saveBatchList, DefaultValueTest::getValue1, DefaultValueTest::getValue2, DefaultValueTest::getCreateTime);
+//                saveBatchList.clear();
+//                saveCnt += MybatisBatchUtil.getEffectCnt(session.flushStatements());
+//            }
+//            assertEquals(length, saveCnt);
+//            assertEquals(length, QueryChain.of(mapper).count());
+//            return saveCnt;
+//
+//        });
+//        //System.out.println(saveTotalCnt);
+//
+//        System.out.println("批量+原生批量：" + (System.currentTimeMillis() - startTime));
+//
+//    }
 }

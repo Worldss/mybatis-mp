@@ -32,7 +32,15 @@ public class DynamicsMappedStatement {
                 .useCache(ms.isUseCache())
                 .cache(ms.getCache());
         MappedStatement newMappedStatement = msBuilder.build();
-        ms.getConfiguration().addMappedStatement(newMappedStatement);
+        try {
+            if (ms.getConfiguration().hasStatement(id)) {
+                return ms.getConfiguration().getMappedStatement(id);
+            }
+            ms.getConfiguration().addMappedStatement(newMappedStatement);
+        } catch (IllegalArgumentException e) {
+            ms.getStatementLog().warn(e.getMessage());
+        }
+
         return newMappedStatement;
 
     }

@@ -51,7 +51,7 @@ public class Having implements IHaving<Having> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (conditionBlocks == null || conditionBlocks.isEmpty()) {
+        if (conditionBlocks.isEmpty()) {
             return sqlBuilder;
         }
         boolean isFirst = true;

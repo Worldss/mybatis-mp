@@ -45,6 +45,6 @@ public class UpdateTable implements IUpdateTable<Table> {
 
     @Override
     public boolean contain(Cmd cmd) {
-        return CmdUtils.contain(cmd, this.tables);
+        return CmdUtils.contain(cmd, (Object[]) this.tables);
     }
 }

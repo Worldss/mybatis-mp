@@ -103,9 +103,7 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
 
     @Override
     public JoinTable $join(JoinMode mode, Table mainTable, Table secondTable) {
-        JoinTable join = new JoinTable(mode, mainTable, secondTable, (joinTable) -> {
-            return new OnTable(conditionFactory, joinTable);
-        });
+        JoinTable join = new JoinTable(mode, mainTable, secondTable, (joinTable) -> new OnTable(conditionFactory, joinTable));
         if (Objects.isNull(joins)) {
             joins = new Joins();
             this.append(joins);

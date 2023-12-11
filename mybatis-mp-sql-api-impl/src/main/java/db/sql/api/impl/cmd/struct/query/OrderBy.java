@@ -25,7 +25,7 @@ public class OrderBy implements IOrderBy<OrderBy> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        if (this.orderByValues == null || this.orderByValues.isEmpty()) {
+        if (this.orderByValues.isEmpty()) {
             return sqlBuilder;
         }
         sqlBuilder = sqlBuilder.append(SqlConst.ORDER_BY);

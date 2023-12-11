@@ -25,14 +25,14 @@ public interface BaseMapper<T> {
     /**
      * 获取实体类的type
      *
-     * @return
+     * @return 当前实体类
      */
     Class<T> getEntityType();
 
     /**
      * 获取当前mapper类的type
      *
-     * @return
+     * @return 当前mapper的class
      */
     Class<? extends BaseMapper<T>> getMapperType();
 
@@ -45,8 +45,8 @@ public interface BaseMapper<T> {
     /**
      * 是否存在
      *
-     * @param consumer
-     * @return
+     * @param consumer where consumer
+     * @return 是否存在
      */
     default boolean exists(Consumer<Where> consumer) {
         Where where = Wheres.create();
@@ -128,6 +128,25 @@ public interface BaseMapper<T> {
     }
 
     /**
+     * 使用数据库原生方式批量插入
+     * 一次最好在100条内
+     * <p>
+     * 会自动加入 主键 租户ID 逻辑删除列 乐观锁
+     * 自动设置 默认值,不会忽略NULL值字段
+     *
+     * @param list
+     * @param saveFields 指定那些列插入
+     * @return 插入的条数
+     */
+    default int saveBatch(List<T> list, Getter<T>... saveFields) {
+        Set<String> saveFieldSet = new HashSet<>();
+        for (Getter<T> column : saveFields) {
+            saveFieldSet.add(LambdaUtil.getName(column));
+        }
+        return this.$save(new EntityBatchInsertContext(list, saveFieldSet));
+    }
+
+    /**
      * model插入 部分字段插入
      *
      * @param model
@@ -172,11 +191,29 @@ public interface BaseMapper<T> {
     }
 
     /**
+     * 多个修改，非批量行为
+     *
+     * @param list
+     * @return 修改条数
+     */
+    default int update(List<T> list, Getter<T>... forceUpdateFields) {
+        Set<String> forceUpdateFieldsSet = new HashSet<>();
+        for (Getter<T> column : forceUpdateFields) {
+            forceUpdateFieldsSet.add(LambdaUtil.getName(column));
+        }
+        int cnt = 0;
+        for (T entity : list) {
+            cnt += this.$update(new EntityUpdateContext(entity, forceUpdateFieldsSet));
+        }
+        return cnt;
+    }
+
+    /**
      * 实体类修改
      *
      * @param entity
      * @param forceUpdateFields 强制更新指定，解决需要修改为null的需求
-     * @return
+     * @return 返回修改条数
      */
     default int update(T entity, Getter<T>... forceUpdateFields) {
         Set<String> forceUpdateFieldsSet = new HashSet<>();
@@ -202,21 +239,21 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * model插入 部分字段修改
+     * model修改 部分字段修改
      *
-     * @param model
-     * @return
+     * @param model 实体类model
+     * @return 修改的条数
      */
     default int update(Model<T> model) {
         return this.$update(new ModelUpdateContext<>(model));
     }
 
     /**
-     * model插入 部分字段修改
+     * model修改 部分字段修改
      *
-     * @param model
+     * @param model             实体类model
      * @param forceUpdateFields 强制更新指定，解决需要修改为null的需求
-     * @return
+     * @return 修改的条数
      */
     default int update(Model<T> model, Getter<T>... forceUpdateFields) {
         Set<String> forceUpdateFieldsSet = new HashSet<>();
@@ -229,8 +266,8 @@ public interface BaseMapper<T> {
     /**
      * 动态修改
      *
-     * @param update
-     * @return
+     * @param update 修改update
+     * @return 修改的条数
      */
     default int update(BaseUpdate update) {
         return this.$update(new SQLCmdUpdateContext(update));
@@ -240,8 +277,8 @@ public interface BaseMapper<T> {
     /**
      * 动态批量删除
      *
-     * @param consumer
-     * @return
+     * @param consumer where consumer
+     * @return 删除的条数
      */
     default int delete(Consumer<Where> consumer) {
         Where where = Wheres.create();
@@ -253,8 +290,8 @@ public interface BaseMapper<T> {
     /**
      * 动态删除
      *
-     * @param delete
-     * @return
+     * @param delete 上下文
+     * @return 删除条数
      */
     default int delete(BaseDelete delete) {
         return this.$delete(new SQLCmdDeleteContext(delete));
@@ -263,10 +300,10 @@ public interface BaseMapper<T> {
     /**
      * 列表查询,返回类型，当前实体类
      *
-     * @param consumer
-     * @return
+     * @param consumer where consumer
+     * @return 返回结果列表
      */
-    default <T> List<T> list(Consumer<Where> consumer) {
+    default List<T> list(Consumer<Where> consumer) {
         Where where = Wheres.create();
         consumer.accept(where);
         return QueryChain.of(this, where).list(false);
@@ -276,8 +313,8 @@ public interface BaseMapper<T> {
     /**
      * 列表查询
      *
-     * @param query
-     * @return
+     * @param query 查询query
+     * @return 返回结果列表
      */
     default <R> List<R> list(BaseQuery query) {
         return this.list(query, true);
@@ -287,9 +324,9 @@ public interface BaseMapper<T> {
     /**
      * 列表查询
      *
-     * @param query
+     * @param query    查询query
      * @param optimize 是否优化
-     * @return
+     * @return 返回查询列表
      */
     default <R> List<R> list(BaseQuery query, boolean optimize) {
         return this.$list(new SQLCmdQueryContext(query, optimize));
@@ -299,10 +336,10 @@ public interface BaseMapper<T> {
     /**
      * 游标查询,返回类型，当前实体类
      *
-     * @param consumer
-     * @return
+     * @param consumer where consumer
+     * @return 返回游标
      */
-    default <T> Cursor<T> cursor(Consumer<Where> consumer) {
+    default Cursor<T> cursor(Consumer<Where> consumer) {
         Where where = Wheres.create();
         consumer.accept(where);
         return QueryChain.of(this, where).cursor(false);
@@ -312,8 +349,8 @@ public interface BaseMapper<T> {
     /**
      * 游标查询
      *
-     * @param query
-     * @return
+     * @param query 查询query
+     * @return 游标
      */
     default <R> Cursor<R> cursor(BaseQuery query) {
         return this.cursor(query, true);
@@ -323,9 +360,9 @@ public interface BaseMapper<T> {
     /**
      * 游标查询
      *
-     * @param query
+     * @param query    查询query
      * @param optimize 是否优化
-     * @return
+     * @return 返回游标
      */
     default <R> Cursor<R> cursor(BaseQuery query, boolean optimize) {
         return this.$cursor(new SQLCmdQueryContext(query, optimize));
@@ -335,8 +372,8 @@ public interface BaseMapper<T> {
     /**
      * count查询
      *
-     * @param consumer
-     * @return
+     * @param consumer where consumer
+     * @return 返回count数
      */
     default Integer count(Consumer<Where> consumer) {
         Where where = Wheres.create();
@@ -347,8 +384,8 @@ public interface BaseMapper<T> {
     /**
      * count查询
      *
-     * @param query
-     * @return
+     * @param query 上下文
+     * @return 返回count 数
      */
     default Integer count(BaseQuery query) {
         query.setReturnType(Integer.TYPE);
@@ -359,9 +396,9 @@ public interface BaseMapper<T> {
     /**
      * 分页查询
      *
-     * @param consumer
-     * @param pager
-     * @return
+     * @param consumer where consumer
+     * @param pager    分页参数
+     * @return 分页结果
      */
     default Pager<T> paging(Consumer<Where> consumer, Pager<T> pager) {
         Where where = Wheres.create();
@@ -372,9 +409,9 @@ public interface BaseMapper<T> {
     /**
      * 分页查询
      *
-     * @param query
-     * @param pager
-     * @return
+     * @param query 查询query
+     * @param pager 分页参数
+     * @return 分页结果
      */
     default <R> Pager<R> paging(BaseQuery query, Pager<R> pager) {
         if (pager.isExecuteCount()) {
@@ -397,16 +434,16 @@ public interface BaseMapper<T> {
     /**
      * 动态查询 返回单个
      *
-     * @param queryContext
-     * @return
+     * @param queryContext 上下文
+     * @return 返回单个查询
      * @see MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = "cmdQuery")
     <R> R $get(SQLCmdQueryContext queryContext, RowBounds rowBounds);
 
     /**
-     * @param insertContext
-     * @return
+     * @param insertContext 上下文
+     * @return 插入的条数
      * @see MybatisSQLProvider#save(SQLCmdInsertContext, ProviderContext)
      */
     @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
@@ -414,8 +451,8 @@ public interface BaseMapper<T> {
 
 
     /**
-     * @param insertContext
-     * @return
+     * @param insertContext 上下文
+     * @return 返回插入的条数
      * @see MybatisSQLProvider#save(SQLCmdInsertContext, ProviderContext)
      */
     @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
@@ -423,16 +460,16 @@ public interface BaseMapper<T> {
 
 
     /**
-     * @param insertContext
-     * @return
+     * @param insertContext 上下文
+     * @return 插入的条数
      * @see MybatisSQLProvider#save(SQLCmdInsertContext, ProviderContext)
      */
     @InsertProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.SAVE_NAME)
     int $saveModel(ModelInsertContext insertContext);
 
     /**
-     * @param updateContext
-     * @return
+     * @param updateContext 上下文
+     * @return 修改的条数
      * @see MybatisSQLProvider#update(SQLCmdUpdateContext, ProviderContext)
      */
     @UpdateProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.UPDATE_NAME)
@@ -440,8 +477,8 @@ public interface BaseMapper<T> {
 
 
     /**
-     * @param deleteContext
-     * @return
+     * @param deleteContext 上下文
+     * @return 删除的条数
      * @see MybatisSQLProvider#delete(SQLCmdDeleteContext, ProviderContext)
      */
     @UpdateProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.DELETE_NAME)
@@ -451,28 +488,28 @@ public interface BaseMapper<T> {
     /**
      * 列表查询
      *
-     * @param queryContext
-     * @return
+     * @param queryContext 上下文
+     * @return 返回查询的结果
      * @see MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_NAME)
-    <T> List<T> $list(SQLCmdQueryContext queryContext);
+    <R> List<R> $list(SQLCmdQueryContext queryContext);
 
     /**
      * 游标查询
      *
-     * @param queryContext
-     * @return
+     * @param queryContext 上下文
+     * @return 返回游标
      * @see MybatisSQLProvider#cmdQuery(SQLCmdQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_NAME)
-    <T> Cursor<T> $cursor(SQLCmdQueryContext queryContext);
+    <R> Cursor<R> $cursor(SQLCmdQueryContext queryContext);
 
     /**
      * count查询
      *
-     * @param queryContext
-     * @return
+     * @param queryContext 上下文
+     * @return 返回count数
      * @see MybatisSQLProvider#cmdCount(SQLCmdCountQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.COUNT_NAME)
@@ -481,8 +518,8 @@ public interface BaseMapper<T> {
     /**
      * count查询 - 从query中
      *
-     * @param queryContext
-     * @return
+     * @param queryContext 上下文
+     * @return 返回count数
      * @see MybatisSQLProvider#countFromQuery(SQLCmdCountFromQueryContext, ProviderContext)
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_COUNT_NAME)

@@ -14,7 +14,6 @@ public class DefaultValueTest {
     @TableId
     private Integer id;
 
-
     @TableField(defaultValue = "{BLANK}")
     private String value1;
 

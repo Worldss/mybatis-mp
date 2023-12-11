@@ -100,11 +100,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public List<Cmd> cmds() {
-        return this.cmds;
-    }
-
-    @Override
     void initCmdSorts(Map<Class<? extends Cmd>, Integer> cmdSorts) {
         int i = 0;
         cmdSorts.put(Withs.class, ++i);
@@ -186,9 +181,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     @Override
     public JoinDataset $join(JoinMode mode, Dataset mainTable, Dataset secondTable) {
-        JoinDataset join = new JoinDataset(mode, mainTable, secondTable, (joinDataset -> {
-            return new OnDataset(this.conditionFactory, joinDataset);
-        }));
+        JoinDataset join = new JoinDataset(mode, mainTable, secondTable, (joinDataset -> new OnDataset(this.conditionFactory, joinDataset)));
         if (Objects.isNull(joins)) {
             joins = new Joins();
             this.append(joins);

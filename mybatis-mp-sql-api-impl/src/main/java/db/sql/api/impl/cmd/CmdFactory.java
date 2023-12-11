@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, TableField, DatasetField> {
 
     private final String tableAsPrefix;
-    protected Map<String, Table> tableCache = new HashMap<>(5);
+    protected final Map<String, Table> tableCache = new HashMap<>(5);
     protected int tableNums = 0;
 
     public CmdFactory() {
@@ -114,7 +114,6 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
     }
 
     public In in(Cmd main) {
-        In in = new In(main);
-        return in;
+        return new In(main);
     }
 }

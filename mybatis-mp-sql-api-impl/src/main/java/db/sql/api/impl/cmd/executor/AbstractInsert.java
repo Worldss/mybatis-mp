@@ -103,9 +103,7 @@ public abstract class AbstractInsert<SELF extends AbstractInsert,
 
     @Override
     public SELF values(List<Object> values) {
-        this.$values(values.stream().map(item -> {
-            return Methods.convert(item);
-        }).collect(Collectors.toList()));
+        this.$values(values.stream().map(Methods::convert).collect(Collectors.toList()));
         return (SELF) this;
     }
 

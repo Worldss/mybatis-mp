@@ -112,9 +112,7 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
 
     @Override
     public JoinTable $join(JoinMode mode, Table mainTable, Table secondTable) {
-        JoinTable join = new JoinTable(mode, mainTable, secondTable, joinTable -> {
-            return new OnTable(this.conditionFactory, joinTable);
-        });
+        JoinTable join = new JoinTable(mode, mainTable, secondTable, this::apply);
         if (Objects.isNull(joins)) {
             joins = new Joins();
             this.append(joins);
@@ -166,5 +164,9 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
 
     public Where getWhere() {
         return this.where;
+    }
+
+    private OnTable apply(JoinTable joinTable) {
+        return new OnTable(this.conditionFactory, joinTable);
     }
 }

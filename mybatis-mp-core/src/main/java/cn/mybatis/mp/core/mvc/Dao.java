@@ -32,4 +32,8 @@ public interface Dao<T, K> {
     int delete(List<T> list);
 
     int deleteById(K id);
+
+    int deleteByIds(K... ids);
+
+    int deleteByIds(List<K> ids);
 }

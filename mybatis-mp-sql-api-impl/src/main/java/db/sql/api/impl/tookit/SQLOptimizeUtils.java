@@ -52,10 +52,8 @@ public final class SQLOptimizeUtils {
                         //包含在distinct中 不行
                         return false;
                     }
-                    continue;
-                } else {
-                    continue;
                 }
+                continue;
             }
             if (entry.getValue().contain(current.getSecondTable())) {
                 return false;
@@ -191,7 +189,7 @@ public final class SQLOptimizeUtils {
             classCmdMap.put(cmd.getClass(), cmd);
         }
         optimizedCmdList(classCmdMap, false, false, true, classCmdMap.containsKey(Unions.class));
-        cmdList = (List<Cmd>) classCmdMap.entrySet().stream().map(Map.Entry::getValue).sorted(query.comparator()).collect(Collectors.toList());
+        cmdList = (List<Cmd>) classCmdMap.values().stream().sorted(query.comparator()).collect(Collectors.toList());
         return CmdUtils.join(context, new StringBuilder(), cmdList);
     }
 

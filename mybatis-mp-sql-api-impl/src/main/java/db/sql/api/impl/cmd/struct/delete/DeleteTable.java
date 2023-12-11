@@ -49,6 +49,6 @@ public class DeleteTable implements IDeleteTable<Table> {
 
     @Override
     public boolean contain(Cmd cmd) {
-        return CmdUtils.contain(cmd, this.tables);
+        return CmdUtils.contain(cmd, (Object[]) this.tables);
     }
 }

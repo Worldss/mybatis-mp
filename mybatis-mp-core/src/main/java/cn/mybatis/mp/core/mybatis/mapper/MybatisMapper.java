@@ -7,9 +7,11 @@ import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
 import cn.mybatis.mp.core.sql.executor.Wheres;
 import cn.mybatis.mp.core.sql.executor.chain.DeleteChain;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
+import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.struct.Where;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -23,11 +25,8 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
 
     default T getById(Serializable id) {
         Class entityType = this.getEntityType();
-        TableInfo tableInfo = Tables.get(entityType);
-        if (tableInfo.getIdFieldInfo() == null) {
-            throw new RuntimeException("Not Supported");
-        }
-
+        TableInfo tableInfo = this.getTableInfo();
+        this.$checkId(tableInfo);
         return QueryChain.of(this)
                 .select(entityType)
                 .from(entityType)
@@ -36,23 +35,27 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
                 .get();
     }
 
-
-    default int $delete(Class<T> entityType, Serializable id) {
-        return this.$delete(entityType, Tables.get(entityType), id);
-    }
-
-    default int $delete(Class entityType, TableInfo tableInfo, Serializable id) {
-        if (LogicDeleteUtil.isNeedLogicDelete(tableInfo)) {
-            //逻辑删除处理
-            return LogicDeleteUtil.logicDelete(this, entityType, tableInfo, id);
+    default void $checkId(TableInfo tableInfo) {
+        if (tableInfo.getIdFieldInfo() == null) {
+            throw new RuntimeException("Not Supported");
         }
-        return DeleteChain.of(this)
-                .delete(entityType)
-                .from(entityType)
-                .connect(self -> self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id))
-                .execute();
     }
 
+
+    default Serializable $getIdFromEntity(T entity) {
+        if (entity.getClass() != getEntityType()) {
+            throw new RuntimeException("Not Supported");
+        }
+        TableInfo tableInfo = this.getTableInfo();
+        this.$checkId(tableInfo);
+        Serializable id;
+        try {
+            id = (Serializable) tableInfo.getIdFieldInfo().getReadFieldInvoker().invoke(entity, null);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return id;
+    }
 
     /**
      * 根据实体类删除
@@ -64,42 +67,22 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
         if (Objects.isNull(entity)) {
             return 0;
         }
-        TableInfo tableInfo = Tables.get(entity.getClass());
-        if (tableInfo.getIdFieldInfo() == null) {
-            throw new RuntimeException("Not Supported");
-        }
-        Serializable id;
-        try {
-            id = (Serializable) tableInfo.getIdFieldInfo().getReadFieldInvoker().invoke(entity, null);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return this.$delete(entity.getClass(), tableInfo, id);
+        return this.deleteById(this.$getIdFromEntity(entity));
     }
 
     /**
-     * 多个删除，非批量行为
+     * 多个删除
      *
      * @param list
      * @return 修改条数
      */
     default int delete(List<T> list) {
-        Class entityType = getEntityType();
-        TableInfo tableInfo = Tables.get(entityType);
-        if (tableInfo.getIdFieldInfo() == null) {
-            throw new RuntimeException("Not Supported");
+        int length = list.size();
+        List<Serializable> ids = new ArrayList<>();
+        for (int i = 0; i < length; i++) {
+            ids.add(this.$getIdFromEntity(list.get(i)));
         }
-        int cnt = 0;
-        for (T entity : list) {
-            Serializable id;
-            try {
-                id = (Serializable) tableInfo.getIdFieldInfo().getReadFieldInvoker().invoke(entity, null);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            cnt += this.$delete(entityType, tableInfo, id);
-        }
-        return cnt;
+        return this.deleteByIds(ids);
     }
 
     /**
@@ -109,13 +92,13 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
      * @return
      */
     default int deleteById(Serializable id) {
-        Class entityType = getEntityType();
-        TableInfo tableInfo = Tables.get(entityType);
-        if (tableInfo.getIdFieldInfo() == null) {
-            throw new RuntimeException("Not Supported");
-        }
-
-        return this.$delete(entityType, tableInfo, id);
+        return this.delete(where -> {
+            Class entityType = getEntityType();
+            TableInfo tableInfo = this.getTableInfo();
+            this.$checkId(tableInfo);
+            CmdFactory $ = where.getConditionFactory().getCmdFactory();
+            where.eq($.field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id);
+        });
     }
 
     /**
@@ -128,14 +111,13 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
         if (ids == null || ids.length < 1) {
             throw new RuntimeException("ids array can't be empty");
         }
-        Class entityType = getEntityType();
-        TableInfo tableInfo = Tables.get(entityType);
-        if (tableInfo.getIdFieldInfo() == null) {
-            throw new RuntimeException("Not Supported");
-        }
-        return DeleteChain.of(this)
-                .connect(self -> self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids))
-                .execute();
+        return this.delete(where -> {
+            Class entityType = getEntityType();
+            TableInfo tableInfo = this.getTableInfo();
+            this.$checkId(tableInfo);
+            CmdFactory $ = where.getConditionFactory().getCmdFactory();
+            where.in($.field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids);
+        });
     }
 
     /**
@@ -148,14 +130,13 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
         if (ids == null || ids.isEmpty()) {
             throw new RuntimeException("ids list can't be empty");
         }
-        Class entityType = getEntityType();
-        TableInfo tableInfo = Tables.get(entityType);
-        if (tableInfo.getIdFieldInfo() == null) {
-            throw new RuntimeException("Not Supported");
-        }
-        return DeleteChain.of(this)
-                .connect(self -> self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids))
-                .execute();
+        return this.delete(where -> {
+            Class entityType = getEntityType();
+            TableInfo tableInfo = this.getTableInfo();
+            this.$checkId(tableInfo);
+            CmdFactory $ = where.getConditionFactory().getCmdFactory();
+            where.in($.field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids);
+        });
     }
 
     @Override
@@ -166,7 +147,7 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
             throw new RuntimeException("delete has on where condition content ");
         }
         Class entityType = getEntityType();
-        TableInfo tableInfo = Tables.get(entityType);
+        TableInfo tableInfo = this.getTableInfo();
         if (LogicDeleteUtil.isNeedLogicDelete(tableInfo)) {
             //逻辑删除处理
             return LogicDeleteUtil.logicDelete(this, entityType, tableInfo, where);

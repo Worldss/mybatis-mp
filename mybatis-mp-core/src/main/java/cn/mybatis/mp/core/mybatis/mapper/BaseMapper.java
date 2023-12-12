@@ -1,5 +1,6 @@
 package cn.mybatis.mp.core.mybatis.mapper;
 
+import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.mybatis.mapper.context.*;
 import cn.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import cn.mybatis.mp.core.sql.executor.*;
@@ -35,6 +36,13 @@ public interface BaseMapper<T> {
      * @return 当前mapper的class
      */
     Class<? extends BaseMapper<T>> getMapperType();
+
+    /**
+     * 获取表信息
+     *
+     * @return
+     */
+    TableInfo getTableInfo();
 
     default T get(Consumer<Where> consumer) {
         Where where = Wheres.create();

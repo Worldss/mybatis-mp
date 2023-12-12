@@ -22,8 +22,6 @@ public class MybatisMapperProxy<T> implements InvocationHandler {
     public MybatisMapperProxy(Class<T> mapperInterface, Object mapperProxy) {
         this.mapperInterface = mapperInterface;
         this.mapperProxy = mapperProxy;
-        this.entityType = GenericUtil.getGenericInterfaceClass(mapperInterface).get(0);
-        this.tableInfo = Tables.get(this.entityType);
     }
 
     private Class<?> getEntityType() {

@@ -27,12 +27,15 @@ public final class LambdaUtil {
 
     private static final Map<Getter, LambdaFieldInfo> LAMBDA_GETTER_FIELD_MAP = new ConcurrentHashMap<>(65535);
 
-    private static boolean CACHE_ENABLE = true;
+    private volatile static boolean CACHE_ENABLE = true;
 
     static {
         getName(LambdaFieldInfo::getName);
         getName(LambdaFieldInfo::getName);
         CACHE_ENABLE = (LAMBDA_GETTER_FIELD_MAP.size() == 1);
+        if (!CACHE_ENABLE) {
+            LAMBDA_GETTER_FIELD_MAP.clear();
+        }
     }
 
     private LambdaUtil() {
@@ -40,7 +43,24 @@ public final class LambdaUtil {
     }
 
     public static <T> String getName(Getter<T> getter) {
-        return getFieldInfo(getter).getName();
+        if (CACHE_ENABLE) {
+            return getFieldInfo(getter).getName();
+        } else {
+            return getLambdaFieldName(getter);
+        }
+    }
+
+    public static String getLambdaName(Getter getter) {
+        return getSerializedLambda(getter).getImplMethodName();
+    }
+
+    public static String getLambdaFieldName(Getter getter) {
+        return getLambdaFieldName(getSerializedLambda(getter));
+    }
+
+    private static String getLambdaFieldName(SerializedLambda serializedLambda) {
+        String methodName = serializedLambda.getImplMethodName();
+        return PropertyNamer.methodToProperty(methodName);
     }
 
     private static LambdaFieldInfo getLambdaFieldInfo(SerializedLambda serializedLambda, ClassLoader classLoader) {

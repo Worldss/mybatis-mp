@@ -181,6 +181,9 @@ public final class SQLOptimizeUtils {
      * @return
      */
     public static StringBuilder getOptimizedSql(IQuery query, SqlBuilderContext context) {
+        if (query.getJoins() == null) {
+            return query.sql(context, new StringBuilder());
+        }
         Map<Class, Cmd> classCmdMap = new HashMap<>();
         List<Cmd> cmdList = query.cmds();
         int size = cmdList.size();

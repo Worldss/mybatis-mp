@@ -17,6 +17,7 @@ import db.sql.api.impl.cmd.struct.Where;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -129,6 +130,46 @@ public final class LogicDeleteUtil {
                 .connect(self -> {
                     LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo);
                     self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id);
+                })
+                .execute();
+    }
+
+    /**
+     * 根据多个ID 进行逻辑删除操作
+     * 实际为update操作
+     *
+     * @param baseMapper
+     * @param entityType
+     * @param tableInfo
+     * @param ids
+     * @return
+     */
+    public static int logicDelete(BaseMapper baseMapper, Class entityType, TableInfo tableInfo, Serializable... ids) {
+        return UpdateChain.of(baseMapper)
+                .update(entityType)
+                .connect(self -> {
+                    LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo);
+                    self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids);
+                })
+                .execute();
+    }
+
+    /**
+     * 根据List<ID> 进行逻辑删除操作
+     * 实际为update操作
+     *
+     * @param baseMapper
+     * @param entityType
+     * @param tableInfo
+     * @param ids
+     * @return
+     */
+    public static int logicDelete(BaseMapper baseMapper, Class entityType, TableInfo tableInfo, List<Serializable> ids) {
+        return UpdateChain.of(baseMapper)
+                .update(entityType)
+                .connect(self -> {
+                    LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo);
+                    self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids);
                 })
                 .execute();
     }

@@ -7,10 +7,13 @@ import db.sql.api.SqlBuilderContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MybatisSqlBuilderContext extends SqlBuilderContext {
 
     private final List<Object> paramList = new ArrayList<>();
+
+    private Object[] params;
 
     public MybatisSqlBuilderContext(DbType dbType, SQLMode sqlMode) {
         super(dbType, sqlMode);
@@ -23,6 +26,9 @@ public class MybatisSqlBuilderContext extends SqlBuilderContext {
     }
 
     public Object[] getParams() {
-        return paramList.toArray();
+        if (Objects.isNull(params)) {
+            params = paramList.toArray();
+        }
+        return params;
     }
 }

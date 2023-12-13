@@ -27,6 +27,14 @@ public final class LambdaUtil {
 
     private static final Map<Getter, LambdaFieldInfo> LAMBDA_GETTER_FIELD_MAP = new ConcurrentHashMap<>(65535);
 
+    private static boolean CACHE_ENABLE = true;
+
+    static {
+        getName(LambdaFieldInfo::getName);
+        getName(LambdaFieldInfo::getName);
+        CACHE_ENABLE = (LAMBDA_GETTER_FIELD_MAP.size() == 1);
+    }
+
     private LambdaUtil() {
 
     }
@@ -35,14 +43,19 @@ public final class LambdaUtil {
         return getFieldInfo(getter).getName();
     }
 
+    private static LambdaFieldInfo getLambdaFieldInfo(SerializedLambda serializedLambda, ClassLoader classLoader) {
+        Class type = getClass(serializedLambda, classLoader);
+        String methodName = serializedLambda.getImplMethodName();
+        String fieldName = PropertyNamer.methodToProperty(methodName);
+        return new LambdaFieldInfo(type, fieldName);
+    }
+
     public static <T> LambdaFieldInfo getFieldInfo(Getter<T> getter) {
-        return LAMBDA_GETTER_FIELD_MAP.computeIfAbsent(getter, (key) -> {
-            SerializedLambda lambda = getSerializedLambda(key);
-            Class type = getClass(lambda, getter.getClass().getClassLoader());
-            String methodName = lambda.getImplMethodName();
-            String fieldName = PropertyNamer.methodToProperty(methodName);
-            return new LambdaFieldInfo(type, fieldName);
-        });
+        if (CACHE_ENABLE) {
+            return LAMBDA_GETTER_FIELD_MAP.computeIfAbsent(getter, (key) -> getLambdaFieldInfo(getSerializedLambda(getter), getter.getClass().getClassLoader()));
+        } else {
+            return getLambdaFieldInfo(getSerializedLambda(getter), getter.getClass().getClassLoader());
+        }
     }
 
     private static SerializedLambda getSerializedLambda(Getter getter) {
@@ -67,6 +80,12 @@ public final class LambdaUtil {
     private static String getClassName(SerializedLambda lambda) {
         String type = lambda.getInstantiatedMethodType();
         return type.substring(2, type.indexOf(";")).replace("/", ".");
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getName(LambdaFieldInfo::getName));
+        System.out.println(getName(LambdaFieldInfo::getName));
+        System.out.println(LAMBDA_GETTER_FIELD_MAP.size());
     }
 
     public static class LambdaFieldInfo {

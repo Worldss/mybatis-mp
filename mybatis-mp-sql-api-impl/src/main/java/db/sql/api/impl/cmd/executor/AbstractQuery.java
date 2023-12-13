@@ -20,6 +20,7 @@ import db.sql.api.impl.cmd.struct.*;
 import db.sql.api.impl.cmd.struct.query.*;
 import db.sql.api.impl.tookit.SqlConst;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -134,6 +135,21 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
             this.append(select);
         }
         return select;
+    }
+
+    @Override
+    public SELF select(List<Cmd> columns) {
+        this.$select().select(columns);
+        return (SELF) this;
+    }
+
+    @Override
+    public <T> SELF select(int storey, Getter<T>... columns) {
+        List<Cmd> list = new ArrayList<>(columns.length);
+        for (Getter<T> column : columns) {
+            list.add($().field(column, storey));
+        }
+        return this.select(list);
     }
 
 

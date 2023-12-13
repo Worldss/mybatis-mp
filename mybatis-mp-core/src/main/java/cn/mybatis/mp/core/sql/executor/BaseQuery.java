@@ -7,10 +7,13 @@ import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
 import cn.mybatis.mp.core.sql.MybatisCmdFactory;
 import cn.mybatis.mp.core.tenant.TenantUtil;
 import cn.mybatis.mp.core.util.ForeignKeyUtil;
+import db.sql.api.Cmd;
 import db.sql.api.impl.cmd.executor.AbstractQuery;
 import db.sql.api.impl.cmd.struct.OnDataset;
 import db.sql.api.impl.cmd.struct.Where;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -36,16 +39,33 @@ public abstract class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, My
         if (tableInfo == null) {
             return super.select(entity, storey);
         } else {
+            List<Cmd> list = new ArrayList<>(tableInfo.getFieldSize());
             for (int i = 0; i < tableInfo.getFieldSize(); i++) {
                 TableFieldInfo tableFieldInfo = tableInfo.getTableFieldInfos().get(i);
                 if (tableFieldInfo.getTableFieldAnnotation().select()) {
-                    this.select($.field(entity, tableFieldInfo.getField().getName(), storey));
+                    list.add($.field(entity, tableFieldInfo.getField().getName(), storey));
                 }
             }
+            this.select(list);
         }
         return (Q) this;
     }
 
+    @Override
+    public Q select(int storey, Class... entities) {
+        List<Cmd> list = new ArrayList<>(entities.length * 10);
+        for (Class entity : entities) {
+            TableInfo tableInfo = Tables.get(entity);
+            for (int i = 0; i < tableInfo.getFieldSize(); i++) {
+                TableFieldInfo tableFieldInfo = tableInfo.getTableFieldInfos().get(i);
+                if (tableFieldInfo.getTableFieldAnnotation().select()) {
+                    list.add($.field(entity, tableFieldInfo.getField().getName(), storey));
+                }
+            }
+        }
+        this.select(list);
+        return (Q) this;
+    }
 
     protected void addTenantCondition(Class entity, int storey) {
         TenantUtil.addTenantCondition(this, $, entity, storey);

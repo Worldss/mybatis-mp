@@ -1,7 +1,6 @@
 package db.sql.api.impl.cmd.condition;
 
 import db.sql.api.Cmd;
-import db.sql.api.DbType;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.impl.cmd.Methods;

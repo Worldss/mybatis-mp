@@ -29,14 +29,14 @@ public final class LambdaUtil {
 
     private static boolean CACHE_ENABLE = true;
 
-    private LambdaUtil() {
-
-    }
-
     static {
         getName(LambdaFieldInfo::getName);
         getName(LambdaFieldInfo::getName);
         CACHE_ENABLE = (LAMBDA_GETTER_FIELD_MAP.size() == 1);
+    }
+
+    private LambdaUtil() {
+
     }
 
     public static <T> String getName(Getter<T> getter) {
@@ -82,6 +82,12 @@ public final class LambdaUtil {
         return type.substring(2, type.indexOf(";")).replace("/", ".");
     }
 
+    public static void main(String[] args) {
+        System.out.println(getName(LambdaFieldInfo::getName));
+        System.out.println(getName(LambdaFieldInfo::getName));
+        System.out.println(LAMBDA_GETTER_FIELD_MAP.size());
+    }
+
     public static class LambdaFieldInfo {
 
         private final Class type;
@@ -99,12 +105,6 @@ public final class LambdaUtil {
         public String getName() {
             return name;
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getName(LambdaFieldInfo::getName));
-        System.out.println(getName(LambdaFieldInfo::getName));
-        System.out.println(LAMBDA_GETTER_FIELD_MAP.size());
     }
 
 }

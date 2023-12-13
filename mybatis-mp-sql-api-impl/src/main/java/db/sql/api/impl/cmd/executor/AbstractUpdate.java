@@ -68,10 +68,10 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
     @Override
     void initCmdSorts(Map<Class<? extends Cmd>, Integer> cmdSorts) {
         int i = 0;
-        cmdSorts.put(UpdateTable.class, ++i);
-        cmdSorts.put(Joins.class, ++i);
-        cmdSorts.put(UpdateSets.class, ++i);
-        cmdSorts.put(Where.class, ++i);
+        cmdSorts.put(UpdateTable.class, i+=10);
+        cmdSorts.put(Joins.class, i+=10);
+        cmdSorts.put(UpdateSets.class, i+=10);
+        cmdSorts.put(Where.class, i+=10);
     }
 
     @Override

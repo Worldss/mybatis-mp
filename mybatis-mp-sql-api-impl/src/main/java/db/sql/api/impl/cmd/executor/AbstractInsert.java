@@ -124,8 +124,9 @@ public abstract class AbstractInsert<SELF extends AbstractInsert,
 
     @Override
     void initCmdSorts(Map<Class<? extends Cmd>, Integer> cmdSorts) {
-        cmdSorts.put(InsertTable.class, 1);
-        cmdSorts.put(InsertFields.class, 2);
-        cmdSorts.put(InsertValues.class, 3);
+        int i = 0;
+        cmdSorts.put(InsertTable.class, i += 10);
+        cmdSorts.put(InsertFields.class, i += 10);
+        cmdSorts.put(InsertValues.class, i += 10);
     }
 }

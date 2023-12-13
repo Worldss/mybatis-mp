@@ -103,18 +103,18 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     @Override
     void initCmdSorts(Map<Class<? extends Cmd>, Integer> cmdSorts) {
         int i = 0;
-        cmdSorts.put(Withs.class, ++i);
-        cmdSorts.put(Select.class, ++i);
-        cmdSorts.put(FromDataset.class, ++i);
-        cmdSorts.put(Joins.class, ++i);
-        cmdSorts.put(Where.class, ++i);
-        cmdSorts.put(GroupBy.class, ++i);
-        cmdSorts.put(Having.class, ++i);
-        cmdSorts.put(OrderBy.class, ++i);
-        cmdSorts.put(Limit.class, ++i);
-        cmdSorts.put(ForUpdate.class, ++i);
-        cmdSorts.put(Unions.class, ++i);
-        cmdSorts.put(UnionsCmdLists.class, ++i);
+        cmdSorts.put(Withs.class, i += 10);
+        cmdSorts.put(Select.class, i += 10);
+        cmdSorts.put(FromDataset.class, i += 10);
+        cmdSorts.put(Joins.class, i += 10);
+        cmdSorts.put(Where.class, i += 10);
+        cmdSorts.put(GroupBy.class, i += 10);
+        cmdSorts.put(Having.class, i += 10);
+        cmdSorts.put(OrderBy.class, i += 10);
+        cmdSorts.put(Limit.class, i += 10);
+        cmdSorts.put(ForUpdate.class, i += 10);
+        cmdSorts.put(Unions.class, i += 10);
+        cmdSorts.put(UnionsCmdLists.class, i += 10);
     }
 
     @Override

@@ -26,12 +26,17 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
         Class entityType = this.getEntityType();
         TableInfo tableInfo = this.getTableInfo();
         this.$checkId(tableInfo);
-        return QueryChain.of(this)
-                .select(entityType)
+        QueryChain queryChain = QueryChain.of(this)
                 .from(entityType)
                 .connect(self -> self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id))
-                .setReturnType(entityType)
-                .get();
+                .setReturnType(entityType);
+
+        if (tableInfo.isHasIgnoreField()) {
+            queryChain.select(entityType);
+        } else {
+            queryChain.select(queryChain.$(entityType, 1).$("*"));
+        }
+        return queryChain.get();
     }
 
     default void $checkId(TableInfo tableInfo) {

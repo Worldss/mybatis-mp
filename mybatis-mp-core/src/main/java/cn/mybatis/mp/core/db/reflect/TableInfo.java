@@ -71,6 +71,11 @@ public class TableInfo {
      */
     private final Map<String, TableFieldInfo> tableFieldInfoMap;
 
+    /**
+     * 是否有忽略的列
+     */
+    private final boolean hasIgnoreField;
+
     public TableInfo(Class entity) {
         this.type = entity;
 
@@ -145,6 +150,8 @@ public class TableInfo {
                 LogicDeleteUtil.getLogicDeleteTimeValue(this);
             }
         }
+
+        this.hasIgnoreField = tableFieldInfos.stream().anyMatch(item -> !item.getTableFieldAnnotation().select());
     }
 
     /**
@@ -216,4 +223,7 @@ public class TableInfo {
         return logicDeleteFieldInfo;
     }
 
+    public boolean isHasIgnoreField() {
+        return hasIgnoreField;
+    }
 }

@@ -1,5 +1,7 @@
 package cn.mybatis.mp.core.logicDelete;
 
+import java.util.Objects;
+
 /**
  * 使用方式：
  * <pre>
@@ -10,7 +12,7 @@ package cn.mybatis.mp.core.logicDelete;
  */
 public final class LogicDeleteSwitch implements AutoCloseable {
 
-    private final static ThreadLocal<Boolean> THREAD_LOCAL = new ThreadLocal<>();
+    private volatile static ThreadLocal<Boolean> THREAD_LOCAL;
 
     private LogicDeleteSwitch() {
 
@@ -22,6 +24,9 @@ public final class LogicDeleteSwitch implements AutoCloseable {
      * @return
      */
     public static Boolean getState() {
+        if (Objects.isNull(THREAD_LOCAL)) {
+            return false;
+        }
         return THREAD_LOCAL.get();
     }
 
@@ -33,6 +38,9 @@ public final class LogicDeleteSwitch implements AutoCloseable {
      */
     public static LogicDeleteSwitch with(boolean state) {
         LogicDeleteSwitch logicDeleteSwitch = new LogicDeleteSwitch();
+        if (Objects.isNull(THREAD_LOCAL)) {
+            THREAD_LOCAL = new ThreadLocal<>();
+        }
         THREAD_LOCAL.set(state);
         return logicDeleteSwitch;
     }
@@ -41,7 +49,9 @@ public final class LogicDeleteSwitch implements AutoCloseable {
      * 清理临时状态
      */
     public static void clear() {
-        THREAD_LOCAL.remove();
+        if (Objects.isNull(THREAD_LOCAL)) {
+            THREAD_LOCAL.remove();
+        }
     }
 
     @Override

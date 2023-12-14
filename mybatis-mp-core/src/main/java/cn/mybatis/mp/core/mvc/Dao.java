@@ -3,6 +3,7 @@ package cn.mybatis.mp.core.mvc;
 import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
 
+import java.io.Serializable;
 import java.util.List;
 
 public interface Dao<T, K> {
@@ -10,6 +11,8 @@ public interface Dao<T, K> {
     Class<K> getIdType();
 
     T getById(K id);
+
+    T getById(K id, Getter<T>... getters);
 
     int save(T entity);
 

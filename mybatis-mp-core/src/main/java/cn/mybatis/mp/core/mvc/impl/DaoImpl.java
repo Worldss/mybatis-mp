@@ -59,9 +59,9 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     }
 
     @Override
-    public T getById(K id, Getter<T>... getters) {
+    public T getById(K id, Getter<T>... selectFields) {
         this.checkIdType();
-        return mapper.getById((Serializable) id, getters);
+        return mapper.getById((Serializable) id, selectFields);
     }
 
     @Override

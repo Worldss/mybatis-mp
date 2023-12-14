@@ -23,6 +23,12 @@ import java.util.function.Consumer;
 
 public interface BaseMapper<T> {
 
+    default Where where(Consumer<Where> consumer) {
+        Where where = Wheres.create();
+        consumer.accept(where);
+        return where;
+    }
+
     /**
      * 获取实体类的type
      *
@@ -44,10 +50,14 @@ public interface BaseMapper<T> {
      */
     TableInfo getTableInfo();
 
+    /**
+     * 单个查询
+     *
+     * @param consumer where consumer
+     * @return 当个当前实体
+     */
     default T get(Consumer<Where> consumer) {
-        Where where = Wheres.create();
-        consumer.accept(where);
-        return QueryChain.of(this, where).get(false);
+        return QueryChain.of(this, where(consumer)).get(false);
     }
 
     /**
@@ -57,16 +67,14 @@ public interface BaseMapper<T> {
      * @return 是否存在
      */
     default boolean exists(Consumer<Where> consumer) {
-        Where where = Wheres.create();
-        consumer.accept(where);
-        return QueryChain.of(this, where).exists(false);
+        return QueryChain.of(this, where(consumer)).exists(false);
     }
 
     /**
      * 动态查询 返回单个当前实体
      *
      * @param query
-     * @return
+     * @return 单个当前实体
      */
 
     default <R> R get(BaseQuery query) {
@@ -74,12 +82,12 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 动态查询 返回单个当前实体
+     * 动态查询
      *
      * @param query
      * @param optimize 是否优化
      * @param <R>
-     * @return
+     * @return 返回单个当前实体
      */
     default <R> R get(BaseQuery query, boolean optimize) {
         query.limit(1);
@@ -90,7 +98,7 @@ public interface BaseMapper<T> {
      * 是否存在
      *
      * @param query
-     * @return
+     * @return 是否存在
      */
     default boolean exists(BaseQuery query) {
         return this.exists(query, true);
@@ -115,7 +123,7 @@ public interface BaseMapper<T> {
      * 实体类新增
      *
      * @param entity
-     * @return
+     * @return 影响条数
      */
     default int save(T entity) {
         return this.$saveEntity(new EntityInsertContext(entity));
@@ -168,7 +176,7 @@ public interface BaseMapper<T> {
      * 动态插入
      *
      * @param insert
-     * @return
+     * @return 影响条数
      */
     default int save(BaseInsert insert) {
         return this.$save(new SQLCmdInsertContext<>(insert));
@@ -178,7 +186,7 @@ public interface BaseMapper<T> {
      * 实体类修改
      *
      * @param entity
-     * @return
+     * @return 影响条数
      */
     default int update(T entity) {
         return this.$update(new EntityUpdateContext(entity));
@@ -188,7 +196,7 @@ public interface BaseMapper<T> {
      * 多个修改，非批量行为
      *
      * @param list
-     * @return 修改条数
+     * @return 影响条数
      */
     default int update(List<T> list) {
         int cnt = 0;
@@ -233,9 +241,7 @@ public interface BaseMapper<T> {
 
 
     default int update(T entity, Consumer<Where> consumer) {
-        Where where = Wheres.create();
-        consumer.accept(where);
-        return this.$update(new EntityUpdateWithWhereContext(entity, where));
+        return this.$update(new EntityUpdateWithWhereContext(entity, where(consumer)));
     }
 
     default int update(T entity, Where where, Getter<T>... forceUpdateFields) {
@@ -289,9 +295,7 @@ public interface BaseMapper<T> {
      * @return 删除的条数
      */
     default int delete(Consumer<Where> consumer) {
-        Where where = Wheres.create();
-        consumer.accept(where);
-        return DeleteChain.of(this, where).execute();
+        return DeleteChain.of(this, where(consumer)).execute();
     }
 
 
@@ -312,11 +316,18 @@ public interface BaseMapper<T> {
      * @return 返回结果列表
      */
     default List<T> list(Consumer<Where> consumer) {
-        Where where = Wheres.create();
-        consumer.accept(where);
-        return QueryChain.of(this, where).list(false);
+        return this.list(consumer, null);
     }
 
+    default List<T> list(Consumer<Where> consumer, Getter<T>... selectFields) {
+        QueryChain queryChain = QueryChain.of(this, where(consumer));
+        if (Objects.isNull(selectFields) || selectFields.length < 1) {
+            queryChain.select(getEntityType());
+        } else {
+            queryChain.select(selectFields);
+        }
+        return queryChain.list(false);
+    }
 
     /**
      * 列表查询
@@ -348,9 +359,7 @@ public interface BaseMapper<T> {
      * @return 返回游标
      */
     default Cursor<T> cursor(Consumer<Where> consumer) {
-        Where where = Wheres.create();
-        consumer.accept(where);
-        return QueryChain.of(this, where).cursor(false);
+        return QueryChain.of(this, where(consumer)).cursor(false);
     }
 
 
@@ -384,9 +393,7 @@ public interface BaseMapper<T> {
      * @return 返回count数
      */
     default Integer count(Consumer<Where> consumer) {
-        Where where = Wheres.create();
-        consumer.accept(where);
-        return QueryChain.of(this, where).count();
+        return QueryChain.of(this, where(consumer)).count();
     }
 
     /**
@@ -409,9 +416,18 @@ public interface BaseMapper<T> {
      * @return 分页结果
      */
     default Pager<T> paging(Consumer<Where> consumer, Pager<T> pager) {
-        Where where = Wheres.create();
-        consumer.accept(where);
-        return QueryChain.of(this, where).paging(pager);
+        return this.paging(consumer, pager, null);
+    }
+
+
+    default Pager<T> paging(Consumer<Where> consumer, Pager<T> pager, Getter<T>... selectFields) {
+        QueryChain queryChain = QueryChain.of(this, where(consumer));
+        if (Objects.isNull(selectFields) || selectFields.length < 1) {
+            queryChain.select(getEntityType());
+        } else {
+            queryChain.select(selectFields);
+        }
+        return queryChain.paging(pager);
     }
 
     /**

@@ -27,7 +27,7 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
      * 根据ID查询
      *
      * @param id
-     * @return
+     * @return 当个当前实体类
      */
     default T getById(Serializable id) {
         return getById(id, null);
@@ -37,10 +37,10 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
      * 根据ID查询，只返回指定列
      *
      * @param id
-     * @param getters
-     * @return
+     * @param selectFields select列
+     * @return 当个当前实体类
      */
-    default T getById(Serializable id, Getter<T>... getters) {
+    default T getById(Serializable id, Getter<T>... selectFields) {
         Class entityType = this.getEntityType();
         TableInfo tableInfo = this.getTableInfo();
         this.$checkId(tableInfo);
@@ -48,14 +48,14 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
                 .from(entityType)
                 .connect(self -> self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id))
                 .setReturnType(entityType);
-        if (Objects.isNull(getters) || getters.length < 1) {
+        if (Objects.isNull(selectFields) || selectFields.length < 1) {
             if (tableInfo.isHasIgnoreField()) {
                 queryChain.select(entityType);
             } else {
                 queryChain.select(queryChain.$(entityType, 1).$("*"));
             }
         } else {
-            queryChain.select(getters);
+            queryChain.select(selectFields);
         }
         return queryChain.get();
     }

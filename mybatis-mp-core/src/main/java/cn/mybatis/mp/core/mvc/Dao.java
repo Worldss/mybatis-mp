@@ -12,7 +12,7 @@ public interface Dao<T, K> {
 
     T getById(K id);
 
-    T getById(K id, Getter<T>... getters);
+    T getById(K id, Getter<T>... selectFields);
 
     int save(T entity);
 

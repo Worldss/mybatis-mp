@@ -23,10 +23,23 @@ import java.util.function.Consumer;
  */
 public interface MybatisMapper<T> extends BaseMapper<T> {
 
+    /**
+     * 根据ID查询
+     *
+     * @param id
+     * @return
+     */
     default T getById(Serializable id) {
         return getById(id, null);
     }
 
+    /**
+     * 根据ID查询，只返回指定列
+     *
+     * @param id
+     * @param getters
+     * @return
+     */
     default T getById(Serializable id, Getter<T>... getters) {
         Class entityType = this.getEntityType();
         TableInfo tableInfo = this.getTableInfo();

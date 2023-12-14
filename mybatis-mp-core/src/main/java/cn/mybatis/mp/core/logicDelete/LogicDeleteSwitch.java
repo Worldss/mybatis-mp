@@ -25,7 +25,7 @@ public final class LogicDeleteSwitch implements AutoCloseable {
      */
     public static Boolean getState() {
         if (Objects.isNull(THREAD_LOCAL)) {
-            return false;
+            return null;
         }
         return THREAD_LOCAL.get();
     }

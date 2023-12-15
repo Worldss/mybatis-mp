@@ -50,6 +50,7 @@
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 
         <mybatis-mp.version>1.2.5</mybatis-mp.version>
+        <mybatis-mp-spring-boot-starter.version>1.2.5</mybatis-mp-spring-boot-starter.version>
 
         <!-- mybatis version -->
         <mybatis.version>3.5.15</mybatis.version>
@@ -62,8 +63,9 @@
         <mysql.version>8.2.0</mysql.version>
 
         <!-- spring boot version -->
-        <spring.version>5.3.31</spring.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
 
+        <!-- lombok version -->
         <lombok.version>1.18.30</lombok.version>
     </properties>
 
@@ -89,12 +91,17 @@
                 <artifactId>mybatis-mp-core</artifactId>
                 <version>${mybatis-mp.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>cn.mybatis-mp</groupId>
                 <artifactId>mybatis-mp-generator</artifactId>
                 <version>${mybatis-mp.version}</version>
             </dependency>
+            <dependency>
+                <groupId>cn.mybatis-mp</groupId>
+                <artifactId>mybatis-mp-spring-boot-starter</artifactId>
+                <version>${mybatis-mp-spring-boot-starter.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
@@ -146,10 +153,11 @@
             </dependency>
 
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-                <version>${spring.version}</version>
-                <scope>test</scope>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

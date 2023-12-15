@@ -57,7 +57,7 @@
         <spring.version>5.3.31</spring.version>
 
         <!-- mybatis version -->
-        <mybatis.version>3.5.14</mybatis.version>
+        <mybatis.version>3.5.15</mybatis.version>
         <mybatis-spring.version>2.1.2</mybatis-spring.version>
         <mybatis-spring-boot-starter.version>2.3.2</mybatis-spring-boot-starter.version>
 

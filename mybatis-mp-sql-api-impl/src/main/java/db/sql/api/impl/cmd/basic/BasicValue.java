@@ -26,7 +26,7 @@ public class BasicValue extends Field<BasicValue> {
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         Object value = this.value;
-        if (Objects.nonNull(value) && value instanceof String && parent instanceof Like) {
+        if (Objects.nonNull(value) && value instanceof String && parent instanceof Like && ((Like) parent).replace()) {
             value = value.toString().replaceAll("%", "\\\\%").replaceAll("_", "\\\\_%");
         }
         if (context.getSqlMode() == SQLMode.PRINT || module instanceof OrderBy) {

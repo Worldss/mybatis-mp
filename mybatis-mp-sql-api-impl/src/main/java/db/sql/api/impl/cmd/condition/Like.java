@@ -9,6 +9,10 @@ import db.sql.api.impl.tookit.SqlConst;
 public class Like extends BasicCondition {
     private final LikeMode mode;
 
+    public boolean replace(){
+        return true;
+    }
+
     public Like(String operator, Cmd key, Cmd value, LikeMode mode) {
         super(operator, key, value);
         this.mode = mode;

@@ -9,10 +9,6 @@ import db.sql.api.impl.tookit.SqlConst;
 public class Like extends BasicCondition {
     private final LikeMode mode;
 
-    public boolean replace(){
-        return true;
-    }
-
     public Like(String operator, Cmd key, Cmd value, LikeMode mode) {
         super(operator, key, value);
         this.mode = mode;
@@ -34,6 +30,10 @@ public class Like extends BasicCondition {
         this(SqlConst.LIKE, key, Methods.convert(value), mode);
     }
 
+    public LikeMode getMode() {
+        return mode;
+    }
+
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = getField().sql(module, this, context, sqlBuilder);
@@ -44,6 +44,11 @@ public class Like extends BasicCondition {
         boolean after = false;
 
         switch (this.mode) {
+            case NONE: {
+                before = false;
+                after = false;
+                break;
+            }
             case DEFAULT: {
                 before = true;
                 after = true;

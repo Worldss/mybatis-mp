@@ -4,6 +4,7 @@ package db.sql.api.impl.cmd.basic;
 import db.sql.api.Cmd;
 import db.sql.api.SQLMode;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.LikeMode;
 import db.sql.api.impl.cmd.condition.Like;
 import db.sql.api.impl.cmd.struct.query.OrderBy;
 import db.sql.api.impl.tookit.SqlConst;
@@ -26,7 +27,7 @@ public class BasicValue extends Field<BasicValue> {
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         Object value = this.value;
-        if (Objects.nonNull(value) && value instanceof String && parent instanceof Like && ((Like) parent).replace()) {
+        if (Objects.nonNull(value) && value instanceof String && parent instanceof Like && ((Like) parent).getMode() != LikeMode.NONE) {
             value = value.toString().replaceAll("%", "\\\\%").replaceAll("_", "\\\\_%");
         }
         if (context.getSqlMode() == SQLMode.PRINT || module instanceof OrderBy) {

@@ -6,6 +6,7 @@ import cn.mybatis.mp.core.logicDelete.LogicDeleteUtil;
 import cn.mybatis.mp.core.sql.executor.Wheres;
 import cn.mybatis.mp.core.sql.executor.chain.DeleteChain;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
+import db.sql.api.Getter;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.struct.Where;
 
@@ -22,7 +23,24 @@ import java.util.function.Consumer;
  */
 public interface MybatisMapper<T> extends BaseMapper<T> {
 
+    /**
+     * 根据ID查询
+     *
+     * @param id
+     * @return 当个当前实体类
+     */
     default T getById(Serializable id) {
+        return getById(id, null);
+    }
+
+    /**
+     * 根据ID查询，只返回指定列
+     *
+     * @param id
+     * @param selectFields select列
+     * @return 当个当前实体类
+     */
+    default T getById(Serializable id, Getter<T>... selectFields) {
         Class entityType = this.getEntityType();
         TableInfo tableInfo = this.getTableInfo();
         this.$checkId(tableInfo);
@@ -30,11 +48,14 @@ public interface MybatisMapper<T> extends BaseMapper<T> {
                 .from(entityType)
                 .connect(self -> self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id))
                 .setReturnType(entityType);
-
-        if (tableInfo.isHasIgnoreField()) {
-            queryChain.select(entityType);
+        if (Objects.isNull(selectFields) || selectFields.length < 1) {
+            if (tableInfo.isHasIgnoreField()) {
+                queryChain.select(entityType);
+            } else {
+                queryChain.select(queryChain.$(entityType, 1).$("*"));
+            }
         } else {
-            queryChain.select(queryChain.$(entityType, 1).$("*"));
+            queryChain.select(selectFields);
         }
         return queryChain.get();
     }

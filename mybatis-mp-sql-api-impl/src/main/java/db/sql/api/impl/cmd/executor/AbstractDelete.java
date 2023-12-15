@@ -57,10 +57,10 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
 
     void initCmdSorts(Map<Class<? extends Cmd>, Integer> cmdSorts) {
         int i = 0;
-        cmdSorts.put(DeleteTable.class, ++i);
-        cmdSorts.put(FromTable.class, ++i);
-        cmdSorts.put(Joins.class, ++i);
-        cmdSorts.put(Where.class, ++i);
+        cmdSorts.put(DeleteTable.class, i += 10);
+        cmdSorts.put(FromTable.class, i += 10);
+        cmdSorts.put(Joins.class, i += 10);
+        cmdSorts.put(Where.class, i += 10);
     }
 
     @Override

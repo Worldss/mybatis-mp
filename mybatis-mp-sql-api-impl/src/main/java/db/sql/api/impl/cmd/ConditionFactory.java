@@ -5,14 +5,21 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.IQuery;
-import db.sql.api.cmd.executor.method.condition.ConditionMethods;
+import db.sql.api.cmd.executor.method.condition.IConditionMethods;
+import db.sql.api.impl.exception.ConditionArrayValueEmptyException;
+import db.sql.api.impl.exception.ConditionValueNullException;
+import db.sql.api.impl.tookit.SqlConst;
 
 import java.io.Serializable;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
 
-public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Object> {
+public class ConditionFactory implements IConditionMethods<ICondition, Cmd, Object> {
 
     protected final CmdFactory cmdFactory;
+    private boolean isIgnoreEmpty = false;
+    private boolean isIgnoreNull = false;
+    private boolean isStringTrim = false;
 
     public ConditionFactory(CmdFactory cmdFactory) {
         this.cmdFactory = cmdFactory;
@@ -22,94 +29,131 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         return cmdFactory;
     }
 
-    protected boolean ignoreEmpty() {
-        return false;
+    public boolean isIgnoreEmpty() {
+        return isIgnoreEmpty;
     }
 
-    protected boolean hasValue(Object value) {
-        if (value == null) {
-            return false;
-        } else if (ignoreEmpty() && value instanceof String) {
-            String v = (String) value;
-            return !v.trim().isEmpty();
-        }
-        return true;
+    public void setIgnoreEmpty(boolean isIgnoreEmpty) {
+        this.isIgnoreEmpty = isIgnoreEmpty;
     }
 
 
-    private boolean isValid(boolean allNeedValue, Object... params) {
-        if (allNeedValue) {
-            for (Object param : params) {
-                if (!(hasValue(param))) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            for (Object param : params) {
-                if (hasValue(param)) {
-                    return true;
-                }
-            }
-            return false;
-        }
+    public boolean isIgnoreNull() {
+        return isIgnoreNull;
     }
 
-    private boolean isValid(boolean allNeedValue, List<Object> params) {
-        if (allNeedValue) {
-            for (Object param : params) {
-                if (!(hasValue(param))) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            for (Object param : params) {
-                if (hasValue(param)) {
-                    return true;
-                }
-            }
-            return false;
-        }
+    public void setIgnoreNull(boolean isIgnoreNull) {
+        this.isIgnoreNull = isIgnoreNull;
     }
 
-    protected boolean isValid(Cmd filed) {
+
+    public boolean isStringTrim() {
+        return isStringTrim;
+    }
+
+    public void setStringTrim(boolean isStringTrim) {
+        this.isStringTrim = isStringTrim;
+    }
+
+    protected boolean isKeyValid(Cmd filed) {
         return filed != null;
     }
 
-    protected boolean isValid(Object value) {
-        return value != null;
-    }
-
-    protected boolean isValid(Cmd filed, Object param) {
-        return filed != null && hasValue(param);
-    }
-
-    protected boolean isValid(Cmd filed, boolean allNeedValue, Object... params) {
-        if (filed == null || params == null || params.length < 1) {
-            return false;
+    private Object getSingleValue(Object value) {
+        if (Objects.isNull(value)) {
+            if (!isIgnoreNull()) {
+                throw new ConditionValueNullException("条件参数里包含null值");
+            }
+            return null;
         }
-        return this.isValid(allNeedValue, params);
-    }
-
-    protected boolean isValid(Cmd filed, boolean allNeedValue, List<Object> params) {
-        if (filed == null || params == null || params.isEmpty()) {
-            return false;
+        if (value instanceof String) {
+            String str = (String) value;
+            str = isStringTrim() ? str.trim() : str;
+            if (isIgnoreEmpty() && SqlConst.EMPTY.equals(str)) {
+                return null;
+            }
+            return str;
         }
-        return this.isValid(allNeedValue, params);
+        return value;
     }
 
-    private Cmd convert(Object value) {
+    protected Object checkAndGetValidValue(Object value) {
+        if (Objects.isNull(value)) {
+            if (!isIgnoreNull()) {
+                throw new ConditionValueNullException("条件参数里包含null值");
+            }
+            return null;
+        }
+        if (value instanceof Object[]) {
+            Object[] values = (Object[]) value;
+            List<Object> objectList = new ArrayList<>(values.length);
+            for (Object v : values) {
+                Object nv = getSingleValue(v);
+                if (Objects.isNull(nv)) {
+                    continue;
+                }
+                objectList.add(nv);
+            }
+
+            if (objectList.isEmpty()) {
+                throw new ConditionArrayValueEmptyException("array can't be empty");
+            }
+            int length = objectList.size();
+            if (length == values.length) {
+                for (int i = 0; i < length; i++) {
+                    values[i] = objectList.get(i);
+                }
+                objectList.clear();
+                return values;
+            }
+
+            Object[] newObject = (Object[]) Array.newInstance(value.getClass().getComponentType(), length);
+            for (int i = 0; i < length; i++) {
+                newObject[i] = objectList.get(i);
+            }
+            return newObject;
+        } else if (value instanceof Collection) {
+            Collection collection = (Collection) value;
+            Collection<Object> objectList;
+            if (value instanceof List) {
+                objectList = new ArrayList<>(collection.size());
+            } else if (value instanceof Set) {
+                objectList = new HashSet<>(collection.size());
+            } else if (value instanceof Queue) {
+                objectList = new ArrayDeque<>(collection.size());
+            } else {
+                throw new RuntimeException("Not supported");
+            }
+            for (Object v : collection) {
+                Object nv = getSingleValue(v);
+                if (Objects.isNull(nv)) {
+                    continue;
+                }
+                objectList.add(nv);
+            }
+            if (objectList.isEmpty()) {
+                throw new ConditionArrayValueEmptyException("collection can't be empty");
+            }
+            return collection;
+        }
+        return getSingleValue(value);
+    }
+
+    private Cmd convertToCmd(Object value) {
         Cmd v1;
         if (value instanceof Cmd) {
             v1 = (Cmd) value;
         } else {
+            if (isStringTrim() && value instanceof String) {
+                String str = (String) value;
+                value = str.trim();
+            }
             v1 = cmdFactory.value(value);
         }
         return v1;
     }
 
-    private <T> Cmd convert(Getter<T> column, int storey) {
+    private <T> Cmd convertToCmd(Getter<T> column, int storey) {
         return cmdFactory.field(column, storey);
     }
 
@@ -118,7 +162,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column)) {
+        if (!isKeyValid(column)) {
             return null;
         }
         return Methods.eq(column, cmdFactory.value(""));
@@ -129,7 +173,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        return Methods.eq(convert(column, storey), cmdFactory.value(""));
+        return Methods.eq(convertToCmd(column, storey), cmdFactory.value(""));
     }
 
     @Override
@@ -137,7 +181,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column)) {
+        if (!isKeyValid(column)) {
             return null;
         }
         return Methods.ne(column, cmdFactory.value(""));
@@ -148,7 +192,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        return Methods.ne(convert(column, storey), cmdFactory.value(""));
+        return Methods.ne(convertToCmd(column, storey), cmdFactory.value(""));
     }
 
     @Override
@@ -156,10 +200,14 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, value)) {
+        if (!isKeyValid(column)) {
             return null;
         }
-        return Methods.eq(column, convert(value));
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        return Methods.eq(column, convertToCmd(value));
     }
 
     @Override
@@ -167,10 +215,14 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, value)) {
+        if (!isKeyValid(column)) {
             return null;
         }
-        return Methods.ne(column, convert(value));
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        return Methods.ne(column, convertToCmd(value));
     }
 
     @Override
@@ -178,10 +230,14 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, value)) {
+        if (!isKeyValid(column)) {
             return null;
         }
-        return Methods.gt(column, convert(value));
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        return Methods.gt(column, convertToCmd(value));
     }
 
     @Override
@@ -189,10 +245,14 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, value)) {
+        if (!isKeyValid(column)) {
             return null;
         }
-        return Methods.gte(column, convert(value));
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        return Methods.gte(column, convertToCmd(value));
     }
 
     @Override
@@ -200,10 +260,14 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, value)) {
+        if (!isKeyValid(column)) {
             return null;
         }
-        return Methods.lt(column, convert(value));
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        return Methods.lt(column, convertToCmd(value));
     }
 
     @Override
@@ -211,10 +275,14 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, value)) {
+        if (!isKeyValid(column)) {
             return null;
         }
-        return Methods.lte(column, convert(value));
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        return Methods.lte(column, convertToCmd(value));
     }
 
     @Override
@@ -222,7 +290,11 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, value)) {
+        if (!isKeyValid(column)) {
+            return null;
+        }
+        value = (String) checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
             return null;
         }
         return Methods.like(column, value, mode);
@@ -233,7 +305,11 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, value)) {
+        if (!isKeyValid(column)) {
+            return null;
+        }
+        value = (String) checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
             return null;
         }
         return Methods.notLike(column, value, mode);
@@ -244,8 +320,16 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, false, value, value2)) {
+        if (!isKeyValid(column)) {
             return null;
+        }
+        value = (Serializable) checkAndGetValidValue(value);
+        value2 = (Serializable) checkAndGetValidValue(value2);
+        if (Objects.isNull(value) || Objects.isNull(value2)) {
+            if (Objects.isNull(value) && Objects.isNull(value2)) {
+                return null;
+            }
+            throw new ConditionValueNullException("条件参数里包含null值");
         }
         return Methods.between(column, value, value2);
     }
@@ -255,10 +339,16 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(false, value, value2)) {
-            return null;
+
+        value = (Serializable) checkAndGetValidValue(value);
+        value2 = (Serializable) checkAndGetValidValue(value2);
+        if (Objects.isNull(value) || Objects.isNull(value2)) {
+            if (Objects.isNull(value) && Objects.isNull(value2)) {
+                return null;
+            }
+            throw new ConditionValueNullException("条件参数里包含null值");
         }
-        return Methods.between(convert(column, storey), value, value2);
+        return Methods.between(convertToCmd(column, storey), value, value2);
     }
 
     @Override
@@ -266,8 +356,16 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, false, value, value2)) {
+        if (!isKeyValid(column)) {
             return null;
+        }
+        value = (Serializable) checkAndGetValidValue(value);
+        value2 = (Serializable) checkAndGetValidValue(value2);
+        if (Objects.isNull(value) || Objects.isNull(value2)) {
+            if (Objects.isNull(value) && Objects.isNull(value2)) {
+                return null;
+            }
+            throw new ConditionValueNullException("条件参数里包含null值");
         }
         return Methods.notBetween(column, value, value2);
     }
@@ -277,10 +375,16 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(false, value, value2)) {
-            return null;
+
+        value = (Serializable) checkAndGetValidValue(value);
+        value2 = (Serializable) checkAndGetValidValue(value2);
+        if (Objects.isNull(value) || Objects.isNull(value2)) {
+            if (Objects.isNull(value) && Objects.isNull(value2)) {
+                return null;
+            }
+            throw new ConditionValueNullException("条件参数里包含null值");
         }
-        return Methods.notBetween(convert(column, storey), value, value2);
+        return Methods.notBetween(convertToCmd(column, storey), value, value2);
     }
 
     @Override
@@ -288,7 +392,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column)) {
+        if (!isKeyValid(column)) {
             return null;
         }
         return Methods.isNull(column);
@@ -299,7 +403,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column)) {
+        if (!isKeyValid(column)) {
             return null;
         }
         return Methods.isNotNull(column);
@@ -310,10 +414,11 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(value)) {
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
             return null;
         }
-        return Methods.eq(convert(column, storey), convert(value));
+        return Methods.eq(convertToCmd(column, storey), convertToCmd(value));
     }
 
     @Override
@@ -321,7 +426,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        return Methods.eq(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.eq(convertToCmd(column, columnStorey), convertToCmd(value, valueStorey));
     }
 
     @Override
@@ -329,10 +434,11 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(value)) {
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
             return null;
         }
-        return Methods.gt(convert(column, storey), convert(value));
+        return Methods.gt(convertToCmd(column, storey), convertToCmd(value));
     }
 
     @Override
@@ -340,7 +446,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        return Methods.gt(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.gt(convertToCmd(column, columnStorey), convertToCmd(value, valueStorey));
     }
 
     @Override
@@ -348,10 +454,11 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(value)) {
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
             return null;
         }
-        return Methods.gte(convert(column, storey), convert(value));
+        return Methods.gte(convertToCmd(column, storey), convertToCmd(value));
     }
 
     @Override
@@ -359,7 +466,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        return Methods.gte(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.gte(convertToCmd(column, columnStorey), convertToCmd(value, valueStorey));
     }
 
     @Override
@@ -367,10 +474,11 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(value)) {
+        value = (String) checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
             return null;
         }
-        return Methods.like(convert(column, storey), value, mode);
+        return Methods.like(convertToCmd(column, storey), value, mode);
     }
 
     @Override
@@ -378,10 +486,11 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(value)) {
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
             return null;
         }
-        return Methods.lt(convert(column, storey), convert(value));
+        return Methods.lt(convertToCmd(column, storey), convertToCmd(value));
     }
 
     @Override
@@ -389,7 +498,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        return Methods.lt(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.lt(convertToCmd(column, columnStorey), convertToCmd(value, valueStorey));
     }
 
     @Override
@@ -397,10 +506,11 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(value)) {
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
             return null;
         }
-        return Methods.lte(convert(column, storey), convert(value));
+        return Methods.lte(convertToCmd(column, storey), convertToCmd(value));
     }
 
     @Override
@@ -408,7 +518,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        return Methods.lte(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.lte(convertToCmd(column, columnStorey), convertToCmd(value, valueStorey));
     }
 
     @Override
@@ -416,10 +526,11 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(value)) {
+        value = checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
             return null;
         }
-        return Methods.ne(convert(column, storey), convert(value));
+        return Methods.ne(convertToCmd(column, storey), convertToCmd(value));
     }
 
     @Override
@@ -427,7 +538,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        return Methods.ne(convert(column, columnStorey), convert(value, valueStorey));
+        return Methods.ne(convertToCmd(column, columnStorey), convertToCmd(value, valueStorey));
     }
 
 
@@ -436,10 +547,11 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(value)) {
+        value = (String) checkAndGetValidValue(value);
+        if (Objects.isNull(value)) {
             return null;
         }
-        return Methods.notLike(convert(column, storey), value, mode);
+        return Methods.notLike(convertToCmd(column, storey), value, mode);
     }
 
     @Override
@@ -447,7 +559,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        return Methods.isNull(convert(column, storey));
+        return Methods.isNull(convertToCmd(column, storey));
     }
 
     @Override
@@ -455,7 +567,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        return Methods.isNotNull(convert(column, storey));
+        return Methods.isNotNull(convertToCmd(column, storey));
     }
 
     @Override
@@ -463,21 +575,17 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, query)) {
-            return null;
-        }
+        Objects.requireNonNull(query);
         return Methods.in(column, query);
     }
 
     @Override
-    public ICondition in(Cmd column, boolean when, Serializable... values) {
+    public ICondition in(Cmd column, boolean when, Serializable[] values) {
         if (!when) {
             return null;
         }
-        if (values != null && values.length > 0 && values[0] instanceof Serializable[]) {
-            values = (Serializable[]) values[0];
-        }
-        if (!isValid(column, false, (Object[]) values)) {
+        values = (Serializable[]) checkAndGetValidValue(values);
+        if (Objects.isNull(values)) {
             return null;
         }
         return Methods.in(column, values);
@@ -488,7 +596,8 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(column, false, values)) {
+        values = (List<Serializable>) checkAndGetValidValue(values);
+        if (Objects.isNull(values)) {
             return null;
         }
         return Methods.in(column, values);
@@ -499,21 +608,20 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(query)) {
-            return null;
-        }
-        return Methods.in(convert(column, storey), query);
+        Objects.requireNonNull(query);
+        return Methods.in(convertToCmd(column, storey), query);
     }
 
     @Override
-    public <T> ICondition in(Getter<T> column, int storey, boolean when, Serializable... values) {
+    public <T> ICondition in(Getter<T> column, int storey, boolean when, Serializable[] values) {
         if (!when) {
             return null;
         }
-        if (!isValid(false, (Object[]) values)) {
+        values = (Serializable[]) checkAndGetValidValue(values);
+        if (Objects.isNull(values)) {
             return null;
         }
-        return Methods.in(convert(column, storey), values);
+        return Methods.in(convertToCmd(column, storey), values);
     }
 
     @Override
@@ -521,10 +629,11 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(false, values)) {
+        values = (List<Serializable>) checkAndGetValidValue(values);
+        if (Objects.isNull(values)) {
             return null;
         }
-        return Methods.in(convert(column, storey), values);
+        return Methods.in(convertToCmd(column, storey), values);
     }
 
     @Override
@@ -532,9 +641,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(query)) {
-            return null;
-        }
+        Objects.requireNonNull(query);
         return Methods.exists(query);
     }
 
@@ -544,9 +651,7 @@ public class ConditionFactory implements ConditionMethods<ICondition, Cmd, Objec
         if (!when) {
             return null;
         }
-        if (!isValid(query)) {
-            return null;
-        }
+        Objects.requireNonNull(query);
         return Methods.notExists(query);
     }
 }

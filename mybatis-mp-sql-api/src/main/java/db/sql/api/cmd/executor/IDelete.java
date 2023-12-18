@@ -2,10 +2,10 @@ package db.sql.api.cmd.executor;
 
 import db.sql.api.Cmd;
 import db.sql.api.cmd.JoinMode;
-import db.sql.api.cmd.executor.method.DeleteMethod;
-import db.sql.api.cmd.executor.method.FromMethod;
-import db.sql.api.cmd.executor.method.JoinMethod;
-import db.sql.api.cmd.executor.method.WhereMethod;
+import db.sql.api.cmd.executor.method.IDeleteMethod;
+import db.sql.api.cmd.executor.method.IFromMethod;
+import db.sql.api.cmd.executor.method.IJoinMethod;
+import db.sql.api.cmd.executor.method.IWhereMethod;
 import db.sql.api.cmd.struct.*;
 import db.sql.api.cmd.struct.delete.IDeleteTable;
 
@@ -23,10 +23,10 @@ public interface IDelete<SELF extends IDelete,
         ON extends IOn<ON, TABLE, COLUMN, V, JOIN, CONDITION_CHAIN>,
         WHERE extends IWhere<WHERE, COLUMN, V, CONDITION_CHAIN>>
 
-        extends DeleteMethod<SELF, TABLE>,
-        FromMethod<SELF, TABLE>,
-        JoinMethod<SELF, TABLE, ON>,
-        WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
+        extends IDeleteMethod<SELF, TABLE>,
+        IFromMethod<SELF, TABLE>,
+        IJoinMethod<SELF, TABLE, ON>,
+        IWhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
         IExecutor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
 
     DELETE_TABLE $delete(TABLE... tables);

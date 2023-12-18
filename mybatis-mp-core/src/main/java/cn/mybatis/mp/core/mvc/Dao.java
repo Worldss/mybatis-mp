@@ -3,7 +3,6 @@ package cn.mybatis.mp.core.mvc;
 import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
 
-import java.io.Serializable;
 import java.util.List;
 
 public interface Dao<T, K> {

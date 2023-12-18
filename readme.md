@@ -47,22 +47,57 @@
 群号： 917404304 ,邀请各位大神参与补充，绝对开源，大家都可以进行代码提交，审核通过会进行master分支。
 ![](./doc/image/qq.png)
 
-## 快速开始
+# 快速开始
 
-### 1. 基于spring-boot开发
+## 1. 基于spring-boot开发 (已引入spring、springboot 基本依赖，创建SpringApplication.run即可启动)
 
-#### 1.1 maven 集成
+### 1.1 springboot2 maven 集成
 
 ```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>cn.mybatis-mp</groupId>
+            <artifactId>mybatis-mp-spring-boot-parent</artifactId>
+            <version>1.2.5</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
 
-<dependency>
-    <groupId>cn.mybatis-mp</groupId>
-    <artifactId>mybatis-mp-spring-boot-starter</artifactId>
-    <version>1.2.5</version>
-</dependency>  
+<dependencies>
+    <dependency>
+        <groupId>cn.mybatis-mp</groupId>
+        <artifactId>mybatis-mp-spring-boot-starter</artifactId>
+    </dependency>
+</dependencies>
 ```
 
-#### 1.2 数据源 配置
+### 1.2 springboot3 maven 集成
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>cn.mybatis-mp</groupId>
+            <artifactId>mybatis-mp-spring-boot-parent</artifactId>
+            <version>1.2.5-spring-boot3</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+<dependencies>
+    <dependency>
+        <groupId>cn.mybatis-mp</groupId>
+        <artifactId>mybatis-mp-spring-boot-starter</artifactId>
+    </dependency>
+</dependencies>
+```
+
+#### 1.3 数据源 配置
 
 配置spring boot配置文件
 
@@ -513,7 +548,42 @@ UpdateChain.of(sysUserMapper)
     .eq(SysRole::getId,1)
     .execute();     
 ```
+# 使用前，请先查看此项（重要）
+> 其他框架一般都是默认忽略null值参数的
 
+> 但是这样可能比较容易导致bug出现，例如 删除 修改时，因为null 导致数据紊乱了
+
+> 因此mybatis-mp,默认会检测 null值，并设有开关，让有需要忽略null，或者 空字符串等需要操作；如下使用：
+```java
+SysUser sysUser = QueryChain.of(sysUserMapper)
+    // forSearch包含忽略null 、空字符串、对字符串进行trim去空格    
+    .forSearch()
+    .select(SysUser::getId)
+    .from(SysUser.class)
+    .eq(SysUser::getUserName, null )
+    .eq(SysUser::getUserName, "" )
+    .eq(SysUser::getUserName," admin ")
+    .setReturnType(SysUser.class)
+    .get();
+```
+或者
+```java
+SysUser sysUser = QueryChain.of(sysUserMapper)
+    // 忽略 null 条件参数    
+    .ignoreNullValueInCondition(true)
+    // 忽略 空字符串 条件参数    
+    .ignoreEmptyInCondition(true)
+    //  对字符串进行trim 去空格操作    
+    .trimStringInCondition(true)
+    .select(SysUser::getId)
+    .from(SysUser.class)
+    .eq(SysUser::getUserName, null )
+    .eq(SysUser::getUserName, "" )
+    .eq(SysUser::getUserName," admin ")
+    .setReturnType(SysUser.class)
+    .get();
+```
+目前 CRUD类、Where类都支持以上方法
 # 开始CRUD（CRUD教程）
 > Mapper 需要继承 MybatisMapper
 

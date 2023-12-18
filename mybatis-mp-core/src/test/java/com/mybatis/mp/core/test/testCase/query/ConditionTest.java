@@ -391,11 +391,11 @@ public class ConditionTest extends BaseTest {
                     .forSearch()
                     .select(SysUser::getId)
                     .from(SysUser.class)
-                    .eq(SysUser::getId,1)
-                    .eq(SysUser::getUserName,"")
+                    .eq(SysUser::getId, 1)
+                    .eq(SysUser::getUserName, "")
                     .setReturnType(SysUser.class)
                     .get();
-            assertTrue(null!=sysUser);
+            assertNotNull(sysUser);
         }
     }
 
@@ -406,11 +406,11 @@ public class ConditionTest extends BaseTest {
             SysUser sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId)
                     .from(SysUser.class)
-                    .eq(SysUser::getId,1)
-                    .eq(SysUser::getUserName,"")
+                    .eq(SysUser::getId, 1)
+                    .eq(SysUser::getUserName, "")
                     .setReturnType(SysUser.class)
                     .get();
-            assertEquals(null,sysUser);
+            assertNull(sysUser);
         }
     }
 
@@ -422,10 +422,10 @@ public class ConditionTest extends BaseTest {
                     .forSearch()
                     .select(SysUser::getId)
                     .from(SysUser.class)
-                    .eq(SysUser::getUserName," admin ")
+                    .eq(SysUser::getUserName, " admin ")
                     .setReturnType(SysUser.class)
                     .get();
-            assertTrue(null!=sysUser);
+            assertNotNull(sysUser);
         }
     }
 
@@ -436,10 +436,10 @@ public class ConditionTest extends BaseTest {
             SysUser sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId)
                     .from(SysUser.class)
-                    .eq(SysUser::getUserName," admin ")
+                    .eq(SysUser::getUserName, " admin ")
                     .setReturnType(SysUser.class)
                     .get();
-            assertEquals(null,sysUser);
+            assertNull(sysUser);
         }
     }
 }

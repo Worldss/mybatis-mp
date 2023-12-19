@@ -227,7 +227,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -237,36 +237,16 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!-- Javadoc -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.4</version>
-                        <configuration>
-                            <windowtitle>mybatis-mp</windowtitle>
-                            <doctitle>mybatis-mp</doctitle>
-                            <show>private</show>
-                            <detectLinks>false</detectLinks>
-                            <detectOfflineLinks>true</detectOfflineLinks>
-                            <linksource>true</linksource>
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                            <detectJavaApiLink>true</detectJavaApiLink>
-                            <source>8</source>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+                        <version>3.6.3</version>
                     </plugin>
                     <!-- 以下是GPG -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -276,7 +256,6 @@
                             </execution>
                         </executions>
                     </plugin>
-
                 </plugins>
             </build>
             <distributionManagement>

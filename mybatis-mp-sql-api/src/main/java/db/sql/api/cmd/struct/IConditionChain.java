@@ -15,24 +15,11 @@ public interface IConditionChain<SELF extends IConditionChain,
         Nested<SELF, SELF>,
         ICondition {
 
-    default boolean isIgnoreEmpty() {
-        return false;
-    }
-
     SELF setIgnoreEmpty(boolean bool);
-
-    default boolean isIgnoreNull() {
-        return false;
-    }
 
     SELF setIgnoreNull(boolean bool);
 
-    default boolean isStringTrim() {
-        return false;
-    }
-
     SELF setStringTrim(boolean bool);
-
 
     boolean hasContent();
 

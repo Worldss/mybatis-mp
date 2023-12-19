@@ -10,7 +10,7 @@
     </description>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
     <packaging>pom</packaging>
     <modules>
         <module>mybatis-mp-annotation</module>
@@ -49,17 +49,11 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 
-        <mybatis-mp.version>1.2.4</mybatis-mp.version>
-
-        <!-- spring version -->
-        <spring-boot.version>2.7.18</spring-boot.version>
-        <!-- spring boot version -->
-        <spring.version>5.3.31</spring.version>
+        <mybatis-mp.version>1.2.5</mybatis-mp.version>
+        <mybatis-mp-spring-boot-starter.version>1.2.5</mybatis-mp-spring-boot-starter.version>
 
         <!-- mybatis version -->
         <mybatis.version>3.5.15</mybatis.version>
-        <mybatis-spring.version>2.1.2</mybatis-spring.version>
-        <mybatis-spring-boot-starter.version>2.3.2</mybatis-spring-boot-starter.version>
 
         <!-- log version -->
         <logback.version>1.2.12</logback.version>
@@ -68,13 +62,30 @@
         <!-- jdbc version -->
         <mysql.version>8.2.0</mysql.version>
 
+        <!-- spring boot version -->
+        <spring-boot.version>2.7.18</spring-boot.version>
+
+        <!-- lombok version -->
         <lombok.version>1.18.30</lombok.version>
-
     </properties>
-
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>cn.mybatis-mp</groupId>
+                <artifactId>mybatis-mp-sql-api</artifactId>
+                <version>${mybatis-mp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.mybatis-mp</groupId>
+                <artifactId>mybatis-mp-sql-api-impl</artifactId>
+                <version>${mybatis-mp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.mybatis-mp</groupId>
+                <artifactId>mybatis-mp-annotation</artifactId>
+                <version>${mybatis-mp.version}</version>
+            </dependency>
             <dependency>
                 <groupId>cn.mybatis-mp</groupId>
                 <artifactId>mybatis-mp-core</artifactId>
@@ -88,26 +99,13 @@
             <dependency>
                 <groupId>cn.mybatis-mp</groupId>
                 <artifactId>mybatis-mp-spring-boot-starter</artifactId>
-                <version>${mybatis-mp.version}</version>
+                <version>${mybatis-mp-spring-boot-starter.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis-spring</artifactId>
-                <version>${mybatis-spring.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
 
             <dependency>
@@ -122,13 +120,17 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
                 <version>${logback.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
@@ -145,6 +147,21 @@
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
                 <version>5.10.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>2.2.224</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -210,7 +227,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -220,36 +237,16 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!-- Javadoc -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.4</version>
-                        <configuration>
-                            <windowtitle>mybatis-mp</windowtitle>
-                            <doctitle>mybatis-mp</doctitle>
-                            <show>private</show>
-                            <detectLinks>false</detectLinks>
-                            <detectOfflineLinks>true</detectOfflineLinks>
-                            <linksource>true</linksource>
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                            <detectJavaApiLink>true</detectJavaApiLink>
-                            <source>8</source>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+                        <version>3.6.3</version>
                     </plugin>
                     <!-- 以下是GPG -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -259,7 +256,6 @@
                             </execution>
                         </executions>
                     </plugin>
-
                 </plugins>
             </build>
             <distributionManagement>

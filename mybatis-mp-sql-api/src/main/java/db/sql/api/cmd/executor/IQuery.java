@@ -36,19 +36,19 @@ public interface IQuery<SELF extends IQuery,
         ORDERBY extends IOrderBy<ORDERBY>,
         LIMIT extends ILimit<LIMIT>,
         FORUPDATE extends IForUpdate<FORUPDATE>,
-        UNION extends IUnion
+        IUNION extends IUnion
         >
-        extends WithMethod<SELF>,
-        SelectMethod<SELF, TABLE_FIELD, DATASET_FILED>,
-        FromMethod<SELF, DATASET>,
-        JoinMethod<SELF, DATASET, ON>,
-        WhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
-        GroupByMethod<SELF, TABLE_FIELD, DATASET_FILED, COLUMN>,
-        HavingMethod<SELF, TABLE_FIELD, DATASET_FILED, HAVING>,
-        OrderByMethod<SELF, TABLE_FIELD, DATASET_FILED, COLUMN>,
-        LimitMethod<SELF>,
-        ForUpdateMethod<SELF>,
-        UnionMethod<SELF>,
+        extends IWithMethod<SELF>,
+        ISelectMethod<SELF, TABLE_FIELD, DATASET_FILED>,
+        IFromMethod<SELF, DATASET>,
+        IJoinMethod<SELF, DATASET, ON>,
+        IWhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
+        IGroupByMethod<SELF, TABLE_FIELD, DATASET_FILED, COLUMN>,
+        IHavingMethod<SELF, TABLE_FIELD, DATASET_FILED, HAVING>,
+        IOrderByMethod<SELF, TABLE_FIELD, DATASET_FILED, COLUMN>,
+        ILimitMethod<SELF>,
+        IForUpdateMethod<SELF>,
+        IUnionMethod<SELF>,
         IExecutor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
 
     CMD_FACTORY $();

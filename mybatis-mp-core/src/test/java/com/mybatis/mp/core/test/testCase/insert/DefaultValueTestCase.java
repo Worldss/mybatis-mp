@@ -1,18 +1,14 @@
 package com.mybatis.mp.core.test.testCase.insert;
 
-import cn.mybatis.mp.core.mybatis.MybatisBatchUtil;
-import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import com.mybatis.mp.core.test.DO.DefaultValueTest;
 import com.mybatis.mp.core.test.mapper.DefaultValueTestMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DefaultValueTestCase extends BaseTest {

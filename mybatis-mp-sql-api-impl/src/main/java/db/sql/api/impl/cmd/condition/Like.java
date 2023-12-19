@@ -30,6 +30,10 @@ public class Like extends BasicCondition {
         this(SqlConst.LIKE, key, Methods.convert(value), mode);
     }
 
+    public LikeMode getMode() {
+        return mode;
+    }
+
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder = getField().sql(module, this, context, sqlBuilder);
@@ -40,6 +44,11 @@ public class Like extends BasicCondition {
         boolean after = false;
 
         switch (this.mode) {
+            case NONE: {
+                before = false;
+                after = false;
+                break;
+            }
             case DEFAULT: {
                 before = true;
                 after = true;

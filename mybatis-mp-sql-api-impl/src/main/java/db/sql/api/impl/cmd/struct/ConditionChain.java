@@ -36,6 +36,24 @@ public class ConditionChain implements IConditionChain<ConditionChain, Cmd, Obje
     }
 
     @Override
+    public ConditionChain setIgnoreNull(boolean bool) {
+        conditionFactory.setIgnoreNull(bool);
+        return this;
+    }
+
+    @Override
+    public ConditionChain setIgnoreEmpty(boolean bool) {
+        conditionFactory.setIgnoreEmpty(bool);
+        return this;
+    }
+
+    @Override
+    public ConditionChain setStringTrim(boolean bool) {
+        conditionFactory.setStringTrim(bool);
+        return this;
+    }
+
+    @Override
     public boolean hasContent() {
         return conditionBlocks != null && !conditionBlocks.isEmpty();
     }
@@ -399,7 +417,7 @@ public class ConditionChain implements IConditionChain<ConditionChain, Cmd, Obje
 
     @Override
     public ConditionChain in(Cmd cmd, boolean when, Serializable... values) {
-        ICondition condition = conditionFactory.in(cmd, values, when);
+        ICondition condition = conditionFactory.in(cmd, when, values);
         if (condition != null) {
             conditionBlocks().add(new ConditionBlock(this.connector, condition));
         }

@@ -5,13 +5,13 @@ import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
 import db.sql.api.cmd.LikeMode;
+import db.sql.api.impl.exception.ConditionValueNullException;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ConditionTest extends BaseTest {
@@ -347,6 +347,99 @@ public class ConditionTest extends BaseTest {
 
             assertEquals(Integer.valueOf(1), list.get(0), "between");
             assertEquals(Integer.valueOf(2), list.get(1), "between");
+        }
+    }
+
+    @Test
+    public void ignoreNullTest() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            List<Integer> list = QueryChain.of(sysUserMapper)
+                    .forSearch()
+                    .select(SysUser::getId)
+                    .from(SysUser.class)
+                    .in(SysUser::getId, new Integer[]{1, 2, null})
+                    .setReturnType(Integer.TYPE)
+                    .list();
+
+
+            assertEquals(Integer.valueOf(1), list.get(0), "between");
+            assertEquals(Integer.valueOf(2), list.get(1), "between");
+        }
+    }
+
+    @Test
+    public void notIgnoreNullTest() {
+        assertThrows(ConditionValueNullException.class, () -> {
+            try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+                SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+                List<Integer> list = QueryChain.of(sysUserMapper)
+                        .select(SysUser::getId)
+                        .from(SysUser.class)
+                        .in(SysUser::getId, new Integer[]{1, 2, null})
+                        .setReturnType(Integer.TYPE)
+                        .list();
+            }
+        });
+    }
+
+    @Test
+    public void ignoreEmptyTest() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            SysUser sysUser = QueryChain.of(sysUserMapper)
+                    .forSearch()
+                    .select(SysUser::getId)
+                    .from(SysUser.class)
+                    .eq(SysUser::getId, 1)
+                    .eq(SysUser::getUserName, "")
+                    .setReturnType(SysUser.class)
+                    .get();
+            assertNotNull(sysUser);
+        }
+    }
+
+    @Test
+    public void notIgnoreEmptyTest() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            SysUser sysUser = QueryChain.of(sysUserMapper)
+                    .select(SysUser::getId)
+                    .from(SysUser.class)
+                    .eq(SysUser::getId, 1)
+                    .eq(SysUser::getUserName, "")
+                    .setReturnType(SysUser.class)
+                    .get();
+            assertNull(sysUser);
+        }
+    }
+
+    @Test
+    public void stringTrimTest() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            SysUser sysUser = QueryChain.of(sysUserMapper)
+                    .forSearch()
+                    .select(SysUser::getId)
+                    .from(SysUser.class)
+                    .eq(SysUser::getUserName, " admin ")
+                    .setReturnType(SysUser.class)
+                    .get();
+            assertNotNull(sysUser);
+        }
+    }
+
+    @Test
+    public void notStringTrimTest() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            SysUser sysUser = QueryChain.of(sysUserMapper)
+                    .select(SysUser::getId)
+                    .from(SysUser.class)
+                    .eq(SysUser::getUserName, " admin ")
+                    .setReturnType(SysUser.class)
+                    .get();
+            assertNull(sysUser);
         }
     }
 }

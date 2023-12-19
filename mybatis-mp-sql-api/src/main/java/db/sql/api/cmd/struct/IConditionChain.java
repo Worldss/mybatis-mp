@@ -2,7 +2,7 @@ package db.sql.api.cmd.struct;
 
 
 import db.sql.api.cmd.basic.ICondition;
-import db.sql.api.cmd.executor.method.condition.ConditionMethods;
+import db.sql.api.cmd.executor.method.condition.IConditionMethods;
 
 import java.util.function.Consumer;
 
@@ -11,9 +11,15 @@ public interface IConditionChain<SELF extends IConditionChain,
         COLUMN,
         V>
 
-        extends ConditionMethods<SELF, COLUMN, V>,
+        extends IConditionMethods<SELF, COLUMN, V>,
         Nested<SELF, SELF>,
         ICondition {
+
+    SELF setIgnoreEmpty(boolean bool);
+
+    SELF setIgnoreNull(boolean bool);
+
+    SELF setStringTrim(boolean bool);
 
     boolean hasContent();
 

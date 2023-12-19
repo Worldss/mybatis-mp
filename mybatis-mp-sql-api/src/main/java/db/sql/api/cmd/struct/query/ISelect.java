@@ -12,9 +12,7 @@ public interface ISelect<SELF extends ISelect> extends Cmd {
 
     SELF select(Cmd column);
 
-
     SELF select(Cmd... columns);
-
 
     SELF select(List<Cmd> columns);
 

@@ -80,12 +80,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
 
     public AbstractQuery(CMD_FACTORY $) {
         this.$ = $;
-        this.conditionFactory = new ConditionFactory($) {
-            @Override
-            protected boolean ignoreEmpty() {
-                return true;
-            }
-        };
+        this.conditionFactory = new ConditionFactory($);
     }
 
     public AbstractQuery(Where where) {

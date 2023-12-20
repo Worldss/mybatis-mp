@@ -3,6 +3,7 @@ package db.sql.api.cmd;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 public interface ICmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASET_FIELD> {
@@ -50,6 +51,11 @@ public interface ICmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASE
      * @return
      */
     <T> TABLE_FIELD field(Getter<T> column, int storey);
+
+    default  <T> TABLE_FIELD[] fields(Getter<T>... columns){
+        return this.fields(1,columns);
+    }
+    <T> TABLE_FIELD[] fields( int storey,Getter<T>... columns);
 
     /**
      * 根据字段名获取TABLE_FIELD

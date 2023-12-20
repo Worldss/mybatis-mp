@@ -336,6 +336,28 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
+    public <T> SELF havingAnd(Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+        return this.havingAnd(f.apply($.fields(storey, columns)));
+    }
+
+    @Override
+    public <T> SELF havingOr(Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+        return this.havingOr(f.apply($.fields(storey, columns)));
+    }
+
+    @Override
+    public <T> SELF havingAnd(ISubQuery subQuery, Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+        CmdFactory $ = (CmdFactory) subQuery.$();
+        return this.havingAnd(f.apply($.fields(storey, columns)));
+    }
+
+    @Override
+    public <T> SELF havingOr(ISubQuery subQuery, Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+        CmdFactory $ = (CmdFactory) subQuery.$();
+        return this.havingOr(f.apply($.fields(storey, columns)));
+    }
+
+    @Override
     public OrderBy $orderBy() {
         if (orderBy == null) {
             orderBy = new OrderBy();

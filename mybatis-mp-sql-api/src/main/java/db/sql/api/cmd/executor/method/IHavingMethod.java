@@ -42,6 +42,27 @@ public interface IHavingMethod<SELF extends IHavingMethod, TABLE_FIELD, DATASET_
         return this.havingAnd(column, storey, f);
     }
 
+    default <T> SELF having(Function<TABLE_FIELD[], ICondition> f, Getter<T>... columns) {
+        return this.having(f, 1, columns);
+    }
+
+    default <T> SELF having(Function<TABLE_FIELD[], ICondition> f, int storey, Getter<T>... columns) {
+        return this.havingAnd(f, storey, columns);
+    }
+
+    default <T> SELF havingAnd(Function<TABLE_FIELD[], ICondition> f, Getter<T>... columns) {
+        return this.havingAnd(f, 1, columns);
+    }
+
+    <T> SELF havingAnd(Function<TABLE_FIELD[], ICondition> f, int storey, Getter<T>... columns);
+
+    default <T> SELF havingOr(Function<TABLE_FIELD[], ICondition> f, Getter<T>... columns) {
+        return this.havingOr(f, 1, columns);
+    }
+
+    <T> SELF havingOr(Function<TABLE_FIELD[], ICondition> f, int storey, Getter<T>... columns);
+
+
     SELF havingAnd(ISubQuery subQuery, String columnName, Function<DATASET_FILED, ICondition> f);
 
     <T> SELF havingAnd(ISubQuery subQuery, Getter<T> column, Function<DATASET_FILED, ICondition> f);
@@ -57,4 +78,21 @@ public interface IHavingMethod<SELF extends IHavingMethod, TABLE_FIELD, DATASET_
     default <T> SELF having(ISubQuery subQuery, String columnName, Function<DATASET_FILED, ICondition> f) {
         return this.havingAnd(subQuery, columnName, f);
     }
+
+    default <T> SELF having(ISubQuery subQuery, Function<TABLE_FIELD[], ICondition> f, int storey, Getter<T>... columns) {
+        return this.havingAnd(subQuery, f, storey, columns);
+    }
+
+    default <T> SELF havingAnd(ISubQuery subQuery, Function<TABLE_FIELD[], ICondition> f, Getter<T>... columns) {
+        return this.havingAnd(subQuery, f, 1, columns);
+    }
+
+    <T> SELF havingAnd(ISubQuery subQuery, Function<TABLE_FIELD[], ICondition> f, int storey, Getter<T>... columns);
+
+    default <T> SELF havingOr(ISubQuery subQuery, Function<TABLE_FIELD[], ICondition> f, Getter<T>... columns) {
+        return this.havingOr(subQuery, f, 1, columns);
+    }
+
+    <T> SELF havingOr(ISubQuery subQuery, Function<TABLE_FIELD[], ICondition> f, int storey, Getter<T>... columns);
+
 }

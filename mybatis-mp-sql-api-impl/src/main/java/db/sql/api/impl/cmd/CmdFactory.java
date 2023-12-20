@@ -66,6 +66,15 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
         return this.field(fieldInfo.getType(), 1, fieldInfo.getName());
     }
 
+    @Override
+    public <T> TableField[] fields(int storey, Getter<T>... columns) {
+        TableField[] tableFields = new TableField[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            tableFields[i] = field(columns[i], storey);
+        }
+        return tableFields;
+    }
+
     public <T> TableField field(Table table, Getter<T> column) {
         return new TableField(table, columnName(column));
     }

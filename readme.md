@@ -59,7 +59,7 @@
         <dependency>
             <groupId>cn.mybatis-mp</groupId>
             <artifactId>mybatis-mp-spring-boot-parent</artifactId>
-            <version>1.2.5</version>
+            <version>1.2.6</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>cn.mybatis-mp</groupId>
             <artifactId>mybatis-mp-spring-boot-parent</artifactId>
-            <version>1.2.5-spring-boot3</version>
+            <version>1.2.6-spring-boot3</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>

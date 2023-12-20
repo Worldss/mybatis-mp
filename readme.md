@@ -47,6 +47,9 @@
 群号： 917404304 ,邀请各位大神参与补充，绝对开源，大家都可以进行代码提交，审核通过会进行master分支。
 ![](./doc/image/qq.png)
 
+# springboot接入示例：
+https://gitee.com/mybatis-mp/mybatis-mp/tree/master/mybatis-mp-spring-boot-demo
+
 # 快速开始
 
 ## 1. 基于spring-boot开发 (已引入spring、springboot 基本依赖，创建SpringApplication.run即可启动)

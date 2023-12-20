@@ -12,6 +12,4 @@ import db.sql.api.cmd.executor.method.condition.compare.ICompare;
 public interface IConditionMethods<RV, COLUMN, V> extends ICompare<RV, COLUMN, V>,
         IInMethod<RV, COLUMN>,
         IExistsMethod<RV> {
-
-
 }

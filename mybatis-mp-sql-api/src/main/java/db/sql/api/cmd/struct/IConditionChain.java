@@ -1,13 +1,16 @@
 package db.sql.api.cmd.struct;
 
 
+import db.sql.api.Getter;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.method.condition.IConditionMethods;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public interface IConditionChain<SELF extends IConditionChain,
+        TABLE_FIELD,
         COLUMN,
         V>
 
@@ -32,6 +35,18 @@ public interface IConditionChain<SELF extends IConditionChain,
     SELF and(ICondition condition, boolean when);
 
     SELF or(ICondition condition, boolean when);
+
+    default <T> SELF and(Getter<T> column, Function<TABLE_FIELD, ICondition> function) {
+        return this.and(column, 1, function);
+    }
+
+    <T> SELF and(Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function);
+
+    default <T> SELF or(Getter<T> column, Function<TABLE_FIELD, ICondition> function) {
+        return this.or(column, 1, function);
+    }
+
+    <T> SELF or(Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function);
 
     @Override
     default SELF andNested(Consumer<SELF> consumer) {

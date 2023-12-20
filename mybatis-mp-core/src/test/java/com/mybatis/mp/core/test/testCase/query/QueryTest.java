@@ -29,7 +29,7 @@ public class QueryTest extends BaseTest {
             SysUser sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                     .from(SysUser.class)
-                    .eq(SysUser::getId, 1)
+                    .eq(SysUser::getId, 1).and()
                     .get();
             SysUser eqSysUser = new SysUser();
             eqSysUser.setId(1);

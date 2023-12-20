@@ -4,11 +4,12 @@ import db.sql.api.cmd.struct.IConditionChain;
 import db.sql.api.cmd.struct.IWhereIgnoreMethod;
 
 public interface IWhereMethod<SELF extends IWhereMethod,
+        TABLE_FIELD,
         COLUMN,
         V,
-        CONDITION_CHAIN extends IConditionChain<CONDITION_CHAIN, COLUMN, V>
+        CONDITION_CHAIN extends IConditionChain<CONDITION_CHAIN, TABLE_FIELD, COLUMN, V>
         >
-        extends IConditionMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
+        extends IConditionMethod<SELF, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN>,
         IWhereIgnoreMethod<SELF> {
 
     @Override

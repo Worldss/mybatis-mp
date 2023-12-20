@@ -3,6 +3,7 @@ package db.sql.api.impl.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.JoinMode;
+import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.IUpdate;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.impl.cmd.CmdFactory;
@@ -22,6 +23,7 @@ import db.sql.api.impl.cmd.struct.update.UpdateTable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public abstract class AbstractUpdate<SELF extends AbstractUpdate,
         CMD_FACTORY extends CmdFactory
@@ -140,6 +142,19 @@ public abstract class AbstractUpdate<SELF extends AbstractUpdate,
         }
         return where;
     }
+
+    @Override
+    public <T> SELF and(Getter<T> column, int storey, Function<TableField, ICondition> function) {
+        $where().and(column, storey, function);
+        return (SELF) this;
+    }
+
+    @Override
+    public <T> SELF or(Getter<T> column, int storey, Function<TableField, ICondition> function) {
+        $where().or(column, storey, function);
+        return (SELF) this;
+    }
+
 
     @Override
     public SELF join(JoinMode mode, Table mainTable, Table secondTable, Consumer<OnTable> consumer) {

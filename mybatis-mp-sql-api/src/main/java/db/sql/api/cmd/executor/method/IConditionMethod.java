@@ -15,9 +15,10 @@ import java.util.function.Function;
 
 
 public interface IConditionMethod<SELF extends IConditionMethod,
+        TABLE_FIELD,
         COLUMN,
         V,
-        CONDITION_CHAIN extends IConditionChain<CONDITION_CHAIN, COLUMN, V>
+        CONDITION_CHAIN extends IConditionChain<CONDITION_CHAIN, TABLE_FIELD, COLUMN, V>
         >
         extends IConditionMethods<SELF, COLUMN, V>,
         Nested<SELF, CONDITION_CHAIN> {
@@ -33,6 +34,18 @@ public interface IConditionMethod<SELF extends IConditionMethod,
         conditionChain().or();
         return (SELF) this;
     }
+
+    default <T> SELF and(Getter<T> column, Function<TABLE_FIELD, ICondition> function) {
+        return this.and(column, 1, function);
+    }
+
+    <T> SELF and(Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function);
+
+    default <T> SELF or(Getter<T> column, Function<TABLE_FIELD, ICondition> function) {
+        return this.or(column, 1, function);
+    }
+
+    <T> SELF or(Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function);
 
     default SELF and(Function<SELF, ICondition> function) {
         conditionChain().and(function.apply((SELF) this), true);

@@ -127,6 +127,10 @@ public interface MybatisMapper<T> {
         where.eq($.field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id);
     }
 
+    default void $appendIdsWhere(Where where, Serializable[] id) {
+        this.$appendIdsWhere(where, Arrays.asList(id));
+    }
+
     default void $appendIdsWhere(Where where, List<Serializable> ids) {
         Class entityType = getEntityType();
         TableInfo tableInfo = this.getTableInfo();

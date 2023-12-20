@@ -8,6 +8,7 @@ import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
 import cn.mybatis.mp.core.sql.executor.BaseUpdate;
 import cn.mybatis.mp.core.sql.executor.chain.UpdateChain;
 import cn.mybatis.mp.core.util.StringPool;
+import cn.mybatis.mp.core.util.WhereUtil;
 import cn.mybatis.mp.db.annotations.LogicDelete;
 import db.sql.api.cmd.executor.method.condition.compare.ICompare;
 import db.sql.api.impl.cmd.CmdFactory;
@@ -99,19 +100,34 @@ public final class LogicDeleteUtil {
      * 设置逻辑删除字段值  例如： set deleted=1 和 删除时间设置
      *
      * @param baseUpdate
-     * @param entity
      * @param tableInfo
      */
-    public static void addLogicDeleteUpdateSets(BaseUpdate baseUpdate, Class entity, TableInfo tableInfo) {
-        TableField logicDeleteTableField = baseUpdate.$().field(entity, tableInfo.getLogicDeleteFieldInfo().getField().getName(), 1);
+    public static void addLogicDeleteUpdateSets(BaseUpdate baseUpdate, TableInfo tableInfo) {
+        Class entityType = tableInfo.getType();
+        TableField logicDeleteTableField = baseUpdate.$().field(entityType, tableInfo.getLogicDeleteFieldInfo().getField().getName(), 1);
         baseUpdate.set(logicDeleteTableField, getLogicAfterValue(tableInfo.getLogicDeleteFieldInfo()));
-        addLogicDeleteCondition(baseUpdate, baseUpdate.$(), entity, 1);
+        addLogicDeleteCondition(baseUpdate, baseUpdate.$(), entityType, 1);
 
         String deleteTimeFieldName = tableInfo.getLogicDeleteFieldInfo().getLogicDeleteAnnotation().deleteTimeField();
         if (!StringPool.EMPTY.equals(deleteTimeFieldName)) {
-            TableField logicDeleteTimeTableField = baseUpdate.$().field(entity, deleteTimeFieldName, 1);
+            TableField logicDeleteTimeTableField = baseUpdate.$().field(entityType, deleteTimeFieldName, 1);
             baseUpdate.set(logicDeleteTimeTableField, getLogicDeleteTimeValue(tableInfo));
         }
+    }
+
+    /**
+     * 构建公共的UpdateChain
+     *
+     * @param mapper
+     * @param tableInfo
+     * @return
+     */
+    private static UpdateChain buildCommonUpdateChain(MybatisMapper mapper, TableInfo tableInfo) {
+        return UpdateChain.of(mapper)
+                .update(tableInfo.getType())
+                .connect(self -> {
+                    LogicDeleteUtil.addLogicDeleteUpdateSets(self, tableInfo);
+                });
     }
 
     /**
@@ -119,19 +135,14 @@ public final class LogicDeleteUtil {
      * 实际为update操作
      *
      * @param mapper
-     * @param entityType
      * @param tableInfo
      * @param id
      * @return
      */
-    public static int logicDelete(MybatisMapper mapper, Class entityType, TableInfo tableInfo, Serializable id) {
-        return UpdateChain.of(mapper)
-                .update(entityType)
-                .connect(self -> {
-                    LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo);
-                    self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id);
-                })
-                .execute();
+    public static int logicDelete(MybatisMapper mapper, TableInfo tableInfo, Serializable id) {
+        UpdateChain updateChain = buildCommonUpdateChain(mapper, tableInfo);
+        WhereUtil.appendIdWhere(updateChain.$where(), tableInfo, id);
+        return updateChain.execute();
     }
 
     /**
@@ -139,39 +150,30 @@ public final class LogicDeleteUtil {
      * 实际为update操作
      *
      * @param mapper
-     * @param entityType
      * @param tableInfo
      * @param ids
      * @return
      */
-    public static int logicDelete(MybatisMapper mapper, Class entityType, TableInfo tableInfo, Serializable... ids) {
-        return UpdateChain.of(mapper)
-                .update(entityType)
-                .connect(self -> {
-                    LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo);
-                    self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids);
-                })
-                .execute();
+    public static int logicDelete(MybatisMapper mapper, TableInfo tableInfo, Serializable... ids) {
+        UpdateChain updateChain = buildCommonUpdateChain(mapper, tableInfo);
+        WhereUtil.appendIdsWhere(updateChain.getWhere(), tableInfo, ids);
+        return updateChain.execute();
     }
+
 
     /**
      * 根据List<ID> 进行逻辑删除操作
      * 实际为update操作
      *
      * @param mapper
-     * @param entityType
      * @param tableInfo
      * @param ids
      * @return
      */
-    public static int logicDelete(MybatisMapper mapper, Class entityType, TableInfo tableInfo, List<Serializable> ids) {
-        return UpdateChain.of(mapper)
-                .update(entityType)
-                .connect(self -> {
-                    LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo);
-                    self.in(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids);
-                })
-                .execute();
+    public static int logicDelete(MybatisMapper mapper, TableInfo tableInfo, List<Serializable> ids) {
+        UpdateChain updateChain = buildCommonUpdateChain(mapper, tableInfo);
+        WhereUtil.appendIdsWhere(buildCommonUpdateChain(mapper, tableInfo).getWhere(), tableInfo, ids);
+        return updateChain.execute();
     }
 
     /**
@@ -179,15 +181,14 @@ public final class LogicDeleteUtil {
      * 实际为update操作
      *
      * @param mapper
-     * @param entityType
      * @param tableInfo
      * @param where
      * @return
      */
-    public static int logicDelete(MybatisMapper mapper, Class entityType, TableInfo tableInfo, Where where) {
+    public static int logicDelete(MybatisMapper mapper, TableInfo tableInfo, Where where) {
         return UpdateChain.of(mapper, where)
-                .update(entityType)
-                .connect(self -> LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo))
+                .update(tableInfo.getType())
+                .connect(self -> LogicDeleteUtil.addLogicDeleteUpdateSets(self, tableInfo))
                 .execute();
     }
 

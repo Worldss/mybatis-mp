@@ -9,9 +9,10 @@ import cn.mybatis.mp.core.mybatis.provider.MybatisSQLProvider;
 import cn.mybatis.mp.core.sql.executor.*;
 import cn.mybatis.mp.core.sql.executor.chain.DeleteChain;
 import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
+import cn.mybatis.mp.core.util.TableInfoUtil;
+import cn.mybatis.mp.core.util.WhereUtil;
 import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
-import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.struct.Where;
 import db.sql.api.impl.tookit.LambdaUtil;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -27,6 +28,7 @@ import java.util.function.Consumer;
 
 /**
  * 数据库 Mapper
+ * $ 开头的方法一般不建议去使用
  *
  * @param <T>
  */
@@ -50,13 +52,15 @@ public interface MybatisMapper<T> {
      * @return 当个当前实体类
      */
     default T getById(Serializable id, Getter<T>... selectFields) {
-        Class entityType = this.getEntityType();
         TableInfo tableInfo = this.getTableInfo();
-        this.$checkId(tableInfo);
+        Class entityType = tableInfo.getType();
+
         QueryChain queryChain = QueryChain.of(this)
                 .from(entityType)
-                .connect(self -> self.eq(self.$().field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id))
                 .setReturnType(entityType);
+
+        WhereUtil.appendIdWhere(queryChain.$where(), tableInfo, id);
+
         if (Objects.isNull(selectFields) || selectFields.length < 1) {
             if (tableInfo.isHasIgnoreField()) {
                 queryChain.select(entityType);
@@ -69,27 +73,6 @@ public interface MybatisMapper<T> {
         return queryChain.get();
     }
 
-    default void $checkId(TableInfo tableInfo) {
-        if (tableInfo.getIdFieldInfo() == null) {
-            throw new RuntimeException("Not Supported");
-        }
-    }
-
-
-    default Serializable $getIdFromEntity(T entity) {
-        if (entity.getClass() != getEntityType()) {
-            throw new RuntimeException("Not Supported");
-        }
-        TableInfo tableInfo = this.getTableInfo();
-        this.$checkId(tableInfo);
-        Serializable id;
-        try {
-            id = (Serializable) tableInfo.getIdFieldInfo().getReadFieldInvoker().invoke(entity, null);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return id;
-    }
 
     /**
      * 根据实体类删除
@@ -101,7 +84,7 @@ public interface MybatisMapper<T> {
         if (Objects.isNull(entity)) {
             return 0;
         }
-        return this.deleteById(this.$getIdFromEntity(entity));
+        return this.deleteById(TableInfoUtil.getEntityIdValue(getTableInfo(), entity));
     }
 
     /**
@@ -113,31 +96,13 @@ public interface MybatisMapper<T> {
     default int delete(List<T> list) {
         int length = list.size();
         List<Serializable> ids = new ArrayList<>();
+        TableInfo tableInfo = getTableInfo();
         for (int i = 0; i < length; i++) {
-            ids.add(this.$getIdFromEntity(list.get(i)));
+            ids.add(TableInfoUtil.getEntityIdValue(tableInfo, list.get(i)));
         }
         return this.deleteByIds(ids);
     }
 
-    default void $appendIdsWhere(Where where, Serializable id) {
-        Class entityType = getEntityType();
-        TableInfo tableInfo = this.getTableInfo();
-        this.$checkId(tableInfo);
-        CmdFactory $ = where.getConditionFactory().getCmdFactory();
-        where.eq($.field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), id);
-    }
-
-    default void $appendIdsWhere(Where where, Serializable[] id) {
-        this.$appendIdsWhere(where, Arrays.asList(id));
-    }
-
-    default void $appendIdsWhere(Where where, List<Serializable> ids) {
-        Class entityType = getEntityType();
-        TableInfo tableInfo = this.getTableInfo();
-        this.$checkId(tableInfo);
-        CmdFactory $ = where.getConditionFactory().getCmdFactory();
-        where.in($.field(entityType, tableInfo.getIdFieldInfo().getField().getName(), 1), ids);
-    }
 
     /**
      * 根据id删除
@@ -147,7 +112,7 @@ public interface MybatisMapper<T> {
      */
     default int deleteById(Serializable id) {
         return this.delete(where -> {
-            this.$appendIdsWhere(where, id);
+            WhereUtil.appendIdWhere(where, getTableInfo(), id);
         });
     }
 
@@ -162,7 +127,7 @@ public interface MybatisMapper<T> {
             throw new RuntimeException("ids array can't be empty");
         }
         return this.delete(where -> {
-            this.$appendIdsWhere(where, ids);
+            WhereUtil.appendIdsWhere(where, getTableInfo(), ids);
         });
     }
 
@@ -177,7 +142,7 @@ public interface MybatisMapper<T> {
             throw new RuntimeException("ids list can't be empty");
         }
         return this.delete(where -> {
-            this.$appendIdsWhere(where, ids);
+            WhereUtil.appendIdsWhere(where, getTableInfo(), ids);
         });
     }
 
@@ -188,22 +153,17 @@ public interface MybatisMapper<T> {
         if (!where.hasContent()) {
             throw new RuntimeException("delete has on where condition content ");
         }
-        Class entityType = getEntityType();
         TableInfo tableInfo = this.getTableInfo();
+        Class entityType = tableInfo.getType();
+
         if (LogicDeleteUtil.isNeedLogicDelete(tableInfo)) {
             //逻辑删除处理
-            return LogicDeleteUtil.logicDelete(this, entityType, tableInfo, where);
+            return LogicDeleteUtil.logicDelete(this, tableInfo, where);
         }
         return DeleteChain.of(this, where)
                 .delete(entityType)
                 .from(entityType)
                 .execute();
-    }
-
-    default Where where(Consumer<Where> consumer) {
-        Where where = Wheres.create();
-        consumer.accept(where);
-        return where;
     }
 
     /**
@@ -234,7 +194,7 @@ public interface MybatisMapper<T> {
      * @return 当个当前实体
      */
     default T get(Consumer<Where> consumer) {
-        return QueryChain.of(this, where(consumer)).get(false);
+        return QueryChain.of(this, WhereUtil.where(consumer)).get(false);
     }
 
     /**
@@ -244,7 +204,7 @@ public interface MybatisMapper<T> {
      * @return 是否存在
      */
     default boolean exists(Consumer<Where> consumer) {
-        return QueryChain.of(this, where(consumer)).exists(false);
+        return QueryChain.of(this, WhereUtil.where(consumer)).exists(false);
     }
 
     /**
@@ -418,7 +378,7 @@ public interface MybatisMapper<T> {
 
 
     default int update(T entity, Consumer<Where> consumer) {
-        return this.$update(new EntityUpdateWithWhereContext(entity, where(consumer)));
+        return this.$update(new EntityUpdateWithWhereContext(entity, WhereUtil.where(consumer)));
     }
 
     default int update(T entity, Where where, Getter<T>... forceUpdateFields) {
@@ -486,7 +446,7 @@ public interface MybatisMapper<T> {
     }
 
     default List<T> list(Consumer<Where> consumer, Getter<T>... selectFields) {
-        QueryChain queryChain = QueryChain.of(this, where(consumer));
+        QueryChain queryChain = QueryChain.of(this, WhereUtil.where(consumer));
         if (Objects.isNull(selectFields) || selectFields.length < 1) {
             queryChain.select(getEntityType());
         } else {
@@ -525,7 +485,7 @@ public interface MybatisMapper<T> {
      * @return 返回游标
      */
     default Cursor<T> cursor(Consumer<Where> consumer) {
-        return QueryChain.of(this, where(consumer)).cursor(false);
+        return QueryChain.of(this, WhereUtil.where(consumer)).cursor(false);
     }
 
 
@@ -559,7 +519,7 @@ public interface MybatisMapper<T> {
      * @return 返回count数
      */
     default Integer count(Consumer<Where> consumer) {
-        return QueryChain.of(this, where(consumer)).count();
+        return QueryChain.of(this, WhereUtil.where(consumer)).count();
     }
 
     /**
@@ -587,7 +547,7 @@ public interface MybatisMapper<T> {
 
 
     default Pager<T> paging(Consumer<Where> consumer, Pager<T> pager, Getter<T>... selectFields) {
-        QueryChain queryChain = QueryChain.of(this, where(consumer));
+        QueryChain queryChain = QueryChain.of(this, WhereUtil.where(consumer));
         if (Objects.isNull(selectFields) || selectFields.length < 1) {
             queryChain.select(getEntityType());
         } else {
@@ -619,6 +579,137 @@ public interface MybatisMapper<T> {
         query.limit(pager.getOffset(), pager.getSize());
         pager.setResults(this.list(query, pager.isOptimize()));
         return pager;
+    }
+
+
+    /**
+     * 将结果转成map
+     *
+     * @param mapKey 指定的map的key属性
+     * @param query  查询对象
+     * @param <K>    map的key
+     * @param <V>    map的value
+     * @return
+     */
+    default <K, V, G> Map<K, V> mapWithKey(Getter<G> mapKey, BaseQuery query) {
+        return this.mapWithKey(mapKey, query, true);
+    }
+
+    /**
+     * 根据多个id查询结果转map
+     *
+     * @param mapKey map的key
+     * @param ids    ids
+     * @param <K>    map的key的类型
+     * @return 一个map
+     */
+    default <K> Map<K, T> mapWithKey(Getter<T> mapKey, Serializable... ids) {
+        return this.mapWithKey(mapKey, Arrays.asList(ids));
+    }
+
+    /**
+     * 根据多个id查询结果转map
+     *
+     * @param mapKey map的key
+     * @param ids    ids
+     * @param <K>    map的key的类型
+     * @return 一个map
+     */
+    default <K> Map<K, T> mapWithKey(Getter<T> mapKey, List<Serializable> ids) {
+        return this.mapWithKey(mapKey, where -> {
+            WhereUtil.appendIdsWhere(where, getTableInfo(), ids);
+        });
+    }
+
+    /**
+     * 根据多个id查询结果转map
+     *
+     * @param mapKey map的key
+     * @param ids    ids
+     * @param <K>    map的key的类型
+     * @return 一个map
+     */
+    default <K> Map<K, T> mapWithKey(String mapKey, Serializable... ids) {
+        return this.mapWithKey(mapKey, Arrays.asList(ids));
+    }
+
+    /**
+     * 根据多个id查询结果转map
+     *
+     * @param mapKey map的key
+     * @param ids    ids
+     * @param <K>    map的key的类型
+     * @return 一个map
+     */
+    default <K> Map<K, T> mapWithKey(String mapKey, List<Serializable> ids) {
+        return this.mapWithKey(mapKey, where -> {
+            WhereUtil.appendIdsWhere(where, getTableInfo(), ids);
+        });
+    }
+
+    /**
+     * 根据多个id查询结果转map
+     *
+     * @param mapKey   map的key
+     * @param consumer where consumer
+     * @param <K>      map的key的类型
+     * @return 一个map
+     */
+    default <K> Map<K, T> mapWithKey(Getter<T> mapKey, Consumer<Where> consumer) {
+        return QueryChain.of(this, WhereUtil.where(consumer)).mapWithKey(mapKey, false);
+    }
+
+    /**
+     * 根据多个id查询结果转map
+     *
+     * @param mapKey   map的key
+     * @param consumer where consumer
+     * @param <K>      map的key的类型
+     * @return 一个map
+     */
+    default <K> Map<K, T> mapWithKey(String mapKey, Consumer<Where> consumer) {
+        return this.mapWithKey(mapKey, QueryChain.of(this, WhereUtil.where(consumer)), false);
+    }
+
+    /**
+     * 将结果转成map
+     *
+     * @param mapKey   指定的map的key属性
+     * @param query    查询对象
+     * @param optimize 是否优化sql
+     * @param <K>      map的key
+     * @param <V>      map的value
+     * @return
+     */
+    default <K, V, G> Map<K, V> mapWithKey(Getter<G> mapKey, BaseQuery query, boolean optimize) {
+        return this.mapWithKey(LambdaUtil.getName(mapKey), query, optimize);
+    }
+
+    /**
+     * 将结果转成map
+     *
+     * @param mapKey 指定的map的key属性
+     * @param query  查询对象
+     * @param <K>    map的key
+     * @param <V>    map的value
+     * @return
+     */
+    default <K, V, G> Map<K, V> mapWithKey(String mapKey, BaseQuery query) {
+        return this.mapWithKey(mapKey, query, true);
+    }
+
+    /**
+     * 将结果转成map
+     *
+     * @param mapKey   指定的map的key属性
+     * @param query    查询对象
+     * @param optimize 是否优化sql
+     * @param <K>      map的key
+     * @param <V>      map的value
+     * @return
+     */
+    default <K, V, G> Map<K, V> mapWithKey(String mapKey, BaseQuery query, boolean optimize) {
+        return this.$mapWithKey(new MapKeySQLCmdQueryContext(mapKey, query, optimize));
     }
 
     /**
@@ -715,137 +806,6 @@ public interface MybatisMapper<T> {
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_COUNT_NAME)
     Integer $countFromQuery(SQLCmdCountFromQueryContext queryContext);
 
-    /**
-     * 将结果转成map
-     *
-     * @param mapKey 指定的map的key属性
-     * @param query  查询对象
-     * @param <K>    map的key
-     * @param <V>    map的value
-     * @return
-     */
-    default <K, V, G> Map<K, V> mapWithKey(Getter<G> mapKey, BaseQuery query) {
-        return this.mapWithKey(mapKey, query, true);
-    }
-
-    /**
-     * 根据多个id查询结果转map
-     *
-     * @param mapKey map的key
-     * @param ids    ids
-     * @param <K>    map的key的类型
-     * @return 一个map
-     */
-    default <K> Map<K, T> mapWithKey(Getter<T> mapKey, Serializable... ids) {
-        return this.mapWithKey(mapKey, Arrays.asList(ids));
-    }
-
-    /**
-     * 根据多个id查询结果转map
-     *
-     * @param mapKey map的key
-     * @param ids    ids
-     * @param <K>    map的key的类型
-     * @return 一个map
-     */
-    default <K> Map<K, T> mapWithKey(Getter<T> mapKey, List<Serializable> ids) {
-        return this.mapWithKey(mapKey, where -> {
-            this.$appendIdsWhere(where, ids);
-        });
-    }
-
-    /**
-     * 根据多个id查询结果转map
-     *
-     * @param mapKey map的key
-     * @param ids    ids
-     * @param <K>    map的key的类型
-     * @return 一个map
-     */
-    default <K> Map<K, T> mapWithKey(String mapKey, Serializable... ids) {
-        return this.mapWithKey(mapKey, Arrays.asList(ids));
-    }
-
-    /**
-     * 根据多个id查询结果转map
-     *
-     * @param mapKey map的key
-     * @param ids    ids
-     * @param <K>    map的key的类型
-     * @return 一个map
-     */
-    default <K> Map<K, T> mapWithKey(String mapKey, List<Serializable> ids) {
-        return this.mapWithKey(mapKey, where -> {
-            this.$appendIdsWhere(where, ids);
-        });
-    }
-
-    /**
-     * 根据多个id查询结果转map
-     *
-     * @param mapKey   map的key
-     * @param consumer where consumer
-     * @param <K>      map的key的类型
-     * @return 一个map
-     */
-    default <K> Map<K, T> mapWithKey(Getter<T> mapKey, Consumer<Where> consumer) {
-        Where where = this.where(consumer);
-        return QueryChain.of(this, where).mapWithKey(mapKey, false);
-    }
-
-    /**
-     * 根据多个id查询结果转map
-     *
-     * @param mapKey   map的key
-     * @param consumer where consumer
-     * @param <K>      map的key的类型
-     * @return 一个map
-     */
-    default <K> Map<K, T> mapWithKey(String mapKey, Consumer<Where> consumer) {
-        Where where = this.where(consumer);
-        return this.mapWithKey(mapKey, QueryChain.of(this, where), false);
-    }
-
-    /**
-     * 将结果转成map
-     *
-     * @param mapKey   指定的map的key属性
-     * @param query    查询对象
-     * @param optimize 是否优化sql
-     * @param <K>      map的key
-     * @param <V>      map的value
-     * @return
-     */
-    default <K, V, G> Map<K, V> mapWithKey(Getter<G> mapKey, BaseQuery query, boolean optimize) {
-        return this.mapWithKey(LambdaUtil.getName(mapKey), query, optimize);
-    }
-
-    /**
-     * 将结果转成map
-     *
-     * @param mapKey 指定的map的key属性
-     * @param query  查询对象
-     * @param <K>    map的key
-     * @param <V>    map的value
-     * @return
-     */
-    default <K, V, G> Map<K, V> mapWithKey(String mapKey, BaseQuery query) {
-        return this.mapWithKey(mapKey, query, true);
-    }
-
-    /**
-     * 将结果转成map
-     *
-     * @param mapKey   指定的map的key属性
-     * @param query    查询对象
-     * @param optimize 是否优化sql
-     * @param <K>      map的key
-     * @param <V>      map的value
-     * @return
-     */
-    default <K, V, G> Map<K, V> mapWithKey(String mapKey, BaseQuery query, boolean optimize) {
-        return this.$mapWithKey(new MapKeySQLCmdQueryContext(mapKey, query, optimize));
-    }
 
     /**
      * 将结果转成map

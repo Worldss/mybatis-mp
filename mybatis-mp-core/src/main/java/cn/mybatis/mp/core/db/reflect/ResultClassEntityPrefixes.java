@@ -1,6 +1,6 @@
 package cn.mybatis.mp.core.db.reflect;
 
-import cn.mybatis.mp.core.util.FieldUtils;
+import cn.mybatis.mp.core.util.FieldUtil;
 import cn.mybatis.mp.core.util.StringPool;
 import cn.mybatis.mp.db.annotations.*;
 
@@ -30,7 +30,7 @@ public class ResultClassEntityPrefixes {
             entityPrefixMap.put(resultEntity.value(), StringPool.EMPTY);
 
             int index = 0;
-            List<Field> fieldList = FieldUtils.getResultMappingFields(clazz);
+            List<Field> fieldList = FieldUtil.getResultMappingFields(clazz);
             for (Field field : fieldList) {
                 if (field.isAnnotationPresent(Ignore.class)) {
                     continue;

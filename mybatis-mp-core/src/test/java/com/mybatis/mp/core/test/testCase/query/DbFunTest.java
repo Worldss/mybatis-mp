@@ -48,6 +48,9 @@ public class DbFunTest extends BaseTest {
                     .get();
 
             assertEquals(id, 2);
+
+            SysUser sysUser = sysUserMapper.get(where -> where.and(SysUser::getId, c -> c.concat("x1").eq("2x1")));
+            assertEquals(sysUser.getId(), 2);
         }
     }
 }

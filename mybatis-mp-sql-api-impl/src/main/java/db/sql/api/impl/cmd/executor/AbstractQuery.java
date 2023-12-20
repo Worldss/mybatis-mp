@@ -295,12 +295,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF groupBy(Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+    public <T> SELF groupByFun(Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
         return this.groupBy(f.apply($.fields(storey, columns)));
     }
 
     @Override
-    public <T> SELF groupBy(ISubQuery subQuery, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+    public <T> SELF groupByFun(ISubQuery subQuery, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
         CmdFactory $ = (CmdFactory) subQuery.$();
         return this.groupBy(f.apply($.fields(storey, columns)));
     }
@@ -432,12 +432,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF orderBy(boolean asc, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+    public <T> SELF orderByFun(boolean asc, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
         return this.orderBy(f.apply($.fields(storey, columns)));
     }
 
     @Override
-    public <T> SELF orderBy(ISubQuery subQuery, boolean asc, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+    public <T> SELF orderByFun(ISubQuery subQuery, boolean asc, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
         CmdFactory $ = (CmdFactory) subQuery.$();
         return this.orderBy(f.apply($.fields(storey, columns)));
     }

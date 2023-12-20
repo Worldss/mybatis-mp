@@ -53,4 +53,23 @@ public class DbFunTest extends BaseTest {
             assertEquals(sysUser.getId(), 2);
         }
     }
+
+
+    @Test
+    public void whereAndGetterTest2() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            Integer id = QueryChain.of(sysUserMapper)
+                    .select(SysUser::getId)
+                    .from(SysUser.class)
+                    .and(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
+                    .orderByFun(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
+                    .groupByFun(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
+                    .havingAnd(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
+                    .setReturnType(Integer.TYPE)
+                    .get();
+
+            assertEquals(id, 1);
+        }
+    }
 }

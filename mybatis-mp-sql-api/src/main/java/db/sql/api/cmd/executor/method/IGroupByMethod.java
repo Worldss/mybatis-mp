@@ -45,6 +45,12 @@ public interface IGroupByMethod<SELF extends IGroupByMethod, TABLE_FIELD, DATASE
         return this.groupBy(1, columns);
     }
 
+    default <T> SELF groupBy(Function<TABLE_FIELD[], Cmd> f, Getter<T>... columns) {
+        return this.groupBy(f, 1, columns);
+    }
+
+    <T> SELF groupBy(Function<TABLE_FIELD[], Cmd> f, int storey, Getter<T>... columns);
+
     default <T> SELF groupBy(int storey, Getter<T>... columns) {
         for (Getter<T> column : columns) {
             this.groupBy(column, storey);
@@ -70,4 +76,10 @@ public interface IGroupByMethod<SELF extends IGroupByMethod, TABLE_FIELD, DATASE
     }
 
     SELF groupBy(ISubQuery subQuery, String columnName, Function<DATASET_FIELD, Cmd> f);
+
+    default <T> SELF groupBy(ISubQuery subQuery, Function<TABLE_FIELD[], Cmd> f, Getter<T>... columns) {
+        return this.groupBy(subQuery, f, 1, columns);
+    }
+
+    <T> SELF groupBy(ISubQuery subQuery, Function<TABLE_FIELD[], Cmd> f, int storey, Getter<T>... columns);
 }

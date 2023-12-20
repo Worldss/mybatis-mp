@@ -67,6 +67,20 @@ public interface IOrderByMethod<SELF extends IOrderByMethod, TABLE_FIELD, DATASE
 
     <T> SELF orderBy(Getter<T> column, int storey, boolean asc, Function<TABLE_FIELD, Cmd> f);
 
+    default <T> SELF orderBy(Function<TABLE_FIELD[], Cmd> f, Getter<T>... columns) {
+        return this.orderBy(true, f, columns);
+    }
+
+    default <T> SELF orderBy(boolean asc, Function<TABLE_FIELD[], Cmd> f, Getter<T>... columns) {
+        return this.orderBy(asc, f, 1, columns);
+    }
+
+    default <T> SELF orderBy(Function<TABLE_FIELD[], Cmd> f, int storey, Getter<T>... columns) {
+        return this.orderBy(true, f, storey, columns);
+    }
+
+    <T> SELF orderBy(boolean asc, Function<TABLE_FIELD[], Cmd> f, int storey, Getter<T>... columns);
+
     default <T> SELF orderBy(Getter<T>... columns) {
         return this.orderBy(true, columns);
     }
@@ -121,4 +135,19 @@ public interface IOrderByMethod<SELF extends IOrderByMethod, TABLE_FIELD, DATASE
     }
 
     SELF orderBy(ISubQuery subQuery, String columnName, boolean asc, Function<DATASET_FILED, Cmd> f);
+
+
+    default <T> SELF orderBy(ISubQuery subQuery, Function<TABLE_FIELD[], Cmd> f, Getter<T>... columns) {
+        return this.orderBy(subQuery, true, f, columns);
+    }
+
+    default <T> SELF orderBy(ISubQuery subQuery, boolean asc, Function<TABLE_FIELD[], Cmd> f, Getter<T>... columns) {
+        return this.orderBy(subQuery, asc, f, 1, columns);
+    }
+
+    default <T> SELF orderBy(ISubQuery subQuery, Function<TABLE_FIELD[], Cmd> f, int storey, Getter<T>... columns) {
+        return this.orderBy(subQuery, true, f, storey, columns);
+    }
+
+    <T> SELF orderBy(ISubQuery subQuery, boolean asc, Function<TABLE_FIELD[], Cmd> f, int storey, Getter<T>... columns);
 }

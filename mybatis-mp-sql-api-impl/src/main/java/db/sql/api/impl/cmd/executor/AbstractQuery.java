@@ -295,6 +295,17 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
+    public <T> SELF groupBy(Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+        return this.groupBy(f.apply($.fields(storey, columns)));
+    }
+
+    @Override
+    public <T> SELF groupBy(ISubQuery subQuery, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+        CmdFactory $ = (CmdFactory) subQuery.$();
+        return this.groupBy(f.apply($.fields(storey, columns)));
+    }
+
+    @Override
     public Having $having() {
         if (having == null) {
             having = new Having(this.$);
@@ -418,6 +429,17 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
             this.orderBy(datasetField, asc);
         }
         return (SELF) this;
+    }
+
+    @Override
+    public <T> SELF orderBy(boolean asc, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+        return this.orderBy(f.apply($.fields(storey, columns)));
+    }
+
+    @Override
+    public <T> SELF orderBy(ISubQuery subQuery, boolean asc, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+        CmdFactory $ = (CmdFactory) subQuery.$();
+        return this.orderBy(f.apply($.fields(storey, columns)));
     }
 
     public Unions $unions() {

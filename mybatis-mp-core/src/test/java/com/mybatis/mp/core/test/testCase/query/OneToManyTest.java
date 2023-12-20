@@ -10,8 +10,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OneToManyTest extends BaseTest {
 
@@ -33,6 +35,18 @@ public class OneToManyTest extends BaseTest {
             assertEquals(Integer.valueOf(2), list.get(0).getSysUserList().size(), "oneToManyTest");
             assertEquals(SysUser.class, list.get(0).getSysUserList().get(0).getClass(), "oneToManyTest");
 
+        }
+    }
+
+    @Test
+    public void oneToManyToMapTest2() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysRoleMapper sysRoleMapper = session.getMapper(SysRoleMapper.class);
+            Map<Integer, SysRole> map = QueryChain.of(sysRoleMapper).mapWithKey(SysRole::getId);
+
+            assertEquals(2, map.size());
+            System.out.println(map);
+            assertTrue(map.get(1) instanceof SysRole);
         }
     }
 

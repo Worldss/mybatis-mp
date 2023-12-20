@@ -4,7 +4,7 @@ import cn.mybatis.mp.core.MybatisMpConfig;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
-import cn.mybatis.mp.core.mybatis.mapper.BaseMapper;
+import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
 import cn.mybatis.mp.core.sql.executor.BaseUpdate;
 import cn.mybatis.mp.core.sql.executor.chain.UpdateChain;
 import cn.mybatis.mp.core.util.StringPool;
@@ -118,14 +118,14 @@ public final class LogicDeleteUtil {
      * 根据ID 进行逻辑删除操作
      * 实际为update操作
      *
-     * @param baseMapper
+     * @param mapper
      * @param entityType
      * @param tableInfo
      * @param id
      * @return
      */
-    public static int logicDelete(BaseMapper baseMapper, Class entityType, TableInfo tableInfo, Serializable id) {
-        return UpdateChain.of(baseMapper)
+    public static int logicDelete(MybatisMapper mapper, Class entityType, TableInfo tableInfo, Serializable id) {
+        return UpdateChain.of(mapper)
                 .update(entityType)
                 .connect(self -> {
                     LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo);
@@ -138,14 +138,14 @@ public final class LogicDeleteUtil {
      * 根据多个ID 进行逻辑删除操作
      * 实际为update操作
      *
-     * @param baseMapper
+     * @param mapper
      * @param entityType
      * @param tableInfo
      * @param ids
      * @return
      */
-    public static int logicDelete(BaseMapper baseMapper, Class entityType, TableInfo tableInfo, Serializable... ids) {
-        return UpdateChain.of(baseMapper)
+    public static int logicDelete(MybatisMapper mapper, Class entityType, TableInfo tableInfo, Serializable... ids) {
+        return UpdateChain.of(mapper)
                 .update(entityType)
                 .connect(self -> {
                     LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo);
@@ -158,14 +158,14 @@ public final class LogicDeleteUtil {
      * 根据List<ID> 进行逻辑删除操作
      * 实际为update操作
      *
-     * @param baseMapper
+     * @param mapper
      * @param entityType
      * @param tableInfo
      * @param ids
      * @return
      */
-    public static int logicDelete(BaseMapper baseMapper, Class entityType, TableInfo tableInfo, List<Serializable> ids) {
-        return UpdateChain.of(baseMapper)
+    public static int logicDelete(MybatisMapper mapper, Class entityType, TableInfo tableInfo, List<Serializable> ids) {
+        return UpdateChain.of(mapper)
                 .update(entityType)
                 .connect(self -> {
                     LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo);
@@ -178,14 +178,14 @@ public final class LogicDeleteUtil {
      * 根据where 执行逻辑删除操作
      * 实际为update操作
      *
-     * @param baseMapper
+     * @param mapper
      * @param entityType
      * @param tableInfo
      * @param where
      * @return
      */
-    public static int logicDelete(BaseMapper baseMapper, Class entityType, TableInfo tableInfo, Where where) {
-        return UpdateChain.of(baseMapper, where)
+    public static int logicDelete(MybatisMapper mapper, Class entityType, TableInfo tableInfo, Where where) {
+        return UpdateChain.of(mapper, where)
                 .update(entityType)
                 .connect(self -> LogicDeleteUtil.addLogicDeleteUpdateSets(self, entityType, tableInfo))
                 .execute();

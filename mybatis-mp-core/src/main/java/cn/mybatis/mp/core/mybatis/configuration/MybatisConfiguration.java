@@ -2,7 +2,6 @@ package cn.mybatis.mp.core.mybatis.configuration;
 
 
 import cn.mybatis.mp.core.db.reflect.TableIds;
-import cn.mybatis.mp.core.mybatis.mapper.BaseMapper;
 import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
 import cn.mybatis.mp.core.mybatis.mapper.context.SQLCmdContext;
 import cn.mybatis.mp.core.util.GenericUtil;
@@ -86,8 +85,8 @@ public class MybatisConfiguration extends Configuration {
     @Override
     public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
         T t = super.getMapper(type, sqlSession);
-        if (BaseMapper.class.isAssignableFrom(type)) {
-            return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new MybatisMapperProxy<>(type, t));
+        if (MybatisMapper.class.isAssignableFrom(type)) {
+            return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new MybatisMapperProxy<>(sqlSession, type, t));
         }
         return t;
     }

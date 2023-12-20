@@ -13,7 +13,13 @@ import db.sql.api.tookit.CmdUtils;
 
 import java.util.function.Function;
 
-public class On<SELF extends On<SELF, TABLE, JOIN>, TABLE extends Dataset, JOIN extends Join<JOIN, TABLE, SELF>> implements IOn<SELF, TABLE, TableField, Cmd, Object, JOIN, ConditionChain> {
+public class On<
+        SELF extends On<SELF, TABLE, JOIN>,
+        TABLE extends Dataset,
+        JOIN extends Join<JOIN, TABLE, SELF>
+        >
+
+        implements IOn<SELF, TABLE, TableField, Cmd, Object, JOIN, ConditionChain> {
 
     private final ConditionFactory conditionFactory;
 
@@ -35,16 +41,6 @@ public class On<SELF extends On<SELF, TABLE, JOIN>, TABLE extends Dataset, JOIN 
     @Override
     public ConditionChain conditionChain() {
         return conditionChain;
-    }
-
-    @Override
-    public <T> SELF and(Getter<T> column, int storey, Function<TableField, ICondition> function) {
-        return null;
-    }
-
-    @Override
-    public <T> SELF or(Getter<T> column, int storey, Function<TableField, ICondition> function) {
-        return null;
     }
 
     @Override

@@ -35,17 +35,42 @@ public interface IConditionMethod<SELF extends IConditionMethod,
         return (SELF) this;
     }
 
+
     default <T> SELF and(Getter<T> column, Function<TABLE_FIELD, ICondition> function) {
         return this.and(column, 1, function);
     }
 
-    <T> SELF and(Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function);
+    default <T> SELF and(Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function) {
+        conditionChain().and(column, storey, function);
+        return (SELF) this;
+    }
 
     default <T> SELF or(Getter<T> column, Function<TABLE_FIELD, ICondition> function) {
         return this.or(column, 1, function);
     }
 
-    <T> SELF or(Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function);
+    default <T> SELF or(Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function) {
+        conditionChain().or(column, storey, function);
+        return (SELF) this;
+    }
+
+    default <T> SELF and(Function<TABLE_FIELD[], ICondition> function, Getter<T>... columns) {
+        return this.and(function, 1, columns);
+    }
+
+    default <T> SELF and(Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns) {
+        conditionChain().and(function, storey, columns);
+        return (SELF) this;
+    }
+
+    default <T> SELF or(Function<TABLE_FIELD[], ICondition> function, Getter<T>... columns) {
+        return this.or(function, 1, columns);
+    }
+
+    default <T> SELF or(Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns) {
+        conditionChain().or(function, storey, columns);
+        return (SELF) this;
+    }
 
     default SELF and(Function<SELF, ICondition> function) {
         conditionChain().and(function.apply((SELF) this), true);

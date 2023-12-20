@@ -48,6 +48,18 @@ public interface IConditionChain<SELF extends IConditionChain,
 
     <T> SELF or(Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function);
 
+    default <T> SELF and(Function<TABLE_FIELD[], ICondition> function, Getter<T>... columns) {
+        return this.and(function, 1, columns);
+    }
+
+    <T> SELF and(Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns);
+
+    default <T> SELF or(Function<TABLE_FIELD[], ICondition> function, Getter<T>... columns) {
+        return this.and(function, 1, columns);
+    }
+
+    <T> SELF or(Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns);
+
     @Override
     default SELF andNested(Consumer<SELF> consumer) {
         SELF newSelf = newInstance();

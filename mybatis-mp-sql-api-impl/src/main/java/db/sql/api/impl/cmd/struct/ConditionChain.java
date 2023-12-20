@@ -95,6 +95,24 @@ public class ConditionChain implements IConditionChain<ConditionChain, TableFiel
     }
 
     @Override
+    public <T> ConditionChain and(Function<TableField[], ICondition> function, int storey, Getter<T>... columns) {
+        TableField[] tableFields = new TableField[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            tableFields[i] = this.conditionFactory.getCmdFactory().field(columns[i], storey);
+        }
+        return this.and(function.apply(tableFields), true);
+    }
+
+    @Override
+    public <T> ConditionChain or(Function<TableField[], ICondition> function, int storey, Getter<T>... columns) {
+        TableField[] tableFields = new TableField[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            tableFields[i] = this.conditionFactory.getCmdFactory().field(columns[i], storey);
+        }
+        return this.or(function.apply(tableFields), true);
+    }
+
+    @Override
     public ConditionChain and(ICondition condition, boolean when) {
         this.and();
         if (when && condition != null) {

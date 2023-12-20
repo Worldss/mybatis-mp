@@ -222,6 +222,19 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
+    public <T> SELF and(Getter<T> column, int storey, Function<TableField, ICondition> function) {
+        $where().and(column, storey, function);
+        return (SELF) this;
+    }
+
+    @Override
+    public <T> SELF or(Getter<T> column, int storey, Function<TableField, ICondition> function) {
+        $where().or(column, storey, function);
+        return (SELF) this;
+    }
+
+
+    @Override
     public SELF join(JoinMode mode, Dataset mainTable, Dataset secondTable, Consumer<OnDataset> consumer) {
         JoinDataset join = $join(mode, mainTable, secondTable);
         if (consumer != null) {

@@ -11,14 +11,16 @@ import db.sql.api.cmd.struct.IConditionChain;
 import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.cmd.basic.ConditionBlock;
 import db.sql.api.impl.cmd.basic.Connector;
+import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-public class ConditionChain implements IConditionChain<ConditionChain, Cmd, Object>, ICondition {
+public class ConditionChain implements IConditionChain<ConditionChain, TableField, Cmd, Object>, ICondition {
 
     private final ConditionFactory conditionFactory;
 
@@ -80,6 +82,16 @@ public class ConditionChain implements IConditionChain<ConditionChain, Cmd, Obje
     public ConditionChain or() {
         this.connector = Connector.OR;
         return this;
+    }
+
+    @Override
+    public <T> ConditionChain and(Getter<T> column, int storey, Function<TableField, ICondition> function) {
+        return this.and(function.apply(this.conditionFactory.getCmdFactory().field(column, storey)), true);
+    }
+
+    @Override
+    public <T> ConditionChain or(Getter<T> column, int storey, Function<TableField, ICondition> function) {
+        return this.or(function.apply(this.conditionFactory.getCmdFactory().field(column, storey)), true);
     }
 
     @Override

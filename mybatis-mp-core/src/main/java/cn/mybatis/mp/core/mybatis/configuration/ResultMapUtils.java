@@ -4,7 +4,7 @@ import cn.mybatis.mp.core.db.reflect.ResultClassEntityPrefixes;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
-import cn.mybatis.mp.core.util.FieldUtils;
+import cn.mybatis.mp.core.util.FieldUtil;
 import cn.mybatis.mp.core.util.GenericUtil;
 import cn.mybatis.mp.db.annotations.*;
 import org.apache.ibatis.mapping.ResultMap;
@@ -53,7 +53,7 @@ public final class ResultMapUtils {
     private static List<ResultMapping> getResultEntityResultMappings(MybatisConfiguration configuration, Class clazz) {
         ResultEntity resultEntity = (ResultEntity) clazz.getAnnotation(ResultEntity.class);
         Map<Class, String> entitiesPrefixMap = ResultClassEntityPrefixes.getEntityPrefix(clazz);
-        List<ResultMapping> resultMappings = FieldUtils.getResultMappingFields(clazz).stream().map(field -> {
+        List<ResultMapping> resultMappings = FieldUtil.getResultMappingFields(clazz).stream().map(field -> {
             if (field.isAnnotationPresent(ResultField.class)) {
                 ResultField resultField = field.getAnnotation(ResultField.class);
                 return createResultMapping(configuration, clazz, resultField, field);
@@ -168,7 +168,7 @@ public final class ResultMapUtils {
         //查看是否已注册了内嵌ResultMap
         if (!configuration.hasResultMap(nestedResultMapId)) {
             //创建并注册内嵌ResultMap
-            List<ResultMapping> nestedMappings = FieldUtils.getResultMappingFields(targetType).stream().map(nestedFiled -> {
+            List<ResultMapping> nestedMappings = FieldUtil.getResultMappingFields(targetType).stream().map(nestedFiled -> {
                 String targetFieldName = nestedFiled.getName();
                 NestedResultEntityField nestedResultEntityField = nestedFiled.getAnnotation(NestedResultEntityField.class);
                 if (Objects.nonNull(nestedResultEntityField)) {

@@ -1,4 +1,4 @@
-### 如果觉得还可以，能不能给个star和关注，目前star和关注 太少了 ，宣传不容易啊！
+### 喜欢的朋友加入QQ群：917404304 ，群里不仅可以提mybatis-mp框架问题，还可以帮你解决后端的各种问题！另外，喜欢的朋友，帮忙关注 和 star（点点小爱心）！
 # mybatis-mp ，诚邀各位进行参与补充
 
 <p align="center">
@@ -47,6 +47,9 @@
 群号： 917404304 ,邀请各位大神参与补充，绝对开源，大家都可以进行代码提交，审核通过会进行master分支。
 ![](./doc/image/qq.png)
 
+# springboot接入示例：
+https://gitee.com/mybatis-mp/mybatis-mp/tree/master/mybatis-mp-spring-boot-demo
+
 # 快速开始
 
 ## 1. 基于spring-boot开发 (已引入spring、springboot 基本依赖，创建SpringApplication.run即可启动)
@@ -59,7 +62,7 @@
         <dependency>
             <groupId>cn.mybatis-mp</groupId>
             <artifactId>mybatis-mp-spring-boot-parent</artifactId>
-            <version>1.2.5</version>
+            <version>1.2.6</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -82,7 +85,7 @@
         <dependency>
             <groupId>cn.mybatis-mp</groupId>
             <artifactId>mybatis-mp-spring-boot-parent</artifactId>
-            <version>1.2.5-spring-boot3</version>
+            <version>1.2.6-spring-boot3</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -446,7 +449,7 @@ LogicDeleteTest logicDeleteTest = LogicDeleteUtil.execute(false, () -> {
 
 > 为了增加CRUD一体式操作，增加了链路式类，分别为是:
 >
-> QueryChain 包含 get(),list(),count(),exists(),paging()等查询方法；
+> QueryChain 包含 get(),list(),count(),exists(),map(),paging()等查询方法；
 >
 > UpdateChain 包含 execute();
 >
@@ -490,6 +493,8 @@ int updateCnt=UpdateChain.of(sysUserMapper)
 ### deleteById
 
 ### deleteByIds
+
+### map 查询结果转map方法
 
 ### 链式类的获取方法
 
@@ -670,6 +675,18 @@ mapper.saveBatch(list, DefaultValueTest::getValue1, DefaultValueTest::getValue2,
 > update(T entity,Where where) 实体类批量更新
 
 > update(Update update) 动态更新
+
+### mapWithKey 查询结果转成一个map的方法
+
+> Map<K, V> mapWithKey(Getter<T> mapKey, Serializable... ids) key为mapKey，value当前实体类
+
+> Map<K, V> mapWithKey(Getter<G> mapKey, BaseQuery query) key为mapKey，value为query指定的类型
+
+> Map<K, V> mapWithKey(Getter<T> mapKey, List<Serializable> ids) key为mapKey，value当前实体类
+ 
+> Map<K, T> mapWithKey(Getter<T> mapKey, Consumer<Where> consumer) key为mapKey，value当前实体类
+
+> Map<K, T> mapWithKey ... 还有其他的方法
 
 ### 分页查询
 
@@ -1321,6 +1338,20 @@ if,
 case when
 比较函数
 gte,gt,lt,lte 等等还很多
+```
+
+## 如何结合函数进行条件查询
+```java
+Integer id = QueryChain.of(sysUserMapper)
+    .select(SysUser::getId)
+    .from(SysUser.class)
+    .and(SysUser::getId, c -> c.concat("x1").eq("2x1"))
+    .setReturnType(Integer.TYPE)
+    .get();
+```
+或
+```java
+SysUser sysUser = sysUserMapper.get(where -> where.and(SysUser::getId, c -> c.concat("x1").eq("2x1")));
 ```
 
 ## 复杂SQL示例

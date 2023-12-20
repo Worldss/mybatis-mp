@@ -25,7 +25,7 @@ public class MybatisResultSetHandler extends DefaultResultSetHandler {
             return ms;
         } else if (!(boundSql.getParameterObject() instanceof SQLCmdQueryContext)) {
             return ms;
-        } else if (ms.getResultMaps().get(0).getType() != Object.class) {
+        } else if (ms.getResultMaps().get(0).getType() != Object.class && !ms.getId().endsWith(MybatisMapperProxy.MAP_WITH_KEY_METHOD_NAME)) {
             return ms;
         }
         SQLCmdQueryContext queryContext = (SQLCmdQueryContext) boundSql.getParameterObject();

@@ -1,6 +1,6 @@
 package cn.mybatis.mp.core.db.reflect;
 
-import cn.mybatis.mp.core.util.FieldUtils;
+import cn.mybatis.mp.core.util.FieldUtil;
 import cn.mybatis.mp.core.util.GenericUtil;
 import cn.mybatis.mp.db.annotations.Table;
 
@@ -62,7 +62,7 @@ public class ModelInfo {
             throw new RuntimeException(MessageFormat.format("unable match model class {0} , the generic class {1} is not a entity", model.getName(), entity.getName()));
         }
 
-        List<ModelFieldInfo> modelFieldInfos = FieldUtils.getResultMappingFields(model).stream().map(field -> new ModelFieldInfo(entity, model, field)).collect(Collectors.toList());
+        List<ModelFieldInfo> modelFieldInfos = FieldUtil.getResultMappingFields(model).stream().map(field -> new ModelFieldInfo(entity, model, field)).collect(Collectors.toList());
 
         this.idFieldInfo = modelFieldInfos.stream().filter(item -> item.getTableFieldInfo().isTableId()).findFirst().orElse(null);
         this.versionFieldInfo = modelFieldInfos.stream().filter(item -> item.getTableFieldInfo().isVersion()).findFirst().orElse(null);

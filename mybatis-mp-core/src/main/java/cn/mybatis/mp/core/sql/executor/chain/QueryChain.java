@@ -1,12 +1,14 @@
 package cn.mybatis.mp.core.sql.executor.chain;
 
-import cn.mybatis.mp.core.mybatis.mapper.BaseMapper;
+import cn.mybatis.mp.core.mybatis.mapper.MybatisMapper;
 import cn.mybatis.mp.core.mybatis.mapper.context.Pager;
 import cn.mybatis.mp.core.sql.executor.BaseQuery;
+import db.sql.api.Getter;
 import db.sql.api.impl.cmd.struct.Where;
 import org.apache.ibatis.cursor.Cursor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -14,22 +16,22 @@ import java.util.Objects;
  */
 public class QueryChain extends BaseQuery<QueryChain> {
 
-    protected final BaseMapper mapper;
+    protected final MybatisMapper mapper;
 
-    public QueryChain(BaseMapper mapper) {
+    public QueryChain(MybatisMapper mapper) {
         this.mapper = mapper;
     }
 
-    public QueryChain(BaseMapper mapper, Where where) {
+    public QueryChain(MybatisMapper mapper, Where where) {
         super(where);
         this.mapper = mapper;
     }
 
-    public static QueryChain of(BaseMapper mapper) {
+    public static QueryChain of(MybatisMapper mapper) {
         return new QueryChain(mapper);
     }
 
-    public static QueryChain of(BaseMapper mapper, Where where) {
+    public static QueryChain of(MybatisMapper mapper, Where where) {
         return new QueryChain(mapper, where);
     }
 
@@ -159,5 +161,31 @@ public class QueryChain extends BaseQuery<QueryChain> {
     public <R> Pager<R> paging(Pager<R> pager) {
         this.setDefault();
         return mapper.paging(this, pager);
+    }
+
+    /**
+     * 将结果转成map
+     *
+     * @param mapKey 指定的map的key属性
+     * @param <K>    map的key
+     * @param <V>    map的value
+     * @return
+     */
+    public <K, V, T> Map<K, V> mapWithKey(Getter<T> mapKey) {
+        return this.mapWithKey(mapKey, true);
+    }
+
+    /**
+     * 将结果转成map
+     *
+     * @param mapKey   指定的map的key属性
+     * @param optimize 是否优化sql
+     * @param <K>      map的key
+     * @param <V>      map的value
+     * @return
+     */
+    public <K, V, T> Map<K, V> mapWithKey(Getter<T> mapKey, boolean optimize) {
+        this.setDefault();
+        return mapper.mapWithKey(mapKey, this, optimize);
     }
 }

@@ -7,7 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class FieldUtils {
+public final class FieldUtil {
 
     public static boolean isResultMappingField(Field field) {
         if (Modifier.isStatic(field.getModifiers())) {

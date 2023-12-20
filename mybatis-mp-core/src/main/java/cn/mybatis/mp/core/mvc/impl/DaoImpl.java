@@ -11,7 +11,9 @@ import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public abstract class DaoImpl<T, K> implements Dao<T, K> {
 
@@ -55,7 +57,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
 
     @Override
     public T getById(K id) {
-        return getById(id, null);
+        return getById(id);
     }
 
     @Override
@@ -136,5 +138,16 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     public int deleteByIds(List<K> ids) {
         this.checkIdType();
         return mapper.deleteByIds((List<Serializable>) ids);
+    }
+
+    @Override
+    public Map<K, T> map(K... ids) {
+        return this.map(Arrays.asList(ids));
+    }
+
+    @Override
+    public Map<K, T> map(List<K> ids) {
+        this.checkIdType();
+        return mapper.mapWithKey(mapper.getTableInfo().getIdFieldInfo().getField().getName(), (List<Serializable>) ids);
     }
 }

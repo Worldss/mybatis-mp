@@ -18,16 +18,16 @@ public interface IUpdate<SELF extends IUpdate,
         DATASET_FILED extends COLUMN,
         COLUMN extends Cmd,
         V,
-        CONDITION_CHAIN extends IConditionChain<CONDITION_CHAIN, COLUMN, V>,
+        CONDITION_CHAIN extends IConditionChain<CONDITION_CHAIN, TABLE_FIELD, COLUMN, V>,
         UPDATE_TABLE extends IUpdateTable<TABLE>,
         JOIN extends IJoin<JOIN, TABLE, ON>,
-        ON extends IOn<ON, TABLE, COLUMN, V, JOIN, CONDITION_CHAIN>,
-        WHERE extends IWhere<WHERE, COLUMN, V, CONDITION_CHAIN>
+        ON extends IOn<ON, TABLE, TABLE_FIELD, COLUMN, V, JOIN, CONDITION_CHAIN>,
+        WHERE extends IWhere<WHERE, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN>
         >
 
         extends IUpdateMethod<SELF, TABLE, COLUMN, V>,
         IJoinMethod<SELF, TABLE, ON>,
-        IWhereMethod<SELF, COLUMN, V, CONDITION_CHAIN>,
+        IWhereMethod<SELF, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN>,
         IExecutor<SELF, TABLE, DATASET, TABLE_FIELD, DATASET_FILED> {
 
 

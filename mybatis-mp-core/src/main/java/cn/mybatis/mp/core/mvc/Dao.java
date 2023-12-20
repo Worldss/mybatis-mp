@@ -4,6 +4,7 @@ import cn.mybatis.mp.db.Model;
 import db.sql.api.Getter;
 
 import java.util.List;
+import java.util.Map;
 
 public interface Dao<T, K> {
 
@@ -38,4 +39,8 @@ public interface Dao<T, K> {
     int deleteByIds(K... ids);
 
     int deleteByIds(List<K> ids);
+
+    Map<K, T> map(K... ids);
+
+    Map<K, T> map(List<K> ids);
 }

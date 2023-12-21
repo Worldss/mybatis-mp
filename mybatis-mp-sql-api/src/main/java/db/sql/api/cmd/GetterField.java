@@ -32,4 +32,8 @@ public class GetterField<T> {
     public int getStorey() {
         return storey;
     }
+
+    public String getSS(){
+        return null;
+    }
 }

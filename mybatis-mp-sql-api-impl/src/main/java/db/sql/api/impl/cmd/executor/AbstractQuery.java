@@ -2,6 +2,7 @@ package db.sql.api.impl.cmd.executor;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.GetterField;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.basic.UnionsCmdLists;
@@ -315,22 +316,34 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF havingAnd(Getter<T> column, int storey, Function<TableField, ICondition> f) {
+    public <T> SELF havingAnd(boolean when, Getter<T> column, int storey, Function<TableField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.havingAnd(f.apply($(column, storey)));
     }
 
     @Override
-    public <T> SELF havingOr(Getter<T> column, int storey, Function<TableField, ICondition> f) {
+    public <T> SELF havingOr(boolean when, Getter<T> column, int storey, Function<TableField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.havingOr(f.apply($(column, storey)));
     }
 
     @Override
-    public <T> SELF havingAnd(ISubQuery subQuery, Getter<T> column, Function<DatasetField, ICondition> f) {
+    public <T> SELF havingAnd(ISubQuery subQuery, boolean when, Getter<T> column, Function<DatasetField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.havingAnd(subQuery, $.columnName(column), f);
     }
 
     @Override
-    public <T> SELF havingOr(ISubQuery subQuery, Getter<T> column, Function<DatasetField, ICondition> f) {
+    public <T> SELF havingOr(ISubQuery subQuery, boolean when, Getter<T> column, Function<DatasetField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.havingOr(subQuery, $.columnName(column), f);
     }
 
@@ -347,25 +360,89 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF havingAnd(Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+    public <T> SELF havingAnd(boolean when, Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.havingAnd(f.apply($.fields(storey, columns)));
     }
 
     @Override
-    public <T> SELF havingOr(Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+    public <T> SELF havingOr(boolean when, Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.havingOr(f.apply($.fields(storey, columns)));
     }
 
     @Override
-    public <T> SELF havingAnd(ISubQuery subQuery, Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+    public <T> SELF havingAnd(ISubQuery subQuery, boolean when, Function<TableField[], ICondition> f, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
         CmdFactory $ = (CmdFactory) subQuery.$();
-        return this.havingAnd(f.apply($.fields(storey, columns)));
+        return this.havingAnd(f.apply($.fields(columns)));
     }
 
     @Override
-    public <T> SELF havingOr(ISubQuery subQuery, Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+    public <T> SELF havingOr(ISubQuery subQuery, boolean when, Function<TableField[], ICondition> f, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
         CmdFactory $ = (CmdFactory) subQuery.$();
-        return this.havingOr(f.apply($.fields(storey, columns)));
+        return this.havingOr(f.apply($.fields(columns)));
+    }
+
+    @Override
+    public SELF havingAnd(boolean when, Function<TableField[], ICondition> f, GetterField... getterFields) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.havingAnd(f.apply($.fields(getterFields)));
+    }
+
+    @Override
+    public SELF havingOr(boolean when, Function<TableField[], ICondition> f, GetterField... getterFields) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.havingOr(f.apply($.fields(getterFields)));
+    }
+
+    @Override
+    public SELF havingAnd(ISubQuery subQuery, boolean when, Function<TableField[], ICondition> f, GetterField... getterFields) {
+        if (!when) {
+            return (SELF) this;
+        }
+        CmdFactory $ = (CmdFactory) subQuery.$();
+        return this.havingAnd(f.apply($.fields(getterFields)));
+    }
+
+    @Override
+    public SELF havingOr(ISubQuery subQuery, boolean when, Function<TableField[], ICondition> f, GetterField... getterFields) {
+        if (!when) {
+            return (SELF) this;
+        }
+        CmdFactory $ = (CmdFactory) subQuery.$();
+        return this.havingOr(f.apply($.fields(getterFields)));
+    }
+
+    @Override
+    public SELF havingAnd(ISubQuery subQuery, boolean when, String columnName, Function<DatasetField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
+        DatasetField datasetField = $((Dataset) subQuery, columnName);
+        return this.havingAnd(f.apply(datasetField));
+    }
+
+    @Override
+    public SELF havingOr(ISubQuery subQuery, boolean when, String columnName, Function<DatasetField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
+        DatasetField datasetField = $((Dataset) subQuery, columnName);
+        return this.havingOr(f.apply(datasetField));
     }
 
     @Override

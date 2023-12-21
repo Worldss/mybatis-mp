@@ -8,7 +8,7 @@ import db.sql.api.cmd.executor.method.IHavingMethod;
 
 import java.util.function.Function;
 
-public interface IHavingSubQueryAndMethod<SELF extends IHavingMethod, TABLE_FIELD, DATASET_FILED> {
+public interface IHavingSubQueryAndMethod<SELF extends IHavingMethod, DATASET_FILED> {
 
     default SELF havingAnd(ISubQuery subQuery, String columnName, Function<DATASET_FILED, ICondition> f) {
         return this.havingAnd(subQuery, true, columnName, f);
@@ -22,16 +22,16 @@ public interface IHavingSubQueryAndMethod<SELF extends IHavingMethod, TABLE_FIEL
 
     <T> SELF havingAnd(ISubQuery subQuery, boolean when, Getter<T> column, Function<DATASET_FILED, ICondition> f);
 
-    default <T> SELF havingAnd(ISubQuery subQuery, Function<TABLE_FIELD[], ICondition> f, Getter<T>... columns) {
+    default <T> SELF havingAnd(ISubQuery subQuery, Function<DATASET_FILED[], ICondition> f, Getter<T>... columns) {
         return this.havingAnd(subQuery, true, f, columns);
     }
 
-    <T> SELF havingAnd(ISubQuery subQuery, boolean when, Function<TABLE_FIELD[], ICondition> f, Getter<T>... columns);
+    <T> SELF havingAnd(ISubQuery subQuery, boolean when, Function<DATASET_FILED[], ICondition> f, Getter<T>... columns);
 
-    default SELF havingAnd(ISubQuery subQuery, Function<TABLE_FIELD[], ICondition> f, GetterField... getterFields) {
+    default SELF havingAnd(ISubQuery subQuery, Function<DATASET_FILED[], ICondition> f, GetterField... getterFields) {
         return this.havingAnd(subQuery, true, f, getterFields);
     }
 
-    SELF havingAnd(ISubQuery subQuery, boolean when, Function<TABLE_FIELD[], ICondition> f, GetterField... getterFields);
+    SELF havingAnd(ISubQuery subQuery, boolean when, Function<DATASET_FILED[], ICondition> f, GetterField... getterFields);
 
 }

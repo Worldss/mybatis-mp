@@ -312,6 +312,35 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return this.groupBy(f.apply($.fields(storey, columns)));
     }
 
+    @Override
+    public SELF groupByFun(boolean when, Function<TableField[], Cmd> f, GetterField... getterFields) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.groupBy(f.apply($.fields(getterFields)));
+    }
+
+    @Override
+    public <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.groupBy(this.apply(subQuery,f,columns));
+    }
+
+    @Override
+    public <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DatasetField[], Cmd> f, GetterField... getterFields) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.groupBy(this.apply(subQuery,f,getterFields));
+    }
+
+    @Override
+    public <T> SELF orderByFun(boolean asc, Function<TableField[], Cmd> f, GetterField... getterFields) {
+        return this.orderBy(asc, f.apply($.fields(getterFields)));
+    }
+
 
     @Override
     public Having $having() {
@@ -383,21 +412,19 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF havingAnd(ISubQuery subQuery, boolean when, Function<TableField[], ICondition> f, Getter<T>... columns) {
+    public <T> SELF havingAnd(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, Getter<T>... columns) {
         if (!when) {
             return (SELF) this;
         }
-        CmdFactory $ = (CmdFactory) subQuery.$();
-        return this.havingAnd(f.apply($.fields(columns)));
+        return this.havingAnd(this.apply(subQuery,f,columns));
     }
 
     @Override
-    public <T> SELF havingOr(ISubQuery subQuery, boolean when, Function<TableField[], ICondition> f, Getter<T>... columns) {
+    public <T> SELF havingOr(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, Getter<T>... columns) {
         if (!when) {
             return (SELF) this;
         }
-        CmdFactory $ = (CmdFactory) subQuery.$();
-        return this.havingOr(f.apply($.fields(columns)));
+        return this.havingOr(this.apply(subQuery,f,columns));
     }
 
     @Override
@@ -416,22 +443,39 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return this.havingOr(f.apply($.fields(getterFields)));
     }
 
-    @Override
-    public SELF havingAnd(ISubQuery subQuery, boolean when, Function<TableField[], ICondition> f, GetterField... getterFields) {
-        if (!when) {
-            return (SELF) this;
-        }
+    private <T, R> R apply(ISubQuery subQuery, Function<DatasetField[], R> f, Getter<T>... columns) {
         CmdFactory $ = (CmdFactory) subQuery.$();
-        return this.havingAnd(f.apply($.fields(getterFields)));
+        DatasetField[] datasetFields = new DatasetField[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            datasetFields[i] = $((Dataset) subQuery, $.columnName(columns[i]));
+        }
+        return f.apply(datasetFields);
+    }
+
+
+    private <R> R apply(ISubQuery subQuery, Function<DatasetField[], R> f, GetterField... getterFields) {
+        CmdFactory $ = (CmdFactory) subQuery.$();
+        DatasetField[] datasetFields = new DatasetField[getterFields.length];
+        for (int i = 0; i < getterFields.length; i++) {
+            datasetFields[i] = $((Dataset) subQuery, $.columnName(getterFields[i].getGetter()));
+        }
+        return f.apply(datasetFields);
     }
 
     @Override
-    public SELF havingOr(ISubQuery subQuery, boolean when, Function<TableField[], ICondition> f, GetterField... getterFields) {
+    public SELF havingAnd(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, GetterField... getterFields) {
         if (!when) {
             return (SELF) this;
         }
-        CmdFactory $ = (CmdFactory) subQuery.$();
-        return this.havingOr(f.apply($.fields(getterFields)));
+        return this.havingAnd(this.apply(subQuery, f, getterFields));
+    }
+
+    @Override
+    public SELF havingOr(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, GetterField... getterFields) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.havingOr(this.apply(subQuery, f, getterFields));
     }
 
     @Override
@@ -521,9 +565,13 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF orderByFun(ISubQuery subQuery, boolean asc, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
-        CmdFactory $ = (CmdFactory) subQuery.$();
-        return this.orderBy(f.apply($.fields(storey, columns)));
+    public <T> SELF orderByFun(ISubQuery subQuery, boolean asc, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
+        return this.orderBy(asc, this.apply(subQuery, f, columns));
+    }
+
+    @Override
+    public <T> SELF orderByFun(ISubQuery subQuery, boolean asc, Function<DatasetField[], Cmd> f, GetterField... getterFields) {
+        return this.orderBy(asc, this.apply(subQuery, f, getterFields));
     }
 
     public Unions $unions() {

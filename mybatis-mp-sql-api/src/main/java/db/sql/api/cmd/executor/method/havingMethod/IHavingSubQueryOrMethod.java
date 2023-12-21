@@ -8,7 +8,7 @@ import db.sql.api.cmd.executor.method.IHavingMethod;
 
 import java.util.function.Function;
 
-public interface IHavingSubQueryOrMethod<SELF extends IHavingMethod, TABLE_FIELD, DATASET_FILED> {
+public interface IHavingSubQueryOrMethod<SELF extends IHavingMethod, DATASET_FILED> {
 
     default SELF havingOr(ISubQuery subQuery, String columnName, Function<DATASET_FILED, ICondition> f) {
         return this.havingOr(subQuery, true, columnName, f);
@@ -23,16 +23,16 @@ public interface IHavingSubQueryOrMethod<SELF extends IHavingMethod, TABLE_FIELD
     <T> SELF havingOr(ISubQuery subQuery, boolean when, Getter<T> column, Function<DATASET_FILED, ICondition> f);
 
 
-    default <T> SELF havingOr(ISubQuery subQuery, Function<TABLE_FIELD[], ICondition> f, Getter<T>... columns) {
+    default <T> SELF havingOr(ISubQuery subQuery, Function<DATASET_FILED[], ICondition> f, Getter<T>... columns) {
         return this.havingOr(subQuery, true, f, columns);
     }
 
-    <T> SELF havingOr(ISubQuery subQuery, boolean when, Function<TABLE_FIELD[], ICondition> f, Getter<T>... columns);
+    <T> SELF havingOr(ISubQuery subQuery, boolean when, Function<DATASET_FILED[], ICondition> f, Getter<T>... columns);
 
 
-    default SELF havingOr(ISubQuery subQuery, Function<TABLE_FIELD[], ICondition> f, GetterField... getterFields) {
+    default SELF havingOr(ISubQuery subQuery, Function<DATASET_FILED[], ICondition> f, GetterField... getterFields) {
         return this.havingOr(subQuery, true, f, getterFields);
     }
 
-    SELF havingOr(ISubQuery subQuery, boolean when, Function<TABLE_FIELD[], ICondition> f, GetterField... getterFields);
+    SELF havingOr(ISubQuery subQuery, boolean when, Function<DATASET_FILED[], ICondition> f, GetterField... getterFields);
 }

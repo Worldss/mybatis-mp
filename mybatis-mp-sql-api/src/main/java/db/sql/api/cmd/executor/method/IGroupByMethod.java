@@ -2,6 +2,7 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.GetterField;
 import db.sql.api.cmd.executor.ISubQuery;
 
 import java.util.List;
@@ -11,14 +12,12 @@ public interface IGroupByMethod<SELF extends IGroupByMethod, TABLE_FIELD, DATASE
 
     SELF groupBy(COLUMN column);
 
-
     default SELF groupBy(COLUMN... columns) {
         for (COLUMN column : columns) {
             this.groupBy(column);
         }
         return (SELF) this;
     }
-
 
     default SELF groupBy(List<COLUMN> columns) {
         for (COLUMN column : columns) {
@@ -89,6 +88,12 @@ public interface IGroupByMethod<SELF extends IGroupByMethod, TABLE_FIELD, DATASE
 
     <T> SELF groupByFun(boolean when, Function<TABLE_FIELD[], Cmd> f, int storey, Getter<T>... columns);
 
+    default SELF groupByFun(Function<TABLE_FIELD[], Cmd> f, GetterField... getterFields) {
+        return this.groupByFun(true, f, getterFields);
+    }
+
+    SELF groupByFun(boolean when, Function<TABLE_FIELD[], Cmd> f, GetterField... getterFields);
+
     default <T> SELF groupBy(ISubQuery subQuery, Getter<T> column) {
         return this.groupBy(subQuery, true, column);
     }
@@ -131,17 +136,15 @@ public interface IGroupByMethod<SELF extends IGroupByMethod, TABLE_FIELD, DATASE
 
     SELF groupBy(ISubQuery subQuery, boolean when, String columnName, Function<DATASET_FIELD, Cmd> f);
 
-    default <T> SELF groupByFun(ISubQuery subQuery, Function<TABLE_FIELD[], Cmd> f, Getter<T>... columns) {
+    default <T> SELF groupByFun(ISubQuery subQuery, Function<DATASET_FIELD[], Cmd> f, Getter<T>... columns) {
         return this.groupByFun(subQuery, true, f, columns);
     }
 
-    default <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<TABLE_FIELD[], Cmd> f, Getter<T>... columns) {
-        if (!when) {
-            return (SELF) this;
-        }
-        for (Getter<T> column : columns) {
-            this.groupByFun(subQuery, f, column);
-        }
-        return (SELF) this;
+    <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DATASET_FIELD[], Cmd> f, Getter<T>... columns);
+
+    default <T> SELF groupByFun(ISubQuery subQuery, Function<DATASET_FIELD[], Cmd> f, GetterField... getterFields) {
+        return this.groupByFun(subQuery, true, f, getterFields);
     }
+
+    <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DATASET_FIELD[], Cmd> f, GetterField... getterFields);
 }

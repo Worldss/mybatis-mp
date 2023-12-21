@@ -57,14 +57,14 @@ public class ConcatAs extends BasicFunction<ConcatAs> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(this.operator).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = this.split.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        sqlBuilder = CmdUtils.join(module, this, context, sqlBuilder, this.values, SqlConst.DELIMITER);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
+        sqlBuilder.append(this.operator).append(SqlConst.BRACKET_LEFT);
+        this.split.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.DELIMITER);
+        this.key.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.DELIMITER);
+        CmdUtils.join(module, this, context, sqlBuilder, this.values, SqlConst.DELIMITER);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

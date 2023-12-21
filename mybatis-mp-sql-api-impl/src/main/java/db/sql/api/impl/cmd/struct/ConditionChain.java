@@ -541,7 +541,7 @@ public class ConditionChain implements IConditionChain<ConditionChain, TableFiel
             return sqlBuilder;
         }
         if ((!(parent instanceof Where) && !(parent instanceof On)) || this.parent != null) {
-            sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(SqlConst.BRACKET_LEFT);
+            sqlBuilder.append(SqlConst.BLANK).append(SqlConst.BRACKET_LEFT);
         }
         boolean isFirst = true;
         for (ConditionBlock conditionBlock : this.conditionBlocks) {
@@ -552,13 +552,13 @@ public class ConditionChain implements IConditionChain<ConditionChain, TableFiel
                 }
             }
             if (!isFirst) {
-                sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(conditionBlock.getConnector()).append(SqlConst.BLANK);
+                sqlBuilder.append(SqlConst.BLANK).append(conditionBlock.getConnector()).append(SqlConst.BLANK);
             }
             conditionBlock.getCondition().sql(module, this, context, sqlBuilder);
             isFirst = false;
         }
         if ((!(parent instanceof Where) && !(parent instanceof On)) || this.parent != null) {
-            sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);
+            sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);
         }
 
         return sqlBuilder;

@@ -18,7 +18,7 @@ public class TenantContext {
      *
      * @param tenantInfoGetter
      */
-    public static final void registerTenantGetter(Supplier<TenantInfo> tenantInfoGetter) {
+    public static void registerTenantGetter(Supplier<TenantInfo> tenantInfoGetter) {
         TenantContext.tenantInfoGetter = tenantInfoGetter;
     }
 

@@ -6,7 +6,10 @@ import db.sql.api.cmd.executor.method.IDeleteMethod;
 import db.sql.api.cmd.executor.method.IFromMethod;
 import db.sql.api.cmd.executor.method.IJoinMethod;
 import db.sql.api.cmd.executor.method.IWhereMethod;
-import db.sql.api.cmd.struct.*;
+import db.sql.api.cmd.struct.IFrom;
+import db.sql.api.cmd.struct.IJoin;
+import db.sql.api.cmd.struct.IOn;
+import db.sql.api.cmd.struct.IWhere;
 import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 import db.sql.api.cmd.struct.delete.IDeleteTable;
 

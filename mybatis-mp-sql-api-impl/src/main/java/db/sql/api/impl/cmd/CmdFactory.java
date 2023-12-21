@@ -33,9 +33,9 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
     }
 
     protected String tableAs(int storey, int tableNums) {
-        StringBuilder as = new StringBuilder();
-        as = as.append(this.tableAsPrefix);
-        return as.append(tableNums == 1 ? "" : tableNums).toString();
+        String as = this.tableAsPrefix +
+                (tableNums == 1 ? "" : tableNums);
+        return as;
     }
 
     public Table cacheTable(Class entity, int storey) {
@@ -80,7 +80,7 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
     public TableField[] fields(GetterField... getterFields) {
         TableField[] tableFields = new TableField[getterFields.length];
         for (int i = 0; i < getterFields.length; i++) {
-            GetterField getterField=getterFields[i];
+            GetterField getterField = getterFields[i];
             tableFields[i] = field(getterField.getGetter(), getterField.getStorey());
         }
         return tableFields;

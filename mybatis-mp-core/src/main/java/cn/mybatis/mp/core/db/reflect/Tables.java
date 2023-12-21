@@ -1,6 +1,7 @@
 package cn.mybatis.mp.core.db.reflect;
 
 
+import cn.mybatis.mp.core.NotTableClassException;
 import cn.mybatis.mp.db.annotations.Table;
 
 import java.util.Map;
@@ -27,7 +28,7 @@ public final class Tables {
 
     public static TableInfo get(Class entity) {
         if (!entity.isAnnotationPresent(Table.class)) {
-            return null;
+            throw new NotTableClassException(entity);
         }
         return CACHE.computeIfAbsent(entity, key -> new TableInfo(entity));
     }

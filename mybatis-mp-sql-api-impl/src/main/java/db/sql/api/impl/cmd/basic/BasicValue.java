@@ -32,12 +32,12 @@ public class BasicValue extends Field<BasicValue> {
         }
         if (context.getSqlMode() == SQLMode.PRINT || module instanceof OrderBy) {
             if (value instanceof Number) {
-                sqlBuilder = sqlBuilder.append(value);
+                sqlBuilder.append(value);
             } else {
-                sqlBuilder = sqlBuilder.append(SqlConst.SINGLE_QUOT(context.getDbType())).append(value).append(SqlConst.SINGLE_QUOT(context.getDbType()));
+                sqlBuilder.append(SqlConst.SINGLE_QUOT(context.getDbType())).append(value).append(SqlConst.SINGLE_QUOT(context.getDbType()));
             }
         } else {
-            sqlBuilder = sqlBuilder.append(context.addParam(value));
+            sqlBuilder.append(context.addParam(value));
         }
         return sqlBuilder;
     }

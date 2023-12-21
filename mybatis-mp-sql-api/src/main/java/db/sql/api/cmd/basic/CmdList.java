@@ -19,8 +19,8 @@ public class CmdList implements Cmd {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(this.operator);
-        sqlBuilder = CmdUtils.join(module, this, context, sqlBuilder, this.cmdList);
+        sqlBuilder.append(this.operator);
+        CmdUtils.join(module, this, context, sqlBuilder, this.cmdList);
         return sqlBuilder;
     }
 

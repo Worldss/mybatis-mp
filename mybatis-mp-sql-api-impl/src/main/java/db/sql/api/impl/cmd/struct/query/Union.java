@@ -24,8 +24,8 @@ public class Union implements IUnion {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(this.operator);
-        sqlBuilder = unionQuery.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(this.operator);
+        unionQuery.sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

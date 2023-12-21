@@ -49,12 +49,12 @@ public class Filed extends BasicFunction<Filed> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(this.operator).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
-        sqlBuilder = CmdUtils.join(module, this, context, sqlBuilder, this.values, SqlConst.DELIMITER);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
+        sqlBuilder.append(this.operator).append(SqlConst.BRACKET_LEFT);
+        this.key.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.DELIMITER);
+        CmdUtils.join(module, this, context, sqlBuilder, this.values, SqlConst.DELIMITER);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

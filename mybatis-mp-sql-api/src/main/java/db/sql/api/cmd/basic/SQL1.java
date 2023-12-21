@@ -9,7 +9,7 @@ public class SQL1 implements Cmd {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(" 1 ");
+        sqlBuilder.append(" 1 ");
         return sqlBuilder;
     }
 

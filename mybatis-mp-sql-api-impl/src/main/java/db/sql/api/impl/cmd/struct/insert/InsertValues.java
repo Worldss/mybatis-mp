@@ -28,20 +28,20 @@ public class InsertValues implements IInsertValues<Cmd> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.VALUES);
+        sqlBuilder.append(SqlConst.VALUES);
         boolean isFirstLine = true;
         for (List<Cmd> values : this.values) {
             if (!isFirstLine) {
-                sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
+                sqlBuilder.append(SqlConst.DELIMITER);
 
             }
             sqlBuilder.append(SqlConst.BLANK).append(SqlConst.BRACKET_LEFT);
             boolean isFirst = true;
             for (Cmd value : values) {
                 if (!isFirst) {
-                    sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
+                    sqlBuilder.append(SqlConst.DELIMITER);
                 }
-                sqlBuilder = value.sql(module, this, context, sqlBuilder);
+                value.sql(module, this, context, sqlBuilder);
                 isFirst = false;
             }
             sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);

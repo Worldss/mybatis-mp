@@ -254,7 +254,10 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF groupBy(Getter<T> column, int storey, Function<TableField, Cmd> f) {
+    public <T> SELF groupBy(Getter<T> column, int storey, boolean when, Function<TableField, Cmd> f) {
+        if (!when) {
+            return (SELF) this;
+        }
         TableField tableField = $.field(column, storey);
         if (f != null) {
             return this.groupBy(f.apply(tableField));
@@ -272,7 +275,10 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      * @return
      */
     @Override
-    public <T> SELF groupBy(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+    public <T> SELF groupBy(ISubQuery subQuery, boolean when, Getter<T> column, Function<DatasetField, Cmd> f) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.groupBy(subQuery, $.columnName(column), f);
     }
 
@@ -285,7 +291,10 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      * @return
      */
     @Override
-    public SELF groupBy(ISubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
+    public SELF groupBy(ISubQuery subQuery, boolean when, String columnName, Function<DatasetField, Cmd> f) {
+        if (!when) {
+            return (SELF) this;
+        }
         DatasetField datasetField = $((Dataset) subQuery, columnName);
         if (Objects.nonNull(f)) {
             this.groupBy(f.apply(datasetField));
@@ -296,15 +305,13 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF groupByFun(Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+    public <T> SELF groupByFun(boolean when, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.groupBy(f.apply($.fields(storey, columns)));
     }
 
-    @Override
-    public <T> SELF groupByFun(ISubQuery subQuery, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
-        CmdFactory $ = (CmdFactory) subQuery.$();
-        return this.groupBy(f.apply($.fields(storey, columns)));
-    }
 
     @Override
     public Having $having() {

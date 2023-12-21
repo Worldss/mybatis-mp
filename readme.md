@@ -1,4 +1,5 @@
 ### 喜欢的朋友加入QQ群：917404304 ，群里不仅可以提mybatis-mp框架问题，还可以帮你解决后端的各种问题！另外，喜欢的朋友，帮忙关注 和 star（点点小爱心）！
+
 # mybatis-mp ，诚邀各位进行参与补充
 
 <p align="center">
@@ -48,6 +49,7 @@
 ![](./doc/image/qq.png)
 
 # springboot接入示例：
+
 https://gitee.com/mybatis-mp/mybatis-mp/tree/master/mybatis-mp-spring-boot-demo
 
 # 快速开始
@@ -328,6 +330,7 @@ public class StudentAchievementVo extends StudentVo {
 #### @NestedResultEntity
 
 > 用于内嵌类的映射 和 @ResultEntity 类似,可以映射一对一，一对多（List<POJO> 属性）
+
 ```java
 @Data
 @ResultEntity(SysRole.class)
@@ -366,17 +369,21 @@ public class OneToManyVo {
 > 多租户是围绕实体进行自动设置租户ID，通常在 from(实体类),join(实体类),delete(实体类),update(实体类)，
 
 > 另外设置租户ID的获取方法,示例是返回租户ID为2：
+
 ```java
 TenantContext.registerTenantGetter(() -> {
     return new TenantInfo(2);
 });
 ```
+
 ### 7. @LogicDelete 逻辑删除
+
 > 支持字段类型：string，数字，布尔类型，时间类型（Date,LocalDateTime,Long,Integer）
 
 > 逻辑删除 在deleteById,delete(实体类),delete(Where) 生效
 
 > 查询时，将自动添加删除过滤条件（通常在 from(实体类),join(实体类),update(实体类)时，自动添加，delete 除上面3个方法， 其他不附加）
+
 ```java
 @Data
 @Table
@@ -393,31 +400,45 @@ public class LogicDeleteTest {
     private Byte deleted;
 }
 ```
+
 #### 7.1 @LogicDelete 属性 beforeValue
+
 > 未删除前的值，只能是固定值；时间类型的逻辑，可不填
+
 #### 7.2 @LogicDelete 属性 afterValue
+
 > 删除后的值，可固定值或者动态值 例如 afterValue = "{NOW}"，目前支持LocalDateTime,Date,Long,Integer，框架自动给值
+
 #### 7.3 @LogicDelete 属性 deleteTimeField
-> 逻辑删除的时间字段，可不填，填了系统自动update 时 设置删除时间，deleteTimeField对应的字段类型 支持：LocalDateTime,Date,Long,Integer类型
+
+> 逻辑删除的时间字段，可不填，填了系统自动update 时 设置删除时间，deleteTimeField对应的字段类型
+> 支持：LocalDateTime,Date,Long,Integer类型
+
 #### 7.4 逻辑删除全局开关(默认开)
+
 ```java
 MybatisMpConfig.setLogicDeleteSwitch(true);
 ```
+
 #### 7.5 逻辑删除-局部开关
+
 ```java
 try (LogicDeleteSwitch ignored = LogicDeleteSwitch.with(false)) {
     logicDeleteTestMapper.getById(1);
 }
 ```
+
 > 上面代码必须try (LogicDeleteSwitch ignored = LogicDeleteSwitch.with(false))
 
 或
 > 下面的更简单：
+
 ```java
 LogicDeleteTest logicDeleteTest = LogicDeleteUtil.execute(false, () -> {
     return logicDeleteTestMapper.getById(1);
 });
 ```
+
 # mybatis-mp mvc 架构理念
 
 > mybatis-mp 只设计到1层持久层，不过 mybatis-mp的理念，把持久层分2层，mapper层，dao层
@@ -553,12 +574,15 @@ UpdateChain.of(sysUserMapper)
     .eq(SysRole::getId,1)
     .execute();     
 ```
+
 # 使用前，请先查看此项（重要）
+
 > 其他框架一般都是默认忽略null值参数的
 
 > 但是这样可能比较容易导致bug出现，例如 删除 修改时，因为null 导致数据紊乱了
 
 > 因此mybatis-mp,默认会检测 null值，并设有开关，让有需要忽略null，或者 空字符串等需要操作；如下使用：
+
 ```java
 SysUser sysUser = QueryChain.of(sysUserMapper)
     // forSearch包含忽略null 、空字符串、对字符串进行trim去空格    
@@ -571,7 +595,9 @@ SysUser sysUser = QueryChain.of(sysUserMapper)
     .setReturnType(SysUser.class)
     .get();
 ```
+
 或者
+
 ```java
 SysUser sysUser = QueryChain.of(sysUserMapper)
     // 忽略 null 条件参数    
@@ -588,8 +614,11 @@ SysUser sysUser = QueryChain.of(sysUserMapper)
     .setReturnType(SysUser.class)
     .get();
 ```
+
 目前 CRUD类、Where类都支持以上方法
+
 # 开始CRUD（CRUD教程）
+
 > Mapper 需要继承 MybatisMapper
 
 ```java
@@ -605,7 +634,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 > getById(Serializable id) 根据ID查询实体
 
 > R get(Query query) 单个动态查询（可自定返回类型）
- 
+
 > T get(Where where) 单个动态查询（只返回实体类）
 
 ### 列表查询
@@ -626,6 +655,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 > exists(Query query) 动态检测是否存在
 
 > exists(Where where) 动态检测是否存在
+
 ### 删除
 
 > deleteById(Serializable id) 根据ID删除
@@ -639,6 +669,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
 > deleteByIds(Serializable... ids) 根据多个ID删除
 
 > deleteByIds(List<Serializable> ids) 根据多个ID删除
+
 ### 保存
 
 > save(T entity) 实体类保存
@@ -657,6 +688,7 @@ public interface StudentMapper extends MybatisMapper<Student> {
  * 会自动加入 主键 租户ID 逻辑删除列 乐观锁
  * 自动设置 默认值,不会忽略NULL值字段
 </pre>
+
 ```java
 List<DefaultValueTest> list= Arrays.asList(new DefaultValueTest(),new DefaultValueTest());
 mapper.saveBatch(list, DefaultValueTest::getValue1, DefaultValueTest::getValue2, DefaultValueTest::getCreateTime);
@@ -683,7 +715,7 @@ mapper.saveBatch(list, DefaultValueTest::getValue1, DefaultValueTest::getValue2,
 > Map<K, V> mapWithKey(Getter<G> mapKey, BaseQuery query) key为mapKey，value为query指定的类型
 
 > Map<K, V> mapWithKey(Getter<T> mapKey, List<Serializable> ids) key为mapKey，value当前实体类
- 
+
 > Map<K, T> mapWithKey(Getter<T> mapKey, Consumer<Where> consumer) key为mapKey，value当前实体类
 
 > Map<K, T> mapWithKey ... 还有其他的方法
@@ -709,6 +741,7 @@ mapper.saveBatch(list, DefaultValueTest::getValue1, DefaultValueTest::getValue2,
 > 优化union 查询 （优化 left join 和 order by,自动判断是否有效）
 
 ## CRUD 操作
+
 > 文档为演示 所以是调用 QueryChain.of(mapper),实际使用 queryChain()方法，在dao层
 >
 
@@ -740,7 +773,9 @@ Student stu3=QueryChain.of(sysUserMapper)
     .eq(Student::getId,1)
     .get();
 ```
+
 ### 1.2 忽略部分列
+
 ```java
 Student stu3=QueryChain.of(sysUserMapper)
     .select(Student.class)
@@ -749,7 +784,8 @@ Student stu3=QueryChain.of(sysUserMapper)
     .eq(Student::getId,1)
     .get();
 ```
-> 注意：需要先select  再 selectIgnore
+
+> 注意：需要先select 再 selectIgnore
 
 ### 1.3 join 连表查询
 
@@ -1252,7 +1288,9 @@ List<SysUser> list = QueryChain.of(sysUserMapper)
 List<SysUser> list=sysUserMapper.list(where->where.lt(SysUser::getId, 3));
         
 ```
+
 ### 4.1 为空
+
 ```java
 Integer id = QueryChain.of(sysUserMapper)
         .select(SysUser::getId)
@@ -1264,6 +1302,7 @@ Integer id = QueryChain.of(sysUserMapper)
 ```
 
 ### 4.2 不为空
+
 ```java
 Integer id = QueryChain.of(sysUserMapper)
         .select(SysUser::getId)
@@ -1273,7 +1312,9 @@ Integer id = QueryChain.of(sysUserMapper)
         .setReturnType(Integer.TYPE)
         .get();
 ```
+
 ### 4.3 with 操作
+
 ```java
 SubQuery subQuery = SubQuery.create("sub")
     .select(SysRole.class)
@@ -1291,11 +1332,12 @@ List<SysUser> list = QueryChain.of(sysUserMapper)
     .orderBy(subQuery, SysRole::getId)
     .list();
 ```
+
 > 上面是一个利用with 构建的复杂SQL，核心在
 > .with(subQuery)
-> 
+>
 > .from(subQuery)
-> 
+>
 > 把它看成一个子查询
 
 ## 函数操作
@@ -1341,6 +1383,7 @@ gte,gt,lt,lte 等等还很多
 ```
 
 ## 如何结合函数进行条件查询
+
 ```java
 Integer id = QueryChain.of(sysUserMapper)
     .select(SysUser::getId)
@@ -1349,7 +1392,9 @@ Integer id = QueryChain.of(sysUserMapper)
     .setReturnType(Integer.TYPE)
     .get();
 ```
+
 或
+
 ```java
 SysUser sysUser = sysUserMapper.get(where -> where.and(SysUser::getId, c -> c.concat("x1").eq("2x1")));
 ```
@@ -1414,6 +1459,7 @@ List<SysUser> list = QueryChain.of(sysUserMapper)
     .orderBy(subQuery, SysRole::getId)
     .list();
 ```
+
 > select(subQuery, SysRole::getId, c -> c.as("xx")) 返回子表的角色ID并设置别名
 
 ### select 1 or  select *
@@ -1429,9 +1475,13 @@ new Query().selectAll();
 new Query().selectCount1();
 new Query().selectCountAll();
 ```
+
 # 批量操作
+
 MybatisBatchUtil 内置了批量保存，批量修改，批量其他操作
+
 ## batchSave 批量保存
+
 ```java
 /**
  * 批量插入（batchSize！=1时，无法获取主键）
@@ -1448,7 +1498,9 @@ public static <M extends MybatisMapper, T> int batchSave(SqlSessionFactory sqlSe
     
 }
 ```
+
 ## batchUpdate 批量更新
+
 ```java
 /**
  * 批量更新
@@ -1465,7 +1517,9 @@ public static <M extends MybatisMapper, T> int batchUpdate(SqlSessionFactory sql
     
 }
 ```
+
 ## batch（核心）批量
+
 ```java
 /**
  * 批量操作
@@ -1483,7 +1537,9 @@ public static <M extends MybatisMapper, T> int batch(SqlSessionFactory sqlSessio
     
 }
 ```
+
 ## 如何使用批量操作
+
 ```java
 List<IdTest> list = new ArrayList<>(10000);
 for (int i = 0; i < 10000; i++) {
@@ -1494,14 +1550,18 @@ for (int i = 0; i < 10000; i++) {
 
 MybatisBatchUtil.batchSave(sqlSessionFactory, IdTestMapper.class, list);
 ```
+
 > sqlSessionFactory 是mybatis SqlSessionFactory 可通过spring 依赖注入获得
 
 > IdTestMapper 是mybatis Mapper 接口
 
 > 如需获取主键，可设置batchSize=1，虽然性能可能下降，也比一般的循环save，update快！
 >
+
 # 动态参数配置（用于默认值，逻辑删除）
+
 > 项目启动时设置
+
 ```java
 MybatisMpConfig.setDefaultValue("{NOW}", (type) -> {
     if (type == LocalDateTime.class) {
@@ -1518,10 +1578,15 @@ MybatisMpConfig.setDefaultValue("{NOW}", (type) -> {
     throw new RuntimeException("Inconsistent types");
 });
 ```
+
 ## 内置动态参数配置
+
 ### 1.{BLANK} 空
+
 > 可应用在 字符串，集合，数组上
+
 ### 2.{NOW} 当前时间
+
 > 可应用在 LocalDateTime，LocalDate，Date，Long，Integer 字段上
 
 # 如何创建条件，列，表等
@@ -1557,8 +1622,11 @@ new Query(){{
     .eq($("id"),1);
 }};
 ```
+
 # 支持那些数据库函数方法
+
 ## 数据库函数使用方法
+
 ```java
 Integer id = QueryChain.of(sysUserMapper)
     //方法 1    
@@ -1579,7 +1647,9 @@ Integer id = QueryChain.of(sysUserMapper)
     .setReturnType(Integer.TYPE)
     .get();
 ```
+
 ## 数据库函数说明
+
 <table>
     <thead>
     <tr align="left">

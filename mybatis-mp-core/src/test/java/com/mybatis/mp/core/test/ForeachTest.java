@@ -1,11 +1,5 @@
 package com.mybatis.mp.core.test;
 
-import cn.mybatis.mp.core.sql.executor.Query;
-import com.mybatis.mp.core.test.DO.SysUser;
-import com.mybatis.mp.core.test.vo.SysUserVo;
-import db.sql.api.cmd.GetterField;
-import db.sql.api.cmd.executor.method.havingMethod.IHavingSubQueryAndMethod;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -36,17 +36,15 @@ public class Like extends BasicCondition {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = getField().sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(getOperator());
-        sqlBuilder = sqlBuilder.append(SqlConst.CONCAT).append(SqlConst.BRACKET_LEFT);
+        getField().sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(getOperator());
+        sqlBuilder.append(SqlConst.CONCAT).append(SqlConst.BRACKET_LEFT);
 
         boolean before = false;
         boolean after = false;
 
         switch (this.mode) {
             case NONE: {
-                before = false;
-                after = false;
                 break;
             }
             case DEFAULT: {
@@ -63,13 +61,13 @@ public class Like extends BasicCondition {
             }
         }
         if (before) {
-            sqlBuilder = sqlBuilder.append(SqlConst.VAGUE_SYMBOL).append(SqlConst.DELIMITER);
+            sqlBuilder.append(SqlConst.VAGUE_SYMBOL).append(SqlConst.DELIMITER);
         }
-        sqlBuilder = getValue().sql(module, this, context, sqlBuilder);
+        getValue().sql(module, this, context, sqlBuilder);
         if (after) {
-            sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER).append(SqlConst.VAGUE_SYMBOL);
+            sqlBuilder.append(SqlConst.DELIMITER).append(SqlConst.VAGUE_SYMBOL);
         }
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         return sqlBuilder;
     }
 }

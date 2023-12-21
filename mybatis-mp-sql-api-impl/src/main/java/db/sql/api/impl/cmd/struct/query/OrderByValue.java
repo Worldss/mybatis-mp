@@ -18,8 +18,8 @@ public class OrderByValue implements Cmd {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = key.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(asc ? SqlConst.ASC : SqlConst.DESC);
+        key.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(asc ? SqlConst.ASC : SqlConst.DESC);
         return sqlBuilder;
     }
 

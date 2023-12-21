@@ -28,8 +28,8 @@ public class OrderBy implements IOrderBy<OrderBy> {
         if (this.orderByValues.isEmpty()) {
             return sqlBuilder;
         }
-        sqlBuilder = sqlBuilder.append(SqlConst.ORDER_BY);
-        sqlBuilder = CmdUtils.join(this, this, context, sqlBuilder, this.orderByValues, SqlConst.DELIMITER);
+        sqlBuilder.append(SqlConst.ORDER_BY);
+        CmdUtils.join(this, this, context, sqlBuilder, this.orderByValues, SqlConst.DELIMITER);
         return sqlBuilder;
     }
 

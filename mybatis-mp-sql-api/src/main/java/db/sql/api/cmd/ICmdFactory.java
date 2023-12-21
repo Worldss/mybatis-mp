@@ -3,7 +3,6 @@ package db.sql.api.cmd;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 
-import java.util.Arrays;
 import java.util.function.Function;
 
 public interface ICmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASET_FIELD> {

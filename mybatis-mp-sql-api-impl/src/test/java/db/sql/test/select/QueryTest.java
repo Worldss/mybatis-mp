@@ -142,11 +142,11 @@ public class QueryTest extends BaseTest {
         );
 
 
-        SubQuery subQuery=new SubQuery("a").select(userTable().$("id")).from(userTable());
+        SubQuery subQuery = new SubQuery("a").select(userTable().$("id")).from(userTable());
         check("WITH 测试", "with a as (select id from user) select id,name,a.id", new Query()
                 .with(subQuery)
                 .select(userTable().$("id"), userTable().$("name"))
-                .select(subQuery,"id")
+                .select(subQuery, "id")
         );
 
     }

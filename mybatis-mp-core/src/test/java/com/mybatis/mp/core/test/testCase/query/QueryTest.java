@@ -13,6 +13,7 @@ import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -94,25 +95,26 @@ public class QueryTest extends BaseTest {
     public void innerJoinCursorTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            Cursor<SysUser> sysUserCursor = QueryChain.of(sysUserMapper)
+            try (Cursor<SysUser> sysUserCursor = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                     .from(SysUser.class)
                     .join(SysUser.class, SysRole.class)
                     .eq(SysUser::getId, 2)
-                    .cursor();
-            assertTrue(sysUserCursor instanceof Cursor);
+                    .cursor()) {
+                assertTrue(sysUserCursor instanceof Cursor);
+                SysUser sysUser = null;
+                for (SysUser entity : sysUserCursor) {
+                    assertNull(sysUser);
+                    sysUser = entity;
+                }
+                SysUser eqSysUser = new SysUser();
+                eqSysUser.setId(2);
+                eqSysUser.setUserName("test1");
+                eqSysUser.setRole_id(1);
+                assertEquals(eqSysUser, sysUser);
+            } catch (IOException e) {
 
-            SysUser sysUser = null;
-            for (SysUser entity : sysUserCursor) {
-                assertNull(sysUser);
-                sysUser = entity;
             }
-
-            SysUser eqSysUser = new SysUser();
-            eqSysUser.setId(2);
-            eqSysUser.setUserName("test1");
-            eqSysUser.setRole_id(1);
-            assertEquals(eqSysUser, sysUser);
         }
     }
 

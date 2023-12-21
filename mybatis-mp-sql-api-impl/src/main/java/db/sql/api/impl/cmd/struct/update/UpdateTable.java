@@ -25,19 +25,19 @@ public class UpdateTable implements IUpdateTable<Table> {
         if (this.tables == null || this.tables.length < 1) {
             return sqlBuilder;
         }
-        sqlBuilder = sqlBuilder.append(SqlConst.UPDATE);
+        sqlBuilder.append(SqlConst.UPDATE);
         int length = this.tables.length;
         for (int i = 0; i < length; i++) {
             Table table = this.tables[i];
             if (i != 0) {
-                sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
+                sqlBuilder.append(SqlConst.DELIMITER);
             }
 
-            sqlBuilder = sqlBuilder.append(table.getName());
+            sqlBuilder.append(table.getName());
             sqlBuilder.append(SqlConst.BLANK);
 
             if (table.getAlias() != null) {
-                sqlBuilder = sqlBuilder.append(table.getAlias());
+                sqlBuilder.append(table.getAlias());
             }
         }
         return sqlBuilder;

@@ -1,5 +1,6 @@
 package cn.mybatis.mp.core.mybatis.configuration;
 
+import cn.mybatis.mp.core.NotTableClassException;
 import cn.mybatis.mp.core.db.reflect.TableIds;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
@@ -55,9 +56,13 @@ public class TableIdGeneratorWrapper {
             //可能是动态的 所以无法获取entityClass
             return;
         }
-        TableInfo tableInfo = Tables.get(entityClass);
-        if (Objects.nonNull(tableInfo) && Objects.nonNull(tableInfo.getIdFieldInfo())) {
-            addEntityKeyGenerator(ms, selectKeyId, tableInfo);
+        try {
+            TableInfo tableInfo = Tables.get(entityClass);
+            if (Objects.nonNull(tableInfo.getIdFieldInfo())) {
+                addEntityKeyGenerator(ms, selectKeyId, tableInfo);
+            }
+        } catch (NotTableClassException e) {
+            //忽略
         }
     }
 

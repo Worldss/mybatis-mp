@@ -1,14 +1,11 @@
 package db.sql.api.cmd.struct.conditionChain;
 
 
-import db.sql.api.Getter;
-import db.sql.api.cmd.GetterField;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.method.condition.IConditionMethods;
 import db.sql.api.cmd.struct.Nested;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 
 public interface IConditionChain<SELF extends IConditionChain,
@@ -18,8 +15,8 @@ public interface IConditionChain<SELF extends IConditionChain,
 
         extends IConditionMethods<SELF, COLUMN, V>,
         Nested<SELF, SELF>,
-        IConditionChainAnd<SELF,TABLE_FIELD>,
-        IConditionChainOr<SELF,TABLE_FIELD>,
+        IConditionChainAnd<SELF, TABLE_FIELD>,
+        IConditionChainOr<SELF, TABLE_FIELD>,
         ICondition {
 
     SELF setIgnoreEmpty(boolean bool);

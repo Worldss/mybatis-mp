@@ -31,13 +31,13 @@ public interface IExecutor<T extends IExecutor,
 
     TABLE $(Class entity, int storey);
 
-    default <T> TABLE_FIELD $(Getter<T> column) {
+    default <G> TABLE_FIELD $(Getter<G> column) {
         return this.$(column, 1);
     }
 
-    <T> TABLE_FIELD $(Getter<T> column, int storey);
+    <G> TABLE_FIELD $(Getter<G> column, int storey);
 
-    <T> DATASET_FILED $(DATASET dataset, Getter<T> column);
+    <G> DATASET_FILED $(DATASET dataset, Getter<G> column);
 
     DATASET_FILED $(DATASET dataset, String columnName);
 
@@ -46,11 +46,11 @@ public interface IExecutor<T extends IExecutor,
      *
      * @param column 列
      * @param RF     返回函数
-     * @param <T>    实体类型
+     * @param <G>    实体类型
      * @param <R>    返回命令
      * @return
      */
-    default <T, R extends Cmd> R $(Getter<T> column, Function<TABLE_FIELD, R> RF) {
+    default <G, R extends Cmd> R $(Getter<G> column, Function<TABLE_FIELD, R> RF) {
         return this.$(column, 1, RF);
     }
 
@@ -60,11 +60,11 @@ public interface IExecutor<T extends IExecutor,
      * @param column 列
      * @param storey 缓存区
      * @param RF     返回函数
-     * @param <T>    实体类型
+     * @param <G>    实体类型
      * @param <R>    返回命令
      * @return
      */
-    <T, R extends Cmd> R $(Getter<T> column, int storey, Function<TABLE_FIELD, R> RF);
+    <G, R extends Cmd> R $(Getter<G> column, int storey, Function<TABLE_FIELD, R> RF);
 
     /**
      * 内联，用于获取自身

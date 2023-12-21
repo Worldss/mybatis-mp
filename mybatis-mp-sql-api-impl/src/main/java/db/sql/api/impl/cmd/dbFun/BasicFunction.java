@@ -22,8 +22,8 @@ public abstract class BasicFunction<T extends BasicFunction> extends Field<Basic
         //拼接 select 的别名
         if (module instanceof Select && user instanceof Select) {
             if (this.getAlias() != null) {
-                sqlBuilder = sqlBuilder.append(SqlConst.AS(context.getDbType()));
-                sqlBuilder = sqlBuilder.append(this.getAlias());
+                sqlBuilder.append(SqlConst.AS(context.getDbType()));
+                sqlBuilder.append(this.getAlias());
             }
             return sqlBuilder;
         }
@@ -33,10 +33,10 @@ public abstract class BasicFunction<T extends BasicFunction> extends Field<Basic
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
+        sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
+        this.key.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

@@ -46,7 +46,7 @@ public class FastGenerator {
         templateEngine = templateEngine == null ? new FreemarkerTemplateEngine() : templateEngine;
         for (EntityInfo entityInfo : entityInfoList) {
             for (Class<? extends ITemplateBuilder> templateBuilderClass : generatorConfig.getTemplateBuilders()) {
-                ITemplateBuilder templateBuilder = null;
+                ITemplateBuilder templateBuilder;
                 try {
                     templateBuilder = templateBuilderClass.getConstructor(GeneratorConfig.class, EntityInfo.class).newInstance(generatorConfig, entityInfo);
                 } catch (Exception e) {

@@ -12,9 +12,9 @@ public interface IConditionChainAnd<SELF extends IConditionChainAnd, TABLE_FIELD
 
     SELF and(ICondition condition);
 
-    default SELF and(ICondition condition, boolean when){
-        if(!when){
-            return (SELF)this;
+    default SELF and(ICondition condition, boolean when) {
+        if (!when) {
+            return (SELF) this;
         }
         return this.and(condition);
     }

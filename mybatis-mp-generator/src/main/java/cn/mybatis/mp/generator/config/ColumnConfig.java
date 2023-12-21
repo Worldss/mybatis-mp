@@ -1,13 +1,11 @@
 package cn.mybatis.mp.generator.config;
 
-import cn.mybatis.mp.core.util.StringPool;
 import cn.mybatis.mp.generator.strategy.DefaultValueConvert;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -110,11 +108,12 @@ public class ColumnConfig {
 
     /**
      * 默认值转换
+     *
      * @param defaultValueConvert
      * @return
      */
-    public ColumnConfig defaultValueConvert(Function<String, String> defaultValueConvert){
-        this.defaultValueConvert=defaultValueConvert;
+    public ColumnConfig defaultValueConvert(Function<String, String> defaultValueConvert) {
+        this.defaultValueConvert = defaultValueConvert;
         return this;
     }
 }

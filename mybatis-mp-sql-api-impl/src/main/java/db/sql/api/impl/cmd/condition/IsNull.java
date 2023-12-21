@@ -17,9 +17,9 @@ public class IsNull extends BaseCondition<Cmd, NULL> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = field.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(getOperator());
-        sqlBuilder = NULL.NULL.sql(module, this, context, sqlBuilder);
+        field.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(getOperator());
+        NULL.NULL.sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

@@ -17,11 +17,11 @@ public class Round extends BasicFunction<Round> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER).append(this.precision);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
+        sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
+        this.key.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.DELIMITER).append(this.precision);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

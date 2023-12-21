@@ -4,7 +4,6 @@ import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
-import db.sql.api.cmd.LikeMode;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
@@ -33,6 +32,8 @@ public class DbFunTest extends BaseTest {
 //
 //            Assert.assertEquals("eq", null, id);
 //        }
+
+        System.out.println(String.format("Unable to obtain deleted value，please use MybatisMpConfig.setDefaultValue(\"%s\") to resolve it", 123));
     }
 
 

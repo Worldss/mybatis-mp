@@ -1,17 +1,13 @@
 package db.sql.api.impl.cmd.struct;
 
 import db.sql.api.Cmd;
-import db.sql.api.Getter;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.struct.IOn;
 import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.cmd.basic.Dataset;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
-
-import java.util.function.Function;
 
 public class On<
         SELF extends On<SELF, TABLE, JOIN>,
@@ -45,12 +41,16 @@ public class On<
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.ON);
+        sqlBuilder.append(SqlConst.ON);
         if (!conditionChain.hasContent()) {
             throw new RuntimeException("ON has no on conditions");
         }
-        sqlBuilder = conditionChain().sql(module, this, context, sqlBuilder);
+        conditionChain().sql(module, this, context, sqlBuilder);
         return sqlBuilder;
+    }
+
+    public ConditionFactory getConditionFactory() {
+        return conditionFactory;
     }
 
     @Override

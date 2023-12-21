@@ -6,8 +6,8 @@ import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.IQuery;
 import db.sql.api.cmd.executor.method.condition.IConditionMethods;
-import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 import db.sql.api.cmd.struct.Nested;
+import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 
 import java.io.Serializable;
 import java.util.List;
@@ -84,12 +84,12 @@ public interface IConditionMethod<SELF extends IConditionMethod,
     }
 
     default SELF and(boolean when, Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields) {
-        conditionChain().and(when,function, getterFields);
+        conditionChain().and(when, function, getterFields);
         return (SELF) this;
     }
 
     default SELF or(boolean when, Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields) {
-        conditionChain().or(when,function, getterFields);
+        conditionChain().or(when, function, getterFields);
         return (SELF) this;
     }
 

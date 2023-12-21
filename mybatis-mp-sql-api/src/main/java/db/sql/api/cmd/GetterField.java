@@ -4,16 +4,7 @@ import db.sql.api.Getter;
 
 public class GetterField<T> {
 
-    public static <T> GetterField create(Getter<T> getter) {
-        return create(getter, 1);
-    }
-
-    public static <T> GetterField create(Getter<T> getter, int storey) {
-        return new GetterField(getter, storey);
-    }
-
     private final Getter<T> getter;
-
     private final int storey;
 
     public GetterField(Getter<T> getter) {
@@ -25,6 +16,14 @@ public class GetterField<T> {
         this.storey = storey;
     }
 
+    public static <T> GetterField create(Getter<T> getter) {
+        return create(getter, 1);
+    }
+
+    public static <T> GetterField create(Getter<T> getter, int storey) {
+        return new GetterField(getter, storey);
+    }
+
     public Getter<T> getGetter() {
         return getter;
     }
@@ -33,7 +32,7 @@ public class GetterField<T> {
         return storey;
     }
 
-    public String getSS(){
+    public String getSS() {
         return null;
     }
 }

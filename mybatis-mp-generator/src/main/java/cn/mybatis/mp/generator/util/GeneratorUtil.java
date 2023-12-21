@@ -101,9 +101,7 @@ public class GeneratorUtil {
         classList.add(Table.class.getName());
         if (entityInfo.getIdFieldInfo() != null) {
             classList.add(TableId.class.getName());
-            if (entityInfo.getIdFieldInfo() != null) {
-                classList.add(IdAutoType.class.getName());
-            }
+            classList.add(IdAutoType.class.getName());
         }
 
         if (generatorConfig.getEntityConfig().getSuperClass() != null) {
@@ -121,7 +119,7 @@ public class GeneratorUtil {
                 classList.add(Version.class.getName());
             } else if (item.getColumnInfo().isTenantId()) {
                 classList.add(TenantId.class.getName());
-            }else if (item.getColumnInfo().isLogicDelete()) {
+            } else if (item.getColumnInfo().isLogicDelete()) {
                 classList.add(LogicDelete.class.getName());
             }
         });

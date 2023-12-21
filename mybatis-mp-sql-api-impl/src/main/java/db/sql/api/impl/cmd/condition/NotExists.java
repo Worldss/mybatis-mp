@@ -16,10 +16,10 @@ public class NotExists implements ICondition, Cmd {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.NOT_EXISTS);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = notExistsCmd.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        sqlBuilder.append(SqlConst.NOT_EXISTS);
+        sqlBuilder.append(SqlConst.BRACKET_LEFT);
+        notExistsCmd.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         return sqlBuilder;
     }
 

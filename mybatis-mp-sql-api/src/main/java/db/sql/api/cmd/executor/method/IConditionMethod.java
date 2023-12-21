@@ -1,11 +1,12 @@
 package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Getter;
+import db.sql.api.cmd.GetterField;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.IQuery;
 import db.sql.api.cmd.executor.method.condition.IConditionMethods;
-import db.sql.api.cmd.struct.IConditionChain;
+import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 import db.sql.api.cmd.struct.Nested;
 
 import java.io.Serializable;
@@ -72,13 +73,33 @@ public interface IConditionMethod<SELF extends IConditionMethod,
         return (SELF) this;
     }
 
+    default SELF and(Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields) {
+        conditionChain().and(function, getterFields);
+        return (SELF) this;
+    }
+
+    default SELF or(Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields) {
+        conditionChain().or(function, getterFields);
+        return (SELF) this;
+    }
+
+    default SELF and(boolean when, Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields) {
+        conditionChain().and(when,function, getterFields);
+        return (SELF) this;
+    }
+
+    default SELF or(boolean when, Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields) {
+        conditionChain().or(when,function, getterFields);
+        return (SELF) this;
+    }
+
     default SELF and(Function<SELF, ICondition> function) {
-        conditionChain().and(function.apply((SELF) this), true);
+        conditionChain().and(function.apply((SELF) this));
         return (SELF) this;
     }
 
     default SELF or(Function<SELF, ICondition> function) {
-        conditionChain().or(function.apply((SELF) this), true);
+        conditionChain().or(function.apply((SELF) this));
         return (SELF) this;
     }
 

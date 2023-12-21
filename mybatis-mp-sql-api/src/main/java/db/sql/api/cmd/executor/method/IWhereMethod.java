@@ -1,6 +1,6 @@
 package db.sql.api.cmd.executor.method;
 
-import db.sql.api.cmd.struct.IConditionChain;
+import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 import db.sql.api.cmd.struct.IWhereIgnoreMethod;
 
 public interface IWhereMethod<SELF extends IWhereMethod,

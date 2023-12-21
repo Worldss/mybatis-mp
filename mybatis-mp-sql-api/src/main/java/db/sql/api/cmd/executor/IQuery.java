@@ -8,6 +8,7 @@ import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.method.*;
 import db.sql.api.cmd.struct.*;
+import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 import db.sql.api.cmd.struct.query.*;
 
 import java.util.function.Consumer;

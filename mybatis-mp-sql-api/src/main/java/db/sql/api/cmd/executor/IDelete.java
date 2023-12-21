@@ -7,6 +7,7 @@ import db.sql.api.cmd.executor.method.IFromMethod;
 import db.sql.api.cmd.executor.method.IJoinMethod;
 import db.sql.api.cmd.executor.method.IWhereMethod;
 import db.sql.api.cmd.struct.*;
+import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 import db.sql.api.cmd.struct.delete.IDeleteTable;
 
 public interface IDelete<SELF extends IDelete,

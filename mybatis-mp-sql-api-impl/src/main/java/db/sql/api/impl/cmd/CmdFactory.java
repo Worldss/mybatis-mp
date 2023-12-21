@@ -3,6 +3,7 @@ package db.sql.api.impl.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.GetterField;
 import db.sql.api.cmd.ICmdFactory;
 import db.sql.api.impl.cmd.basic.*;
 import db.sql.api.impl.cmd.condition.In;
@@ -71,6 +72,16 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
         TableField[] tableFields = new TableField[columns.length];
         for (int i = 0; i < columns.length; i++) {
             tableFields[i] = field(columns[i], storey);
+        }
+        return tableFields;
+    }
+
+    @Override
+    public TableField[] fields(GetterField... getterFields) {
+        TableField[] tableFields = new TableField[getterFields.length];
+        for (int i = 0; i < getterFields.length; i++) {
+            GetterField getterField=getterFields[i];
+            tableFields[i] = field(getterField.getGetter(), getterField.getStorey());
         }
         return tableFields;
     }

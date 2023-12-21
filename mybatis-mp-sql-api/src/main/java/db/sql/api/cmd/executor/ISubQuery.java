@@ -4,6 +4,7 @@ import db.sql.api.Cmd;
 import db.sql.api.cmd.ICmdFactory;
 import db.sql.api.cmd.basic.IDataset;
 import db.sql.api.cmd.struct.*;
+import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 import db.sql.api.cmd.struct.query.*;
 
 /**

@@ -52,10 +52,13 @@ public interface ICmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASE
      */
     <T> TABLE_FIELD field(Getter<T> column, int storey);
 
-    default  <T> TABLE_FIELD[] fields(Getter<T>... columns){
-        return this.fields(1,columns);
+    default <T> TABLE_FIELD[] fields(Getter<T>... columns) {
+        return this.fields(1, columns);
     }
-    <T> TABLE_FIELD[] fields( int storey,Getter<T>... columns);
+
+    <T> TABLE_FIELD[] fields(int storey, Getter<T>... columns);
+
+    TABLE_FIELD[] fields(GetterField... getterFields);
 
     /**
      * 根据字段名获取TABLE_FIELD

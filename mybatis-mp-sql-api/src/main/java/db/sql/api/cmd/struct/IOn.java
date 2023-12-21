@@ -3,6 +3,7 @@ package db.sql.api.cmd.struct;
 
 import db.sql.api.Cmd;
 import db.sql.api.cmd.executor.method.IConditionMethod;
+import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 
 public interface IOn<SELF extends IOn,
         TABLE,

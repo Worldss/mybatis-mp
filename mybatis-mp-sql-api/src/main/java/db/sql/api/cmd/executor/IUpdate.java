@@ -5,7 +5,7 @@ import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.executor.method.IJoinMethod;
 import db.sql.api.cmd.executor.method.IUpdateMethod;
 import db.sql.api.cmd.executor.method.IWhereMethod;
-import db.sql.api.cmd.struct.IConditionChain;
+import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 import db.sql.api.cmd.struct.IJoin;
 import db.sql.api.cmd.struct.IOn;
 import db.sql.api.cmd.struct.IWhere;

@@ -4,10 +4,11 @@ package db.sql.api.impl.cmd.struct;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.GetterField;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.IQuery;
-import db.sql.api.cmd.struct.IConditionChain;
+import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 import db.sql.api.impl.cmd.ConditionFactory;
 import db.sql.api.impl.cmd.basic.ConditionBlock;
 import db.sql.api.impl.cmd.basic.Connector;
@@ -18,6 +19,7 @@ import db.sql.api.tookit.CmdUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 public class ConditionChain implements IConditionChain<ConditionChain, TableField, Cmd, Object>, ICondition {
@@ -56,6 +58,24 @@ public class ConditionChain implements IConditionChain<ConditionChain, TableFiel
     }
 
     @Override
+    public ConditionChain and(ICondition condition) {
+        this.and();
+        if (Objects.nonNull(condition)) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
+    }
+
+    @Override
+    public ConditionChain or(ICondition condition) {
+        this.or();
+        if (Objects.nonNull(condition)) {
+            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        }
+        return this;
+    }
+
+    @Override
     public boolean hasContent() {
         return conditionBlocks != null && !conditionBlocks.isEmpty();
     }
@@ -85,42 +105,57 @@ public class ConditionChain implements IConditionChain<ConditionChain, TableFiel
     }
 
     @Override
-    public <T> ConditionChain and(Getter<T> column, int storey, Function<TableField, ICondition> function) {
-        return this.and(function.apply(this.conditionFactory.getCmdFactory().field(column, storey)), true);
-    }
-
-    @Override
-    public <T> ConditionChain or(Getter<T> column, int storey, Function<TableField, ICondition> function) {
-        return this.or(function.apply(this.conditionFactory.getCmdFactory().field(column, storey)), true);
-    }
-
-    @Override
-    public <T> ConditionChain and(Function<TableField[], ICondition> function, int storey, Getter<T>... columns) {
-        return this.and(function.apply(this.conditionFactory.getCmdFactory().fields(storey, columns)), true);
-    }
-
-    @Override
-    public <T> ConditionChain or(Function<TableField[], ICondition> function, int storey, Getter<T>... columns) {
-        return this.or(function.apply(this.conditionFactory.getCmdFactory().fields(storey, columns)), true);
-    }
-
-    @Override
-    public ConditionChain and(ICondition condition, boolean when) {
+    public <T> ConditionChain and(boolean when, Getter<T> column, int storey, Function<TableField, ICondition> function) {
         this.and();
-        if (when && condition != null) {
-            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        if (!when) {
+            return this;
         }
-        return this;
+        return this.and(function.apply(this.conditionFactory.getCmdFactory().field(column, storey)));
     }
 
     @Override
-    public ConditionChain or(ICondition condition, boolean when) {
+    public <T> ConditionChain or(boolean when, Getter<T> column, int storey, Function<TableField, ICondition> function) {
         this.or();
-        if (when && condition != null) {
-            conditionBlocks().add(new ConditionBlock(this.connector, condition));
+        if (!when) {
+            return this;
         }
-        return this;
+        return this.or(function.apply(this.conditionFactory.getCmdFactory().field(column, storey)));
     }
+
+    @Override
+    public <T> ConditionChain and(boolean when, Function<TableField[], ICondition> function, int storey, Getter<T>... columns) {
+        this.and();
+        if (!when) {
+            return this;
+        }
+        return this.and(function.apply(this.conditionFactory.getCmdFactory().fields(storey, columns)));
+    }
+
+    @Override
+    public <T> ConditionChain or(boolean when, Function<TableField[], ICondition> function, int storey, Getter<T>... columns) {
+        this.or();
+        if (!when) {
+            return this;
+        }
+        return this.or(function.apply(this.conditionFactory.getCmdFactory().fields(storey, columns)));
+    }
+
+    @Override
+    public ConditionChain and(boolean when, Function<TableField[], ICondition> function, GetterField... getterFields) {
+        if (!when) {
+            return this;
+        }
+        return this.and(function.apply(this.conditionFactory.getCmdFactory().fields(getterFields)));
+    }
+
+    @Override
+    public ConditionChain or(boolean when, Function<TableField[], ICondition> function, GetterField... getterFields) {
+        if (!when) {
+            return this;
+        }
+        return this.or(function.apply(this.conditionFactory.getCmdFactory().fields(getterFields)));
+    }
+
 
     @Override
     public <T> ConditionChain empty(Getter<T> column, int storey, boolean when) {

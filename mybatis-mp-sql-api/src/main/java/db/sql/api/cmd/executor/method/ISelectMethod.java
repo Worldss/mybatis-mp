@@ -2,6 +2,7 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.GetterField;
 import db.sql.api.cmd.basic.Count1;
 import db.sql.api.cmd.basic.CountAll;
 import db.sql.api.cmd.basic.SQL1;
@@ -76,6 +77,15 @@ public interface ISelectMethod<SELF extends ISelectMethod, TABLE_FIELD, DATASET_
 
     <T> SELF select(Getter<T> column, int storey, Function<TABLE_FIELD, Cmd> f);
 
+
+    default <T> SELF select(Function<TABLE_FIELD[], Cmd> f, Getter<T>... columns) {
+        return this.select(f, 1, columns);
+    }
+
+    <T> SELF select(Function<TABLE_FIELD[], Cmd> f, int storey, Getter<T>... columns);
+
+    SELF select(Function<TABLE_FIELD[], Cmd> f, GetterField... getterFields);
+
     default SELF select(Class entity) {
         return this.select(entity, 1);
     }
@@ -133,6 +143,28 @@ public interface ISelectMethod<SELF extends ISelectMethod, TABLE_FIELD, DATASET_
      */
     <T> SELF select(ISubQuery subQuery, Getter<T> column, Function<DATASET_FIELD, Cmd> f);
 
+
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param f
+     * @param columns
+     * @param <T>
+     * @return
+     */
+    <T> SELF select(ISubQuery subQuery, Function<DATASET_FIELD[], Cmd> f, Getter<T>... columns);
+
+
+    /**
+     * select子查询列
+     *
+     * @param subQuery
+     * @param f
+     * @param getterFields
+     * @return
+     */
+    SELF select(ISubQuery subQuery, Function<DATASET_FIELD[], Cmd> f, GetterField... getterFields);
 
     /**
      * select子查询列

@@ -174,6 +174,26 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
+    public <T> SELF select(Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+        return this.select(f.apply(this.$.fields(1, columns)));
+    }
+
+    @Override
+    public SELF select(Function<TableField[], Cmd> f, GetterField... getterFields) {
+        return this.select(f.apply(this.$.fields(getterFields)));
+    }
+
+    @Override
+    public <T> SELF select(ISubQuery subQuery, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
+        return this.select(this.apply(subQuery, f, columns));
+    }
+
+    @Override
+    public SELF select(ISubQuery subQuery, Function<DatasetField[], Cmd> f, GetterField... getterFields) {
+        return this.select(this.apply(subQuery, f, getterFields));
+    }
+
+    @Override
     public FromDataset $from(Dataset... tables) {
         if (this.from == null) {
             from = new FromDataset();
@@ -325,7 +345,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         if (!when) {
             return (SELF) this;
         }
-        return this.groupBy(this.apply(subQuery,f,columns));
+        return this.groupBy(this.apply(subQuery, f, columns));
     }
 
     @Override
@@ -333,7 +353,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         if (!when) {
             return (SELF) this;
         }
-        return this.groupBy(this.apply(subQuery,f,getterFields));
+        return this.groupBy(this.apply(subQuery, f, getterFields));
     }
 
     @Override
@@ -416,7 +436,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         if (!when) {
             return (SELF) this;
         }
-        return this.havingAnd(this.apply(subQuery,f,columns));
+        return this.havingAnd(this.apply(subQuery, f, columns));
     }
 
     @Override
@@ -424,7 +444,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         if (!when) {
             return (SELF) this;
         }
-        return this.havingOr(this.apply(subQuery,f,columns));
+        return this.havingOr(this.apply(subQuery, f, columns));
     }
 
     @Override

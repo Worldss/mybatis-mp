@@ -42,7 +42,7 @@ public interface IConditionChainOr<SELF extends IConditionChainOr, TABLE_FIELD> 
     }
 
     default <T> SELF or(Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns) {
-        return this.or(true, function, 1, columns);
+        return this.or(true, function, storey, columns);
     }
 
     <T> SELF or(boolean when, Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns);

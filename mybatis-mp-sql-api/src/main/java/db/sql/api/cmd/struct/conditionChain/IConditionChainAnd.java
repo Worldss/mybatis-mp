@@ -42,7 +42,7 @@ public interface IConditionChainAnd<SELF extends IConditionChainAnd, TABLE_FIELD
     }
 
     default <T> SELF and(Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns) {
-        return this.and(true, function, 1, columns);
+        return this.and(true, function, storey, columns);
     }
 
     <T> SELF and(boolean when, Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns);

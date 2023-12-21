@@ -1,7 +1,8 @@
 package db.sql.api.cmd.executor.method.havingMethod;
 
 import db.sql.api.Getter;
-import db.sql.api.cmd.GetterField;
+import db.sql.api.cmd.ColumnField;
+import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.ISubQuery;
 import db.sql.api.cmd.executor.method.IHavingMethod;
@@ -54,12 +55,12 @@ public interface IHavingMethods<SELF extends IHavingMethod, TABLE_FIELD, DATASET
         return this.havingAnd(when, f, storey, columns);
     }
 
-    default SELF having(Function<TABLE_FIELD[], ICondition> f, GetterField... getterFields) {
-        return this.havingAnd(f, getterFields);
+    default SELF having(Function<TABLE_FIELD[], ICondition> f, GetterColumnField... getterColumnFields) {
+        return this.havingAnd(f, getterColumnFields);
     }
 
-    default SELF having(boolean when, Function<TABLE_FIELD[], ICondition> f, GetterField... getterFields) {
-        return this.havingAnd(when, f, getterFields);
+    default SELF having(boolean when, Function<TABLE_FIELD[], ICondition> f, GetterColumnField... getterColumnFields) {
+        return this.havingAnd(when, f, getterColumnFields);
     }
 
 
@@ -87,11 +88,11 @@ public interface IHavingMethods<SELF extends IHavingMethod, TABLE_FIELD, DATASET
         return this.havingAnd(subQuery, when, f, columns);
     }
 
-    default SELF having(ISubQuery subQuery, Function<DATASET_FILED[], ICondition> f, GetterField... getterFields) {
-        return this.havingAnd(subQuery, f, getterFields);
+    default SELF having(ISubQuery subQuery, Function<DATASET_FILED[], ICondition> f, ColumnField... columnFields) {
+        return this.havingAnd(subQuery, f, columnFields);
     }
 
-    default SELF havingOr(ISubQuery subQuery, boolean when, Function<DATASET_FILED[], ICondition> f, GetterField... getterFields) {
-        return this.havingAnd(subQuery, when, f, getterFields);
+    default SELF havingOr(ISubQuery subQuery, boolean when, Function<DATASET_FILED[], ICondition> f, ColumnField... columnFields) {
+        return this.havingAnd(subQuery, when, f, columnFields);
     }
 }

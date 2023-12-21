@@ -1,7 +1,7 @@
 package db.sql.api.cmd.executor.method.havingMethod;
 
 import db.sql.api.Getter;
-import db.sql.api.cmd.GetterField;
+import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.method.IHavingMethod;
 
@@ -46,10 +46,10 @@ public interface IHavingOrMethod<SELF extends IHavingMethod, TABLE_FIELD> {
 
     <T> SELF havingOr(boolean when, Function<TABLE_FIELD[], ICondition> f, int storey, Getter<T>... columns);
 
-    default SELF havingOr(Function<TABLE_FIELD[], ICondition> f, GetterField... getterFields) {
-        return this.havingOr(true, f, getterFields);
+    default SELF havingOr(Function<TABLE_FIELD[], ICondition> f, GetterColumnField... getterColumnFields) {
+        return this.havingOr(true, f, getterColumnFields);
     }
 
-    SELF havingOr(boolean when, Function<TABLE_FIELD[], ICondition> f, GetterField... getterFields);
+    SELF havingOr(boolean when, Function<TABLE_FIELD[], ICondition> f, GetterColumnField... getterColumnFields);
 
 }

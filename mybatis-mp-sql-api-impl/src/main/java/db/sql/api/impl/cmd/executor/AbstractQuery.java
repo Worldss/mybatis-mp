@@ -2,7 +2,9 @@ package db.sql.api.impl.cmd.executor;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.cmd.GetterField;
+import db.sql.api.cmd.ColumnField;
+import db.sql.api.cmd.ColumnNameField;
+import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.basic.UnionsCmdLists;
@@ -179,8 +181,8 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF select(Function<TableField[], Cmd> f, GetterField... getterFields) {
-        return this.select(f.apply(this.$.fields(getterFields)));
+    public SELF select(Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
+        return this.select(f.apply(this.$.fields(getterColumnFields)));
     }
 
     @Override
@@ -189,8 +191,8 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF select(ISubQuery subQuery, Function<DatasetField[], Cmd> f, GetterField... getterFields) {
-        return this.select(this.apply(subQuery, f, getterFields));
+    public SELF select(ISubQuery subQuery, Function<DatasetField[], Cmd> f, ColumnField... columnFields) {
+        return this.select(this.apply(subQuery, f, columnFields));
     }
 
     @Override
@@ -333,11 +335,11 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF groupByFun(boolean when, Function<TableField[], Cmd> f, GetterField... getterFields) {
+    public SELF groupByFun(boolean when, Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
         if (!when) {
             return (SELF) this;
         }
-        return this.groupBy(f.apply($.fields(getterFields)));
+        return this.groupBy(f.apply($.fields(getterColumnFields)));
     }
 
     @Override
@@ -349,16 +351,16 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DatasetField[], Cmd> f, GetterField... getterFields) {
+    public <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DatasetField[], Cmd> f, ColumnField... columnFields) {
         if (!when) {
             return (SELF) this;
         }
-        return this.groupBy(this.apply(subQuery, f, getterFields));
+        return this.groupBy(this.apply(subQuery, f, columnFields));
     }
 
     @Override
-    public <T> SELF orderByFun(boolean asc, Function<TableField[], Cmd> f, GetterField... getterFields) {
-        return this.orderBy(asc, f.apply($.fields(getterFields)));
+    public <T> SELF orderByFun(boolean asc, Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
+        return this.orderBy(asc, f.apply($.fields(getterColumnFields)));
     }
 
 
@@ -448,19 +450,19 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF havingAnd(boolean when, Function<TableField[], ICondition> f, GetterField... getterFields) {
+    public SELF havingAnd(boolean when, Function<TableField[], ICondition> f, GetterColumnField... getterColumnFields) {
         if (!when) {
             return (SELF) this;
         }
-        return this.havingAnd(f.apply($.fields(getterFields)));
+        return this.havingAnd(f.apply($.fields(getterColumnFields)));
     }
 
     @Override
-    public SELF havingOr(boolean when, Function<TableField[], ICondition> f, GetterField... getterFields) {
+    public SELF havingOr(boolean when, Function<TableField[], ICondition> f, GetterColumnField... getterColumnFields) {
         if (!when) {
             return (SELF) this;
         }
-        return this.havingOr(f.apply($.fields(getterFields)));
+        return this.havingOr(f.apply($.fields(getterColumnFields)));
     }
 
     private <T, R> R apply(ISubQuery subQuery, Function<DatasetField[], R> f, Getter<T>... columns) {
@@ -473,29 +475,36 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
 
-    private <R> R apply(ISubQuery subQuery, Function<DatasetField[], R> f, GetterField... getterFields) {
+    private <R> R apply(ISubQuery subQuery, Function<DatasetField[], R> f, ColumnField... columnFields) {
         CmdFactory $ = (CmdFactory) subQuery.$();
-        DatasetField[] datasetFields = new DatasetField[getterFields.length];
-        for (int i = 0; i < getterFields.length; i++) {
-            datasetFields[i] = $((Dataset) subQuery, $.columnName(getterFields[i].getGetter()));
+        DatasetField[] datasetFields = new DatasetField[columnFields.length];
+        for (int i = 0; i < columnFields.length; i++) {
+            ColumnField columnField = columnFields[i];
+            if (columnField instanceof ColumnNameField) {
+                datasetFields[i] = $((Dataset) subQuery, ((ColumnNameField) columnField).getColumnName());
+            } else if (columnField instanceof GetterColumnField) {
+                datasetFields[i] = $((Dataset) subQuery, $.columnName(((GetterColumnField<?>) columnField).getGetter()));
+            } else {
+                throw new RuntimeException("Not Supported");
+            }
         }
         return f.apply(datasetFields);
     }
 
     @Override
-    public SELF havingAnd(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, GetterField... getterFields) {
+    public SELF havingAnd(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, ColumnField... columnFields) {
         if (!when) {
             return (SELF) this;
         }
-        return this.havingAnd(this.apply(subQuery, f, getterFields));
+        return this.havingAnd(this.apply(subQuery, f, columnFields));
     }
 
     @Override
-    public SELF havingOr(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, GetterField... getterFields) {
+    public SELF havingOr(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, ColumnField... columnFields) {
         if (!when) {
             return (SELF) this;
         }
-        return this.havingOr(this.apply(subQuery, f, getterFields));
+        return this.havingOr(this.apply(subQuery, f, columnFields));
     }
 
     @Override
@@ -590,8 +599,8 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF orderByFun(ISubQuery subQuery, boolean asc, Function<DatasetField[], Cmd> f, GetterField... getterFields) {
-        return this.orderBy(asc, this.apply(subQuery, f, getterFields));
+    public <T> SELF orderByFun(ISubQuery subQuery, boolean asc, Function<DatasetField[], Cmd> f, ColumnField... columnFields) {
+        return this.orderBy(asc, this.apply(subQuery, f, columnFields));
     }
 
     public Unions $unions() {

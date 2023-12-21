@@ -57,7 +57,7 @@ public interface ICmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASE
 
     <T> TABLE_FIELD[] fields(int storey, Getter<T>... columns);
 
-    TABLE_FIELD[] fields(GetterField... getterFields);
+    TABLE_FIELD[] fields(GetterColumnField... getterColumnFields);
 
     /**
      * 根据字段名获取TABLE_FIELD

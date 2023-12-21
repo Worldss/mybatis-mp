@@ -1,7 +1,7 @@
 package db.sql.api.cmd.struct.conditionChain;
 
 import db.sql.api.Getter;
-import db.sql.api.cmd.GetterField;
+import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.basic.ICondition;
 
 import java.util.function.Function;
@@ -47,9 +47,9 @@ public interface IConditionChainOr<SELF extends IConditionChainOr, TABLE_FIELD> 
 
     <T> SELF or(boolean when, Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns);
 
-    default SELF or(Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields) {
-        return or(true, function, getterFields);
+    default SELF or(Function<TABLE_FIELD[], ICondition> function, GetterColumnField... getterColumnFields) {
+        return or(true, function, getterColumnFields);
     }
 
-    SELF or(boolean when, Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields);
+    SELF or(boolean when, Function<TABLE_FIELD[], ICondition> function, GetterColumnField... getterColumnFields);
 }

@@ -1,7 +1,7 @@
 package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Getter;
-import db.sql.api.cmd.GetterField;
+import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.LikeMode;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.IQuery;
@@ -73,23 +73,23 @@ public interface IConditionMethod<SELF extends IConditionMethod,
         return (SELF) this;
     }
 
-    default SELF and(Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields) {
-        conditionChain().and(function, getterFields);
+    default SELF and(Function<TABLE_FIELD[], ICondition> function, GetterColumnField... getterColumnFields) {
+        conditionChain().and(function, getterColumnFields);
         return (SELF) this;
     }
 
-    default SELF or(Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields) {
-        conditionChain().or(function, getterFields);
+    default SELF or(Function<TABLE_FIELD[], ICondition> function, GetterColumnField... getterColumnFields) {
+        conditionChain().or(function, getterColumnFields);
         return (SELF) this;
     }
 
-    default SELF and(boolean when, Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields) {
-        conditionChain().and(when, function, getterFields);
+    default SELF and(boolean when, Function<TABLE_FIELD[], ICondition> function, GetterColumnField... getterColumnFields) {
+        conditionChain().and(when, function, getterColumnFields);
         return (SELF) this;
     }
 
-    default SELF or(boolean when, Function<TABLE_FIELD[], ICondition> function, GetterField... getterFields) {
-        conditionChain().or(when, function, getterFields);
+    default SELF or(boolean when, Function<TABLE_FIELD[], ICondition> function, GetterColumnField... getterColumnFields) {
+        conditionChain().or(when, function, getterColumnFields);
         return (SELF) this;
     }
 

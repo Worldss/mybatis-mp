@@ -1,7 +1,7 @@
 package db.sql.api.cmd.executor.method.havingMethod;
 
 import db.sql.api.Getter;
-import db.sql.api.cmd.GetterField;
+import db.sql.api.cmd.ColumnField;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.ISubQuery;
 import db.sql.api.cmd.executor.method.IHavingMethod;
@@ -30,9 +30,9 @@ public interface IHavingSubQueryOrMethod<SELF extends IHavingMethod, DATASET_FIL
     <T> SELF havingOr(ISubQuery subQuery, boolean when, Function<DATASET_FILED[], ICondition> f, Getter<T>... columns);
 
 
-    default SELF havingOr(ISubQuery subQuery, Function<DATASET_FILED[], ICondition> f, GetterField... getterFields) {
-        return this.havingOr(subQuery, true, f, getterFields);
+    default SELF havingOr(ISubQuery subQuery, Function<DATASET_FILED[], ICondition> f, ColumnField... columnFields) {
+        return this.havingOr(subQuery, true, f, columnFields);
     }
 
-    SELF havingOr(ISubQuery subQuery, boolean when, Function<DATASET_FILED[], ICondition> f, GetterField... getterFields);
+    SELF havingOr(ISubQuery subQuery, boolean when, Function<DATASET_FILED[], ICondition> f, ColumnField... columnFields);
 }

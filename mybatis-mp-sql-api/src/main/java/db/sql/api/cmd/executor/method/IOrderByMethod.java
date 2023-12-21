@@ -2,7 +2,8 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.cmd.GetterField;
+import db.sql.api.cmd.ColumnField;
+import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.executor.ISubQuery;
 
 import java.util.List;
@@ -82,11 +83,11 @@ public interface IOrderByMethod<SELF extends IOrderByMethod, TABLE_FIELD, DATASE
 
     <T> SELF orderByFun(boolean asc, Function<TABLE_FIELD[], Cmd> f, int storey, Getter<T>... columns);
 
-    default <T> SELF orderByFun(Function<TABLE_FIELD[], Cmd> f, GetterField... getterFields) {
-        return this.orderByFun(true, f, getterFields);
+    default <T> SELF orderByFun(Function<TABLE_FIELD[], Cmd> f, GetterColumnField... getterColumnFields) {
+        return this.orderByFun(true, f, getterColumnFields);
     }
 
-    <T> SELF orderByFun(boolean asc, Function<TABLE_FIELD[], Cmd> f, GetterField... getterFields);
+    <T> SELF orderByFun(boolean asc, Function<TABLE_FIELD[], Cmd> f, GetterColumnField... getterColumnFields);
 
     default <T> SELF orderBy(Getter<T>... columns) {
         return this.orderBy(true, columns);
@@ -149,9 +150,9 @@ public interface IOrderByMethod<SELF extends IOrderByMethod, TABLE_FIELD, DATASE
 
     <T> SELF orderByFun(ISubQuery subQuery, boolean asc, Function<DATASET_FILED[], Cmd> f, Getter<T>... columns);
 
-    default <T> SELF orderByFun(ISubQuery subQuery, Function<DATASET_FILED[], Cmd> f, GetterField... getterFields) {
-        return this.orderByFun(subQuery, true, f, getterFields);
+    default <T> SELF orderByFun(ISubQuery subQuery, Function<DATASET_FILED[], Cmd> f, ColumnField... columnFields) {
+        return this.orderByFun(subQuery, true, f, columnFields);
     }
 
-    <T> SELF orderByFun(ISubQuery subQuery, boolean asc, Function<DATASET_FILED[], Cmd> f, GetterField... getterFields);
+    <T> SELF orderByFun(ISubQuery subQuery, boolean asc, Function<DATASET_FILED[], Cmd> f, ColumnField... columnFields);
 }

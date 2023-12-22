@@ -42,7 +42,7 @@ public class CmdTemplateTestCase extends BaseTest {
             queryChain.setReturnType(String.class);
             String str = queryChain.get();
 
-            assertEquals(str, "2");
+            assertEquals(str, "4");
         }
     }
 

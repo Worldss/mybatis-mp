@@ -37,6 +37,10 @@ public interface ICmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASE
      */
     <T> String columnName(Getter<T> column);
 
+    default ColumnField columnField(String columnName) {
+        return new ColumnField(columnName);
+    }
+
     default <T> TABLE_FIELD field(Getter<T> column) {
         return this.field(column, 1);
     }

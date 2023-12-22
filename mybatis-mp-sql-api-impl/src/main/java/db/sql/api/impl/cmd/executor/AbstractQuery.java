@@ -3,8 +3,8 @@ package db.sql.api.impl.cmd.executor;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.ColumnField;
-import db.sql.api.cmd.ColumnNameField;
 import db.sql.api.cmd.GetterColumnField;
+import db.sql.api.cmd.IColumnField;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.basic.IOrderByDirection;
@@ -189,7 +189,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF select(ISubQuery subQuery, Function<DatasetField[], Cmd> f, ColumnField... columnFields) {
+    public SELF select(ISubQuery subQuery, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
         return this.select(this.apply(subQuery, f, columnFields));
     }
 
@@ -349,7 +349,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DatasetField[], Cmd> f, ColumnField... columnFields) {
+    public <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
         if (!when) {
             return (SELF) this;
         }
@@ -473,13 +473,13 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
 
-    private <R> R apply(ISubQuery subQuery, Function<DatasetField[], R> f, ColumnField... columnFields) {
+    private <R> R apply(ISubQuery subQuery, Function<DatasetField[], R> f, IColumnField... columnFields) {
         CmdFactory $ = (CmdFactory) subQuery.$();
         DatasetField[] datasetFields = new DatasetField[columnFields.length];
         for (int i = 0; i < columnFields.length; i++) {
-            ColumnField columnField = columnFields[i];
-            if (columnField instanceof ColumnNameField) {
-                datasetFields[i] = $((Dataset) subQuery, ((ColumnNameField) columnField).getColumnName());
+            IColumnField columnField = columnFields[i];
+            if (columnField instanceof ColumnField) {
+                datasetFields[i] = $((Dataset) subQuery, ((ColumnField) columnField).getColumnName());
             } else if (columnField instanceof GetterColumnField) {
                 datasetFields[i] = $((Dataset) subQuery, $.columnName(((GetterColumnField<?>) columnField).getGetter()));
             } else {
@@ -490,7 +490,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF havingAnd(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, ColumnField... columnFields) {
+    public SELF havingAnd(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, IColumnField... columnFields) {
         if (!when) {
             return (SELF) this;
         }
@@ -498,7 +498,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public SELF havingOr(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, ColumnField... columnFields) {
+    public SELF havingOr(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, IColumnField... columnFields) {
         if (!when) {
             return (SELF) this;
         }
@@ -601,7 +601,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF orderByFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DatasetField[], Cmd> f, ColumnField... columnFields) {
+    public <T> SELF orderByFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
         return this.orderBy(orderByDirection, this.apply(subQuery, f, columnFields));
     }
 

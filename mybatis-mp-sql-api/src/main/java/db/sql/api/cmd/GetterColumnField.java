@@ -2,7 +2,7 @@ package db.sql.api.cmd;
 
 import db.sql.api.Getter;
 
-public class GetterColumnField<T> implements ColumnField {
+public class GetterColumnField<T> implements IColumnField {
 
     private final Getter<T> getter;
 

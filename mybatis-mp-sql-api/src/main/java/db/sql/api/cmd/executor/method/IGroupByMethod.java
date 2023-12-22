@@ -2,8 +2,8 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.cmd.ColumnField;
 import db.sql.api.cmd.GetterColumnField;
+import db.sql.api.cmd.IColumnField;
 import db.sql.api.cmd.executor.ISubQuery;
 
 import java.util.List;
@@ -143,9 +143,9 @@ public interface IGroupByMethod<SELF extends IGroupByMethod, TABLE_FIELD, DATASE
 
     <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DATASET_FIELD[], Cmd> f, Getter<T>... columns);
 
-    default <T> SELF groupByFun(ISubQuery subQuery, Function<DATASET_FIELD[], Cmd> f, ColumnField... columnFields) {
+    default <T> SELF groupByFun(ISubQuery subQuery, Function<DATASET_FIELD[], Cmd> f, IColumnField... columnFields) {
         return this.groupByFun(subQuery, true, f, columnFields);
     }
 
-    <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DATASET_FIELD[], Cmd> f, ColumnField... columnFields);
+    <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DATASET_FIELD[], Cmd> f, IColumnField... columnFields);
 }

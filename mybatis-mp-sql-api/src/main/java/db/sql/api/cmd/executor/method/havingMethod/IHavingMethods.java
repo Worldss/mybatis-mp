@@ -1,8 +1,8 @@
 package db.sql.api.cmd.executor.method.havingMethod;
 
 import db.sql.api.Getter;
-import db.sql.api.cmd.ColumnField;
 import db.sql.api.cmd.GetterColumnField;
+import db.sql.api.cmd.IColumnField;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.ISubQuery;
 import db.sql.api.cmd.executor.method.IHavingMethod;
@@ -88,11 +88,11 @@ public interface IHavingMethods<SELF extends IHavingMethod, TABLE_FIELD, DATASET
         return this.havingAnd(subQuery, when, f, columns);
     }
 
-    default SELF having(ISubQuery subQuery, Function<DATASET_FILED[], ICondition> f, ColumnField... columnFields) {
+    default SELF having(ISubQuery subQuery, Function<DATASET_FILED[], ICondition> f, IColumnField... columnFields) {
         return this.havingAnd(subQuery, f, columnFields);
     }
 
-    default SELF havingOr(ISubQuery subQuery, boolean when, Function<DATASET_FILED[], ICondition> f, ColumnField... columnFields) {
+    default SELF havingOr(ISubQuery subQuery, boolean when, Function<DATASET_FILED[], ICondition> f, IColumnField... columnFields) {
         return this.havingAnd(subQuery, when, f, columnFields);
     }
 }

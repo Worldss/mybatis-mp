@@ -2,8 +2,8 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.cmd.ColumnField;
 import db.sql.api.cmd.GetterColumnField;
+import db.sql.api.cmd.IColumnField;
 import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.executor.ISubQuery;
 
@@ -153,9 +153,9 @@ public interface IOrderByMethod<SELF extends IOrderByMethod, TABLE_FIELD, DATASE
 
     <T> SELF orderByFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DATASET_FILED[], Cmd> f, Getter<T>... columns);
 
-    default <T> SELF orderByFun(ISubQuery subQuery, Function<DATASET_FILED[], Cmd> f, ColumnField... columnFields) {
+    default <T> SELF orderByFun(ISubQuery subQuery, Function<DATASET_FILED[], Cmd> f, IColumnField... columnFields) {
         return this.orderByFun(subQuery, defaultOrderByDirection(), f, columnFields);
     }
 
-    <T> SELF orderByFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DATASET_FILED[], Cmd> f, ColumnField... columnFields);
+    <T> SELF orderByFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DATASET_FILED[], Cmd> f, IColumnField... columnFields);
 }

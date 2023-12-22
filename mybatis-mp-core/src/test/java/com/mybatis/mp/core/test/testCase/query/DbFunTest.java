@@ -64,7 +64,7 @@ public class DbFunTest extends BaseTest {
                     .select(SysUser::getId)
                     .from(SysUser.class)
                     .and(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
-                    .orderByFun(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
+                    .orderByWithFun(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
                     .groupByFun(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
                     .havingAnd(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
                     .setReturnType(Integer.TYPE)

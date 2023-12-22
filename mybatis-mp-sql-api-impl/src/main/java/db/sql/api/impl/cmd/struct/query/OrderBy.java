@@ -15,8 +15,8 @@ public class OrderBy implements IOrderBy<OrderBy> {
     private final List<OrderByValue> orderByValues = new ArrayList<>();
 
     @Override
-    public OrderBy orderBy(Cmd cmd, IOrderByDirection orderByDirection) {
-        orderByValues.add(new OrderByValue(cmd, orderByDirection));
+    public OrderBy orderBy(IOrderByDirection orderByDirection, Cmd column) {
+        orderByValues.add(new OrderByValue(orderByDirection, column));
         return this;
     }
 

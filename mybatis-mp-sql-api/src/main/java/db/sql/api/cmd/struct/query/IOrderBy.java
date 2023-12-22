@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface IOrderBy<SELF extends IOrderBy> extends Cmd {
 
-    SELF orderBy(Cmd column, IOrderByDirection orderByDirection);
+    SELF orderBy(IOrderByDirection orderByDirection, Cmd column);
 
     default SELF orderBy(IOrderByDirection orderByDirection, Cmd... columns) {
         for (Cmd column : columns) {
-            this.orderBy(column, orderByDirection);
+            this.orderBy(orderByDirection,column);
         }
         return (SELF) this;
     }
@@ -19,7 +19,7 @@ public interface IOrderBy<SELF extends IOrderBy> extends Cmd {
 
     default SELF orderBy(List<Cmd> columns, IOrderByDirection orderByDirection) {
         for (Cmd column : columns) {
-            this.orderBy(column, orderByDirection);
+            this.orderBy(orderByDirection,column);
         }
         return (SELF) this;
     }

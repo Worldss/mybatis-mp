@@ -146,8 +146,8 @@ public interface IQuery<SELF extends IQuery,
     }
 
     @Override
-    default SELF orderBy(Cmd column, IOrderByDirection orderByDirection) {
-        $orderBy().orderBy(column, orderByDirection);
+    default SELF orderBy(IOrderByDirection orderByDirection, Cmd column) {
+        $orderBy().orderBy(orderByDirection, column);
         return (SELF) this;
     }
 

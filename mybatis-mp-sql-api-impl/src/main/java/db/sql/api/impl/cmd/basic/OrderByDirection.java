@@ -27,7 +27,6 @@ public enum OrderByDirection implements IOrderByDirection {
     }
 
 
-    @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         sqlBuilder.append(this.directionSQL);
         if (context.getDbType() == DbType.MYSQL) {
@@ -39,7 +38,7 @@ public enum OrderByDirection implements IOrderByDirection {
             }
             if (Objects.nonNull(if_)) {
                 sqlBuilder.append(SqlConst.DELIMITER);
-                if_.sql(module, this, context, sqlBuilder);
+                if_.sql(module, parent, context, sqlBuilder);
             }
         } else {
             sqlBuilder.append(this.nullsDirectionSQL);
@@ -47,8 +46,4 @@ public enum OrderByDirection implements IOrderByDirection {
         return sqlBuilder;
     }
 
-    @Override
-    public boolean contain(Cmd cmd) {
-        return false;
-    }
 }

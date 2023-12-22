@@ -6,6 +6,7 @@ import db.sql.api.cmd.ColumnField;
 import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.IColumnField;
 import db.sql.api.cmd.JoinMode;
+import db.sql.api.cmd.basic.IColumn;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.basic.UnionsCmdLists;
@@ -356,11 +357,6 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return this.groupBy(this.apply(subQuery, f, columnFields));
     }
 
-    @Override
-    public <T> SELF orderByFun(IOrderByDirection orderByDirection, Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
-        return this.orderBy(orderByDirection, f.apply($.fields(getterColumnFields)));
-    }
-
 
     @Override
     public Having $having() {
@@ -555,55 +551,126 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return this.limit;
     }
 
+    /**
+     * orderBy 子查询 列
+     *
+     * @param orderByDirection order by方向
+     * @param column           列
+     * @param storey           列存储层级
+     * @param <T>              列的实体类
+     * @return 自己
+     */
     @Override
-    public <T> SELF orderBy(Getter<T> column, int storey, IOrderByDirection orderByDirection, Function<TableField, Cmd> f) {
-        TableField tableField = $.field(column, storey);
-        if (f != null) {
-            return this.orderBy(f.apply(tableField), orderByDirection);
-        }
-        return this.orderBy(tableField, orderByDirection);
+    public <T> SELF orderBy(IOrderByDirection orderByDirection, Getter<T> column, int storey) {
+        return this.orderBy(orderByDirection, $(column, storey));
+    }
+
+
+    /**
+     * orderBy 子查询 列
+     *
+     * @param orderByDirection order by方向
+     * @param column           列
+     * @param storey           列存储层级
+     * @param <T>              列的实体类
+     * @return 自己
+     */
+    @Override
+    public <T> SELF orderByWithFun(IOrderByDirection orderByDirection, Getter<T> column, int storey, Function<TableField, Cmd> f) {
+        return this.orderBy(orderByDirection, f.apply($(column, storey)));
+    }
+
+
+    @Override
+    public <T> SELF orderByWithFun(IOrderByDirection orderByDirection, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+        return this.orderBy(orderByDirection, f.apply($.fields(storey, columns)));
+    }
+
+    @Override
+    public SELF orderByWithFun(IOrderByDirection orderByDirection, Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
+        return this.orderBy(orderByDirection, f.apply($.fields(getterColumnFields)));
+    }
+
+    @Override
+    public <T> SELF orderBy(IOrderByDirection orderByDirection, int storey, Getter<T>... columns) {
+        return this.orderBy(orderByDirection, $.fields(storey, columns));
+    }
+
+    @Override
+    public SELF orderBy(IOrderByDirection orderByDirection, String columnName) {
+        return this.orderBy(orderByDirection, $.column(columnName));
+    }
+
+    @Override
+    public SELF orderByWithFun(IOrderByDirection orderByDirection, String columnName, Function<IColumn, Cmd> f) {
+        return this.orderBy(orderByDirection, f.apply($.column(columnName)));
     }
 
     /**
      * orderBy 子查询 列
      *
-     * @param subQuery
-     * @param column
-     * @param orderByDirection
-     * @param f
-     * @param <T>
+     * @param subQuery         子查询
+     * @param orderByDirection order by方向
+     * @param column           列
+     * @param <T>              列的实体类
      * @return
      */
     @Override
-    public <T> SELF orderBy(ISubQuery subQuery, Getter<T> column, IOrderByDirection orderByDirection, Function<DatasetField, Cmd> f) {
-        return this.orderBy(subQuery, $.columnName(column), orderByDirection, f);
+    public <T> SELF orderBy(ISubQuery subQuery, IOrderByDirection orderByDirection, Getter<T> column) {
+        return this.orderBy(subQuery, orderByDirection, $.columnName(column));
     }
 
+    /**
+     * orderBy 子查询 列
+     *
+     * @param subQuery         子查询
+     * @param orderByDirection order by方向
+     * @param column           列
+     * @param f                转换函数
+     * @param <T>              列的实体类
+     * @return
+     */
     @Override
-    public SELF orderBy(ISubQuery subQuery, String columnName, IOrderByDirection orderByDirection, Function<DatasetField, Cmd> f) {
-        DatasetField datasetField = $((Dataset) subQuery, columnName);
-        if (Objects.nonNull(f)) {
-            this.orderBy(f.apply(datasetField), orderByDirection);
-        } else {
-            this.orderBy(datasetField, orderByDirection);
-        }
-        return (SELF) this;
+    public <T> SELF orderByWithFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Getter<T> column, Function<DatasetField, Cmd> f) {
+        return this.orderByWithFun(subQuery, orderByDirection, $.columnName(column), f);
     }
 
+    /**
+     * orderBy 子查询 列
+     *
+     * @param subQuery         子查询
+     * @param orderByDirection order by方向
+     * @param columnName       列
+     * @param f                转换函数
+     * @return
+     */
     @Override
-    public <T> SELF orderByFun(IOrderByDirection orderByDirection, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
-        return this.orderBy(f.apply($.fields(storey, columns)));
+    public SELF orderByWithFun(ISubQuery subQuery, IOrderByDirection orderByDirection, String columnName, Function<DatasetField, Cmd> f) {
+        return this.orderBy(orderByDirection, f.apply($((Dataset) subQuery, columnName)));
     }
 
+
     @Override
-    public <T> SELF orderByFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
+    public <T> SELF orderByWithFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
         return this.orderBy(orderByDirection, this.apply(subQuery, f, columns));
     }
 
     @Override
-    public <T> SELF orderByFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
+    public SELF orderByWithFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
         return this.orderBy(orderByDirection, this.apply(subQuery, f, columnFields));
     }
+
+    @Override
+    public SELF orderBy(ISubQuery subQuery, IOrderByDirection orderByDirection, String columnName) {
+        return this.orderBy(orderByDirection, $.field((Dataset) subQuery, columnName));
+    }
+
+
+    @Override
+    public <T> SELF orderBy(ISubQuery subQuery, IOrderByDirection orderByDirection, Getter<T> column, Function<DatasetField, Cmd> f) {
+        return this.orderBy(orderByDirection, f.apply($((Dataset) subQuery, column)));
+    }
+
 
     public Unions $unions() {
         if (this.unions == null) {

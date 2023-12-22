@@ -2,6 +2,7 @@ package db.sql.api.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.basic.IColumn;
 
 import java.util.function.Function;
 
@@ -37,9 +38,13 @@ public interface ICmdFactory<TABLE extends DATASET, DATASET, TABLE_FIELD, DATASE
      */
     <T> String columnName(Getter<T> column);
 
-    default ColumnField columnField(String columnName) {
-        return new ColumnField(columnName);
-    }
+    /**
+     * 获取列对象
+     *
+     * @param columnName
+     * @return
+     */
+    IColumn column(String columnName);
 
     default <T> TABLE_FIELD field(Getter<T> column) {
         return this.field(column, 1);

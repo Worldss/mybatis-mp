@@ -80,14 +80,14 @@ public class QueryTest extends BaseTest {
                 .select(userTable().$("id").max(), userTable().$("name").count()).from(userTable())
                 .groupBy(userTable().$("id"))
                 .having(having -> having.and(f -> f.field(userTable(), "id").count().gt(1)))
-                .orderBy(userTable().$("id"), OrderByDirection.DESC_NULLS_LAST)
+                .orderBy(OrderByDirection.DESC_NULLS_LAST,userTable().$("id"))
         );
 
         check("select group having order by函数测试", "SELECT max(id),count(name) from user group by id having count(id)>1 order by id desc", new Query()
                 .select(userTable().$("id").max(), userTable().$("name").count()).from(userTable())
                 .groupBy(userTable().$("id"))
                 .having(having -> having.and(f -> f.field(userTable(), "id").count().gt(1)))
-                .orderBy(userTable().$("id"), OrderByDirection.DESC)
+                .orderBy(OrderByDirection.DESC,userTable().$("id"))
         );
 
 

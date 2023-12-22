@@ -5,6 +5,7 @@ import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.ICmdFactory;
+import db.sql.api.cmd.basic.IColumn;
 import db.sql.api.impl.cmd.basic.*;
 import db.sql.api.impl.cmd.condition.In;
 import db.sql.api.impl.tookit.LambdaUtil;
@@ -59,6 +60,11 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
     @Override
     public <T> String columnName(Getter<T> column) {
         return LambdaUtil.getName(column);
+    }
+
+    @Override
+    public Column column(String columnName) {
+        return new Column(columnName);
     }
 
     @Override

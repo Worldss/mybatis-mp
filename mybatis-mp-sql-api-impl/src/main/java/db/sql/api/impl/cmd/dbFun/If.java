@@ -2,8 +2,8 @@ package db.sql.api.impl.cmd.dbFun;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.impl.cmd.Methods;
-import db.sql.api.impl.cmd.basic.Condition;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
@@ -17,19 +17,19 @@ public class If extends BasicFunction<If> {
 
     private final Cmd thenValue;
 
-    public If(Condition condition, Serializable value, Serializable thenValue) {
+    public If(ICondition condition, Serializable value, Serializable thenValue) {
         this(condition, Methods.convert(value), Methods.convert(thenValue));
     }
 
-    public If(Condition condition, Cmd value, Serializable thenValue) {
+    public If(ICondition condition, Cmd value, Serializable thenValue) {
         this(condition, value, Methods.convert(thenValue));
     }
 
-    public If(Condition condition, Serializable value, Cmd thenValue) {
+    public If(ICondition condition, Serializable value, Cmd thenValue) {
         this(condition, Methods.convert(value), thenValue);
     }
 
-    public If(Condition condition, Cmd value, Cmd thenValue) {
+    public If(ICondition condition, Cmd value, Cmd thenValue) {
         super(IF, condition);
         this.value = value;
         this.thenValue = thenValue;

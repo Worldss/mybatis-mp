@@ -1,6 +1,7 @@
 package db.sql.test.select;
 
 import db.sql.api.cmd.LikeMode;
+import db.sql.api.impl.cmd.basic.OrderByDirection;
 import db.sql.api.impl.cmd.executor.Query;
 import db.sql.api.impl.cmd.executor.SubQuery;
 import db.sql.test.BaseTest;
@@ -75,18 +76,18 @@ public class QueryTest extends BaseTest {
                 .select(userTable().$("id").max(), userTable().$("name").count()));
 
 
-        check("select group having order by函数测试", "SELECT max(id),count(name) from user group by id having count(id)>1 order by id desc", new Query()
+        check("select group having order by函数测试", "select max(id),count(name) from user group by id having count(id)>1 order by id desc,if(id is null,0,1)", new Query()
                 .select(userTable().$("id").max(), userTable().$("name").count()).from(userTable())
                 .groupBy(userTable().$("id"))
                 .having(having -> having.and(f -> f.field(userTable(), "id").count().gt(1)))
-                .orderBy(userTable().$("id"), false)
+                .orderBy(userTable().$("id"), OrderByDirection.DESC_NULLS_LAST)
         );
 
         check("select group having order by函数测试", "SELECT max(id),count(name) from user group by id having count(id)>1 order by id desc", new Query()
                 .select(userTable().$("id").max(), userTable().$("name").count()).from(userTable())
                 .groupBy(userTable().$("id"))
                 .having(having -> having.and(f -> f.field(userTable(), "id").count().gt(1)))
-                .orderBy(userTable().$("id"), false)
+                .orderBy(userTable().$("id"), OrderByDirection.DESC)
         );
 
 

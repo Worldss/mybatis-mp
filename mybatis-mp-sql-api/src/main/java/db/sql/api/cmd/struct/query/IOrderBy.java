@@ -1,35 +1,25 @@
 package db.sql.api.cmd.struct.query;
 
 import db.sql.api.Cmd;
+import db.sql.api.cmd.basic.IOrderByDirection;
 
 import java.util.List;
 
 public interface IOrderBy<SELF extends IOrderBy> extends Cmd {
 
-    default SELF orderBy(Cmd column) {
-        return this.orderBy(column, true);
-    }
+    SELF orderBy(Cmd column, IOrderByDirection orderByDirection);
 
-    SELF orderBy(Cmd column, boolean asc);
-
-    default SELF orderBy(Cmd... columns) {
-        return this.orderBy(true, columns);
-    }
-
-    default SELF orderBy(boolean asc, Cmd... columns) {
+    default SELF orderBy(IOrderByDirection orderByDirection, Cmd... columns) {
         for (Cmd column : columns) {
-            this.orderBy(column, asc);
+            this.orderBy(column, orderByDirection);
         }
         return (SELF) this;
     }
 
-    default SELF orderBy(List<Cmd> columns) {
-        return this.orderBy(true, columns);
-    }
 
-    default SELF orderBy(boolean asc, List<Cmd> columns) {
+    default SELF orderBy(List<Cmd> columns, IOrderByDirection orderByDirection) {
         for (Cmd column : columns) {
-            this.orderBy(column, asc);
+            this.orderBy(column, orderByDirection);
         }
         return (SELF) this;
     }

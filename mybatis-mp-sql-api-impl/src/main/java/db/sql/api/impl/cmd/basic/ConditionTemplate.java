@@ -13,12 +13,13 @@ import java.util.Objects;
  * 条件SQL模板类
  * 采用MessageFormat.format格式化模板
  */
-public class CmdConditionTemplate implements ICondition {
+public class ConditionTemplate implements ICondition {
 
     private final String template;
 
     private final Cmd[] params;
-    public CmdConditionTemplate(String template, Object... params) {
+
+    public ConditionTemplate(String template, Object... params) {
         this.template = template;
         if (Objects.nonNull(params)) {
             Cmd[] cmds = new Cmd[params.length];
@@ -32,7 +33,7 @@ public class CmdConditionTemplate implements ICondition {
         }
     }
 
-    public CmdConditionTemplate(String template, Cmd... params) {
+    public ConditionTemplate(String template, Cmd... params) {
         this.template = template;
         this.params = params;
     }

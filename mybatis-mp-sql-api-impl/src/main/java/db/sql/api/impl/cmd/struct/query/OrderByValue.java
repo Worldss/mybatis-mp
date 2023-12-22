@@ -2,24 +2,24 @@ package db.sql.api.impl.cmd.struct.query;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
-import db.sql.api.impl.tookit.SqlConst;
+import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.tookit.CmdUtils;
 
 public class OrderByValue implements Cmd {
 
     private final Cmd key;
 
-    private final boolean asc;
+    private final IOrderByDirection orderByDirection;
 
-    public OrderByValue(Cmd key, boolean asc) {
+    public OrderByValue(Cmd key, IOrderByDirection orderByDirection) {
         this.key = key;
-        this.asc = asc;
+        this.orderByDirection = orderByDirection;
     }
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         key.sql(module, this, context, sqlBuilder);
-        sqlBuilder.append(asc ? SqlConst.ASC : SqlConst.DESC);
+        orderByDirection.sql(module, this.key, context, sqlBuilder);
         return sqlBuilder;
     }
 

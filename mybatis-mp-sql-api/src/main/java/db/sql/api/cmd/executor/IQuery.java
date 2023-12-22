@@ -6,6 +6,7 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.ICmdFactory;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.basic.ICondition;
+import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.executor.method.*;
 import db.sql.api.cmd.struct.*;
 import db.sql.api.cmd.struct.conditionChain.IConditionChain;
@@ -145,8 +146,8 @@ public interface IQuery<SELF extends IQuery,
     }
 
     @Override
-    default SELF orderBy(Cmd column, boolean asc) {
-        $orderBy().orderBy(column, asc);
+    default SELF orderBy(Cmd column, IOrderByDirection orderByDirection) {
+        $orderBy().orderBy(column, orderByDirection);
         return (SELF) this;
     }
 

@@ -7,6 +7,7 @@ import db.sql.api.cmd.ColumnNameField;
 import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.JoinMode;
 import db.sql.api.cmd.basic.ICondition;
+import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.basic.UnionsCmdLists;
 import db.sql.api.cmd.executor.IQuery;
 import db.sql.api.cmd.executor.ISubQuery;
@@ -15,10 +16,7 @@ import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.cmd.struct.query.Withs;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.ConditionFactory;
-import db.sql.api.impl.cmd.basic.Dataset;
-import db.sql.api.impl.cmd.basic.DatasetField;
-import db.sql.api.impl.cmd.basic.Table;
-import db.sql.api.impl.cmd.basic.TableField;
+import db.sql.api.impl.cmd.basic.*;
 import db.sql.api.impl.cmd.struct.*;
 import db.sql.api.impl.cmd.struct.query.*;
 import db.sql.api.impl.tookit.SqlConst;
@@ -359,8 +357,8 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF orderByFun(boolean asc, Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
-        return this.orderBy(asc, f.apply($.fields(getterColumnFields)));
+    public <T> SELF orderByFun(IOrderByDirection orderByDirection, Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
+        return this.orderBy(orderByDirection, f.apply($.fields(getterColumnFields)));
     }
 
 
@@ -534,6 +532,10 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return orderBy;
     }
 
+    @Override
+    public IOrderByDirection defaultOrderByDirection() {
+        return OrderByDirection.ASC;
+    }
 
     @Override
     public ForUpdate $forUpdate() {
@@ -554,12 +556,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF orderBy(Getter<T> column, int storey, boolean asc, Function<TableField, Cmd> f) {
+    public <T> SELF orderBy(Getter<T> column, int storey, IOrderByDirection orderByDirection, Function<TableField, Cmd> f) {
         TableField tableField = $.field(column, storey);
         if (f != null) {
-            return this.orderBy(f.apply(tableField), asc);
+            return this.orderBy(f.apply(tableField), orderByDirection);
         }
-        return this.orderBy(tableField, asc);
+        return this.orderBy(tableField, orderByDirection);
     }
 
     /**
@@ -567,40 +569,40 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
      *
      * @param subQuery
      * @param column
-     * @param asc
+     * @param orderByDirection
      * @param f
      * @param <T>
      * @return
      */
     @Override
-    public <T> SELF orderBy(ISubQuery subQuery, Getter<T> column, boolean asc, Function<DatasetField, Cmd> f) {
-        return this.orderBy(subQuery, $.columnName(column), asc, f);
+    public <T> SELF orderBy(ISubQuery subQuery, Getter<T> column, IOrderByDirection orderByDirection, Function<DatasetField, Cmd> f) {
+        return this.orderBy(subQuery, $.columnName(column), orderByDirection, f);
     }
 
     @Override
-    public SELF orderBy(ISubQuery subQuery, String columnName, boolean asc, Function<DatasetField, Cmd> f) {
+    public SELF orderBy(ISubQuery subQuery, String columnName, IOrderByDirection orderByDirection, Function<DatasetField, Cmd> f) {
         DatasetField datasetField = $((Dataset) subQuery, columnName);
         if (Objects.nonNull(f)) {
-            this.orderBy(f.apply(datasetField), asc);
+            this.orderBy(f.apply(datasetField), orderByDirection);
         } else {
-            this.orderBy(datasetField, asc);
+            this.orderBy(datasetField, orderByDirection);
         }
         return (SELF) this;
     }
 
     @Override
-    public <T> SELF orderByFun(boolean asc, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+    public <T> SELF orderByFun(IOrderByDirection orderByDirection, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
         return this.orderBy(f.apply($.fields(storey, columns)));
     }
 
     @Override
-    public <T> SELF orderByFun(ISubQuery subQuery, boolean asc, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
-        return this.orderBy(asc, this.apply(subQuery, f, columns));
+    public <T> SELF orderByFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
+        return this.orderBy(orderByDirection, this.apply(subQuery, f, columns));
     }
 
     @Override
-    public <T> SELF orderByFun(ISubQuery subQuery, boolean asc, Function<DatasetField[], Cmd> f, ColumnField... columnFields) {
-        return this.orderBy(asc, this.apply(subQuery, f, columnFields));
+    public <T> SELF orderByFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DatasetField[], Cmd> f, ColumnField... columnFields) {
+        return this.orderBy(orderByDirection, this.apply(subQuery, f, columnFields));
     }
 
     public Unions $unions() {

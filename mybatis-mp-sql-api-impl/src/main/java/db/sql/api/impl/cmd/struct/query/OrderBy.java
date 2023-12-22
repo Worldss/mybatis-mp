@@ -2,6 +2,7 @@ package db.sql.api.impl.cmd.struct.query;
 
 import db.sql.api.Cmd;
 import db.sql.api.SqlBuilderContext;
+import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.struct.query.IOrderBy;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
@@ -14,8 +15,8 @@ public class OrderBy implements IOrderBy<OrderBy> {
     private final List<OrderByValue> orderByValues = new ArrayList<>();
 
     @Override
-    public OrderBy orderBy(Cmd cmd, boolean asc) {
-        orderByValues.add(new OrderByValue(cmd, asc));
+    public OrderBy orderBy(Cmd cmd, IOrderByDirection orderByDirection) {
+        orderByValues.add(new OrderByValue(cmd, orderByDirection));
         return this;
     }
 

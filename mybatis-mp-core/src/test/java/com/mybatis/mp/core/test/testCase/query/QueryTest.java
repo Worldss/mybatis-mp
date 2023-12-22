@@ -8,6 +8,7 @@ import com.mybatis.mp.core.test.DO.SysRole;
 import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
+import db.sql.api.impl.cmd.basic.OrderByDirection;
 import db.sql.api.impl.cmd.dbFun.FunctionInterface;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
@@ -141,7 +142,7 @@ public class QueryTest extends BaseTest {
             SysUser sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                     .from(SysUser.class)
-                    .orderBy(false, SysUser::getRole_id, SysUser::getId)
+                    .orderBy(OrderByDirection.DESC, SysUser::getRole_id, SysUser::getId)
                     .limit(1)
                     .get();
             SysUser eqSysUser = new SysUser();

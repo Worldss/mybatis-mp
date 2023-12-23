@@ -9,83 +9,43 @@ import db.sql.api.cmd.basic.CountAll;
 import db.sql.api.cmd.basic.SQL1;
 import db.sql.api.cmd.basic.SQLCmdAll;
 import db.sql.api.cmd.executor.ISubQuery;
+import db.sql.api.cmd.executor.method.groupByMethod.IGroupByMethods;
+import db.sql.api.cmd.executor.method.selectMethod.ISelectMethods;
 
 import java.util.List;
 import java.util.function.Function;
 
-public interface ISelectMethod<SELF extends ISelectMethod, TABLE_FIELD, DATASET_FIELD> {
+public interface ISelectMethod<SELF extends ISelectMethod,
+        TABLE_FIELD extends DATASET_FILED,
+        DATASET_FILED extends Cmd,
+        COLUMN extends Cmd>
 
-    SELF select(Cmd column);
+        extends ISelectMethods<SELF,
+        TABLE_FIELD,
+        DATASET_FILED,
+        COLUMN> {
 
     SELF selectDistinct();
 
     default SELF select1() {
-        this.select(SQL1.INSTANCE);
+        this.select((COLUMN)SQL1.INSTANCE);
         return (SELF) this;
     }
 
     default SELF selectAll() {
-        this.select(SQLCmdAll.INSTANCE);
+        this.select((COLUMN)SQLCmdAll.INSTANCE);
         return (SELF) this;
     }
 
     default SELF selectCount1() {
-        this.select(Count1.INSTANCE);
+        this.select((COLUMN)Count1.INSTANCE);
         return (SELF) this;
     }
 
     default SELF selectCountAll() {
-        this.select(CountAll.INSTANCE);
+        this.select((COLUMN)CountAll.INSTANCE);
         return (SELF) this;
     }
-
-    default SELF select(Cmd... columns) {
-        for (Cmd column : columns) {
-            this.select(column);
-        }
-        return (SELF) this;
-    }
-
-    default SELF select(List<Cmd> columns) {
-        for (Cmd column : columns) {
-            this.select(column);
-        }
-        return (SELF) this;
-    }
-
-    default <T> SELF select(Getter<T> column) {
-        return this.select(column, 1);
-    }
-
-    default <T> SELF select(Getter<T>... columns) {
-        return this.select(1, columns);
-    }
-
-    default <T> SELF select(int storey, Getter<T>... columns) {
-        for (Getter<T> column : columns) {
-            this.select(column, storey);
-        }
-        return (SELF) this;
-    }
-
-    default <T> SELF select(Getter<T> column, Function<TABLE_FIELD, Cmd> f) {
-        return this.select(column, 1, f);
-    }
-
-    default <T> SELF select(Getter<T> column, int storey) {
-        return this.select(column, storey, null);
-    }
-
-    <T> SELF select(Getter<T> column, int storey, Function<TABLE_FIELD, Cmd> f);
-
-
-    default <T> SELF select(Function<TABLE_FIELD[], Cmd> f, Getter<T>... columns) {
-        return this.select(f, 1, columns);
-    }
-
-    <T> SELF select(Function<TABLE_FIELD[], Cmd> f, int storey, Getter<T>... columns);
-
-    SELF select(Function<TABLE_FIELD[], Cmd> f, GetterColumnField... getterColumnFields);
 
     default SELF select(Class entity) {
         return this.select(entity, 1);
@@ -120,72 +80,4 @@ public interface ISelectMethod<SELF extends ISelectMethod, TABLE_FIELD, DATASET_
         }
         return (SELF) this;
     }
-
-    /**
-     * select子查询列
-     *
-     * @param subQuery
-     * @param column
-     * @param <T>
-     * @return
-     */
-    default <T> SELF select(ISubQuery subQuery, Getter<T> column) {
-        return this.select(subQuery, column, null);
-    }
-
-    /**
-     * select子查询列
-     *
-     * @param subQuery
-     * @param column
-     * @param f
-     * @param <T>
-     * @return
-     */
-    <T> SELF select(ISubQuery subQuery, Getter<T> column, Function<DATASET_FIELD, Cmd> f);
-
-
-    /**
-     * select子查询列
-     *
-     * @param subQuery
-     * @param f
-     * @param columns
-     * @param <T>
-     * @return
-     */
-    <T> SELF select(ISubQuery subQuery, Function<DATASET_FIELD[], Cmd> f, Getter<T>... columns);
-
-
-    /**
-     * select子查询列
-     *
-     * @param subQuery
-     * @param f
-     * @param columnFields
-     * @return
-     */
-    SELF select(ISubQuery subQuery, Function<DATASET_FIELD[], Cmd> f, IColumnField... columnFields);
-
-    /**
-     * select子查询列
-     *
-     * @param subQuery
-     * @return
-     */
-    default SELF select(ISubQuery subQuery, String columnName) {
-        return this.select(subQuery, columnName, null);
-    }
-
-
-    /**
-     * select子查询列
-     *
-     * @param subQuery
-     * @param columnName
-     * @param f
-     * @return
-     */
-    SELF select(ISubQuery subQuery, String columnName, Function<DATASET_FIELD, Cmd> f);
-
 }

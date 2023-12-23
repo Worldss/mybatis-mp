@@ -29,7 +29,7 @@ public class WithTest extends BaseTest {
             List<SysUser> list = queryChain
                     .with(subQuery)
                     .select(subQuery, SysRole::getId, c -> c.as("xx"))
-                    .select(subQuery, "id", c -> c.plus(1).as("xx2"))
+                    .selectWithFun(subQuery, "id", c -> c.plus(1).as("xx2"))
                     .select(SysUser.class)
                     .from(SysUser.class)
                     .from(subQuery)

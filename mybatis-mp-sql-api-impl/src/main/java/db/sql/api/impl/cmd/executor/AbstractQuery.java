@@ -12,6 +12,7 @@ import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.basic.UnionsCmdLists;
 import db.sql.api.cmd.executor.IQuery;
 import db.sql.api.cmd.executor.ISubQuery;
+import db.sql.api.cmd.executor.method.ISelectMethod;
 import db.sql.api.cmd.struct.Joins;
 import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.cmd.struct.query.Withs;
@@ -29,7 +30,10 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY>
+public abstract class AbstractQuery<SELF extends AbstractQuery,
+        CMD_FACTORY extends CmdFactory>
+
+        extends BaseExecutor<SELF, CMD_FACTORY>
         implements IQuery<SELF,
         Table,
         Dataset,
@@ -134,64 +138,119 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return select;
     }
 
+    /**
+     * orderBy 子查询 列
+     *
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
+     * @return 自己
+     */
     @Override
-    public SELF select(List<Cmd> columns) {
-        this.$select().select(columns);
-        return (SELF) this;
-    }
-
-    @Override
-    public <T> SELF select(int storey, Getter<T>... columns) {
-        List<Cmd> list = new ArrayList<>(columns.length);
-        for (Getter<T> column : columns) {
-            list.add($().field(column, storey));
-        }
-        return this.select(list);
+    public <T> SELF select(Getter<T> column, int storey) {
+        return this.select($(column, storey));
     }
 
 
     /**
      * select 子查询 列
      *
-     * @param subQuery
-     * @param column
-     * @param <T>
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
+     * @return 自己
+     */
+    @Override
+    public <T> SELF selectWithFun(Getter<T> column, int storey, Function<TableField, Cmd> f) {
+        return this.select(f.apply($(column, storey)));
+    }
+
+
+    @Override
+    public <T> SELF selectWithFun(Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+        return this.select(f.apply($.fields(storey, columns)));
+    }
+
+    @Override
+    public SELF selectWithFun(Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
+        return this.select(f.apply($.fields(getterColumnFields)));
+    }
+
+    @Override
+    public <T> SELF select(int storey, Getter<T>... columns) {
+        return this.select($.fields(storey, columns));
+    }
+
+    @Override
+    public SELF select(String columnName) {
+        return this.select($.column(columnName));
+    }
+
+    @Override
+    public SELF selectWithFun(String columnName, Function<IColumn, Cmd> f) {
+        return this.select(f.apply($.column(columnName)));
+    }
+
+    /**
+     * select 子查询 列
+     *
+     * @param subQuery 子查询
+     * @param column   列
+     * @param <T>      列的实体类
      * @return
      */
     @Override
-    public <T> SELF select(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
-        return this.select(subQuery, $.columnName(column), f);
+    public <T> SELF select(ISubQuery subQuery, Getter<T> column) {
+        return this.select(subQuery, $.columnName(column));
     }
 
+    /**
+     * select 子查询 列
+     *
+     * @param subQuery 子查询
+     * @param column   列
+     * @param f        转换函数
+     * @param <T>      列的实体类
+     * @return
+     */
     @Override
-    public SELF select(ISubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
-        DatasetField datasetField = $((Dataset) subQuery, columnName);
-        if (Objects.nonNull(f)) {
-            this.select(f.apply(datasetField));
-        } else {
-            this.select(datasetField);
-        }
-        return (SELF) this;
+    public <T> SELF selectWithFun(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+        return this.selectWithFun(subQuery, $.columnName(column), f);
     }
 
+    /**
+     * select 子查询 列
+     *
+     * @param subQuery   子查询
+     * @param columnName 列
+     * @param f          转换函数
+     * @return
+     */
     @Override
-    public <T> SELF select(Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
-        return this.select(f.apply(this.$.fields(1, columns)));
+    public SELF selectWithFun(ISubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
+        return this.select(f.apply($((Dataset) subQuery, columnName)));
     }
 
-    @Override
-    public SELF select(Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
-        return this.select(f.apply(this.$.fields(getterColumnFields)));
-    }
 
     @Override
-    public <T> SELF select(ISubQuery subQuery, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
+    public <T> SELF selectWithFun(ISubQuery subQuery, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
         return this.select(this.apply(subQuery, f, columns));
     }
 
     @Override
-    public SELF select(ISubQuery subQuery, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
+    public SELF selectWithFun(ISubQuery subQuery, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
         return this.select(this.apply(subQuery, f, columnFields));
+    }
+
+    @Override
+    public SELF select(ISubQuery subQuery, String columnName) {
+        return this.select($.field((Dataset) subQuery, columnName));
+    }
+
+
+    @Override
+    public <T> SELF select(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+        return this.select(f.apply($((Dataset) subQuery, column)));
     }
 
     @Override

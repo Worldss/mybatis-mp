@@ -211,7 +211,7 @@ public class ConditionTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             Integer count = QueryChain.of(sysUserMapper)
-                    .select(SysUser::getId, c -> c.count())
+                    .selectWithFun(SysUser::getId, c -> c.count())
                     .from(SysUser.class)
                     .like(SysUser::getUserName, "test", LikeMode.RIGHT)
                     .setReturnType(Integer.TYPE)

@@ -42,7 +42,7 @@ public interface IQuery<SELF extends IQuery,
         IUNION extends IUnion
         >
         extends IWithMethod<SELF>,
-        ISelectMethod<SELF, TABLE_FIELD, DATASET_FILED>,
+        ISelectMethod<SELF, TABLE_FIELD, DATASET_FILED,COLUMN>,
         IFromMethod<SELF, DATASET>,
         IJoinMethod<SELF, DATASET, ON>,
         IWhereMethod<SELF, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN>,
@@ -93,21 +93,10 @@ public interface IQuery<SELF extends IQuery,
         return this.select($().allField($(entity, storey)));
     }
 
-
     @Override
     default SELF selectDistinct() {
         $select().distinct();
         return (SELF) this;
-    }
-
-    @Override
-    default <T> SELF select(Getter<T> column, int storey, Function<TABLE_FIELD, Cmd> f) {
-        TABLE_FIELD field = this.$().field(column, storey);
-        if (f != null) {
-            return this.select(f.apply(field));
-        } else {
-            return this.select(field);
-        }
     }
 
     @Override

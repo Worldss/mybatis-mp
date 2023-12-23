@@ -124,7 +124,7 @@ public class QueryTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             List<Integer> counts = QueryChain.of(sysUserMapper)
-                    .select(SysUser::getId, c -> c.count())
+                    .selectWithFun(SysUser::getId, c -> c.count())
                     .from(SysUser.class)
                     .groupBy(SysUser::getRole_id)
                     .setReturnType(Integer.TYPE)
@@ -291,8 +291,8 @@ public class QueryTest extends BaseTest {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             List<SysUser> list = QueryChain.of(sysUserMapper)
                     .selectDistinct()
-                    .select(SysUser::getRole_id, c -> c.as("role_id"))
-                    .select(SysUser::getId, c -> c.as("id"))
+                    .selectWithFun(SysUser::getRole_id, c -> c.as("role_id"))
+                    .selectWithFun(SysUser::getId, c -> c.as("id"))
                     .from(SysUser.class)
                     .list();
             assertEquals(list.size(), 3, "selectDistinctMuti");

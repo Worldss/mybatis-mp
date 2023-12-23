@@ -10,7 +10,7 @@
     </description>
     <groupId>cn.mybatis-mp</groupId>
     <artifactId>mybatis-mp</artifactId>
-    <version>1.2.7</version>
+    <version>1.2.8</version>
     <packaging>pom</packaging>
     <modules>
         <module>mybatis-mp-annotation</module>
@@ -49,8 +49,8 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 
-        <mybatis-mp.version>1.2.7</mybatis-mp.version>
-        <mybatis-mp-spring-boot-starter.version>1.2.7</mybatis-mp-spring-boot-starter.version>
+        <mybatis-mp.version>1.2.8</mybatis-mp.version>
+        <mybatis-mp-spring-boot-starter.version>1.2.8</mybatis-mp-spring-boot-starter.version>
 
         <!-- mybatis version -->
         <mybatis.version>3.5.15</mybatis.version>
@@ -218,9 +218,9 @@
             <!-- mvn versions:set -DnewVersion=2.0 -DprocessAllModules=true -DallowSnapshots=true -->
 
             <!-- mvn clean source:jar install -->
-            <!-- mvn deploy -Dmaven.test.skip=true -e -P release -->
-            <!-- mvn clean deploy -e -P release -->
-            <id>release</id>
+            <!-- mvn deploy -Dmaven.test.skip=true -e -P maven-release -->
+            <!-- mvn clean deploy -e -P maven-release -->
+            <id>maven-release</id>
             <build>
                 <plugins>
                     <!-- Source -->

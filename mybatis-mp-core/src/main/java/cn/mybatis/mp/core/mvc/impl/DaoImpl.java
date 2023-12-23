@@ -27,7 +27,7 @@ public abstract class DaoImpl<T, K> implements Dao<T, K> {
     @Override
     public Class<K> getIdType() {
         if (idType == null) {
-            idType = (Class<K>) GenericUtil.getGenericInterfaceClass(this.getClass()).get(1);
+            idType = (Class<K>) GenericUtil.getGenericSuperClass(this.getClass()).get(1);
         }
         return idType;
     }

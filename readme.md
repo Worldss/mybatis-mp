@@ -64,7 +64,7 @@ https://gitee.com/mybatis-mp/mybatis-mp/tree/master/mybatis-mp-spring-boot-demo
         <dependency>
             <groupId>cn.mybatis-mp</groupId>
             <artifactId>mybatis-mp-spring-boot-parent</artifactId>
-            <version>1.2.7</version>
+            <version>1.2.8</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -87,7 +87,7 @@ https://gitee.com/mybatis-mp/mybatis-mp/tree/master/mybatis-mp-spring-boot-demo
         <dependency>
             <groupId>cn.mybatis-mp</groupId>
             <artifactId>mybatis-mp-spring-boot-parent</artifactId>
-            <version>1.2.7-spring-boot3</version>
+            <version>1.2.8-spring-boot3</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -1628,18 +1628,18 @@ new Query(){{
 > 3个模板类：普通模板 CmdTemplate ，函数模板 FunTemplate（后续可继续调用框架的函数），条件模板 ConditionTemplate（用于 where 中）
 ```java
 QueryChain queryChain = QueryChain.of(sysUserMapper);
-queryChain.selectWithFun(SysUser::getRole_id, c -> new CmdTemplate("count({0})+{1}", c, "1"));
+queryChain.selectWithFun(SysUser::getRole_id, c -> CmdTemplate.create("count({0})+{1}", c, "1"));
 queryChain.from(SysUser.class);
-queryChain.and(cs -> new ConditionTemplate("{0}+{1}={2}", cs[0], cs[1], 2), SysUser::getId, SysUser::getId);
+queryChain.and(cs -> ConditionTemplate.create("{0}+{1}={2}", cs[0], cs[1], 2), SysUser::getId, SysUser::getId);
 queryChain.setReturnType(String.class);
 String str = queryChain.get();
 ```
 
 ```java
 QueryChain queryChain = QueryChain.of(sysUserMapper);
-queryChain.selectWithFun(SysUser::getRole_id, c -> new FunTemplate("count({0})",c).plus(1).concat(1,"2",3).length());
+queryChain.selectWithFun(SysUser::getRole_id, c -> FunTemplate.create("count({0})",c).plus(1).concat(1,"2",3).length());
 queryChain.from(SysUser.class);
-queryChain.and(cs -> new ConditionTemplate("{0}+{1}={2}", cs[0], cs[1], 2), SysUser::getId, SysUser::getId);
+queryChain.and(cs -> ConditionTemplate.create("{0}+{1}={2}", cs[0], cs[1], 2), SysUser::getId, SysUser::getId);
 queryChain.setReturnType(String.class);
 String str = queryChain.get();
 ```

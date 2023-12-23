@@ -2,9 +2,8 @@ package db.sql.api.cmd.executor.method.selectMethod;
 
 
 import db.sql.api.Getter;
-import db.sql.api.cmd.executor.method.ISelectMethod;
 
-public interface ISelectMultiGetterMethod<SELF extends ISelectMethod> {
+public interface ISelectMultiGetterMethod<SELF extends ISelectMultiGetterMethod> {
 
     default <T> SELF select(Getter<T>... columns) {
         return this.select(1, columns);

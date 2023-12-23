@@ -2,9 +2,8 @@ package db.sql.api.cmd.executor.method.groupByMethod;
 
 
 import db.sql.api.Getter;
-import db.sql.api.cmd.executor.method.IGroupByMethod;
 
-public interface IGroupByGetterMethod<SELF extends IGroupByMethod> {
+public interface IGroupByGetterMethod<SELF extends IGroupByGetterMethod> {
 
     default <T> SELF groupBy(Getter<T> column) {
         return this.groupBy(column, 1);

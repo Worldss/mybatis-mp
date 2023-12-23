@@ -4,11 +4,10 @@ package db.sql.api.cmd.executor.method.orderByMethod;
 import db.sql.api.Cmd;
 import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.executor.ISubQuery;
-import db.sql.api.cmd.executor.method.IOrderByMethod;
 
 import java.util.function.Function;
 
-public interface IOrderBySubQueryMethod<SELF extends IOrderByMethod, DATASET_FILED extends Cmd> extends IBaseOrderByMethods {
+public interface IOrderBySubQueryMethod<SELF extends IOrderBySubQueryMethod, DATASET_FILED extends Cmd> extends IBaseOrderByMethods {
 
     default SELF orderBy(ISubQuery subQuery, String columnName) {
         return this.orderBy(subQuery, defaultOrderByDirection(), columnName);

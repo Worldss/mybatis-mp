@@ -4,11 +4,10 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.IColumnField;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.ISubQuery;
-import db.sql.api.cmd.executor.method.IHavingMethod;
 
 import java.util.function.Function;
 
-public interface IHavingSubQueryAndMethod<SELF extends IHavingMethod, DATASET_FILED> {
+public interface IHavingSubQueryAndMethod<SELF extends IHavingSubQueryAndMethod, DATASET_FILED> {
 
     default SELF havingAnd(ISubQuery subQuery, String columnName, Function<DATASET_FILED, ICondition> f) {
         return this.havingAnd(subQuery, true, columnName, f);

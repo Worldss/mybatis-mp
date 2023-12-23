@@ -4,9 +4,8 @@ package db.sql.api.cmd.executor.method.orderByMethod;
 import db.sql.api.Getter;
 import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.executor.ISubQuery;
-import db.sql.api.cmd.executor.method.IOrderByMethod;
 
-public interface IOrderBySubQueryMultiGetterMethod<SELF extends IOrderByMethod> extends IBaseOrderByMethods {
+public interface IOrderBySubQueryMultiGetterMethod<SELF extends IOrderBySubQueryMultiGetterMethod> extends IBaseOrderByMethods {
 
     default <T> SELF orderBy(ISubQuery subQuery, Getter<T>... columns) {
         return this.orderBy(subQuery, defaultOrderByDirection(), columns);

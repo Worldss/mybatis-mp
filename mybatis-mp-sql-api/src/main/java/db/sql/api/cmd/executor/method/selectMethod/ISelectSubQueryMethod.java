@@ -3,11 +3,10 @@ package db.sql.api.cmd.executor.method.selectMethod;
 
 import db.sql.api.Cmd;
 import db.sql.api.cmd.executor.ISubQuery;
-import db.sql.api.cmd.executor.method.ISelectMethod;
 
 import java.util.function.Function;
 
-public interface ISelectSubQueryMethod<SELF extends ISelectMethod, DATASET_FILED extends Cmd> {
+public interface ISelectSubQueryMethod<SELF extends ISelectSubQueryMethod, DATASET_FILED extends Cmd> {
 
     SELF select(ISubQuery subQuery, String columnName);
 

@@ -3,11 +3,10 @@ package db.sql.api.cmd.executor.method.groupByMethod;
 
 import db.sql.api.Cmd;
 import db.sql.api.cmd.executor.ISubQuery;
-import db.sql.api.cmd.executor.method.IGroupByMethod;
 
 import java.util.function.Function;
 
-public interface IGroupBySubQueryMethod<SELF extends IGroupByMethod, DATASET_FILED extends Cmd> {
+public interface IGroupBySubQueryMethod<SELF extends IGroupBySubQueryMethod, DATASET_FILED extends Cmd> {
 
     SELF groupBy(ISubQuery subQuery, String columnName);
 

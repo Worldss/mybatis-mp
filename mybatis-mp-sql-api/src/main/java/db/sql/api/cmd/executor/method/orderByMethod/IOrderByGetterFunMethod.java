@@ -4,11 +4,10 @@ package db.sql.api.cmd.executor.method.orderByMethod;
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.basic.IOrderByDirection;
-import db.sql.api.cmd.executor.method.IOrderByMethod;
 
 import java.util.function.Function;
 
-public interface IOrderByGetterFunMethod<SELF extends IOrderByMethod, TABLE_FIELD extends Cmd> extends IBaseOrderByMethods {
+public interface IOrderByGetterFunMethod<SELF extends IOrderByGetterFunMethod, TABLE_FIELD extends Cmd> extends IBaseOrderByMethods {
 
     default <T> SELF orderByWithFun(Getter<T> column, Function<TABLE_FIELD, Cmd> f) {
         return this.orderByWithFun(defaultOrderByDirection(), column, 1, f);

@@ -5,11 +5,10 @@ import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.IColumnField;
 import db.sql.api.cmd.basic.ICondition;
 import db.sql.api.cmd.executor.ISubQuery;
-import db.sql.api.cmd.executor.method.IHavingMethod;
 
 import java.util.function.Function;
 
-public interface IHavingMethods<SELF extends IHavingMethod, TABLE_FIELD, DATASET_FILED>
+public interface IHavingMethods<SELF extends IHavingMethods, TABLE_FIELD, DATASET_FILED>
         extends IHavingAndMethod<SELF, TABLE_FIELD>,
         IHavingOrMethod<SELF, TABLE_FIELD>,
         IHavingSubQueryAndMethod<SELF, DATASET_FILED>,

@@ -2,11 +2,10 @@ package db.sql.api.cmd.executor.method.selectMethod;
 
 
 import db.sql.api.Cmd;
-import db.sql.api.cmd.executor.method.ISelectMethod;
 
 import java.util.List;
 
-public interface ISelectCmdMethod<SELF extends ISelectMethod, COLUMN extends Cmd> {
+public interface ISelectCmdMethod<SELF extends ISelectCmdMethod, COLUMN extends Cmd> {
 
     SELF select(COLUMN column);
 

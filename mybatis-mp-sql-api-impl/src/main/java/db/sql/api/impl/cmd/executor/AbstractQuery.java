@@ -136,7 +136,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery,
     }
 
     /**
-     * orderBy 子查询 列
+     * select 列
      *
      * @param column 列
      * @param storey 列存储层级
@@ -155,6 +155,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery,
      * @param column 列
      * @param storey 列存储层级
      * @param <T>    列的实体类
+     * @param f      转换函数
      * @return 自己
      */
     @Override
@@ -332,7 +333,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery,
 
 
     /**
-     * orderBy 子查询 列
+     * groupBy 列
      *
      * @param column 列
      * @param storey 列存储层级
@@ -351,6 +352,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery,
      * @param column 列
      * @param storey 列存储层级
      * @param <T>    列的实体类
+     * @param f      转换函数
      * @return 自己
      */
     @Override
@@ -640,7 +642,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery,
     }
 
     /**
-     * orderBy 子查询 列
+     * orderBy 列
      *
      * @param column 列
      * @param storey 列存储层级
@@ -654,11 +656,12 @@ public abstract class AbstractQuery<SELF extends AbstractQuery,
 
 
     /**
-     * orderBy 子查询 列
+     * orderBy 列
      *
      * @param column 列
      * @param storey 列存储层级
      * @param <T>    列的实体类
+     * @param f      转换函数
      * @return 自己
      */
     @Override

@@ -5,11 +5,10 @@ import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.basic.IColumn;
 import db.sql.api.cmd.executor.ISubQuery;
-import db.sql.api.cmd.executor.method.ISelectMethod;
 
 import java.util.function.Function;
 
-public interface ISelectMethods<SELF extends ISelectMethod,
+public interface ISelectMethods<SELF extends ISelectMethods,
         TABLE_FIELD extends Cmd,
         DATASET_FILED extends Cmd,
         COLUMN extends Cmd>

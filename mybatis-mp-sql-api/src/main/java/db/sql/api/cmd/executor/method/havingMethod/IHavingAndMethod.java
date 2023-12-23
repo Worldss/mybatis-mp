@@ -3,11 +3,10 @@ package db.sql.api.cmd.executor.method.havingMethod;
 import db.sql.api.Getter;
 import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.basic.ICondition;
-import db.sql.api.cmd.executor.method.IHavingMethod;
 
 import java.util.function.Function;
 
-public interface IHavingAndMethod<SELF extends IHavingMethod, TABLE_FIELD> {
+public interface IHavingAndMethod<SELF extends IHavingAndMethod, TABLE_FIELD> {
 
     SELF havingAnd(ICondition condition);
 

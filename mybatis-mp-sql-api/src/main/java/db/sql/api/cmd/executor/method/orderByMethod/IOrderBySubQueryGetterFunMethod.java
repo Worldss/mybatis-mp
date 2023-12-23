@@ -5,11 +5,10 @@ import db.sql.api.Cmd;
 import db.sql.api.Getter;
 import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.executor.ISubQuery;
-import db.sql.api.cmd.executor.method.IOrderByMethod;
 
 import java.util.function.Function;
 
-public interface IOrderBySubQueryGetterFunMethod<SELF extends IOrderByMethod, DATASET_FILED extends Cmd> extends IBaseOrderByMethods {
+public interface IOrderBySubQueryGetterFunMethod<SELF extends IOrderBySubQueryGetterFunMethod, DATASET_FILED extends Cmd> extends IBaseOrderByMethods {
 
     default <T> SELF orderByWithFun(ISubQuery subQuery, Getter<T> column, Function<DATASET_FILED, Cmd> f) {
         return this.orderByWithFun(subQuery, defaultOrderByDirection(), column, f);

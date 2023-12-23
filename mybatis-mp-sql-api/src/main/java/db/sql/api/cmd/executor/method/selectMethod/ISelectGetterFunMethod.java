@@ -3,11 +3,10 @@ package db.sql.api.cmd.executor.method.selectMethod;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.cmd.executor.method.ISelectMethod;
 
 import java.util.function.Function;
 
-public interface ISelectGetterFunMethod<SELF extends ISelectMethod, TABLE_FIELD extends Cmd> {
+public interface ISelectGetterFunMethod<SELF extends ISelectGetterFunMethod, TABLE_FIELD extends Cmd> {
 
     default <T> SELF selectWithFun(Getter<T> column, Function<TABLE_FIELD, Cmd> f) {
         return this.selectWithFun(column, 1, f);

@@ -2,11 +2,10 @@ package db.sql.api.cmd.executor.method.groupByMethod;
 
 
 import db.sql.api.Cmd;
-import db.sql.api.cmd.executor.method.IGroupByMethod;
 
 import java.util.List;
 
-public interface IGroupByCmdMethod<SELF extends IGroupByMethod, COLUMN extends Cmd> {
+public interface IGroupByCmdMethod<SELF extends IGroupByCmdMethod, COLUMN extends Cmd> {
 
     SELF groupBy(COLUMN column);
 

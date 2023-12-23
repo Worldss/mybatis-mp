@@ -3,9 +3,8 @@ package db.sql.api.cmd.executor.method.selectMethod;
 
 import db.sql.api.Getter;
 import db.sql.api.cmd.executor.ISubQuery;
-import db.sql.api.cmd.executor.method.ISelectMethod;
 
-public interface ISelectSubQueryMultiGetterMethod<SELF extends ISelectMethod> {
+public interface ISelectSubQueryMultiGetterMethod<SELF extends ISelectSubQueryMultiGetterMethod> {
 
     <T> SELF select(ISubQuery subQuery, Getter<T>... columns);
 

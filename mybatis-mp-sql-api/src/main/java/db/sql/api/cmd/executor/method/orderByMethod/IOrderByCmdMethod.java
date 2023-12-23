@@ -3,11 +3,10 @@ package db.sql.api.cmd.executor.method.orderByMethod;
 
 import db.sql.api.Cmd;
 import db.sql.api.cmd.basic.IOrderByDirection;
-import db.sql.api.cmd.executor.method.IOrderByMethod;
 
 import java.util.List;
 
-public interface IOrderByCmdMethod<SELF extends IOrderByMethod, COLUMN extends Cmd> extends IBaseOrderByMethods {
+public interface IOrderByCmdMethod<SELF extends IOrderByCmdMethod, COLUMN extends Cmd> extends IBaseOrderByMethods {
 
     default SELF orderBy(COLUMN column) {
         return this.orderBy(defaultOrderByDirection(), column);

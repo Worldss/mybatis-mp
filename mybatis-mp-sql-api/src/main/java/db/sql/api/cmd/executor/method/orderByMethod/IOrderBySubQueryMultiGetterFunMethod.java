@@ -6,11 +6,10 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.IColumnField;
 import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.executor.ISubQuery;
-import db.sql.api.cmd.executor.method.IOrderByMethod;
 
 import java.util.function.Function;
 
-public interface IOrderBySubQueryMultiGetterFunMethod<SELF extends IOrderByMethod, DATASET_FILED extends Cmd> extends IBaseOrderByMethods {
+public interface IOrderBySubQueryMultiGetterFunMethod<SELF extends IOrderBySubQueryMultiGetterFunMethod, DATASET_FILED extends Cmd> extends IBaseOrderByMethods {
 
     default <T> SELF orderByWithFun(ISubQuery subQuery, Function<DATASET_FILED[], Cmd> f, Getter<T>... columns) {
         return this.orderByWithFun(subQuery, defaultOrderByDirection(), f, columns);

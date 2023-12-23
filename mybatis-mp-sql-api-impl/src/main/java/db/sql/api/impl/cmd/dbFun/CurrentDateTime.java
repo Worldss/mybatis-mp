@@ -12,10 +12,10 @@ public class CurrentDateTime extends BasicFunction<CurrentDateTime> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.CURRENT_DATE_TIME(context.getDbType()));
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.CURRENT_DATE_TIME(context.getDbType()));
+        sqlBuilder.append(SqlConst.BRACKET_LEFT);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

@@ -31,16 +31,16 @@ public class DatasetField<T extends DatasetField<T, DATASET>, DATASET extends Da
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         // insert 直接名字
         if (parent instanceof InsertFields) {
-            sqlBuilder = sqlBuilder.append(this.getName());
+            sqlBuilder.append(this.getName());
             return sqlBuilder;
         }
 
         if (this.table.getAlias() != null) {
-            sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(this.table.getAlias()).append(SqlConst.DOT);
+            sqlBuilder.append(SqlConst.BLANK).append(this.table.getAlias()).append(SqlConst.DOT);
         } else {
-            sqlBuilder = sqlBuilder.append(SqlConst.BLANK);
+            sqlBuilder.append(SqlConst.BLANK);
         }
-        sqlBuilder = sqlBuilder.append(this.getName());
+        sqlBuilder.append(this.getName());
 
         //拼接 select 的别名
         if (parent instanceof Select) {
@@ -49,14 +49,14 @@ public class DatasetField<T extends DatasetField<T, DATASET>, DATASET extends Da
                 prefix = ((Table) getTable()).getPrefix();
             }
             if (this.getAlias() != null || prefix != null) {
-                sqlBuilder = sqlBuilder.append(SqlConst.AS(context.getDbType()));
+                sqlBuilder.append(SqlConst.AS(context.getDbType()));
                 if (prefix != null) {
-                    sqlBuilder = sqlBuilder.append(prefix);
+                    sqlBuilder.append(prefix);
                 }
                 if (this.getAlias() != null) {
-                    sqlBuilder = sqlBuilder.append(this.getAlias());
+                    sqlBuilder.append(this.getAlias());
                 } else {
-                    sqlBuilder = sqlBuilder.append(this.getName());
+                    sqlBuilder.append(this.getName());
                 }
             }
             return sqlBuilder;

@@ -3,6 +3,7 @@ package db.sql.api.impl.cmd;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.GetterColumnField;
 import db.sql.api.cmd.ICmdFactory;
 import db.sql.api.impl.cmd.basic.*;
 import db.sql.api.impl.cmd.condition.In;
@@ -32,9 +33,9 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
     }
 
     protected String tableAs(int storey, int tableNums) {
-        StringBuilder as = new StringBuilder();
-        as = as.append(this.tableAsPrefix);
-        return as.append(tableNums == 1 ? "" : tableNums).toString();
+        String as = this.tableAsPrefix +
+                (tableNums == 1 ? "" : tableNums);
+        return as;
     }
 
     public Table cacheTable(Class entity, int storey) {
@@ -61,9 +62,34 @@ public class CmdFactory extends Methods implements ICmdFactory<Table, Dataset, T
     }
 
     @Override
+    public Column column(String columnName) {
+        return new Column(columnName);
+    }
+
+    @Override
     public <T> TableField field(Getter<T> column, int storey) {
         LambdaUtil.LambdaFieldInfo fieldInfo = LambdaUtil.getFieldInfo(column);
         return this.field(fieldInfo.getType(), 1, fieldInfo.getName());
+    }
+
+    @Override
+    public <T> TableField[] fields(int storey, Getter<T>... columns) {
+        TableField[] tableFields = new TableField[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            tableFields[i] = field(columns[i], storey);
+        }
+        return tableFields;
+    }
+
+    @Override
+    public TableField[] fields(GetterColumnField... getterColumnFields) {
+        TableField[] tableFields = new TableField[getterColumnFields.length];
+        for (int i = 0; i < getterColumnFields.length; i++) {
+            GetterColumnField columnField = getterColumnFields[i];
+            GetterColumnField getterColumnField = columnField;
+            tableFields[i] = field(getterColumnField.getGetter(), getterColumnField.getStorey());
+        }
+        return tableFields;
     }
 
     public <T> TableField field(Table table, Getter<T> column) {

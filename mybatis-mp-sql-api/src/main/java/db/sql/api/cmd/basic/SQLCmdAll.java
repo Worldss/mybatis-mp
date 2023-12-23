@@ -9,7 +9,7 @@ public class SQLCmdAll implements Cmd {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(" * ");
+        sqlBuilder.append(" * ");
         return sqlBuilder;
     }
 

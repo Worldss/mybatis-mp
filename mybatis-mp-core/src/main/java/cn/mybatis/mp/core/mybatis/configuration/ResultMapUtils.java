@@ -1,5 +1,6 @@
 package cn.mybatis.mp.core.mybatis.configuration;
 
+import cn.mybatis.mp.core.NotTableClassException;
 import cn.mybatis.mp.core.db.reflect.ResultClassEntityPrefixes;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
@@ -81,16 +82,18 @@ public final class ResultMapUtils {
      * @return
      */
     private static ResultMapping createResultMapping(MybatisConfiguration configuration, Class clazz, ResultEntity resultEntity, Field field) {
-        TableInfo tableInfo = Tables.get(resultEntity.value());
+
         String targetEntityName = resultEntity.value().getName();
-        if (Objects.isNull(tableInfo)) {
+        TableInfo tableInfo;
+        try {
+            tableInfo = Tables.get(resultEntity.value());
+        } catch (NotTableClassException e) {
             throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} , the class {2} of @ResultEntity(class) is not a entity", field.getName(), clazz.getName(), targetEntityName));
         }
-
         String targetFieldName = field.getName();
         TableFieldInfo tableFieldInfo = tableInfo.getFieldInfo(targetFieldName);
         if (Objects.isNull(tableFieldInfo)) {
-            throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The field {2} can't found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
+            throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The field {2} can''t found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
         }
         return configuration.buildResultMapping(tableFieldInfo.isTableId(), field, tableFieldInfo.getColumnName(), tableFieldInfo.getTableFieldAnnotation().jdbcType(), tableFieldInfo.getTableFieldAnnotation().typeHandler());
     }
@@ -106,15 +109,19 @@ public final class ResultMapUtils {
      * @return
      */
     private static ResultMapping createResultMapping(MybatisConfiguration configuration, Class clazz, String columnPrefix, ResultEntityField resultEntityField, Field field) {
-        TableInfo tableInfo = Tables.get(resultEntityField.target());
+
         String targetEntityName = resultEntityField.target().getName();
-        if (Objects.isNull(tableInfo)) {
+        TableInfo tableInfo;
+        try {
+            tableInfo = Tables.get(resultEntityField.target());
+        } catch (NotTableClassException e) {
             throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} , the class {2} of @ResultEntityField(target::class) is not a entity", field.getName(), clazz.getName(), targetEntityName));
         }
+
         String targetFieldName = resultEntityField.property();
         TableFieldInfo tableFieldInfo = tableInfo.getFieldInfo(targetFieldName);
         if (Objects.isNull(tableFieldInfo)) {
-            throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The field {2} can't found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
+            throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The field {2} can''t found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
         }
         ResultEntity resultEntity = (ResultEntity) clazz.getAnnotation(ResultEntity.class);
         boolean isId = false;
@@ -148,11 +155,15 @@ public final class ResultMapUtils {
      * @return
      */
     private static ResultMapping createNestedResultMapping(MybatisConfiguration configuration, Class clazz, String columnPrefix, NestedResultEntity nestedResultEntity, Field field) {
-        TableInfo tableInfo = Tables.get(nestedResultEntity.target());
+
         String targetEntityName = nestedResultEntity.target().getName();
-        if (Objects.isNull(tableInfo)) {
+        TableInfo tableInfo;
+        try {
+            tableInfo = Tables.get(nestedResultEntity.target());
+        } catch (NotTableClassException e) {
             throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} , the class {2} of @NestedResultEntity(target::class) is not a entity", field.getName(), clazz.getName(), targetEntityName));
         }
+
         // 内嵌ID
         String nestedResultMapId = clazz.getName() + ".nested." + field.getName();
 
@@ -179,7 +190,7 @@ public final class ResultMapUtils {
                 }
                 TableFieldInfo tableFieldInfo = tableInfo.getFieldInfo(targetFieldName);
                 if (Objects.isNull(tableFieldInfo)) {
-                    throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The nested field {2} can't found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
+                    throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The nested field {2} can''t found in entity class {3}", field.getName(), clazz.getName(), targetFieldName, targetEntityName));
                 }
                 return configuration.buildResultMapping(tableFieldInfo.isTableId(), nestedFiled, columnPrefix + tableFieldInfo.getColumnName(), tableFieldInfo.getTableFieldAnnotation().jdbcType(), tableFieldInfo.getTableFieldAnnotation().typeHandler());
             }).collect(Collectors.toList());

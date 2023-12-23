@@ -7,16 +7,16 @@ import java.io.Serializable;
 public interface INotBetweenGetterCompare<RV> {
 
     default <T> RV notBetween(Getter<T> column, Serializable value, Serializable value2) {
-        return notBetween(column, value, value2, true);
+        return notBetween(true, column, 1, value, value2);
     }
 
-    default <T> RV notBetween(Getter<T> column, Serializable value, Serializable value2, boolean when) {
-        return this.notBetween(column, value, value2, 1, when);
+    default <T> RV notBetween(boolean when, Getter<T> column, Serializable value, Serializable value2) {
+        return this.notBetween(when, column, 1, value, value2);
     }
 
-    default <T> RV notBetween(Getter<T> column, Serializable value, Serializable value2, int storey) {
-        return notBetween(column, value, value2, storey, true);
+    default <T> RV notBetween(Getter<T> column, int storey, Serializable value, Serializable value2) {
+        return notBetween(true, column, storey, value, value2);
     }
 
-    <T> RV notBetween(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when);
+    <T> RV notBetween(boolean when, Getter<T> column, int storey, Serializable value, Serializable value2);
 }

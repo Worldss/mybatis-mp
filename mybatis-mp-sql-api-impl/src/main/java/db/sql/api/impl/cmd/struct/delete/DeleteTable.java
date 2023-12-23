@@ -23,7 +23,7 @@ public class DeleteTable implements IDeleteTable<Table> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.DELETE);
+        sqlBuilder.append(SqlConst.DELETE);
         if (this.tables == null || this.tables.length < 1) {
             return sqlBuilder;
         }
@@ -36,12 +36,12 @@ public class DeleteTable implements IDeleteTable<Table> {
         for (int i = 0; i < length; i++) {
             Table table = this.tables[i];
             if (i != 0) {
-                sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
+                sqlBuilder.append(SqlConst.DELIMITER);
             }
             if (table.getAlias() != null) {
-                sqlBuilder = sqlBuilder.append(table.getAlias());
+                sqlBuilder.append(table.getAlias());
             } else {
-                sqlBuilder = sqlBuilder.append(table.getName());
+                sqlBuilder.append(table.getName());
             }
         }
         return sqlBuilder;

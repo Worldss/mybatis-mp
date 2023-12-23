@@ -28,7 +28,7 @@ public class AllField extends DatasetField {
         if (module instanceof Select) {
             if (getTable() != null) {
                 if (getTable().getAlias() != null) {
-                    sqlBuilder = sqlBuilder.append(getTable().getAlias()).append(SqlConst.DOT);
+                    sqlBuilder.append(getTable().getAlias()).append(SqlConst.DOT);
                 }
             }
         }

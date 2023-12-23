@@ -45,18 +45,16 @@ public abstract class BaseSubQuery<Q extends BaseSubQuery> extends AbstractSubQu
     @Override
     public Q select(Class entity, int storey) {
         TableInfo tableInfo = Tables.get(entity);
-        if (tableInfo == null) {
-            return super.select(entity, storey);
-        } else {
-            List<Cmd> list = new ArrayList<>(tableInfo.getFieldSize());
-            for (int i = 0; i < tableInfo.getFieldSize(); i++) {
-                TableFieldInfo tableFieldInfo = tableInfo.getTableFieldInfos().get(i);
-                if (tableFieldInfo.getTableFieldAnnotation().select()) {
-                    list.add($.field(entity, tableFieldInfo.getField().getName(), storey));
-                }
+
+        List<Cmd> list = new ArrayList<>(tableInfo.getFieldSize());
+        for (int i = 0; i < tableInfo.getFieldSize(); i++) {
+            TableFieldInfo tableFieldInfo = tableInfo.getTableFieldInfos().get(i);
+            if (tableFieldInfo.getTableFieldAnnotation().select()) {
+                list.add($.field(entity, tableFieldInfo.getField().getName(), storey));
             }
-            this.select(list);
         }
+        this.select(list);
+
         return (Q) this;
     }
 
@@ -110,11 +108,11 @@ public abstract class BaseSubQuery<Q extends BaseSubQuery> extends AbstractSubQu
         if (parent instanceof In || parent instanceof Exists || parent instanceof With) {
             return super.sql(module, this, context, sqlBuilder);
         }
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = super.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        sqlBuilder.append(SqlConst.BRACKET_LEFT);
+        super.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         if (this.alias != null) {
-            sqlBuilder = sqlBuilder.append(SqlConst.AS(context.getDbType())).append(this.alias);
+            sqlBuilder.append(SqlConst.AS(context.getDbType())).append(this.alias);
         }
 
         return sqlBuilder;

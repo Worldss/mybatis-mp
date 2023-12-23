@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 /**
  * 外键util
  */
-public class ForeignKeyUtil {
+public final class ForeignKeyUtil {
 
     private ForeignKeyUtil() {
     }
@@ -28,7 +28,7 @@ public class ForeignKeyUtil {
      * @param secondTableStorey
      * @return
      */
-    public static final <ON extends On> Consumer<ON> buildForeignKeyOnConsumer(MybatisCmdFactory mybatisCmdFactory, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey) {
+    public static <ON extends On> Consumer<ON> buildForeignKeyOnConsumer(MybatisCmdFactory mybatisCmdFactory, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey) {
         return (on) -> {
             TableInfo mainTableInfo = Tables.get(mainTable);
             TableInfo secondTableInfo = Tables.get(secondTable);

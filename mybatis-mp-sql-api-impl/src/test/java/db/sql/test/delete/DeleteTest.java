@@ -27,11 +27,11 @@ public class DeleteTest extends BaseTest {
         );
         Table userTable2 = userTable();
         check("delete", "delete t,t2 from user t,user t2 where t.id=t2.id",
-                new Delete().delete(userTable,userTable2).from(userTable.as("t").setPrefix("_aa"),userTable2.as("t2")).eq(userTable.$("id"), userTable2.$("id"))
+                new Delete().delete(userTable, userTable2).from(userTable.as("t").setPrefix("_aa"), userTable2.as("t2")).eq(userTable.$("id"), userTable2.$("id"))
         );
 
         check("delete", "delete t,t2 from user t inner join user t2 on t.id=t2.id",
-                new Delete().delete(userTable,userTable2).from(userTable.as("t").setPrefix("_aa")).join(userTable,userTable2,on->on.eq(on.getJoin().getMainTable().$("id"), userTable2.$("id")))
+                new Delete().delete(userTable, userTable2).from(userTable.as("t").setPrefix("_aa")).join(userTable, userTable2, on -> on.eq(on.getJoin().getMainTable().$("id"), userTable2.$("id")))
         );
 
         userTable = userTable();

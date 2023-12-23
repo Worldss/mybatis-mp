@@ -5,16 +5,16 @@ import db.sql.api.Getter;
 public interface INotEmptyGetterCompare<RV> {
 
     default <T> RV notEmpty(Getter<T> column) {
-        return notEmpty(column, true);
+        return notEmpty(true, column, 1);
     }
 
-    default <T> RV notEmpty(Getter<T> column, boolean when) {
-        return this.notEmpty(column, 1, when);
+    default <T> RV notEmpty(boolean when, Getter<T> column) {
+        return this.notEmpty(when, column, 1);
     }
 
     default <T> RV notEmpty(Getter<T> column, int storey) {
-        return notEmpty(column, storey, true);
+        return notEmpty(true, column, storey);
     }
 
-    <T> RV notEmpty(Getter<T> column, int storey, boolean when);
+    <T> RV notEmpty(boolean when, Getter<T> column, int storey);
 }

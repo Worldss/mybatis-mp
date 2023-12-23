@@ -23,10 +23,10 @@ public class Multiply extends BasicFunction<Multiply> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(this.operator);
-        sqlBuilder = this.value.sql(module, this, context, sqlBuilder);
-        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
+        this.key.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(this.operator);
+        this.value.sql(module, this, context, sqlBuilder);
+        appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 

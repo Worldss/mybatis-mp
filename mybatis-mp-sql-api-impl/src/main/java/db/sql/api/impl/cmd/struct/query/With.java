@@ -17,8 +17,8 @@ public class With implements IWith<With> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.WITH).append(this.subQuery.getAlias()).append(SqlConst.AS).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = this.subQuery.sql(module, this, context, sqlBuilder).append(SqlConst.BRACKET_RIGHT);
+        sqlBuilder.append(SqlConst.WITH).append(this.subQuery.getAlias()).append(SqlConst.AS).append(SqlConst.BRACKET_LEFT);
+        this.subQuery.sql(module, this, context, sqlBuilder).append(SqlConst.BRACKET_RIGHT);
         return sqlBuilder;
     }
 

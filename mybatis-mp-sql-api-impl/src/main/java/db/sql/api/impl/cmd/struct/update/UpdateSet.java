@@ -31,9 +31,9 @@ public class UpdateSet implements IUpdateSet<TableField, Cmd> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = this.field.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.EQ);
-        sqlBuilder = this.value.sql(module, this, context, sqlBuilder);
+        this.field.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.EQ);
+        this.value.sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

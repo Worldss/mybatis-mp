@@ -8,11 +8,13 @@ import com.mybatis.mp.core.test.DO.SysRole;
 import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
+import db.sql.api.impl.cmd.basic.OrderByDirection;
 import db.sql.api.impl.cmd.dbFun.FunctionInterface;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -94,25 +96,26 @@ public class QueryTest extends BaseTest {
     public void innerJoinCursorTest() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-            Cursor<SysUser> sysUserCursor = QueryChain.of(sysUserMapper)
+            try (Cursor<SysUser> sysUserCursor = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                     .from(SysUser.class)
                     .join(SysUser.class, SysRole.class)
                     .eq(SysUser::getId, 2)
-                    .cursor();
-            assertTrue(sysUserCursor instanceof Cursor);
+                    .cursor()) {
+                assertTrue(sysUserCursor instanceof Cursor);
+                SysUser sysUser = null;
+                for (SysUser entity : sysUserCursor) {
+                    assertNull(sysUser);
+                    sysUser = entity;
+                }
+                SysUser eqSysUser = new SysUser();
+                eqSysUser.setId(2);
+                eqSysUser.setUserName("test1");
+                eqSysUser.setRole_id(1);
+                assertEquals(eqSysUser, sysUser);
+            } catch (IOException e) {
 
-            SysUser sysUser = null;
-            for (SysUser entity : sysUserCursor) {
-                assertNull(sysUser);
-                sysUser = entity;
             }
-
-            SysUser eqSysUser = new SysUser();
-            eqSysUser.setId(2);
-            eqSysUser.setUserName("test1");
-            eqSysUser.setRole_id(1);
-            assertEquals(eqSysUser, sysUser);
         }
     }
 
@@ -121,7 +124,7 @@ public class QueryTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             List<Integer> counts = QueryChain.of(sysUserMapper)
-                    .select(SysUser::getId, c -> c.count())
+                    .selectWithFun(SysUser::getId, c -> c.count())
                     .from(SysUser.class)
                     .groupBy(SysUser::getRole_id)
                     .setReturnType(Integer.TYPE)
@@ -139,7 +142,7 @@ public class QueryTest extends BaseTest {
             SysUser sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                     .from(SysUser.class)
-                    .orderBy(false, SysUser::getRole_id, SysUser::getId)
+                    .orderBy(OrderByDirection.DESC, SysUser::getRole_id, SysUser::getId)
                     .limit(1)
                     .get();
             SysUser eqSysUser = new SysUser();
@@ -155,7 +158,7 @@ public class QueryTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             Integer count = QueryChain.of(sysUserMapper)
-                    .select(SysUser::getRole_id, FunctionInterface::count)
+                    .selectWithFun(SysUser::getRole_id, FunctionInterface::count)
                     .from(SysUser.class)
                     .groupBy(SysUser::getRole_id)
                     .having(SysUser::getRole_id, c -> c.gt(0))
@@ -288,8 +291,8 @@ public class QueryTest extends BaseTest {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             List<SysUser> list = QueryChain.of(sysUserMapper)
                     .selectDistinct()
-                    .select(SysUser::getRole_id, c -> c.as("role_id"))
-                    .select(SysUser::getId, c -> c.as("id"))
+                    .selectWithFun(SysUser::getRole_id, c -> c.as("role_id"))
+                    .selectWithFun(SysUser::getId, c -> c.as("id"))
                     .from(SysUser.class)
                     .list();
             assertEquals(list.size(), 3, "selectDistinctMuti");

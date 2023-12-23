@@ -57,7 +57,7 @@ public class Where implements IWhere<Where, TableField, Cmd, Object, ConditionCh
         if (this.conditionChain == null || !this.conditionChain.hasContent()) {
             return sqlBuilder;
         }
-        sqlBuilder = sqlBuilder.append(SqlConst.WHERE);
+        sqlBuilder.append(SqlConst.WHERE);
         this.conditionChain.sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }

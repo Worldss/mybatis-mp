@@ -18,15 +18,12 @@ import java.util.Set;
 
 public class ModelUpdateContext<T extends Model> extends SQLCmdUpdateContext {
 
-    private final T value;
-
     public ModelUpdateContext(T t) {
         this(t, Collections.emptySet());
     }
 
     public ModelUpdateContext(T t, Set<String> forceUpdateFields) {
         super(createCmd(t, forceUpdateFields));
-        this.value = t;
     }
 
     private static Update createCmd(Object t, Set<String> forceUpdateFields) {
@@ -75,7 +72,7 @@ public class ModelUpdateContext<T extends Model> extends SQLCmdUpdateContext {
             }
         }};
         if (update.getWhere() == null || !update.getWhere().hasContent()) {
-            throw new RuntimeException(MessageFormat.format("model {0} can't found id", t.getClass()));
+            throw new RuntimeException(MessageFormat.format("model {0} can''t found id", t.getClass()));
         }
         return update;
     }

@@ -38,6 +38,9 @@ public class BaseTest {
         Environment environment = new Environment("Test", transactionFactory, dataSource);
         MybatisConfiguration configuration = new MybatisConfiguration(environment);
         configuration.setLogImpl(StdOutImpl.class);
+
+
+        configuration.addMapper(NoneMapper.class);
         configuration.addMapper(SysUserMapper.class);
         configuration.addMapper(SysRoleMapper.class);
         configuration.addMapper(SysUserScoreMapper.class);

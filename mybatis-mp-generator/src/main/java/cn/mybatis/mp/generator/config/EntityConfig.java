@@ -91,7 +91,6 @@ public class EntityConfig {
         typeMapping.put(JdbcType.NCHAR, String.class);
         typeMapping.put(JdbcType.NCLOB, String.class);
         typeMapping.put(JdbcType.LONGNVARCHAR, String.class);
-        typeMapping.put(JdbcType.NCLOB, String.class);
         typeMapping.put(JdbcType.DATETIMEOFFSET, OffsetDateTime.class);
         typeMapping.put(JdbcType.TIME_WITH_TIMEZONE, OffsetTime.class);
         typeMapping.put(JdbcType.TIMESTAMP_WITH_TIMEZONE, OffsetDateTime.class);
@@ -196,6 +195,7 @@ public class EntityConfig {
 
     /**
      * 设置逻辑删除代码块
+     *
      * @param logicDeleteCode
      * @return
      */

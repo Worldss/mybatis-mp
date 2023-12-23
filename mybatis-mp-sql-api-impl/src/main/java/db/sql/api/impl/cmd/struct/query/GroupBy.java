@@ -20,7 +20,7 @@ public class GroupBy implements IGroupBy<GroupBy, Cmd> {
     }
 
     @Override
-    public List<Cmd> getGroupByFiled() {
+    public List<Cmd> getGroupByFields() {
         return groupByFields;
     }
 

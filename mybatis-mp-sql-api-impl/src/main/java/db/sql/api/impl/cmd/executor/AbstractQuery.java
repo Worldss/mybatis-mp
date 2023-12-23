@@ -2,8 +2,13 @@ package db.sql.api.impl.cmd.executor;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
+import db.sql.api.cmd.ColumnField;
+import db.sql.api.cmd.GetterColumnField;
+import db.sql.api.cmd.IColumnField;
 import db.sql.api.cmd.JoinMode;
+import db.sql.api.cmd.basic.IColumn;
 import db.sql.api.cmd.basic.ICondition;
+import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.basic.UnionsCmdLists;
 import db.sql.api.cmd.executor.IQuery;
 import db.sql.api.cmd.executor.ISubQuery;
@@ -12,22 +17,20 @@ import db.sql.api.cmd.struct.query.Unions;
 import db.sql.api.cmd.struct.query.Withs;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.ConditionFactory;
-import db.sql.api.impl.cmd.basic.Dataset;
-import db.sql.api.impl.cmd.basic.DatasetField;
-import db.sql.api.impl.cmd.basic.Table;
-import db.sql.api.impl.cmd.basic.TableField;
+import db.sql.api.impl.cmd.basic.*;
 import db.sql.api.impl.cmd.struct.*;
 import db.sql.api.impl.cmd.struct.query.*;
 import db.sql.api.impl.tookit.SqlConst;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY extends CmdFactory> extends BaseExecutor<SELF, CMD_FACTORY>
+public abstract class AbstractQuery<SELF extends AbstractQuery,
+        CMD_FACTORY extends CmdFactory>
+
+        extends BaseExecutor<SELF, CMD_FACTORY>
         implements IQuery<SELF,
         Table,
         Dataset,
@@ -132,44 +135,120 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return select;
     }
 
+    /**
+     * select 列
+     *
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
+     * @return 自己
+     */
     @Override
-    public SELF select(List<Cmd> columns) {
-        this.$select().select(columns);
-        return (SELF) this;
-    }
-
-    @Override
-    public <T> SELF select(int storey, Getter<T>... columns) {
-        List<Cmd> list = new ArrayList<>(columns.length);
-        for (Getter<T> column : columns) {
-            list.add($().field(column, storey));
-        }
-        return this.select(list);
+    public <T> SELF select(Getter<T> column, int storey) {
+        return this.select($(column, storey));
     }
 
 
     /**
      * select 子查询 列
      *
-     * @param subQuery
-     * @param column
-     * @param <T>
-     * @return
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
+     * @param f      转换函数
+     * @return 自己
      */
     @Override
-    public <T> SELF select(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
-        return this.select(subQuery, $.columnName(column), f);
+    public <T> SELF selectWithFun(Getter<T> column, int storey, Function<TableField, Cmd> f) {
+        return this.select(f.apply($(column, storey)));
+    }
+
+
+    @Override
+    public <T> SELF selectWithFun(Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+        return this.select(f.apply($.fields(storey, columns)));
     }
 
     @Override
-    public SELF select(ISubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
-        DatasetField datasetField = $((Dataset) subQuery, columnName);
-        if (Objects.nonNull(f)) {
-            this.select(f.apply(datasetField));
-        } else {
-            this.select(datasetField);
-        }
-        return (SELF) this;
+    public SELF selectWithFun(Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
+        return this.select(f.apply($.fields(getterColumnFields)));
+    }
+
+    @Override
+    public <T> SELF select(int storey, Getter<T>... columns) {
+        return this.select($.fields(storey, columns));
+    }
+
+    @Override
+    public SELF select(String columnName) {
+        return this.select($.column(columnName));
+    }
+
+    @Override
+    public SELF selectWithFun(String columnName, Function<IColumn, Cmd> f) {
+        return this.select(f.apply($.column(columnName)));
+    }
+
+    /**
+     * select 子查询 列
+     *
+     * @param subQuery 子查询
+     * @param column   列
+     * @param <T>      列的实体类
+     * @return
+     */
+    @Override
+    public <T> SELF select(ISubQuery subQuery, Getter<T> column) {
+        return this.select(subQuery, $.columnName(column));
+    }
+
+    /**
+     * select 子查询 列
+     *
+     * @param subQuery 子查询
+     * @param column   列
+     * @param f        转换函数
+     * @param <T>      列的实体类
+     * @return
+     */
+    @Override
+    public <T> SELF selectWithFun(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+        return this.selectWithFun(subQuery, $.columnName(column), f);
+    }
+
+    /**
+     * select 子查询 列
+     *
+     * @param subQuery   子查询
+     * @param columnName 列
+     * @param f          转换函数
+     * @return
+     */
+    @Override
+    public SELF selectWithFun(ISubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
+        return this.select(f.apply($((Dataset) subQuery, columnName)));
+    }
+
+
+    @Override
+    public <T> SELF selectWithFun(ISubQuery subQuery, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
+        return this.select(this.apply(subQuery, f, columns));
+    }
+
+    @Override
+    public SELF selectWithFun(ISubQuery subQuery, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
+        return this.select(this.apply(subQuery, f, columnFields));
+    }
+
+    @Override
+    public SELF select(ISubQuery subQuery, String columnName) {
+        return this.select($.field((Dataset) subQuery, columnName));
+    }
+
+
+    @Override
+    public <T> SELF select(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+        return this.select(f.apply($((Dataset) subQuery, column)));
     }
 
     @Override
@@ -252,46 +331,121 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return groupBy;
     }
 
+
+    /**
+     * groupBy 列
+     *
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
+     * @return 自己
+     */
     @Override
-    public <T> SELF groupBy(Getter<T> column, int storey, Function<TableField, Cmd> f) {
-        TableField tableField = $.field(column, storey);
-        if (f != null) {
-            return this.groupBy(f.apply(tableField));
-        }
-        return this.groupBy(tableField);
+    public <T> SELF groupBy(Getter<T> column, int storey) {
+        return this.groupBy($(column, storey));
+    }
+
+
+    /**
+     * groupBy 子查询 列
+     *
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
+     * @param f      转换函数
+     * @return 自己
+     */
+    @Override
+    public <T> SELF groupByWithFun(Getter<T> column, int storey, Function<TableField, Cmd> f) {
+        return this.groupBy(f.apply($(column, storey)));
+    }
+
+
+    @Override
+    public <T> SELF groupByWithFun(Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+        return this.groupBy(f.apply($.fields(storey, columns)));
+    }
+
+    @Override
+    public SELF groupByWithFun(Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
+        return this.groupBy(f.apply($.fields(getterColumnFields)));
+    }
+
+    @Override
+    public <T> SELF groupBy(int storey, Getter<T>... columns) {
+        return this.groupBy($.fields(storey, columns));
+    }
+
+    @Override
+    public SELF groupBy(String columnName) {
+        return this.groupBy($.column(columnName));
+    }
+
+    @Override
+    public SELF groupByWithFun(String columnName, Function<IColumn, Cmd> f) {
+        return this.groupBy(f.apply($.column(columnName)));
     }
 
     /**
      * groupBy 子查询 列
      *
-     * @param subQuery
-     * @param column
-     * @param f
-     * @param <T>
+     * @param subQuery 子查询
+     * @param column   列
+     * @param <T>      列的实体类
      * @return
      */
+    @Override
+    public <T> SELF groupBy(ISubQuery subQuery, Getter<T> column) {
+        return this.groupBy(subQuery, $.columnName(column));
+    }
+
+    /**
+     * groupBy 子查询 列
+     *
+     * @param subQuery 子查询
+     * @param column   列
+     * @param f        转换函数
+     * @param <T>      列的实体类
+     * @return
+     */
+    @Override
+    public <T> SELF groupByWithFun(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+        return this.groupByWithFun(subQuery, $.columnName(column), f);
+    }
+
+    /**
+     * groupBy 子查询 列
+     *
+     * @param subQuery   子查询
+     * @param columnName 列
+     * @param f          转换函数
+     * @return
+     */
+    @Override
+    public SELF groupByWithFun(ISubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
+        return this.groupBy(f.apply($((Dataset) subQuery, columnName)));
+    }
+
+
+    @Override
+    public <T> SELF groupByWithFun(ISubQuery subQuery, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
+        return this.groupBy(this.apply(subQuery, f, columns));
+    }
+
+    @Override
+    public SELF groupByWithFun(ISubQuery subQuery, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
+        return this.groupBy(this.apply(subQuery, f, columnFields));
+    }
+
+    @Override
+    public SELF groupBy(ISubQuery subQuery, String columnName) {
+        return this.groupBy($.field((Dataset) subQuery, columnName));
+    }
+
+
     @Override
     public <T> SELF groupBy(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
-        return this.groupBy(subQuery, $.columnName(column), f);
-    }
-
-    /**
-     * groupBy 子查询 列
-     *
-     * @param subQuery
-     * @param columnName
-     * @param f
-     * @return
-     */
-    @Override
-    public SELF groupBy(ISubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
-        DatasetField datasetField = $((Dataset) subQuery, columnName);
-        if (Objects.nonNull(f)) {
-            this.groupBy(f.apply(datasetField));
-        } else {
-            this.groupBy(datasetField);
-        }
-        return (SELF) this;
+        return this.groupBy(f.apply($((Dataset) subQuery, column)));
     }
 
     @Override
@@ -304,22 +458,34 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
-    public <T> SELF havingAnd(Getter<T> column, int storey, Function<TableField, ICondition> f) {
+    public <T> SELF havingAnd(boolean when, Getter<T> column, int storey, Function<TableField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.havingAnd(f.apply($(column, storey)));
     }
 
     @Override
-    public <T> SELF havingOr(Getter<T> column, int storey, Function<TableField, ICondition> f) {
+    public <T> SELF havingOr(boolean when, Getter<T> column, int storey, Function<TableField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.havingOr(f.apply($(column, storey)));
     }
 
     @Override
-    public <T> SELF havingAnd(ISubQuery subQuery, Getter<T> column, Function<DatasetField, ICondition> f) {
+    public <T> SELF havingAnd(ISubQuery subQuery, boolean when, Getter<T> column, Function<DatasetField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.havingAnd(subQuery, $.columnName(column), f);
     }
 
     @Override
-    public <T> SELF havingOr(ISubQuery subQuery, Getter<T> column, Function<DatasetField, ICondition> f) {
+    public <T> SELF havingOr(ISubQuery subQuery, boolean when, Getter<T> column, Function<DatasetField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.havingOr(subQuery, $.columnName(column), f);
     }
 
@@ -336,6 +502,114 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     }
 
     @Override
+    public <T> SELF havingAnd(boolean when, Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.havingAnd(f.apply($.fields(storey, columns)));
+    }
+
+    @Override
+    public <T> SELF havingOr(boolean when, Function<TableField[], ICondition> f, int storey, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.havingOr(f.apply($.fields(storey, columns)));
+    }
+
+    @Override
+    public <T> SELF havingAnd(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.havingAnd(this.apply(subQuery, f, columns));
+    }
+
+    @Override
+    public <T> SELF havingOr(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.havingOr(this.apply(subQuery, f, columns));
+    }
+
+    @Override
+    public SELF havingAnd(boolean when, Function<TableField[], ICondition> f, GetterColumnField... getterColumnFields) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.havingAnd(f.apply($.fields(getterColumnFields)));
+    }
+
+    @Override
+    public SELF havingOr(boolean when, Function<TableField[], ICondition> f, GetterColumnField... getterColumnFields) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.havingOr(f.apply($.fields(getterColumnFields)));
+    }
+
+    private <T, R> R apply(ISubQuery subQuery, Function<DatasetField[], R> f, Getter<T>... columns) {
+        CmdFactory $ = (CmdFactory) subQuery.$();
+        DatasetField[] datasetFields = new DatasetField[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            datasetFields[i] = $((Dataset) subQuery, $.columnName(columns[i]));
+        }
+        return f.apply(datasetFields);
+    }
+
+
+    private <R> R apply(ISubQuery subQuery, Function<DatasetField[], R> f, IColumnField... columnFields) {
+        CmdFactory $ = (CmdFactory) subQuery.$();
+        DatasetField[] datasetFields = new DatasetField[columnFields.length];
+        for (int i = 0; i < columnFields.length; i++) {
+            IColumnField columnField = columnFields[i];
+            if (columnField instanceof ColumnField) {
+                datasetFields[i] = $((Dataset) subQuery, ((ColumnField) columnField).getColumnName());
+            } else if (columnField instanceof GetterColumnField) {
+                datasetFields[i] = $((Dataset) subQuery, $.columnName(((GetterColumnField<?>) columnField).getGetter()));
+            } else {
+                throw new RuntimeException("Not Supported");
+            }
+        }
+        return f.apply(datasetFields);
+    }
+
+    @Override
+    public SELF havingAnd(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, IColumnField... columnFields) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.havingAnd(this.apply(subQuery, f, columnFields));
+    }
+
+    @Override
+    public SELF havingOr(ISubQuery subQuery, boolean when, Function<DatasetField[], ICondition> f, IColumnField... columnFields) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.havingOr(this.apply(subQuery, f, columnFields));
+    }
+
+    @Override
+    public SELF havingAnd(ISubQuery subQuery, boolean when, String columnName, Function<DatasetField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
+        DatasetField datasetField = $((Dataset) subQuery, columnName);
+        return this.havingAnd(f.apply(datasetField));
+    }
+
+    @Override
+    public SELF havingOr(ISubQuery subQuery, boolean when, String columnName, Function<DatasetField, ICondition> f) {
+        if (!when) {
+            return (SELF) this;
+        }
+        DatasetField datasetField = $((Dataset) subQuery, columnName);
+        return this.havingOr(f.apply(datasetField));
+    }
+
+    @Override
     public OrderBy $orderBy() {
         if (orderBy == null) {
             orderBy = new OrderBy();
@@ -344,6 +618,10 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return orderBy;
     }
 
+    @Override
+    public IOrderByDirection defaultOrderByDirection() {
+        return OrderByDirection.ASC;
+    }
 
     @Override
     public ForUpdate $forUpdate() {
@@ -363,40 +641,122 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return this.limit;
     }
 
+    /**
+     * orderBy 列
+     *
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
+     * @return 自己
+     */
     @Override
-    public <T> SELF orderBy(Getter<T> column, int storey, boolean asc, Function<TableField, Cmd> f) {
-        TableField tableField = $.field(column, storey);
-        if (f != null) {
-            return this.orderBy(f.apply(tableField), asc);
-        }
-        return this.orderBy(tableField, asc);
+    public <T> SELF orderBy(IOrderByDirection orderByDirection, Getter<T> column, int storey) {
+        return this.orderBy(orderByDirection, $(column, storey));
+    }
+
+
+    /**
+     * orderBy 列
+     *
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
+     * @param f      转换函数
+     * @return 自己
+     */
+    @Override
+    public <T> SELF orderByWithFun(IOrderByDirection orderByDirection, Getter<T> column, int storey, Function<TableField, Cmd> f) {
+        return this.orderBy(orderByDirection, f.apply($(column, storey)));
+    }
+
+
+    @Override
+    public <T> SELF orderByWithFun(IOrderByDirection orderByDirection, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
+        return this.orderBy(orderByDirection, f.apply($.fields(storey, columns)));
+    }
+
+    @Override
+    public SELF orderByWithFun(IOrderByDirection orderByDirection, Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
+        return this.orderBy(orderByDirection, f.apply($.fields(getterColumnFields)));
+    }
+
+    @Override
+    public <T> SELF orderBy(IOrderByDirection orderByDirection, int storey, Getter<T>... columns) {
+        return this.orderBy(orderByDirection, $.fields(storey, columns));
+    }
+
+    @Override
+    public SELF orderBy(IOrderByDirection orderByDirection, String columnName) {
+        return this.orderBy(orderByDirection, $.column(columnName));
+    }
+
+    @Override
+    public SELF orderByWithFun(IOrderByDirection orderByDirection, String columnName, Function<IColumn, Cmd> f) {
+        return this.orderBy(orderByDirection, f.apply($.column(columnName)));
     }
 
     /**
      * orderBy 子查询 列
      *
-     * @param subQuery
-     * @param column
-     * @param asc
-     * @param f
-     * @param <T>
+     * @param subQuery 子查询
+     * @param column   列
+     * @param <T>      列的实体类
      * @return
      */
     @Override
-    public <T> SELF orderBy(ISubQuery subQuery, Getter<T> column, boolean asc, Function<DatasetField, Cmd> f) {
-        return this.orderBy(subQuery, $.columnName(column), asc, f);
+    public <T> SELF orderBy(ISubQuery subQuery, IOrderByDirection orderByDirection, Getter<T> column) {
+        return this.orderBy(subQuery, orderByDirection, $.columnName(column));
+    }
+
+    /**
+     * orderBy 子查询 列
+     *
+     * @param subQuery 子查询
+     * @param column   列
+     * @param f        转换函数
+     * @param <T>      列的实体类
+     * @return
+     */
+    @Override
+    public <T> SELF orderByWithFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Getter<T> column, Function<DatasetField, Cmd> f) {
+        return this.orderByWithFun(subQuery, orderByDirection, $.columnName(column), f);
+    }
+
+    /**
+     * orderBy 子查询 列
+     *
+     * @param subQuery   子查询
+     * @param columnName 列
+     * @param f          转换函数
+     * @return
+     */
+    @Override
+    public SELF orderByWithFun(ISubQuery subQuery, IOrderByDirection orderByDirection, String columnName, Function<DatasetField, Cmd> f) {
+        return this.orderBy(orderByDirection, f.apply($((Dataset) subQuery, columnName)));
+    }
+
+
+    @Override
+    public <T> SELF orderByWithFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
+        return this.orderBy(orderByDirection, this.apply(subQuery, f, columns));
     }
 
     @Override
-    public SELF orderBy(ISubQuery subQuery, String columnName, boolean asc, Function<DatasetField, Cmd> f) {
-        DatasetField datasetField = $((Dataset) subQuery, columnName);
-        if (Objects.nonNull(f)) {
-            this.orderBy(f.apply(datasetField), asc);
-        } else {
-            this.orderBy(datasetField, asc);
-        }
-        return (SELF) this;
+    public SELF orderByWithFun(ISubQuery subQuery, IOrderByDirection orderByDirection, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
+        return this.orderBy(orderByDirection, this.apply(subQuery, f, columnFields));
     }
+
+    @Override
+    public SELF orderBy(ISubQuery subQuery, IOrderByDirection orderByDirection, String columnName) {
+        return this.orderBy(orderByDirection, $.field((Dataset) subQuery, columnName));
+    }
+
+
+    @Override
+    public <T> SELF orderBy(ISubQuery subQuery, IOrderByDirection orderByDirection, Getter<T> column, Function<DatasetField, Cmd> f) {
+        return this.orderBy(orderByDirection, f.apply($((Dataset) subQuery, column)));
+    }
+
 
     public Unions $unions() {
         if (this.unions == null) {

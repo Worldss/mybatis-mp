@@ -5,30 +5,30 @@ import db.sql.api.Getter;
 public interface ILtGetterCompare<RV, V> {
 
     default <T> RV lt(Getter<T> column, V value) {
-        return lt(column, value, true);
+        return lt(true, column, 1, value);
     }
 
-    default <T> RV lt(Getter<T> column, V value, boolean when) {
-        return this.lt(column, value, 1, when);
+    default <T> RV lt(boolean when, Getter<T> column, V value) {
+        return this.lt(when, column, 1, value);
     }
 
-    default <T> RV lt(Getter<T> column, V value, int storey) {
-        return lt(column, value, storey, true);
+    default <T> RV lt(Getter<T> column, int storey, V value) {
+        return lt(true, column, storey, value);
     }
 
-    <T> RV lt(Getter<T> column, V value, int storey, boolean when);
+    <T> RV lt(boolean when, Getter<T> column, int storey, V value);
 
     default <T, T2> RV lt(Getter<T> column, Getter<T2> value) {
-        return lt(column, value, true);
+        return lt(true, column, value);
     }
 
-    default <T, T2> RV lt(Getter<T> column, Getter<T2> value, boolean when) {
-        return this.lt(column, 1, value, 1, when);
+    default <T, T2> RV lt(boolean when, Getter<T> column, Getter<T2> value) {
+        return this.lt(when, column, 1, value, 1);
     }
 
     default <T, T2> RV lt(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey) {
-        return lt(column, columnStorey, value, valueStorey, true);
+        return lt(true, column, columnStorey, value, valueStorey);
     }
 
-    <T, T2> RV lt(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when);
+    <T, T2> RV lt(boolean when, Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey);
 }

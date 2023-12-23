@@ -26,7 +26,7 @@ public class JoinTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             Integer count = QueryChain.of(sysUserMapper)
-                    .select(SysUser::getId, FunctionInterface::count)
+                    .selectWithFun(SysUser::getId, FunctionInterface::count)
                     .from(SysUser.class)
                     .join(SysUser.class, SysRole.class)
                     .setReturnType(Integer.TYPE)
@@ -42,7 +42,7 @@ public class JoinTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             Integer count = QueryChain.of(sysUserMapper)
-                    .select(SysUser::getId, FunctionInterface::count)
+                    .selectWithFun(SysUser::getId, FunctionInterface::count)
                     .from(SysUser.class)
                     .join(SysUser.class, SysRole.class, on -> on.eq(SysUser::getRole_id, SysRole::getId).like(SysUser::getUserName, "test1"))
                     .setReturnType(Integer.TYPE)
@@ -58,7 +58,7 @@ public class JoinTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             Integer count = QueryChain.of(sysUserMapper)
-                    .select(SysUser::getId, FunctionInterface::count)
+                    .selectWithFun(SysUser::getId, FunctionInterface::count)
                     .from(SysUser.class)
                     .join(SysUser.class, SysRole.class)
                     .setReturnType(Integer.TYPE)
@@ -92,7 +92,7 @@ public class JoinTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             Integer count = QueryChain.of(sysUserMapper)
-                    .select(SysUser::getId, FunctionInterface::count)
+                    .selectWithFun(SysUser::getId, FunctionInterface::count)
                     .from(SysUser.class)
                     .join(JoinMode.LEFT, SysUser.class, SysRole.class)
                     .setReturnType(Integer.TYPE)
@@ -106,7 +106,7 @@ public class JoinTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             Integer count = QueryChain.of(sysUserMapper)
-                    .select(SysUser::getId, FunctionInterface::count)
+                    .selectWithFun(SysUser::getId, c->c.count())
                     .from(SysUser.class)
                     .join(JoinMode.RIGHT, SysUser.class, SysRole.class)
                     .setReturnType(Integer.TYPE)
@@ -119,7 +119,7 @@ public class JoinTest extends BaseTest {
     public void fullJoin() {
 
         Query query = new Query()
-                .select(SysUser::getId, FunctionInterface::count)
+                .selectWithFun(SysUser::getId, FunctionInterface::count)
                 .from(SysUser.class)
                 .join(JoinMode.FULL, SysUser.class, SysRole.class)
                 .setReturnType(Integer.TYPE);
@@ -132,7 +132,7 @@ public class JoinTest extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             Integer count = QueryChain.of(sysUserMapper)
-                    .select(SysUser::getId, FunctionInterface::count)
+                    .selectWithFun(SysUser::getId, FunctionInterface::count)
                     .from(SysUser.class)
                     .join(JoinMode.INNER, SysUser.class, 1, SysUser.class, 2, on -> on.eq(SysUser::getId, 1, SysUser::getRole_id, 2))
                     .setReturnType(Integer.TYPE)

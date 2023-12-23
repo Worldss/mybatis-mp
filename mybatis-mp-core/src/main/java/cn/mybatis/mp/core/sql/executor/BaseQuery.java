@@ -36,18 +36,16 @@ public abstract class BaseQuery<Q extends BaseQuery> extends AbstractQuery<Q, My
     @Override
     public Q select(Class entity, int storey) {
         TableInfo tableInfo = Tables.get(entity);
-        if (tableInfo == null) {
-            return super.select(entity, storey);
-        } else {
-            List<Cmd> list = new ArrayList<>(tableInfo.getFieldSize());
-            for (int i = 0; i < tableInfo.getFieldSize(); i++) {
-                TableFieldInfo tableFieldInfo = tableInfo.getTableFieldInfos().get(i);
-                if (tableFieldInfo.getTableFieldAnnotation().select()) {
-                    list.add($.field(entity, tableFieldInfo.getField().getName(), storey));
-                }
+
+        List<Cmd> list = new ArrayList<>(tableInfo.getFieldSize());
+        for (int i = 0; i < tableInfo.getFieldSize(); i++) {
+            TableFieldInfo tableFieldInfo = tableInfo.getTableFieldInfos().get(i);
+            if (tableFieldInfo.getTableFieldAnnotation().select()) {
+                list.add($.field(entity, tableFieldInfo.getField().getName(), storey));
             }
-            this.select(list);
         }
+        this.select(list);
+
         return (Q) this;
     }
 

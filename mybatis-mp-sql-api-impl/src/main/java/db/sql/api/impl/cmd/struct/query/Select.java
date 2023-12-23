@@ -60,12 +60,12 @@ public class Select implements ISelect<Select> {
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         if (!(parent instanceof Function)) {
-            sqlBuilder = sqlBuilder.append(SqlConst.SELECT);
+            sqlBuilder.append(SqlConst.SELECT);
         }
         if (distinct) {
-            sqlBuilder = Distinct.INSTANCE.sql(module, this, context, sqlBuilder);
+            Distinct.INSTANCE.sql(module, this, context, sqlBuilder);
         }
-        sqlBuilder = CmdUtils.join(this, this, context, sqlBuilder, this.getSelectFiled(), SqlConst.DELIMITER);
+        CmdUtils.join(this, this, context, sqlBuilder, this.getSelectFiled(), SqlConst.DELIMITER);
         return sqlBuilder;
     }
 

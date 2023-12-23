@@ -17,17 +17,12 @@ import java.util.Set;
 
 public class EntityUpdateWithWhereContext<T> extends SQLCmdUpdateContext {
 
-    private final T value;
-
-
     public EntityUpdateWithWhereContext(T t, Where where) {
         this(t, where, Collections.emptySet());
     }
 
     public EntityUpdateWithWhereContext(T t, Where where, Set<String> forceUpdateFields) {
         super(createCmd(t, where, forceUpdateFields));
-        this.value = t;
-
     }
 
     private static Update createCmd(Object t, Where where, Set<String> forceUpdateFields) {

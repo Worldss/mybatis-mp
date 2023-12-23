@@ -24,13 +24,13 @@ public class DateAdd extends BasicFunction<DateAdd> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER).append(SqlConst.INTERVAL).append(this.n);
-        sqlBuilder = sqlBuilder.append(SqlConst.BLANK);
-        sqlBuilder = sqlBuilder.append(timeUnit.name(), 0, timeUnit.name().length() - 1);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
+        sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
+        this.key.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.DELIMITER).append(SqlConst.INTERVAL).append(this.n);
+        sqlBuilder.append(SqlConst.BLANK);
+        sqlBuilder.append(timeUnit.name(), 0, timeUnit.name().length() - 1);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 }

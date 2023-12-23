@@ -4,7 +4,6 @@ import cn.mybatis.mp.core.sql.executor.chain.QueryChain;
 import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
-import db.sql.api.cmd.LikeMode;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
@@ -51,6 +50,25 @@ public class DbFunTest extends BaseTest {
 
             SysUser sysUser = sysUserMapper.get(where -> where.and(SysUser::getId, c -> c.concat("x1").eq("2x1")));
             assertEquals(sysUser.getId(), 2);
+        }
+    }
+
+
+    @Test
+    public void whereAndGetterTest2() {
+        try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
+            SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
+            Integer id = QueryChain.of(sysUserMapper)
+                    .select(SysUser::getId)
+                    .from(SysUser.class)
+                    .and(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
+                    .orderByWithFun(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
+                    .groupByWithFun(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
+                    .havingAnd(c -> c[0].eq(1), SysUser::getId, SysUser::getUserName)
+                    .setReturnType(Integer.TYPE)
+                    .get();
+
+            assertEquals(id, 1);
         }
     }
 }

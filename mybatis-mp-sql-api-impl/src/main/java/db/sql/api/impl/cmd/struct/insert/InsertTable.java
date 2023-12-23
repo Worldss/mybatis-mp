@@ -22,8 +22,8 @@ public class InsertTable implements IInsertTable<Table> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.INSERT_INTO);
-        sqlBuilder = sqlBuilder.append(this.table.getName());
+        sqlBuilder.append(SqlConst.INSERT_INTO);
+        sqlBuilder.append(this.table.getName());
         return sqlBuilder;
     }
 

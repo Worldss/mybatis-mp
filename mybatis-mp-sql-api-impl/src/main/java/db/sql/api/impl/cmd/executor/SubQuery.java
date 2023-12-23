@@ -37,8 +37,8 @@ public class SubQuery extends AbstractSubQuery<SubQuery, CmdFactory> implements 
         if (parent instanceof Exists || parent instanceof In || parent instanceof With) {
             return super.sql(module, this, context, sqlBuilder);
         }
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = super.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.BRACKET_LEFT);
+        super.sql(module, this, context, sqlBuilder);
         sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.AS(context.getDbType())).append(this.alias);
         return sqlBuilder;
     }

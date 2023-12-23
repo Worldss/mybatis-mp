@@ -27,8 +27,8 @@ public class ConditionBlock implements Cmd {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(connector).append(SqlConst.BLANK);
-        sqlBuilder = this.condition.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.BLANK).append(connector).append(SqlConst.BLANK);
+        this.condition.sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

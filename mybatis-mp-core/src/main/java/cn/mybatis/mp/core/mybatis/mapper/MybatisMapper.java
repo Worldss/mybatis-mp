@@ -41,7 +41,21 @@ public interface MybatisMapper<T> {
      * @return 当个当前实体类
      */
     default T getById(Serializable id) {
-        return getById(id, null);
+        TableInfo tableInfo = this.getTableInfo();
+        Class entityType = tableInfo.getType();
+
+        QueryChain queryChain = QueryChain.of(this)
+                .from(entityType)
+                .setReturnType(entityType);
+
+        WhereUtil.appendIdWhere(queryChain.$where(), tableInfo, id);
+
+        if (tableInfo.isHasIgnoreField()) {
+            queryChain.select(entityType);
+        } else {
+            queryChain.select(queryChain.$(entityType, 1).$("*"));
+        }
+        return queryChain.get();
     }
 
     /**
@@ -60,16 +74,7 @@ public interface MybatisMapper<T> {
                 .setReturnType(entityType);
 
         WhereUtil.appendIdWhere(queryChain.$where(), tableInfo, id);
-
-        if (Objects.isNull(selectFields) || selectFields.length < 1) {
-            if (tableInfo.isHasIgnoreField()) {
-                queryChain.select(entityType);
-            } else {
-                queryChain.select(queryChain.$(entityType, 1).$("*"));
-            }
-        } else {
-            queryChain.select(selectFields);
-        }
+        queryChain.select(selectFields);
         return queryChain.get();
     }
 
@@ -442,16 +447,12 @@ public interface MybatisMapper<T> {
      * @return 返回结果列表
      */
     default List<T> list(Consumer<Where> consumer) {
-        return this.list(consumer, null);
+        return QueryChain.of(this, WhereUtil.where(consumer)).list(false);
     }
 
     default List<T> list(Consumer<Where> consumer, Getter<T>... selectFields) {
         QueryChain queryChain = QueryChain.of(this, WhereUtil.where(consumer));
-        if (Objects.isNull(selectFields) || selectFields.length < 1) {
-            queryChain.select(getEntityType());
-        } else {
-            queryChain.select(selectFields);
-        }
+        queryChain.select(getEntityType());
         return queryChain.list(false);
     }
 
@@ -542,17 +543,15 @@ public interface MybatisMapper<T> {
      * @return 分页结果
      */
     default Pager<T> paging(Consumer<Where> consumer, Pager<T> pager) {
-        return this.paging(consumer, pager, null);
+        pager.setOptimize(false);
+        return QueryChain.of(this, WhereUtil.where(consumer)).paging(pager);
     }
 
 
     default Pager<T> paging(Consumer<Where> consumer, Pager<T> pager, Getter<T>... selectFields) {
+        pager.setOptimize(false);
         QueryChain queryChain = QueryChain.of(this, WhereUtil.where(consumer));
-        if (Objects.isNull(selectFields) || selectFields.length < 1) {
-            queryChain.select(getEntityType());
-        } else {
-            queryChain.select(selectFields);
-        }
+        queryChain.select(selectFields);
         return queryChain.paging(pager);
     }
 

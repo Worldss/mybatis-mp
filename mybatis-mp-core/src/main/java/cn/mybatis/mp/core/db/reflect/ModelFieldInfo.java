@@ -28,7 +28,7 @@ public class ModelFieldInfo {
         TableInfo tableInfo = Tables.get(entity);
         this.tableFieldInfo = tableInfo.getFieldInfo(field.getName());
         if (Objects.isNull(this.tableFieldInfo)) {
-            throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The field {2} can't found in entity class {3}", field.getName(), model.getName(), field.getName(), entity.getName()));
+            throw new RuntimeException(MessageFormat.format("unable match field {0} in class {1} ,The field {2} can''t found in entity class {3}", field.getName(), model.getName(), field.getName(), entity.getName()));
         }
         this.field = field;
         this.readFieldInvoker = new GetFieldInvoker(field);

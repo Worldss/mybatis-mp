@@ -60,7 +60,7 @@ public class EntityFieldInfo {
         if (this.getColumnInfo().getDefaultValue() != null) {
             stringBuilder.append(String.format("defaultValue = \"%s\",", this.getColumnInfo().getDefaultValue().replace("\"", "\\\"")));
         }
-        stringBuilder = stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
         stringBuilder.append(")");
         return stringBuilder.toString();

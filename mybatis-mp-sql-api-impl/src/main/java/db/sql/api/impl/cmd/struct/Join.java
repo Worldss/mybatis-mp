@@ -50,9 +50,9 @@ public abstract class Join<SELF extends Join<SELF, TABLE, ON>, TABLE extends Dat
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(this.mode.getSql());
-        sqlBuilder = getSecondTable().sql(module, this, context, sqlBuilder);
-        sqlBuilder = getOn().sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.BLANK).append(this.mode.getSql());
+        getSecondTable().sql(module, this, context, sqlBuilder);
+        getOn().sql(module, this, context, sqlBuilder);
         return sqlBuilder;
     }
 

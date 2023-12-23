@@ -46,16 +46,16 @@ public class InsertFields implements IInsertFields<TableField> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(SqlConst.BRACKET_LEFT);
+        sqlBuilder.append(SqlConst.BLANK).append(SqlConst.BRACKET_LEFT);
         boolean isFirst = true;
         for (TableField tableField : this.tableFields) {
             if (!isFirst) {
-                sqlBuilder = sqlBuilder.append(SqlConst.DELIMITER);
+                sqlBuilder.append(SqlConst.DELIMITER);
             }
-            sqlBuilder = sqlBuilder.append(tableField.getName());
+            sqlBuilder.append(tableField.getName());
             isFirst = false;
         }
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT).append(SqlConst.BLANK);
         return sqlBuilder;
     }
 

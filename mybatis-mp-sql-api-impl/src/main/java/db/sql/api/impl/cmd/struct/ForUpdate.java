@@ -9,7 +9,7 @@ public class ForUpdate implements IForUpdate<ForUpdate> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.FOR_UPDATE);
+        sqlBuilder.append(SqlConst.FOR_UPDATE);
         return sqlBuilder;
     }
 

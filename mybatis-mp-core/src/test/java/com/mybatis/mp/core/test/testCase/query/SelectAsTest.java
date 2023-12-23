@@ -59,7 +59,7 @@ public class SelectAsTest extends BaseTest {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             SysUserVo sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getPassword)
-                    .select(SysUser::getId, c -> c.concat("kk").as("kk"))
+                    .selectWithFun(SysUser::getId, c -> c.concat("kk").as("kk"))
                     .from(SysUser.class)
                     .eq(SysUser::getId, 1)
                     .setReturnType(SysUserVo.class)
@@ -135,7 +135,7 @@ public class SelectAsTest extends BaseTest {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             SysUserRoleVo sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName)
-                    .select(SysUser::getUserName, c -> c.concat("aa").as("cc"))
+                    .selectWithFun(SysUser::getUserName, c -> c.concat("aa").as("cc"))
                     .select(SysRole.class)
                     .from(SysUser.class)
                     .join(SysUser.class, SysRole.class)

@@ -27,7 +27,7 @@ public abstract class From<TABLE extends Dataset> implements IFrom<TABLE> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.FROM);
+        sqlBuilder.append(SqlConst.FROM);
         return CmdUtils.join(module, this, context, sqlBuilder, this.tables, SqlConst.DELIMITER);
     }
 

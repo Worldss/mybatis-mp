@@ -16,10 +16,10 @@ public class Exists implements ICondition, Cmd {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.EXISTS);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_LEFT);
-        sqlBuilder = existsCmd.sql(module, this, context, sqlBuilder);
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        sqlBuilder.append(SqlConst.EXISTS);
+        sqlBuilder.append(SqlConst.BRACKET_LEFT);
+        existsCmd.sql(module, this, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT);
         return sqlBuilder;
     }
 

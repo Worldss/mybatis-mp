@@ -1,5 +1,6 @@
 package cn.mybatis.mp.core.sql;
 
+import cn.mybatis.mp.core.NotTableClassException;
 import cn.mybatis.mp.core.db.reflect.TableFieldInfo;
 import cn.mybatis.mp.core.db.reflect.TableInfo;
 import cn.mybatis.mp.core.db.reflect.Tables;
@@ -49,10 +50,13 @@ public class MybatisCmdFactory extends CmdFactory {
     public <T> String columnName(Getter<T> column) {
         LambdaUtil.LambdaFieldInfo fieldInfo = LambdaUtil.getFieldInfo(column);
         Class entity = fieldInfo.getType();
-        TableInfo tableInfo = Tables.get(entity);
-        if (tableInfo == null) {
+        TableInfo tableInfo;
+        try {
+            tableInfo = Tables.get(entity);
+        } catch (NotTableClassException e) {
             throw new RuntimeException(String.format("class %s is not entity", entity.getName()));
         }
+
         String filedName = fieldInfo.getName();
         TableFieldInfo tableFieldInfo = tableInfo.getFieldInfo(filedName);
         if (Objects.isNull(tableFieldInfo)) {
@@ -63,10 +67,13 @@ public class MybatisCmdFactory extends CmdFactory {
 
     @Override
     public TableField field(Class entity, String filedName, int storey) {
-        TableInfo tableInfo = Tables.get(entity);
-        if (tableInfo == null) {
+        TableInfo tableInfo;
+        try {
+            tableInfo = Tables.get(entity);
+        } catch (NotTableClassException e) {
             throw new RuntimeException(String.format("class %s is not entity", entity.getName()));
         }
+
         TableFieldInfo tableFieldInfo = tableInfo.getFieldInfo(filedName);
         if (Objects.isNull(tableFieldInfo)) {
             throw new RuntimeException(String.format("property %s is not a column", filedName));

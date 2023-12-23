@@ -30,7 +30,7 @@ public class UpdateSets implements IUpdateSets<TableField, Cmd, UpdateSet> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(SqlConst.SET);
+        sqlBuilder.append(SqlConst.SET);
         return CmdUtils.join(module, this, context, sqlBuilder, this.updateSets, SqlConst.DELIMITER);
     }
 

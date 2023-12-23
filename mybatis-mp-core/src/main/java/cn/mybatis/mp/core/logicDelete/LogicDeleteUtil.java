@@ -10,7 +10,7 @@ import cn.mybatis.mp.core.sql.executor.chain.UpdateChain;
 import cn.mybatis.mp.core.util.StringPool;
 import cn.mybatis.mp.core.util.WhereUtil;
 import cn.mybatis.mp.db.annotations.LogicDelete;
-import db.sql.api.cmd.executor.method.condition.compare.ICompare;
+import db.sql.api.cmd.executor.method.condition.ICompare;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.cmd.struct.Where;
@@ -64,7 +64,7 @@ public final class LogicDeleteUtil {
         Class type = logicDeleteFieldInfo.getField().getType();
         value = MybatisMpConfig.getDefaultValue(type, logicDelete.afterValue());
         if (value == null) {
-            throw new RuntimeException(String.format("Unable to obtain deleted value，please use MybatisMpConfig.setDefaultValue(\"s%\") to resolve it", logicDelete.afterValue()));
+            throw new RuntimeException(String.format("Unable to obtain deleted value，please use MybatisMpConfig.setDefaultValue(\"%s\") to resolve it", logicDelete.afterValue()));
         }
         return value;
     }
@@ -79,7 +79,7 @@ public final class LogicDeleteUtil {
         String deleteTimeFieldName = tableInfo.getLogicDeleteFieldInfo().getLogicDeleteAnnotation().deleteTimeField();
         TableFieldInfo deleteTimeField = tableInfo.getFieldInfo(deleteTimeFieldName);
         if (Objects.isNull(deleteTimeField)) {
-            throw new RuntimeException(String.format("the attribute: %s in @LogicDelete is not found in class: %s", deleteTimeField, tableInfo.getType().getName()));
+            throw new RuntimeException(String.format("the attribute: %s in @LogicDelete is not found in class: %s", deleteTimeFieldName, tableInfo.getType().getName()));
         }
 
         Class type = deleteTimeField.getField().getType();

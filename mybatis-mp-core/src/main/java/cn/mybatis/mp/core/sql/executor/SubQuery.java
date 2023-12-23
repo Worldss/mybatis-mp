@@ -14,11 +14,11 @@ public class SubQuery extends BaseSubQuery<SubQuery> {
         super(alias);
     }
 
-    public static final SubQuery create() {
+    public static SubQuery create() {
         return new SubQuery(null);
     }
 
-    public static final SubQuery create(String alias) {
+    public static SubQuery create(String alias) {
         return new SubQuery(alias);
     }
 }

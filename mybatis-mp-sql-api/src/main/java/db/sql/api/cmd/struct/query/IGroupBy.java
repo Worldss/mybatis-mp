@@ -24,6 +24,6 @@ public interface IGroupBy<SELF extends IGroupBy, COLUMN> extends Cmd {
         return (SELF) this;
     }
 
-    List<COLUMN> getGroupByFiled();
+    List<COLUMN> getGroupByFields();
 
 }

@@ -16,12 +16,12 @@ public class UnixTimestamp extends BasicFunction<UnixTimestamp> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
+        sqlBuilder.append(operator).append(SqlConst.BRACKET_LEFT);
         if (this.key != null) {
-            sqlBuilder = this.key.sql(module, this, context, sqlBuilder);
+            this.key.sql(module, this, context, sqlBuilder);
         }
-        sqlBuilder = sqlBuilder.append(SqlConst.BRACKET_RIGHT);
-        sqlBuilder = appendAlias(module, parent, context, sqlBuilder);
+        sqlBuilder.append(SqlConst.BRACKET_RIGHT);
+        appendAlias(module, parent, context, sqlBuilder);
         return sqlBuilder;
     }
 }

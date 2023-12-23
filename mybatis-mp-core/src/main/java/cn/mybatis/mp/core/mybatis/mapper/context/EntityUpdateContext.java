@@ -17,15 +17,12 @@ import java.util.Set;
 
 public class EntityUpdateContext<T> extends SQLCmdUpdateContext {
 
-    private final T value;
-
     public EntityUpdateContext(T t) {
         this(t, Collections.emptySet());
     }
 
     public EntityUpdateContext(T t, Set<String> forceUpdateFields) {
         super(createCmd(t, forceUpdateFields));
-        this.value = t;
     }
 
     private static Update createCmd(Object t, Set<String> forceUpdateFields) {
@@ -77,7 +74,7 @@ public class EntityUpdateContext<T> extends SQLCmdUpdateContext {
         }};
 
         if (update.getWhere() == null || !update.getWhere().hasContent()) {
-            throw new RuntimeException(MessageFormat.format("entity {0} can't found id", t.getClass()));
+            throw new RuntimeException(MessageFormat.format("entity {0} can''t found id", t.getClass()));
         }
         return update;
     }

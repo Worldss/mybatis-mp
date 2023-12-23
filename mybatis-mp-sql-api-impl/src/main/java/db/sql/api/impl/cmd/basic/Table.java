@@ -56,9 +56,9 @@ public class Table implements Dataset<Table, TableField> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder = sqlBuilder.append(getName());
+        sqlBuilder.append(getName());
         if (getAlias() != null) {
-            sqlBuilder = sqlBuilder.append(SqlConst.BLANK).append(getAlias());
+            sqlBuilder.append(SqlConst.BLANK).append(getAlias());
         }
         return sqlBuilder;
     }

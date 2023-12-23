@@ -532,7 +532,7 @@ int updateCnt=UpdateChain.of(sysUserMapper)
 queryChain()
     .select(SysUser.class)
     .select(SysRole.class)
-    .select(SysUser::getName,c->c.concat("").as("copy_name"))
+    .selectWithFun(SysUser::getName,c->c.concat("").as("copy_name"))
     .from(SysUser.class)
     .join(SysUser.class,SysRole.class)
     .eq(SysUser::getId,id)
@@ -561,7 +561,7 @@ updateChain()
 QueryChain.of(sysUserMapper)
     .select(SysUser.class)
     .select(SysRole.class)
-    .select(SysUser::getName,c->c.concat("").as("copy_name"))
+    .selectWithFun(SysUser::getName,c->c.concat("").as("copy_name"))
     .from(SysUser.class)
     .join(SysUser.class,SysRole.class)
     .eq(SysUser::getId,id)
@@ -1323,7 +1323,7 @@ SubQuery subQuery = SubQuery.create("sub")
 
 List<SysUser> list = QueryChain.of(sysUserMapper)
     .with(subQuery)
-    .select(subQuery, SysRole::getId, c -> c.as("xx"))
+    .selectWithFun(subQuery, SysRole::getId, c -> c.as("xx"))
     .select(subQuery, "id")
     .select(SysUser.class)
     .from(SysUser.class)
@@ -1354,18 +1354,18 @@ Integer count = QueryChain.of(sysUserMapper)
 ```
 
 ```java
-    select(SysUser::getId,c->c.min())
-    select(SysUser::getId,c->c.max())
-    select(SysUser::getId,c->c.avg())
+    selectWithFun(SysUser::getId,c->c.min())
+    selectWithFun(SysUser::getId,c->c.max())
+    selectWithFun(SysUser::getId,c->c.avg())
 ```
 
 ### 1.2 运算（加,减,乘,除）
 
 ```java
-select(SysUser::getId,c->c.plus(1))
-select(SysUser::getId,c->c.subtract(1))
-select(SysUser::getId,c->c.multiply(1))
-select(SysUser::getId,c->c.divide(1))
+selectWithFun(SysUser::getId,c->c.plus(1))
+selectWithFun(SysUser::getId,c->c.subtract(1))
+selectWithFun(SysUser::getId,c->c.multiply(1))
+selectWithFun(SysUser::getId,c->c.divide(1))
 ```
 
 ### 1.3 其他函数
@@ -1452,7 +1452,7 @@ SubQuery subQuery = SubQuery.create("sub")
     .eq(SysRole::getId, 1);
 
 List<SysUser> list = QueryChain.of(sysUserMapper)
-    .select(subQuery, SysRole::getId, c -> c.as("xx"))
+    .selectWithFun(subQuery, SysRole::getId, c -> c.as("xx"))
     .select(SysUser.class)
     .from(SysUser.class)
     .join(JoinMode.INNER, SysUser.class, subQuery, on -> on.eq(SysUser::getRole_id, subQuery.$(subQuery, SysRole::getId)))
@@ -1460,7 +1460,7 @@ List<SysUser> list = QueryChain.of(sysUserMapper)
     .list();
 ```
 
-> select(subQuery, SysRole::getId, c -> c.as("xx")) 返回子表的角色ID并设置别名
+> selectWithFun(subQuery, SysRole::getId, c -> c.as("xx")) 返回子表的角色ID并设置别名
 
 ### select 1 or  select *
 
@@ -1630,7 +1630,7 @@ new Query(){{
 ```java
 Integer id = QueryChain.of(sysUserMapper)
     //方法 1    
-    .select(SysUser::getId, c -> c.sin().as("x_sin"))
+    .selectWithFun(SysUser::getId, c -> c.sin().as("x_sin"))
     .from(SysUser.class)
     .eq(SysUser::getId, 2)
     //方法 2

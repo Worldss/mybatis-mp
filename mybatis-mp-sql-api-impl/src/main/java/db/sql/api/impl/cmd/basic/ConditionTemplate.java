@@ -9,6 +9,14 @@ import db.sql.api.cmd.basic.ICondition;
  */
 public class ConditionTemplate extends BaseTemplate implements ICondition {
 
+    public static ConditionTemplate create(String template, Object... params){
+        return new ConditionTemplate(template,params);
+    }
+
+    public static ConditionTemplate create(String template, Cmd... params){
+        return new ConditionTemplate(template,params);
+    }
+
     public ConditionTemplate(String template, Object... params) {
         super(template, params);
     }

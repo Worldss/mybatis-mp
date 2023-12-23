@@ -12,6 +12,7 @@ import db.sql.api.cmd.struct.*;
 import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 import db.sql.api.cmd.struct.query.*;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -124,6 +125,18 @@ public interface IQuery<SELF extends IQuery,
     @Override
     default SELF groupBy(COLUMN column) {
         $groupBy().groupBy(column);
+        return (SELF) this;
+    }
+
+    @Override
+    default SELF groupBy(COLUMN... columns) {
+        $groupBy().groupBy(columns);
+        return (SELF) this;
+    }
+
+    @Override
+    default SELF groupBy(List<COLUMN> columns) {
+        $groupBy().groupBy(columns);
         return (SELF) this;
     }
 

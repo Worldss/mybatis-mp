@@ -274,89 +274,121 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
         return groupBy;
     }
 
+
+    /**
+     * orderBy 子查询 列
+     *
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
+     * @return 自己
+     */
     @Override
-    public <T> SELF groupBy(Getter<T> column, int storey, boolean when, Function<TableField, Cmd> f) {
-        if (!when) {
-            return (SELF) this;
-        }
-        TableField tableField = $.field(column, storey);
-        if (f != null) {
-            return this.groupBy(f.apply(tableField));
-        }
-        return this.groupBy(tableField);
+    public <T> SELF groupBy(Getter<T> column, int storey) {
+        return this.groupBy($(column, storey));
     }
+
 
     /**
      * groupBy 子查询 列
      *
-     * @param subQuery
-     * @param column
-     * @param f
-     * @param <T>
-     * @return
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
+     * @return 自己
      */
     @Override
-    public <T> SELF groupBy(ISubQuery subQuery, boolean when, Getter<T> column, Function<DatasetField, Cmd> f) {
-        if (!when) {
-            return (SELF) this;
-        }
-        return this.groupBy(subQuery, $.columnName(column), f);
+    public <T> SELF groupByWithFun(Getter<T> column, int storey, Function<TableField, Cmd> f) {
+        return this.groupBy(f.apply($(column, storey)));
     }
 
-    /**
-     * groupBy 子查询 列
-     *
-     * @param subQuery
-     * @param columnName
-     * @param f
-     * @return
-     */
-    @Override
-    public SELF groupBy(ISubQuery subQuery, boolean when, String columnName, Function<DatasetField, Cmd> f) {
-        if (!when) {
-            return (SELF) this;
-        }
-        DatasetField datasetField = $((Dataset) subQuery, columnName);
-        if (Objects.nonNull(f)) {
-            this.groupBy(f.apply(datasetField));
-        } else {
-            this.groupBy(datasetField);
-        }
-        return (SELF) this;
-    }
 
     @Override
-    public <T> SELF groupByFun(boolean when, Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
-        if (!when) {
-            return (SELF) this;
-        }
+    public <T> SELF groupByWithFun(Function<TableField[], Cmd> f, int storey, Getter<T>... columns) {
         return this.groupBy(f.apply($.fields(storey, columns)));
     }
 
     @Override
-    public SELF groupByFun(boolean when, Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
-        if (!when) {
-            return (SELF) this;
-        }
+    public SELF groupByWithFun(Function<TableField[], Cmd> f, GetterColumnField... getterColumnFields) {
         return this.groupBy(f.apply($.fields(getterColumnFields)));
     }
 
     @Override
-    public <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
-        if (!when) {
-            return (SELF) this;
-        }
+    public <T> SELF groupBy(int storey, Getter<T>... columns) {
+        return this.groupBy($.fields(storey, columns));
+    }
+
+    @Override
+    public SELF groupBy(String columnName) {
+        return this.groupBy($.column(columnName));
+    }
+
+    @Override
+    public SELF groupByWithFun(String columnName, Function<IColumn, Cmd> f) {
+        return this.groupBy(f.apply($.column(columnName)));
+    }
+
+    /**
+     * groupBy 子查询 列
+     *
+     * @param subQuery 子查询
+     * @param column   列
+     * @param <T>      列的实体类
+     * @return
+     */
+    @Override
+    public <T> SELF groupBy(ISubQuery subQuery, Getter<T> column) {
+        return this.groupBy(subQuery, $.columnName(column));
+    }
+
+    /**
+     * groupBy 子查询 列
+     *
+     * @param subQuery 子查询
+     * @param column   列
+     * @param f        转换函数
+     * @param <T>      列的实体类
+     * @return
+     */
+    @Override
+    public <T> SELF groupByWithFun(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+        return this.groupByWithFun(subQuery, $.columnName(column), f);
+    }
+
+    /**
+     * groupBy 子查询 列
+     *
+     * @param subQuery   子查询
+     * @param columnName 列
+     * @param f          转换函数
+     * @return
+     */
+    @Override
+    public SELF groupByWithFun(ISubQuery subQuery, String columnName, Function<DatasetField, Cmd> f) {
+        return this.groupBy(f.apply($((Dataset) subQuery, columnName)));
+    }
+
+
+    @Override
+    public <T> SELF groupByWithFun(ISubQuery subQuery, Function<DatasetField[], Cmd> f, Getter<T>... columns) {
         return this.groupBy(this.apply(subQuery, f, columns));
     }
 
     @Override
-    public <T> SELF groupByFun(ISubQuery subQuery, boolean when, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
-        if (!when) {
-            return (SELF) this;
-        }
+    public SELF groupByWithFun(ISubQuery subQuery, Function<DatasetField[], Cmd> f, IColumnField... columnFields) {
         return this.groupBy(this.apply(subQuery, f, columnFields));
     }
 
+    @Override
+    public SELF groupBy(ISubQuery subQuery, String columnName) {
+        return this.groupBy($.field((Dataset) subQuery, columnName));
+    }
+
+
+    @Override
+    public <T> SELF groupBy(ISubQuery subQuery, Getter<T> column, Function<DatasetField, Cmd> f) {
+        return this.groupBy(f.apply($((Dataset) subQuery, column)));
+    }
 
     @Override
     public Having $having() {
@@ -554,10 +586,9 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     /**
      * orderBy 子查询 列
      *
-     * @param orderByDirection order by方向
-     * @param column           列
-     * @param storey           列存储层级
-     * @param <T>              列的实体类
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
      * @return 自己
      */
     @Override
@@ -569,10 +600,9 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     /**
      * orderBy 子查询 列
      *
-     * @param orderByDirection order by方向
-     * @param column           列
-     * @param storey           列存储层级
-     * @param <T>              列的实体类
+     * @param column 列
+     * @param storey 列存储层级
+     * @param <T>    列的实体类
      * @return 自己
      */
     @Override
@@ -609,10 +639,9 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     /**
      * orderBy 子查询 列
      *
-     * @param subQuery         子查询
-     * @param orderByDirection order by方向
-     * @param column           列
-     * @param <T>              列的实体类
+     * @param subQuery 子查询
+     * @param column   列
+     * @param <T>      列的实体类
      * @return
      */
     @Override
@@ -623,11 +652,10 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     /**
      * orderBy 子查询 列
      *
-     * @param subQuery         子查询
-     * @param orderByDirection order by方向
-     * @param column           列
-     * @param f                转换函数
-     * @param <T>              列的实体类
+     * @param subQuery 子查询
+     * @param column   列
+     * @param f        转换函数
+     * @param <T>      列的实体类
      * @return
      */
     @Override
@@ -638,10 +666,9 @@ public abstract class AbstractQuery<SELF extends AbstractQuery, CMD_FACTORY exte
     /**
      * orderBy 子查询 列
      *
-     * @param subQuery         子查询
-     * @param orderByDirection order by方向
-     * @param columnName       列
-     * @param f                转换函数
+     * @param subQuery   子查询
+     * @param columnName 列
+     * @param f          转换函数
      * @return
      */
     @Override

@@ -20,7 +20,7 @@ public class CmdTemplateTestCase extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             QueryChain queryChain = QueryChain.of(sysUserMapper);
-            queryChain.select(SysUser::getRole_id, c -> new CmdTemplate("count({0})+{1}", c, "1"));
+            queryChain.selectWithFun(SysUser::getRole_id, c -> new CmdTemplate("count({0})+{1}", c, "1"));
             queryChain.from(SysUser.class);
             queryChain.and(cs -> new ConditionTemplate("{0}+{1}={2}", cs[0], cs[1], 2), SysUser::getId, SysUser::getId);
             queryChain.setReturnType(String.class);
@@ -36,7 +36,7 @@ public class CmdTemplateTestCase extends BaseTest {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
             QueryChain queryChain = QueryChain.of(sysUserMapper);
-            queryChain.select(SysUser::getRole_id, c -> new FunTemplate("count({0})",c).plus(1).concat(1,"2",3).length());
+            queryChain.selectWithFun(SysUser::getRole_id, c -> new FunTemplate("count({0})",c).plus(1).concat(1,"2",3).length());
             queryChain.from(SysUser.class);
             queryChain.and(cs -> new ConditionTemplate("{0}+{1}={2}", cs[0], cs[1], 2), SysUser::getId, SysUser::getId);
             queryChain.setReturnType(String.class);

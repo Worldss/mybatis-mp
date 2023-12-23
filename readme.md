@@ -1017,7 +1017,7 @@ SysUser sysUser=QueryChain.of(sysUserMapper)
 
 ```java
 Integer count=QueryChain.of(sysUserMapper)
-        .select(SysUser::getRole_id,FunctionInterface::count)
+        .selectWithFun(SysUser::getRole_id,FunctionInterface::count)
         .from(SysUser.class)
         .groupBy(SysUser::getRole_id)
         .having(SysUser::getRole_id,c->c.gt(0))
@@ -1436,7 +1436,7 @@ List<SysUser> list = QueryChain.of(sysUserMapper)
 
 ```java
 Integer count = QueryChain.of(sysUserMapper)
-        .select(SysUser::getId, FunctionInterface::count)
+        .selectWithFun(SysUser::getId, FunctionInterface::count)
         .from(SysUser.class)
         .join(JoinMode.INNER, SysUser.class, 1, SysUser.class, 2, on -> on.eq(SysUser::getId, 1, SysUser::getRole_id, 2))
         .setReturnType(Integer.TYPE)

@@ -32,8 +32,6 @@ public class DbFunTest extends BaseTest {
 //
 //            Assert.assertEquals("eq", null, id);
 //        }
-
-        System.out.println(String.format("Unable to obtain deleted value，please use MybatisMpConfig.setDefaultValue(\"%s\") to resolve it", 123));
     }
 
 

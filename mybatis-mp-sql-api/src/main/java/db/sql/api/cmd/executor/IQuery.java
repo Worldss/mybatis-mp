@@ -14,7 +14,6 @@ import db.sql.api.cmd.struct.query.*;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public interface IQuery<SELF extends IQuery,
         TABLE extends DATASET,
@@ -42,7 +41,7 @@ public interface IQuery<SELF extends IQuery,
         IUNION extends IUnion
         >
         extends IWithMethod<SELF>,
-        ISelectMethod<SELF, TABLE_FIELD, DATASET_FILED,COLUMN>,
+        ISelectMethod<SELF, TABLE_FIELD, DATASET_FILED, COLUMN>,
         IFromMethod<SELF, DATASET>,
         IJoinMethod<SELF, DATASET, ON>,
         IWhereMethod<SELF, TABLE_FIELD, COLUMN, V, CONDITION_CHAIN>,

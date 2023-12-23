@@ -11,8 +11,8 @@ public class OrderByValue implements Cmd {
 
     private final IOrderByDirection orderByDirection;
 
-    public OrderByValue(IOrderByDirection orderByDirection,Cmd key) {
-        if(key instanceof IOrderByDirection){
+    public OrderByValue(IOrderByDirection orderByDirection, Cmd key) {
+        if (key instanceof IOrderByDirection) {
             throw new RuntimeException();
         }
         this.key = key;

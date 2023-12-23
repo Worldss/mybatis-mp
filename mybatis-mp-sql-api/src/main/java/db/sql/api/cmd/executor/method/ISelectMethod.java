@@ -2,18 +2,11 @@ package db.sql.api.cmd.executor.method;
 
 import db.sql.api.Cmd;
 import db.sql.api.Getter;
-import db.sql.api.cmd.GetterColumnField;
-import db.sql.api.cmd.IColumnField;
 import db.sql.api.cmd.basic.Count1;
 import db.sql.api.cmd.basic.CountAll;
 import db.sql.api.cmd.basic.SQL1;
 import db.sql.api.cmd.basic.SQLCmdAll;
-import db.sql.api.cmd.executor.ISubQuery;
-import db.sql.api.cmd.executor.method.groupByMethod.IGroupByMethods;
 import db.sql.api.cmd.executor.method.selectMethod.ISelectMethods;
-
-import java.util.List;
-import java.util.function.Function;
 
 public interface ISelectMethod<SELF extends ISelectMethod,
         TABLE_FIELD extends DATASET_FILED,
@@ -28,22 +21,22 @@ public interface ISelectMethod<SELF extends ISelectMethod,
     SELF selectDistinct();
 
     default SELF select1() {
-        this.select((COLUMN)SQL1.INSTANCE);
+        this.select((COLUMN) SQL1.INSTANCE);
         return (SELF) this;
     }
 
     default SELF selectAll() {
-        this.select((COLUMN)SQLCmdAll.INSTANCE);
+        this.select((COLUMN) SQLCmdAll.INSTANCE);
         return (SELF) this;
     }
 
     default SELF selectCount1() {
-        this.select((COLUMN)Count1.INSTANCE);
+        this.select((COLUMN) Count1.INSTANCE);
         return (SELF) this;
     }
 
     default SELF selectCountAll() {
-        this.select((COLUMN)CountAll.INSTANCE);
+        this.select((COLUMN) CountAll.INSTANCE);
         return (SELF) this;
     }
 

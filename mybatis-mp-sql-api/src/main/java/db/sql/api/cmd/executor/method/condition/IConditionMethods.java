@@ -1,7 +1,5 @@
 package db.sql.api.cmd.executor.method.condition;
 
-import db.sql.api.cmd.executor.method.condition.compare.ICompare;
-
 /**
  * 条件方法
  *

@@ -10,7 +10,7 @@ import cn.mybatis.mp.core.sql.executor.chain.UpdateChain;
 import cn.mybatis.mp.core.util.StringPool;
 import cn.mybatis.mp.core.util.WhereUtil;
 import cn.mybatis.mp.db.annotations.LogicDelete;
-import db.sql.api.cmd.executor.method.condition.compare.ICompare;
+import db.sql.api.cmd.executor.method.condition.ICompare;
 import db.sql.api.impl.cmd.CmdFactory;
 import db.sql.api.impl.cmd.basic.TableField;
 import db.sql.api.impl.cmd.struct.Where;

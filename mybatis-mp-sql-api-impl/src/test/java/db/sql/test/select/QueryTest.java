@@ -46,7 +46,7 @@ public class QueryTest extends BaseTest {
                         .or()
                         .like(userTable().$("name"), "abc")
                         .and()
-                        .notLike(userTable().$("name"), "abcd", LikeMode.LEFT)
+                        .notLike(LikeMode.LEFT,userTable().$("name"), "abcd")
                         .between(userTable().$("id"), 6, 7)
                         .notBetween(userTable().$("id"), 8, 9)
         );

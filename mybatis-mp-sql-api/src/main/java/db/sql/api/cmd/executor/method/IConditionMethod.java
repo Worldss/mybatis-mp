@@ -116,243 +116,243 @@ public interface IConditionMethod<SELF extends IConditionMethod,
     }
 
     @Override
-    default SELF eq(COLUMN column, V value, boolean when) {
-        conditionChain().eq(column, value, when);
+    default SELF eq(boolean when, COLUMN column, V value) {
+        conditionChain().eq(when, column, value);
         return (SELF) this;
     }
 
     @Override
-    default SELF ne(COLUMN column, V value, boolean when) {
-        conditionChain().ne(column, value, when);
+    default SELF ne(boolean when, COLUMN column, V value) {
+        conditionChain().ne(when, column, value);
         return (SELF) this;
     }
 
     @Override
-    default SELF gt(COLUMN column, V value, boolean when) {
-        conditionChain().gt(column, value, when);
+    default SELF gt(boolean when, COLUMN column, V value) {
+        conditionChain().gt(when, column, value);
         return (SELF) this;
     }
 
     @Override
-    default SELF gte(COLUMN column, V value, boolean when) {
-        conditionChain().gte(column, value, when);
+    default SELF gte(boolean when, COLUMN column, V value) {
+        conditionChain().gte(when, column, value);
         return (SELF) this;
     }
 
     @Override
-    default SELF lt(COLUMN column, V value, boolean when) {
-        conditionChain().lt(column, value, when);
+    default SELF lt(boolean when, COLUMN column, V value) {
+        conditionChain().lt(when, column, value);
         return (SELF) this;
     }
 
     @Override
-    default SELF lte(COLUMN column, V value, boolean when) {
-        conditionChain().lte(column, value, when);
+    default SELF lte(boolean when, COLUMN column, V value) {
+        conditionChain().lte(when, column, value);
         return (SELF) this;
     }
 
     @Override
-    default SELF between(COLUMN column, Serializable value, Serializable value2, boolean when) {
-        conditionChain().between(column, value, value2, when);
+    default SELF between(boolean when, COLUMN column, Serializable value, Serializable value2) {
+        conditionChain().between(when, column, value, value2);
         return (SELF) this;
     }
 
     @Override
-    default SELF notBetween(COLUMN column, Serializable value, Serializable value2, boolean when) {
-        conditionChain().notBetween(column, value, value2, when);
+    default SELF notBetween(boolean when, COLUMN column, Serializable value, Serializable value2) {
+        conditionChain().notBetween(when, column, value, value2);
         return (SELF) this;
     }
 
     @Override
-    default SELF like(COLUMN column, String value, LikeMode mode, boolean when) {
-        conditionChain().like(column, value, mode, when);
+    default SELF like(boolean when, LikeMode mode, COLUMN column, String value) {
+        conditionChain().like(when, mode, column, value);
         return (SELF) this;
     }
 
     @Override
-    default SELF notLike(COLUMN column, String value, LikeMode mode, boolean when) {
-        conditionChain().notLike(column, value, mode, when);
+    default SELF notLike(boolean when, LikeMode mode, COLUMN column, String value) {
+        conditionChain().notLike(when, mode, column, value);
         return (SELF) this;
     }
 
     @Override
-    default SELF isNull(COLUMN column, boolean when) {
-        conditionChain().isNull(column, when);
+    default SELF isNull(boolean when, COLUMN column) {
+        conditionChain().isNull(when, column);
         return (SELF) this;
     }
 
     @Override
-    default SELF isNotNull(COLUMN column, boolean when) {
-        conditionChain().isNotNull(column, when);
+    default SELF isNotNull(boolean when, COLUMN column) {
+        conditionChain().isNotNull(when, column);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF empty(Getter<T> column, int storey, boolean when) {
-        conditionChain().empty(column, storey, when);
+    default <T> SELF empty(boolean when, Getter<T> column, int storey) {
+        conditionChain().empty(when, column, storey);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF notEmpty(Getter<T> column, int storey, boolean when) {
-        conditionChain().notEmpty(column, storey, when);
+    default <T> SELF notEmpty(boolean when, Getter<T> column, int storey) {
+        conditionChain().notEmpty(when, column, storey);
         return (SELF) this;
     }
 
     @Override
-    default SELF empty(COLUMN column, boolean when) {
-        conditionChain().empty(column, when);
+    default SELF empty(boolean when, COLUMN column) {
+        conditionChain().empty(when, column);
         return (SELF) this;
     }
 
     @Override
-    default SELF notEmpty(COLUMN column, boolean when) {
-        conditionChain().empty(column, when);
+    default SELF notEmpty(boolean when, COLUMN column) {
+        conditionChain().empty(when, column);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF eq(Getter<T> column, V value, int storey, boolean when) {
-        conditionChain().eq(column, value, storey, when);
+    default <T> SELF eq(boolean when, Getter<T> column, int storey, V value) {
+        conditionChain().eq(when, column, storey, value);
         return (SELF) this;
     }
 
     @Override
-    default <T, T2> SELF eq(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        conditionChain().eq(column, columnStorey, value, valueStorey, when);
+    default <T, T2> SELF eq(boolean when, Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey) {
+        conditionChain().eq(when, column, columnStorey, value, valueStorey);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF ne(Getter<T> column, V value, int storey, boolean when) {
-        conditionChain().ne(column, value, storey, when);
+    default <T> SELF ne(boolean when, Getter<T> column, int storey, V value) {
+        conditionChain().ne(when, column, storey, value);
         return (SELF) this;
     }
 
     @Override
-    default <T, T2> SELF ne(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        conditionChain().ne(column, columnStorey, value, valueStorey, when);
+    default <T, T2> SELF ne(boolean when, Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey) {
+        conditionChain().ne(when, column, columnStorey, value, valueStorey);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF gt(Getter<T> column, V value, int storey, boolean when) {
-        conditionChain().gt(column, value, storey, when);
+    default <T> SELF gt(boolean when, Getter<T> column, int storey, V value) {
+        conditionChain().gt(when, column, storey, value);
         return (SELF) this;
     }
 
     @Override
-    default <T, T2> SELF gt(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        conditionChain().gt(column, columnStorey, value, valueStorey, when);
+    default <T, T2> SELF gt(boolean when, Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey) {
+        conditionChain().gt(when, column, columnStorey, value, valueStorey);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF gte(Getter<T> column, V value, int storey, boolean when) {
-        conditionChain().gte(column, value, storey, when);
+    default <T> SELF gte(boolean when, Getter<T> column, int storey, V value) {
+        conditionChain().gte(when, column, storey, value);
         return (SELF) this;
     }
 
     @Override
-    default <T, T2> SELF gte(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        conditionChain().gte(column, columnStorey, value, valueStorey, when);
+    default <T, T2> SELF gte(boolean when, Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey) {
+        conditionChain().gte(when, column, columnStorey, value, valueStorey);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF lt(Getter<T> column, V value, int storey, boolean when) {
-        conditionChain().lt(column, value, storey, when);
+    default <T> SELF lt(boolean when, Getter<T> column, int storey, V value) {
+        conditionChain().lt(when, column, storey, value);
         return (SELF) this;
     }
 
     @Override
-    default <T, T2> SELF lt(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        conditionChain().lt(column, columnStorey, value, valueStorey, when);
+    default <T, T2> SELF lt(boolean when, Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey) {
+        conditionChain().lt(when, column, columnStorey, value, valueStorey);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF lte(Getter<T> column, V value, int storey, boolean when) {
-        conditionChain().lte(column, value, storey, when);
+    default <T> SELF lte(boolean when, Getter<T> column, int storey, V value) {
+        conditionChain().lte(when, column, storey, value);
         return (SELF) this;
     }
 
     @Override
-    default <T, T2> SELF lte(Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey, boolean when) {
-        conditionChain().lte(column, columnStorey, value, valueStorey, when);
+    default <T, T2> SELF lte(boolean when, Getter<T> column, int columnStorey, Getter<T2> value, int valueStorey) {
+        conditionChain().lte(when, column, columnStorey, value, valueStorey);
         return (SELF) this;
     }
 
 
     @Override
-    default <T> SELF like(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
-        conditionChain().like(column, value, mode, storey, when);
+    default <T> SELF like(boolean when, LikeMode mode, Getter<T> column, int storey, String value) {
+        conditionChain().like(when, mode, column, storey, value);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF notLike(Getter<T> column, String value, LikeMode mode, int storey, boolean when) {
-        conditionChain().notLike(column, value, mode, storey, when);
+    default <T> SELF notLike(boolean when, LikeMode mode, Getter<T> column, int storey, String value) {
+        conditionChain().notLike(when, mode, column, storey, value);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF between(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
-        conditionChain().between(column, value, value2, storey, when);
+    default <T> SELF between(boolean when, Getter<T> column, int storey, Serializable value, Serializable value2) {
+        conditionChain().between(when, column, storey, value, value2);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF notBetween(Getter<T> column, Serializable value, Serializable value2, int storey, boolean when) {
-        conditionChain().notBetween(column, value, value2, storey, when);
+    default <T> SELF notBetween(boolean when, Getter<T> column, int storey, Serializable value, Serializable value2) {
+        conditionChain().notBetween(when, column, storey, value, value2);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF isNull(Getter<T> column, int storey, boolean when) {
-        conditionChain().isNull(column, storey, when);
+    default <T> SELF isNull(boolean when, Getter<T> column, int storey) {
+        conditionChain().isNull(when, column, storey);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF isNotNull(Getter<T> column, int storey, boolean when) {
-        conditionChain().isNotNull(column, storey, when);
+    default <T> SELF isNotNull(boolean when, Getter<T> column, int storey) {
+        conditionChain().isNotNull(when, column, storey);
         return (SELF) this;
     }
 
     @Override
-    default SELF in(COLUMN column, boolean when, IQuery query) {
-        conditionChain().in(column, when, query);
+    default SELF in(boolean when, COLUMN column, IQuery query) {
+        conditionChain().in(when, column, query);
         return (SELF) this;
     }
 
     @Override
-    default SELF in(COLUMN column, boolean when, Serializable... values) {
-        conditionChain().in(column, when, values);
+    default SELF in(boolean when, COLUMN column, Serializable... values) {
+        conditionChain().in(when, column, values);
         return (SELF) this;
     }
 
     @Override
-    default SELF in(COLUMN column, boolean when, List<Serializable> values) {
-        conditionChain().in(column, when, values);
+    default SELF in(boolean when, COLUMN column, List<Serializable> values) {
+        conditionChain().in(when, column, values);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF in(Getter<T> column, int storey, boolean when, IQuery query) {
-        conditionChain().in(column, storey, when, query);
+    default <T> SELF in(boolean when, Getter<T> column, int storey, IQuery query) {
+        conditionChain().in(when, column, storey, query);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF in(Getter<T> column, int storey, boolean when, Serializable... values) {
-        conditionChain().in(column, storey, when, values);
+    default <T> SELF in(boolean when, Getter<T> column, int storey, Serializable[] values) {
+        conditionChain().in(when, column, storey, values);
         return (SELF) this;
     }
 
     @Override
-    default <T> SELF in(Getter<T> column, int storey, boolean when, List<Serializable> values) {
-        conditionChain().in(column, storey, when, values);
+    default <T> SELF in(boolean when, Getter<T> column, int storey, List<Serializable> values) {
+        conditionChain().in(when, column, storey, values);
         return (SELF) this;
     }
 

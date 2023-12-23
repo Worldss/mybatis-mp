@@ -6,11 +6,11 @@ import db.sql.api.cmd.LikeMode;
 public interface ILikeGetterCompare<RV> {
 
     default <T> RV like(Getter<T> column, String value) {
-        return like(column, value, true);
+        return like(true, LikeMode.DEFAULT, column, 1, value);
     }
 
-    default <T> RV like(Getter<T> column, String value, boolean when) {
-        return this.like(column, value, LikeMode.DEFAULT, when);
+    default <T> RV like(boolean when, Getter<T> column, String value) {
+        return this.like(when, LikeMode.DEFAULT, column, 1, value);
     }
 
     default <T> RV like(Getter<T> column, String value, int storey) {
@@ -18,7 +18,7 @@ public interface ILikeGetterCompare<RV> {
     }
 
     default <T> RV like(Getter<T> column, String value, int storey, boolean when) {
-        return this.like(column, value, LikeMode.DEFAULT, storey, when);
+        return this.like(when, LikeMode.DEFAULT, column, storey, value);
     }
 
     default <T> RV like(Getter<T> column, String value, LikeMode mode) {
@@ -26,12 +26,12 @@ public interface ILikeGetterCompare<RV> {
     }
 
     default <T> RV like(Getter<T> column, String value, LikeMode mode, boolean when) {
-        return this.like(column, value, mode, 1, when);
+        return this.like(when, mode, column, 1, value);
     }
 
     default <T> RV like(Getter<T> column, String value, LikeMode mode, int storey) {
-        return this.like(column, value, mode, storey, true);
+        return this.like(true, mode, column, storey, value);
     }
 
-    <T> RV like(Getter<T> column, String value, LikeMode mode, int storey, boolean when);
+    <T> RV like(boolean when, LikeMode mode, Getter<T> column, int storey, String value);
 }

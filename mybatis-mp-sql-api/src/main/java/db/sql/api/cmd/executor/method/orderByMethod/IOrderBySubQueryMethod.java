@@ -2,7 +2,6 @@ package db.sql.api.cmd.executor.method.orderByMethod;
 
 
 import db.sql.api.Cmd;
-import db.sql.api.Getter;
 import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.executor.ISubQuery;
 import db.sql.api.cmd.executor.method.IOrderByMethod;

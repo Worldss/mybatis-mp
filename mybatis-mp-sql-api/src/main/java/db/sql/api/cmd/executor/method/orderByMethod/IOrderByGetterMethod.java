@@ -5,8 +5,6 @@ import db.sql.api.Getter;
 import db.sql.api.cmd.basic.IOrderByDirection;
 import db.sql.api.cmd.executor.method.IOrderByMethod;
 
-import java.util.List;
-
 public interface IOrderByGetterMethod<SELF extends IOrderByMethod> extends IBaseOrderByMethods {
 
     default <T> SELF orderBy(Getter<T> column) {
@@ -45,7 +43,7 @@ public interface IOrderByGetterMethod<SELF extends IOrderByMethod> extends IBase
     }
 
 
-    default <T> SELF orderBy(boolean when,IOrderByDirection orderByDirection,  Getter<T> column, int storey) {
+    default <T> SELF orderBy(boolean when, IOrderByDirection orderByDirection, Getter<T> column, int storey) {
         if (!when) {
             return (SELF) this;
         }

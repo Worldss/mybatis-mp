@@ -44,9 +44,9 @@ public interface MybatisMapper<T> {
         TableInfo tableInfo = this.getTableInfo();
         Class entityType = tableInfo.getType();
 
-        QueryChain queryChain = QueryChain.of(this)
-                .from(entityType)
-                .setReturnType(entityType);
+        QueryChain queryChain = QueryChain.of(this);
+        queryChain.from(entityType);
+        queryChain.setReturnType(entityType);
 
         WhereUtil.appendIdWhere(queryChain.$where(), tableInfo, id);
 
@@ -69,9 +69,9 @@ public interface MybatisMapper<T> {
         TableInfo tableInfo = this.getTableInfo();
         Class entityType = tableInfo.getType();
 
-        QueryChain queryChain = QueryChain.of(this)
-                .from(entityType)
-                .setReturnType(entityType);
+        QueryChain queryChain = QueryChain.of(this);
+        queryChain.from(entityType);
+        queryChain.setReturnType(entityType);
 
         WhereUtil.appendIdWhere(queryChain.$where(), tableInfo, id);
         queryChain.select(selectFields);

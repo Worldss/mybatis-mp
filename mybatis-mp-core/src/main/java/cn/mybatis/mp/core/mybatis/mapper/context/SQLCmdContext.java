@@ -7,7 +7,7 @@ public interface SQLCmdContext<E extends Executor> {
 
     E getExecution();
 
-    StringBuilder sql(String dbType);
+    String sql(String dbType);
 
     Object[] getSQLCmdParams();
 }

@@ -26,7 +26,7 @@ public class SQLCmdSqlSource implements SqlSource {
 
     @Override
     public BoundSql getBoundSql(Object parameterObject) {
-        StringBuilder sql;
+        String sql;
         switch (providerMethod.getName()) {
             case MybatisSQLProvider.QUERY_NAME: {
                 sql = MybatisSQLProvider.cmdQuery((SQLCmdQueryContext) parameterObject, providerContext);
@@ -56,6 +56,6 @@ public class SQLCmdSqlSource implements SqlSource {
                 throw new RuntimeException("Unadapted");
             }
         }
-        return new BoundSql(this.configuration, sql.toString(), Collections.emptyList(), parameterObject);
+        return new BoundSql(this.configuration, sql, Collections.emptyList(), parameterObject);
     }
 }

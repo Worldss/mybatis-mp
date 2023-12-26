@@ -16,12 +16,12 @@ public class SQLCmdCountFromQueryContext extends SQLCmdQueryContext {
     }
 
     @Override
-    public StringBuilder sql(String dbType) {
+    public String sql(String dbType) {
         if (Objects.nonNull(sql)) {
             return sql;
         }
         sqlBuilderContext = new MybatisSqlBuilderContext(DbType.getByName(dbType), SQLMode.PREPARED);
-        sql = MybatisMpConfig.getQuerySQLBuilder().buildCountSQLFromQuery(execution, sqlBuilderContext, this.isOptimize());
+        sql = MybatisMpConfig.getQuerySQLBuilder().buildCountSQLFromQuery(execution, sqlBuilderContext, this.isOptimize()).toString();
         return sql;
     }
 }

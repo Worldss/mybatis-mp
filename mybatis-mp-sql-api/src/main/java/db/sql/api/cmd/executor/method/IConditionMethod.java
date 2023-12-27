@@ -41,12 +41,33 @@ public interface IConditionMethod<SELF extends IConditionMethod,
         return this.and(column, 1, function);
     }
 
+    default <T> SELF and(boolean when, Getter<T> column, Function<TABLE_FIELD, ICondition> function) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.and(column, 1, function);
+    }
+
     default <T> SELF and(Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function) {
         conditionChain().and(column, storey, function);
         return (SELF) this;
     }
 
+    default <T> SELF and(boolean when, Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.and(column, storey, function);
+    }
+
     default <T> SELF or(Getter<T> column, Function<TABLE_FIELD, ICondition> function) {
+        return this.or(column, 1, function);
+    }
+
+    default <T> SELF or(boolean when, Getter<T> column, Function<TABLE_FIELD, ICondition> function) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.or(column, 1, function);
     }
 
@@ -55,7 +76,21 @@ public interface IConditionMethod<SELF extends IConditionMethod,
         return (SELF) this;
     }
 
+    default <T> SELF or(boolean when, Getter<T> column, int storey, Function<TABLE_FIELD, ICondition> function) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.or(column, storey, function);
+    }
+
     default <T> SELF and(Function<TABLE_FIELD[], ICondition> function, Getter<T>... columns) {
+        return this.and(function, 1, columns);
+    }
+
+    default <T> SELF and(boolean when, Function<TABLE_FIELD[], ICondition> function, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
         return this.and(function, 1, columns);
     }
 
@@ -64,11 +99,34 @@ public interface IConditionMethod<SELF extends IConditionMethod,
         return (SELF) this;
     }
 
+    default <T> SELF and(boolean when, Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
+        conditionChain().and(function, storey, columns);
+        return (SELF) this;
+    }
+
     default <T> SELF or(Function<TABLE_FIELD[], ICondition> function, Getter<T>... columns) {
         return this.or(function, 1, columns);
     }
 
+    default <T> SELF or(boolean when, Function<TABLE_FIELD[], ICondition> function, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
+        return this.or(function, 1, columns);
+    }
+
     default <T> SELF or(Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns) {
+        conditionChain().or(function, storey, columns);
+        return (SELF) this;
+    }
+
+    default <T> SELF or(boolean when, Function<TABLE_FIELD[], ICondition> function, int storey, Getter<T>... columns) {
+        if (!when) {
+            return (SELF) this;
+        }
         conditionChain().or(function, storey, columns);
         return (SELF) this;
     }

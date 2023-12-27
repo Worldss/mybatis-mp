@@ -24,6 +24,7 @@ import db.sql.api.impl.tookit.SqlConst;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -287,6 +288,13 @@ public abstract class AbstractQuery<SELF extends AbstractQuery,
     public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, Consumer<OnDataset> consumer) {
         consumer = this.joinEntityIntercept(mainTable, mainTableStorey, secondTable, secondTableStorey, consumer);
         return this.join(mode, $(mainTable, mainTableStorey), $(secondTable, secondTableStorey), consumer);
+    }
+
+    @Override
+    public SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, BiConsumer<Table, OnDataset> consumer) {
+        return this.join(mode, mainTable, mainTableStorey, secondTable, secondTableStorey, (on) -> {
+            consumer.accept((Table) on.getJoin().getSecondTable(), on);
+        });
     }
 
     @Override

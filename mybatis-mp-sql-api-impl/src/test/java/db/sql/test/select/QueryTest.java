@@ -150,5 +150,11 @@ public class QueryTest extends BaseTest {
                 .select(subQuery, "id")
         );
 
+
+
+        check("forceIndex测试", "from user t force index(aa) inner join role t2 force index(bb) on id=t2.id", new Query()
+                .from(userTable().as("t").forceIndex("aa")).join(userTable(),roleTable().as("t2").forceIndex("bb"),on->{
+                    on.eq(on.getJoin().getMainTable().$("id"),on.getJoin().getSecondTable().$("id"));
+                }));
     }
 }

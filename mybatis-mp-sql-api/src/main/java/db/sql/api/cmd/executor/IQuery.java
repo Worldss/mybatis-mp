@@ -13,6 +13,7 @@ import db.sql.api.cmd.struct.conditionChain.IConditionChain;
 import db.sql.api.cmd.struct.query.*;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public interface IQuery<SELF extends IQuery,
@@ -107,6 +108,21 @@ public interface IQuery<SELF extends IQuery,
     @Override
     default SELF from(DATASET... tables) {
         $from(tables);
+        return (SELF) this;
+    }
+
+    default SELF join(Class mainTable, Class secondTable, BiConsumer<TABLE, ON> consumer) {
+        return this.join(JoinMode.INNER, mainTable, secondTable, consumer);
+    }
+
+    default SELF join(JoinMode mode, Class mainTable, Class secondTable, BiConsumer<TABLE, ON> consumer) {
+        return this.join(mode, mainTable, 1, secondTable, 1, consumer);
+    }
+
+    SELF join(JoinMode mode, Class mainTable, int mainTableStorey, Class secondTable, int secondTableStorey, BiConsumer<TABLE, ON> consumer);
+
+    default SELF where(Consumer<WHERE> whereConsumer) {
+        whereConsumer.accept($where());
         return (SELF) this;
     }
 

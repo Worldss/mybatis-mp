@@ -31,10 +31,12 @@ public class MybatisConfiguration extends Configuration {
 
     public MybatisConfiguration() {
         super();
+        this.setDefaultScriptingLanguage(MybatisLanguageDriver.class);
     }
 
     public MybatisConfiguration(Environment environment) {
         super(environment);
+        this.setDefaultScriptingLanguage(MybatisLanguageDriver.class);
     }
 
     public void printBanner() {
@@ -64,9 +66,7 @@ public class MybatisConfiguration extends Configuration {
 
     @Override
     public void addMappedStatement(MappedStatement ms) {
-        TableIdGeneratorWrapper.addEntityKeyGenerator(ms);
-        ResultMapWrapper.replaceResultMap(ms);
-        super.addMappedStatement(ms);
+        super.addMappedStatement(MappedStatementUtil.wrap(ms));
     }
 
     @Override

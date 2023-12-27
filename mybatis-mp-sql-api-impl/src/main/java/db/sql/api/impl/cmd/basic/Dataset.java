@@ -24,4 +24,8 @@ public interface Dataset<T extends Dataset, FIELD extends DatasetField> extends 
     default AllField $allField() {
         return new AllField(this);
     }
+
+    default T forceIndex(String forceIndex) {
+        throw new RuntimeException("Not supported");
+    }
 }

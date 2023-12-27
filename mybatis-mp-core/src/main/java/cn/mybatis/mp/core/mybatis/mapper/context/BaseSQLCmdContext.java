@@ -14,7 +14,7 @@ public abstract class BaseSQLCmdContext<E extends Executor> implements SQLCmdCon
 
     protected MybatisSqlBuilderContext sqlBuilderContext;
 
-    protected StringBuilder sql;
+    protected String sql;
 
     public BaseSQLCmdContext(E execution) {
         this.execution = execution;
@@ -26,12 +26,12 @@ public abstract class BaseSQLCmdContext<E extends Executor> implements SQLCmdCon
     }
 
     @Override
-    public StringBuilder sql(String dbType) {
+    public String sql(String dbType) {
         if (Objects.nonNull(sql)) {
             return sql;
         }
         sqlBuilderContext = new MybatisSqlBuilderContext(DbType.getByName(dbType), SQLMode.PREPARED);
-        sql = execution.sql(sqlBuilderContext, new StringBuilder());
+        sql = execution.sql(sqlBuilderContext, new StringBuilder()).toString();
         return sql;
     }
 

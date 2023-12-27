@@ -8,6 +8,7 @@ import com.mybatis.mp.core.test.DO.SysRole;
 import com.mybatis.mp.core.test.DO.SysUser;
 import com.mybatis.mp.core.test.mapper.SysUserMapper;
 import com.mybatis.mp.core.test.testCase.BaseTest;
+import db.sql.api.DbType;
 import db.sql.api.impl.cmd.basic.OrderByDirection;
 import db.sql.api.impl.cmd.dbFun.FunctionInterface;
 import org.apache.ibatis.cursor.Cursor;
@@ -27,7 +28,6 @@ public class QueryTest extends BaseTest {
     public void simpleSelect() {
         try (SqlSession session = this.sqlSessionFactory.openSession(false)) {
             SysUserMapper sysUserMapper = session.getMapper(SysUserMapper.class);
-
             SysUser sysUser = QueryChain.of(sysUserMapper)
                     .select(SysUser::getId, SysUser::getUserName, SysUser::getRole_id)
                     .from(SysUser.class)

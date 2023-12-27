@@ -55,9 +55,7 @@ public class EntityInfo {
         }
         List<EntityFieldInfo> fieldInfoList = tableInfo.getColumnInfoList().stream().map(item -> new EntityFieldInfo(generatorConfig, this, item)).collect(Collectors.toList());
 
-        this.excludeFieldInfoList = fieldInfoList.stream().filter(item -> {
-            return generatorConfig.getColumnConfig().getExcludeColumns().contains(item.getColumnInfo().getName()) || generatorConfig.getColumnConfig().getExcludeColumns().contains(item.getColumnInfo().getName().toUpperCase());
-        }).collect(Collectors.toList());
+        this.excludeFieldInfoList = fieldInfoList.stream().filter(item -> generatorConfig.getColumnConfig().getExcludeColumns().contains(item.getColumnInfo().getName()) || generatorConfig.getColumnConfig().getExcludeColumns().contains(item.getColumnInfo().getName().toUpperCase())).collect(Collectors.toList());
 
         fieldInfoList.removeAll(this.excludeFieldInfoList);
         this.fieldInfoList = fieldInfoList;

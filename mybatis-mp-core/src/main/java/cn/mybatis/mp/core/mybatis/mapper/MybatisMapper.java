@@ -37,16 +37,16 @@ public interface MybatisMapper<T> {
     /**
      * 根据ID查询
      *
-     * @param id
+     * @param id ID
      * @return 当个当前实体类
      */
     default T getById(Serializable id) {
         TableInfo tableInfo = this.getTableInfo();
-        Class entityType = tableInfo.getType();
+        Class<T> entityType = tableInfo.getType();
 
-        QueryChain queryChain = QueryChain.of(this)
-                .from(entityType)
-                .setReturnType(entityType);
+        QueryChain queryChain = QueryChain.of(this);
+        queryChain.from(entityType);
+        queryChain.setReturnType(entityType);
 
         WhereUtil.appendIdWhere(queryChain.$where(), tableInfo, id);
 
@@ -61,17 +61,17 @@ public interface MybatisMapper<T> {
     /**
      * 根据ID查询，只返回指定列
      *
-     * @param id
+     * @param id ID
      * @param selectFields select列
      * @return 当个当前实体类
      */
     default T getById(Serializable id, Getter<T>... selectFields) {
         TableInfo tableInfo = this.getTableInfo();
-        Class entityType = tableInfo.getType();
+        Class<T> entityType = tableInfo.getType();
 
-        QueryChain queryChain = QueryChain.of(this)
-                .from(entityType)
-                .setReturnType(entityType);
+        QueryChain queryChain = QueryChain.of(this);
+        queryChain.from(entityType);
+        queryChain.setReturnType(entityType);
 
         WhereUtil.appendIdWhere(queryChain.$where(), tableInfo, id);
         queryChain.select(selectFields);
@@ -82,8 +82,8 @@ public interface MybatisMapper<T> {
     /**
      * 根据实体类删除
      *
-     * @param entity
-     * @return
+     * @param entity 实体类实例
+     * @return 影响的数量
      */
     default int delete(T entity) {
         if (Objects.isNull(entity)) {
@@ -95,7 +95,7 @@ public interface MybatisMapper<T> {
     /**
      * 多个删除
      *
-     * @param list
+     * @param list 实体类实例list
      * @return 修改条数
      */
     default int delete(List<T> list) {
@@ -112,43 +112,37 @@ public interface MybatisMapper<T> {
     /**
      * 根据id删除
      *
-     * @param id
-     * @return
+     * @param id ID
+     * @return 影响的数量
      */
     default int deleteById(Serializable id) {
-        return this.delete(where -> {
-            WhereUtil.appendIdWhere(where, getTableInfo(), id);
-        });
+        return this.delete(where -> WhereUtil.appendIdWhere(where, getTableInfo(), id));
     }
 
     /**
      * 批量删除多个
      *
-     * @param ids
-     * @return
+     * @param ids 多个ID
+     * @return 影响的数量
      */
     default int deleteByIds(Serializable... ids) {
         if (ids == null || ids.length < 1) {
             throw new RuntimeException("ids array can't be empty");
         }
-        return this.delete(where -> {
-            WhereUtil.appendIdsWhere(where, getTableInfo(), ids);
-        });
+        return this.delete(where -> WhereUtil.appendIdsWhere(where, getTableInfo(), ids));
     }
 
     /**
      * 批量删除多个
      *
-     * @param ids
-     * @return
+     * @param ids 多个ID
+     * @return 影响数量
      */
     default int deleteByIds(List<Serializable> ids) {
         if (ids == null || ids.isEmpty()) {
             throw new RuntimeException("ids list can't be empty");
         }
-        return this.delete(where -> {
-            WhereUtil.appendIdsWhere(where, getTableInfo(), ids);
-        });
+        return this.delete(where -> WhereUtil.appendIdsWhere(where, getTableInfo(), ids));
     }
 
 
@@ -159,7 +153,7 @@ public interface MybatisMapper<T> {
             throw new RuntimeException("delete has on where condition content ");
         }
         TableInfo tableInfo = this.getTableInfo();
-        Class entityType = tableInfo.getType();
+        Class<T> entityType = tableInfo.getType();
 
         if (LogicDeleteUtil.isNeedLogicDelete(tableInfo)) {
             //逻辑删除处理
@@ -188,7 +182,7 @@ public interface MybatisMapper<T> {
     /**
      * 获取表信息
      *
-     * @return
+     * @return 表信息
      */
     TableInfo getTableInfo();
 
@@ -215,7 +209,7 @@ public interface MybatisMapper<T> {
     /**
      * 动态查询 返回单个当前实体
      *
-     * @param query
+     * @param query 查询query
      * @return 单个当前实体
      */
 
@@ -226,9 +220,9 @@ public interface MybatisMapper<T> {
     /**
      * 动态查询
      *
-     * @param query
+     * @param query 查询query
      * @param optimize 是否优化
-     * @param <R>
+     * @param <R> 返回的类型
      * @return 返回单个当前实体
      */
     default <R> R get(BaseQuery query, boolean optimize) {
@@ -249,7 +243,7 @@ public interface MybatisMapper<T> {
     /**
      * 是否存在
      *
-     * @param query
+     * @param query 子查询
      * @param optimize 是否优化
      * @return
      */
@@ -615,9 +609,7 @@ public interface MybatisMapper<T> {
      * @return 一个map
      */
     default <K> Map<K, T> mapWithKey(Getter<T> mapKey, List<Serializable> ids) {
-        return this.mapWithKey(mapKey, where -> {
-            WhereUtil.appendIdsWhere(where, getTableInfo(), ids);
-        });
+        return this.mapWithKey(mapKey, where -> WhereUtil.appendIdsWhere(where, getTableInfo(), ids));
     }
 
     /**
@@ -641,9 +633,7 @@ public interface MybatisMapper<T> {
      * @return 一个map
      */
     default <K> Map<K, T> mapWithKey(String mapKey, List<Serializable> ids) {
-        return this.mapWithKey(mapKey, where -> {
-            WhereUtil.appendIdsWhere(where, getTableInfo(), ids);
-        });
+        return this.mapWithKey(mapKey, where -> WhereUtil.appendIdsWhere(where, getTableInfo(), ids));
     }
 
     /**
@@ -707,7 +697,7 @@ public interface MybatisMapper<T> {
      * @param <V>      map的value
      * @return
      */
-    default <K, V, G> Map<K, V> mapWithKey(String mapKey, BaseQuery query, boolean optimize) {
+    default <K, V> Map<K, V> mapWithKey(String mapKey, BaseQuery query, boolean optimize) {
         return this.$mapWithKey(new MapKeySQLCmdQueryContext(mapKey, query, optimize));
     }
 
@@ -809,10 +799,10 @@ public interface MybatisMapper<T> {
     /**
      * 将结果转成map
      *
-     * @param queryContext
-     * @param <K>
-     * @param <V>
-     * @return
+     * @param queryContext 查询上下文
+     * @param <K> 指定返回map的key的属性
+     * @param <V> 指定返回map的value的类型
+     * @return map
      */
     @SelectProvider(type = MybatisSQLProvider.class, method = MybatisSQLProvider.QUERY_NAME)
     <K, V> Map<K, V> $mapWithKey(MapKeySQLCmdQueryContext queryContext);

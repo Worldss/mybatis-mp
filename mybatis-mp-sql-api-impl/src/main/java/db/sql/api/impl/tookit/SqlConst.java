@@ -14,6 +14,8 @@ public final class SqlConst {
 
     public static final String UNION_ALL = " UNION ALL ";
 
+    public static final String FORCE_INDEX = " FORCE INDEX";
+
     public static final String WITH = " WITH ";
 
     public static final String ALL = "*";

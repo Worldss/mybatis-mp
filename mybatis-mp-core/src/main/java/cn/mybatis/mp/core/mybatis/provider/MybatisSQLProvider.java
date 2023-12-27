@@ -23,15 +23,15 @@ public class MybatisSQLProvider {
 
     }
 
-    public static StringBuilder save(SQLCmdInsertContext insertContext, ProviderContext providerContext) {
+    public static String save(SQLCmdInsertContext insertContext, ProviderContext providerContext) {
         return insertContext.sql(providerContext.getDatabaseId());
     }
 
-    public static StringBuilder update(SQLCmdUpdateContext updateContext, ProviderContext providerContext) {
+    public static String update(SQLCmdUpdateContext updateContext, ProviderContext providerContext) {
         return updateContext.sql(providerContext.getDatabaseId());
     }
 
-    public static StringBuilder delete(SQLCmdDeleteContext deleteContext, ProviderContext providerContext) {
+    public static String delete(SQLCmdDeleteContext deleteContext, ProviderContext providerContext) {
         return deleteContext.sql(providerContext.getDatabaseId());
     }
 
@@ -61,16 +61,16 @@ public class MybatisSQLProvider {
     }
 
 
-    public static StringBuilder countFromQuery(SQLCmdCountFromQueryContext queryContext, ProviderContext providerContext) {
+    public static String countFromQuery(SQLCmdCountFromQueryContext queryContext, ProviderContext providerContext) {
         return queryContext.sql(providerContext.getDatabaseId());
     }
 
-    public static StringBuilder cmdQuery(SQLCmdQueryContext queryContext, ProviderContext providerContext) {
+    public static String cmdQuery(SQLCmdQueryContext queryContext, ProviderContext providerContext) {
         handlerPrefixMapping(queryContext);
         return queryContext.sql(providerContext.getDatabaseId());
     }
 
-    public static StringBuilder cmdCount(SQLCmdCountQueryContext queryContext, ProviderContext providerContext) {
+    public static String cmdCount(SQLCmdCountQueryContext queryContext, ProviderContext providerContext) {
         return queryContext.sql(providerContext.getDatabaseId());
     }
 }

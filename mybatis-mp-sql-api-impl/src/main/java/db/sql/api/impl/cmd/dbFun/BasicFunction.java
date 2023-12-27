@@ -18,17 +18,15 @@ public abstract class BasicFunction<T extends BasicFunction> extends Field<Basic
         this.key = key;
     }
 
-    protected StringBuilder appendAlias(Cmd module, Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
+    protected void appendAlias(Cmd module, Cmd user, SqlBuilderContext context, StringBuilder sqlBuilder) {
         //拼接 select 的别名
         if (module instanceof Select && user instanceof Select) {
             if (this.getAlias() != null) {
                 sqlBuilder.append(SqlConst.AS(context.getDbType()));
                 sqlBuilder.append(this.getAlias());
             }
-            return sqlBuilder;
-        }
 
-        return sqlBuilder;
+        }
     }
 
     @Override

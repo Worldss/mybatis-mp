@@ -101,6 +101,9 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
         this.fromEntityIntercept(entity, storey);
         Table table = this.$.table(entity, storey);
         this.from(table);
+        if (Objects.nonNull(consumer)) {
+            consumer.accept(table);
+        }
         return (SELF) this;
     }
 

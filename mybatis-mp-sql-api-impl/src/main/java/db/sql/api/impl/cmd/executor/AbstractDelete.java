@@ -97,24 +97,16 @@ public abstract class AbstractDelete<SELF extends AbstractDelete, CMD_FACTORY ex
     }
 
     @Override
-    public SELF from(Class entity, int storey) {
-        return this.from(entity, storey, null);
-    }
-
-    public SELF from(Class entity, Consumer<Table> consumer) {
-        return this.from(entity, 1, consumer);
-    }
-
-
     public SELF from(Class entity, int storey, Consumer<Table> consumer) {
         this.fromEntityIntercept(entity, storey);
-        Table table = $(entity, storey);
+        Table table = this.$.table(entity, storey);
         this.from(table);
-        if (Objects.nonNull(consumer)) {
+        if(Objects.nonNull(consumer)){
             consumer.accept(table);
         }
         return (SELF) this;
     }
+
     @Override
     public JoinTable $join(JoinMode mode, Table mainTable, Table secondTable) {
         JoinTable join = new JoinTable(mode, mainTable, secondTable, (joinTable) -> new OnTable(conditionFactory, joinTable));

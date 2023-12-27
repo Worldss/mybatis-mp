@@ -46,7 +46,6 @@ public class Table implements Dataset<Table, TableField> {
         return as(alias);
     }
 
-
     public Table as(String alias) {
         this.alias = alias;
         return this;

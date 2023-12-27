@@ -17,9 +17,15 @@ public interface IFromMethod<SELF extends IFromMethod, TABLE> {
         return (SELF) this;
     }
 
-    SELF from(Class entity, int storey);
+    default SELF from(Class entity, int storey) {
+        return this.from(entity, storey, null);
+    }
 
+    default SELF from(Class entity, Consumer<TABLE> consumer) {
+        return this.from(entity, 1, consumer);
+    }
 
+    SELF from(Class entity, int storey, Consumer<TABLE> consumer);
 
     /**
      * 实体类拦截

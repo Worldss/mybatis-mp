@@ -125,9 +125,7 @@ public final class LogicDeleteUtil {
     private static UpdateChain buildCommonUpdateChain(MybatisMapper mapper, TableInfo tableInfo) {
         return UpdateChain.of(mapper)
                 .update(tableInfo.getType())
-                .connect(self -> {
-                    LogicDeleteUtil.addLogicDeleteUpdateSets(self, tableInfo);
-                });
+                .connect(self -> LogicDeleteUtil.addLogicDeleteUpdateSets(self, tableInfo));
     }
 
     /**

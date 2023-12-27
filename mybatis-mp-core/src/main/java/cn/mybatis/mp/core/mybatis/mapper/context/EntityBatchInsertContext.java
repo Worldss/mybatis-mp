@@ -35,7 +35,7 @@ public class EntityBatchInsertContext<T> extends SQLCmdInsertContext<AbstractIns
         insert.insert(table);
 
 
-        List<TableFieldInfo> saveFieldInfoSet = saveFieldSet.stream().map(item -> tableInfo.getFieldInfo(item)).collect(Collectors.toList());
+        List<TableFieldInfo> saveFieldInfoSet = saveFieldSet.stream().map(tableInfo::getFieldInfo).collect(Collectors.toList());
 
         TableId tableId = null;
 

@@ -609,9 +609,7 @@ public interface MybatisMapper<T> {
      * @return 一个map
      */
     default <K> Map<K, T> mapWithKey(Getter<T> mapKey, List<Serializable> ids) {
-        return this.mapWithKey(mapKey, where -> {
-            WhereUtil.appendIdsWhere(where, getTableInfo(), ids);
-        });
+        return this.mapWithKey(mapKey, where -> WhereUtil.appendIdsWhere(where, getTableInfo(), ids));
     }
 
     /**
@@ -635,9 +633,7 @@ public interface MybatisMapper<T> {
      * @return 一个map
      */
     default <K> Map<K, T> mapWithKey(String mapKey, List<Serializable> ids) {
-        return this.mapWithKey(mapKey, where -> {
-            WhereUtil.appendIdsWhere(where, getTableInfo(), ids);
-        });
+        return this.mapWithKey(mapKey, where -> WhereUtil.appendIdsWhere(where, getTableInfo(), ids));
     }
 
     /**

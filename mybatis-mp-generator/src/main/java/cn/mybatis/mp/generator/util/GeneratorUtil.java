@@ -36,9 +36,7 @@ public class GeneratorUtil {
     public static String getEntityName(GeneratorConfig generatorConfig, String tableName) {
         EntityConfig entityConfig = generatorConfig.getEntityConfig();
         if (entityConfig.getNameConvert() == null) {
-            entityConfig.nameConvert((table -> {
-                return NamingUtil.firstToUpperCase(NamingUtil.underlineToCamel(table));
-            }));
+            entityConfig.nameConvert((table -> NamingUtil.firstToUpperCase(NamingUtil.underlineToCamel(table))));
         }
         return entityConfig.getNameConvert().apply(tableName);
     }

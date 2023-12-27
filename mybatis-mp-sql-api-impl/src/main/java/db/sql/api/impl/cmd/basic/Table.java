@@ -2,6 +2,7 @@ package db.sql.api.impl.cmd.basic;
 
 
 import db.sql.api.Cmd;
+import db.sql.api.DbType;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.struct.From;
 import db.sql.api.impl.cmd.struct.Join;
@@ -37,6 +38,10 @@ public class Table implements Dataset<Table, TableField> {
         return name;
     }
 
+    public String getName(DbType dbType) {
+        return dbType.wrap(this.name);
+    }
+
     @Override
     public String getAlias() {
         return alias;
@@ -62,7 +67,7 @@ public class Table implements Dataset<Table, TableField> {
 
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
-        sqlBuilder.append(getName());
+        sqlBuilder.append(getName(context.getDbType()));
         if (getAlias() != null) {
             sqlBuilder.append(SqlConst.BLANK).append(getAlias());
         }

@@ -266,7 +266,7 @@ public abstract class AbstractQuery<SELF extends AbstractQuery,
         this.fromEntityIntercept(entity, storey);
         Table table = $(entity, storey);
         this.from(table);
-        if(Objects.nonNull(consumer)){
+        if (Objects.nonNull(consumer)) {
             consumer.accept(table);
         }
         return (SELF) this;

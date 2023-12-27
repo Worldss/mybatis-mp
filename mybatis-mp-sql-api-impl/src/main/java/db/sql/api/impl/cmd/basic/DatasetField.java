@@ -2,6 +2,7 @@ package db.sql.api.impl.cmd.basic;
 
 
 import db.sql.api.Cmd;
+import db.sql.api.DbType;
 import db.sql.api.SqlBuilderContext;
 import db.sql.api.impl.cmd.struct.insert.InsertFields;
 import db.sql.api.impl.cmd.struct.query.Select;
@@ -27,11 +28,15 @@ public class DatasetField<T extends DatasetField<T, DATASET>, DATASET extends Da
         return name;
     }
 
+    public String getName(DbType dbType) {
+        return dbType.wrap(this.name);
+    }
+
     @Override
     public StringBuilder sql(Cmd module, Cmd parent, SqlBuilderContext context, StringBuilder sqlBuilder) {
         // insert 直接名字
         if (parent instanceof InsertFields) {
-            sqlBuilder.append(this.getName());
+            sqlBuilder.append(getName(context.getDbType()));
             return sqlBuilder;
         }
 
@@ -40,7 +45,7 @@ public class DatasetField<T extends DatasetField<T, DATASET>, DATASET extends Da
         } else {
             sqlBuilder.append(SqlConst.BLANK);
         }
-        sqlBuilder.append(this.getName());
+        sqlBuilder.append(getName(context.getDbType()));
 
         //拼接 select 的别名
         if (parent instanceof Select) {
@@ -56,7 +61,7 @@ public class DatasetField<T extends DatasetField<T, DATASET>, DATASET extends Da
                 if (this.getAlias() != null) {
                     sqlBuilder.append(this.getAlias());
                 } else {
-                    sqlBuilder.append(this.getName());
+                    sqlBuilder.append(getName(context.getDbType()));
                 }
             }
             return sqlBuilder;

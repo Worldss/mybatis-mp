@@ -1,16 +1,27 @@
 package db.sql.api;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public enum DbType {
 
-    H2,
+    H2(new KeywordWrap("`", "`"), new HashSet<>()),
 
-    MYSQL,
+    MYSQL(new KeywordWrap("`", "`"), new HashSet<>()),
 
-    SQL_SERVER,
+    SQL_SERVER(new KeywordWrap("[", "]"), new HashSet<>()),
 
-    PGSQL,
+    PGSQL(new KeywordWrap("\"", "\""), new HashSet<>()),
 
-    ORACLE;
+    ORACLE(new KeywordWrap("\"", "\""), new HashSet<>());
+
+    private final KeywordWrap keywordWrap;
+    private final Set<String> keywords;
+
+    DbType(KeywordWrap keywordWrap, Set<String> keywords) {
+        this.keywordWrap = keywordWrap;
+        this.keywords = keywords;
+    }
 
     public static DbType getByName(String name) {
         DbType[] dbTypes = values();
@@ -22,4 +33,18 @@ public enum DbType {
         return MYSQL;
     }
 
+    public KeywordWrap getKeywordWrap() {
+        return keywordWrap;
+    }
+
+    public Set<String> getKeywords() {
+        return keywords;
+    }
+
+    public String wrap(String name) {
+        if (getKeywords().contains(name)) {
+            return String.format("%s%s%s", getKeywordWrap().getPrefix(), name, getKeywordWrap().getSuffix());
+        }
+        return name;
+    }
 }

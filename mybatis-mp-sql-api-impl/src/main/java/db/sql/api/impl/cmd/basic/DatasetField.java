@@ -9,6 +9,8 @@ import db.sql.api.impl.cmd.struct.query.Select;
 import db.sql.api.impl.tookit.SqlConst;
 import db.sql.api.tookit.CmdUtils;
 
+import java.util.Objects;
+
 public class DatasetField<T extends DatasetField<T, DATASET>, DATASET extends Dataset> extends Field<T> {
 
     private final DATASET table;
@@ -61,7 +63,7 @@ public class DatasetField<T extends DatasetField<T, DATASET>, DATASET extends Da
                 if (this.getAlias() != null) {
                     sqlBuilder.append(this.getAlias());
                 } else {
-                    sqlBuilder.append(getName(context.getDbType()));
+                    sqlBuilder.append(Objects.isNull(prefix) ? getName(context.getDbType()) : getName());
                 }
             }
             return sqlBuilder;

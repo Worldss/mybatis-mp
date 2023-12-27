@@ -262,10 +262,22 @@ public abstract class AbstractQuery<SELF extends AbstractQuery,
     }
 
     @Override
-    public SELF from(Class entity, int storey, Consumer<Dataset> consumer) {
+    public SELF from(Class entity, int storey) {
+        return this.from(entity, storey, null);
+    }
+
+    public SELF from(Class entity, Consumer<Table> consumer) {
+        return this.from(entity, 1, consumer);
+    }
+
+
+    public SELF from(Class entity, int storey, Consumer<Table> consumer) {
         this.fromEntityIntercept(entity, storey);
         Table table = $(entity, storey);
         this.from(table);
+        if (Objects.nonNull(consumer)) {
+            consumer.accept(table);
+        }
         return (SELF) this;
     }
 
